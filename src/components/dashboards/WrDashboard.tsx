@@ -74,8 +74,8 @@ export default function WrDashboard() {
         </div>
         <Legend
           items={[
-            ...(funnelOutcome !== "everWr1" ? [{ label: "Ever startable (top-36)", color: CHALK.blue }] : []),
-            ...(funnelOutcome !== "everStartable" ? [{ label: "Ever WR1 (top-12)", color: CHALK.salmon }] : []),
+            ...(funnelOutcome !== "everWr1" ? [{ label: "Ever startable (top-36)", color: CHALK.gold }] : []),
+            ...(funnelOutcome !== "everStartable" ? [{ label: "Ever WR1 (top-12)", color: CHALK.pink }] : []),
           ]}
         />
         <ResponsiveContainer width="100%" height={300}>
@@ -85,12 +85,12 @@ export default function WrDashboard() {
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
             {funnelOutcome !== "everWr1" && (
-              <Bar dataKey="everStartable" name="Ever startable" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+              <Bar dataKey="everStartable" name="Ever startable" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
                 <LabelList dataKey="everStartable" position="top" formatter={(v) => `${v}%`} fill={CHALK.ink} fontSize={14} />
               </Bar>
             )}
             {funnelOutcome !== "everStartable" && (
-              <Bar dataKey="everWr1" name="Ever WR1" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+              <Bar dataKey="everWr1" name="Ever WR1" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
                 <LabelList dataKey="everWr1" position="top" formatter={(v) => `${v}%`} fill={CHALK.ink} fontSize={14} />
               </Bar>
             )}
@@ -274,8 +274,8 @@ export default function WrDashboard() {
       >
         <Legend
           items={[
-            { label: "Ever startable (top-36)", color: CHALK.blue },
-            { label: "Ever WR1 (top-12)", color: CHALK.salmon },
+            { label: "Ever startable (top-36)", color: CHALK.gold },
+            { label: "Ever WR1 (top-12)", color: CHALK.pink },
           ]}
         />
         <ResponsiveContainer width="100%" height={280}>
@@ -284,8 +284,8 @@ export default function WrDashboard() {
             <XAxis dataKey="role" tick={{ ...axisTick, fontSize: 12 }} axisLine={axisLine} tickLine={false} interval={0} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="everStartable" name="Ever startable" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="everWr1" name="Ever WR1" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+            <Bar dataKey="everStartable" name="Ever startable" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="everWr1" name="Ever WR1" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
               <LabelList dataKey="everWr1" position="top" formatter={(v) => `${v}%`} fill={CHALK.ink} fontSize={14} />
             </Bar>
           </BarChart>
@@ -388,9 +388,9 @@ export default function WrDashboard() {
       >
         <Legend
           items={[
-            { label: "80+ targets as a rookie", color: CHALK.yellow },
-            { label: "Top-36 as a rookie", color: CHALK.blue },
-            { label: "Top-12 as a rookie", color: CHALK.salmon },
+            { label: "80+ targets as a rookie", color: CHALK.gold },
+            { label: "Top-36 as a rookie", color: CHALK.pink },
+            { label: "Top-12 as a rookie", color: CHALK.white },
           ]}
         />
         <ResponsiveContainer width="100%" height={280}>
@@ -399,9 +399,9 @@ export default function WrDashboard() {
             <XAxis dataKey="day" tick={axisTick} axisLine={axisLine} tickLine={false} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 60]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="targets80" name="80+ targets" fill={CHALK.yellow} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="top36" name="Top-36" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="top12" name="Top-12" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="targets80" name="80+ targets" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="top36" name="Top-36" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="top12" name="Top-12" fill={CHALK.white} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChalkCard>
@@ -413,7 +413,7 @@ export default function WrDashboard() {
         note={`${wr.acquisitionRule.declineNote} ${wr.acquisitionRule.compounding} And the QB version points the other way: ${wr.acquisitionRule.qbRule.note}`}
       >
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="chalk-card-alt px-4 py-4">
+          <div className="chalk-inset px-4 py-4">
             <div className="font-display text-4xl font-bold" style={{ color: CHALK.yellow }}>
               12.5% vs 4.9%
             </div>
@@ -421,7 +421,7 @@ export default function WrDashboard() {
               first-feed rate when the team&apos;s leading WR departed vs stayed (OR 2.79, p = 0.0011, n = 805 at-risk seasons)
             </div>
           </div>
-          <div className="chalk-card-alt px-4 py-4">
+          <div className="chalk-inset px-4 py-4">
             <div className="font-display text-4xl font-bold" style={{ color: CHALK.salmon }}>
               49% → 26%
             </div>
@@ -429,7 +429,7 @@ export default function WrDashboard() {
               odds of keeping an established role when the quarterback departs (OR 0.43, p = 0.026)
             </div>
           </div>
-          <div className="chalk-card-alt px-4 py-4">
+          <div className="chalk-inset px-4 py-4">
             <div className="font-display text-4xl font-bold" style={{ color: CHALK.blue }}>
               16.1% vs 2.0%
             </div>
@@ -444,8 +444,8 @@ export default function WrDashboard() {
         </h3>
         <Legend
           items={[
-            { label: "Stayed — kept an 80-target role", color: CHALK.blue },
-            { label: "Moved teams", color: CHALK.salmon },
+            { label: "Stayed — kept an 80-target role", color: CHALK.gold },
+            { label: "Moved teams", color: CHALK.pink },
           ]}
         />
         <ResponsiveContainer width="100%" height={260}>
@@ -454,8 +454,8 @@ export default function WrDashboard() {
             <XAxis dataKey="band" tick={{ ...axisTick, fontSize: 12 }} axisLine={axisLine} tickLine={false} interval={0} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="stayed" name="Stayed" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="moved" name="Moved" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="stayed" name="Stayed" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="moved" name="Moved" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
         <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
@@ -498,7 +498,7 @@ export default function WrDashboard() {
       <ChalkCard kicker="Who to draft" title="The archetypes">
         <div className="grid gap-4 lg:grid-cols-2">
           {wr.archetypes.map((a, i) => (
-            <div key={a.name} className="chalk-card-alt px-4 py-4">
+            <div key={a.name} className="chalk-inset px-4 py-4">
               <div className="font-display text-2xl font-bold" style={{ color: [CHALK.green, CHALK.blue, CHALK.yellow, CHALK.salmon][i] }}>
                 {a.name}
               </div>
@@ -544,7 +544,7 @@ export default function WrDashboard() {
         </h3>
         <div className="grid gap-3 lg:grid-cols-3">
           {wr.darts2026.map((d) => (
-            <div key={d.player} className="chalk-card-alt px-4 py-4">
+            <div key={d.player} className="chalk-inset px-4 py-4">
               <div className="font-display text-2xl font-bold" style={{ color: CHALK.yellow }}>
                 {d.player}
               </div>
@@ -557,7 +557,7 @@ export default function WrDashboard() {
             </div>
           ))}
         </div>
-        <p className="chalk-card-alt mt-6 px-5 py-4 text-lg leading-relaxed" style={{ color: "var(--ink)" }}>
+        <p className="chalk-inset mt-6 px-5 py-4 text-lg leading-relaxed" style={{ color: "var(--ink)" }}>
           {wr.wrVerdict}
         </p>
       </ChalkCard>

@@ -2,7 +2,7 @@ export default function StatTile({
   value,
   label,
   sublabel,
-  color = "var(--chalk-yellow)",
+  color = "var(--chalk-gold)",
 }: {
   value: string;
   label: string;
@@ -11,14 +11,14 @@ export default function StatTile({
 }) {
   return (
     <div className="chalk-card-alt flex flex-col items-center px-4 py-5 text-center">
-      <div className="font-display text-5xl font-bold leading-none sm:text-6xl" style={{ color }}>
+      <div className="font-sketch relative text-4xl leading-none sm:text-5xl" style={{ color }}>
         {value}
       </div>
-      <div className="mt-2 text-lg leading-tight" style={{ color: "var(--ink)" }}>
+      <div className="relative mt-2 text-base leading-tight" style={{ color: "var(--ink)" }}>
         {label}
       </div>
       {sublabel && (
-        <div className="mt-1 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
+        <div className="relative mt-1 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
           {sublabel}
         </div>
       )}

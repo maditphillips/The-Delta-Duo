@@ -11,7 +11,7 @@ export default function WideReceiverPage() {
   return (
     <div>
       <div className="mb-8 pt-4">
-        <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ color: "var(--ink)" }}>
+        <h1 className="font-sketch text-3xl sm:text-4xl" style={{ color: "var(--ink)" }}>
           {wrMeta.title}
         </h1>
         <p className="mt-2 max-w-3xl text-xl" style={{ color: "var(--ink-dim)" }}>

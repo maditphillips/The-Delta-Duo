@@ -83,9 +83,9 @@ export default function QbDashboard() {
       >
         <Legend
           items={[
-            { label: "Ever started", color: CHALK.yellow },
-            { label: "Ever top-24", color: CHALK.blue },
-            { label: "Ever top-12", color: CHALK.salmon },
+            { label: "Ever started", color: CHALK.gold },
+            { label: "Ever top-24", color: CHALK.pink },
+            { label: "Ever top-12", color: CHALK.white },
           ]}
         />
         <ResponsiveContainer width="100%" height={300}>
@@ -94,9 +94,9 @@ export default function QbDashboard() {
             <XAxis dataKey="day" tick={axisTick} axisLine={axisLine} tickLine={false} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="everStarted" name="Ever started" fill={CHALK.yellow} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="everTop24" name="Ever top-24" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="everTop12" name="Ever top-12" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+            <Bar dataKey="everStarted" name="Ever started" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="everTop24" name="Ever top-24" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="everTop12" name="Ever top-12" fill={CHALK.white} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
               <LabelList dataKey="everTop12" position="top" formatter={(v) => `${v}%`} fill={CHALK.ink} fontSize={14} />
             </Bar>
           </BarChart>
@@ -183,8 +183,8 @@ export default function QbDashboard() {
       >
         <Legend
           items={[
-            { label: "Ever top-24", color: CHALK.blue },
-            { label: "Ever top-12", color: CHALK.salmon },
+            { label: "Ever top-24", color: CHALK.gold },
+            { label: "Ever top-12", color: CHALK.pink },
           ]}
         />
         <ResponsiveContainer width="100%" height={280}>
@@ -200,8 +200,8 @@ export default function QbDashboard() {
             />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="everTop24" name="Ever top-24" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="everTop12" name="Ever top-12" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="everTop24" name="Ever top-24" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="everTop12" name="Ever top-12" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChalkCard>
@@ -237,8 +237,8 @@ export default function QbDashboard() {
         <div className="mt-5">
           <Legend
             items={[
-              { label: "Top-12 rate per starter season", color: CHALK.salmon },
-              { label: "Top-24 rate per starter season", color: CHALK.blue },
+              { label: "Top-12 rate per starter season", color: CHALK.pink },
+              { label: "Top-24 rate per starter season", color: CHALK.gold },
             ]}
           />
           <ResponsiveContainer width="100%" height={260}>
@@ -247,8 +247,8 @@ export default function QbDashboard() {
               <XAxis dataKey="day" tick={axisTick} axisLine={axisLine} tickLine={false} />
               <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
               <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-              <Bar dataKey="top24Rate" name="Top-24 rate" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="top12Rate" name="Top-12 rate" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+              <Bar dataKey="top24Rate" name="Top-24 rate" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="top12Rate" name="Top-12 rate" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
                 <LabelList dataKey="top12Rate" position="top" formatter={(v) => `${v}%`} fill={CHALK.ink} fontSize={14} />
               </Bar>
             </BarChart>
@@ -264,7 +264,7 @@ export default function QbDashboard() {
       >
         <div className="grid gap-3 sm:grid-cols-2">
           {qb.rushing2x2.map((q) => (
-            <div key={q.quadrant} className="chalk-card-alt px-4 py-4">
+            <div key={q.quadrant} className="chalk-inset px-4 py-4">
               <div className="text-lg" style={{ color: "var(--ink)" }}>
                 {q.quadrant} <span style={{ color: "var(--ink-faint)" }}>(n={q.n})</span>
               </div>
@@ -366,7 +366,7 @@ export default function QbDashboard() {
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {qb.causalChain.map((c) => (
-            <div key={c.step} className="chalk-card-alt px-4 py-3">
+            <div key={c.step} className="chalk-inset px-4 py-3">
               <div className="font-display text-3xl font-bold" style={{ color: CHALK.violet }}>
                 {c.step}
               </div>
@@ -512,7 +512,7 @@ export default function QbDashboard() {
       <ChalkCard kicker="Who to draft" title="The three rules">
         <div className="grid gap-4 lg:grid-cols-3">
           {qb.qbRules.map((r, i) => (
-            <div key={r.rule} className="chalk-card-alt px-4 py-4">
+            <div key={r.rule} className="chalk-inset px-4 py-4">
               <div className="font-display text-2xl font-bold" style={{ color: [CHALK.yellow, CHALK.blue, CHALK.salmon][i] }}>
                 Rule {i + 1}: {r.rule}
               </div>

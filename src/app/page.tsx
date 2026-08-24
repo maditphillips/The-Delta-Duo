@@ -8,22 +8,22 @@ const positions = [
     href: "/wide-receiver",
     label: "Wide Receiver",
     title: "The Two Doors of Fantasy Relevance",
-    blurb: "Getting on the field, and getting the ball. What every drafted WR since 2008 reveals about both gates.",
-    color: CHALK.blue,
+    blurb: "Getting on the field, and getting the ball. What 580 drafted WRs since 2008 reveal about both gates.",
+    color: CHALK.pink,
   },
   {
     href: "/quarterback",
     label: "Quarterback",
     title: "The Quarterback Cliff",
     blurb: "The draft decides who plays. It does not decide who is good. 212 drafted QBs, 2008–2025.",
-    color: CHALK.yellow,
+    color: CHALK.gold,
   },
   {
     href: "/running-back",
     label: "Running Back",
     title: "The Running Back Cliff",
     blurb: "What 388 drafted RBs — and every down they played — reveal about talent, volume, and third down.",
-    color: CHALK.salmon,
+    color: CHALK.blue,
   },
 ];
 
@@ -31,10 +31,10 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10">
       <div className="pt-6 text-center">
-        <h1 className="font-display mx-auto max-w-3xl text-5xl font-bold leading-tight sm:text-6xl" style={{ color: "var(--ink)" }}>
+        <h1 className="font-sketch mx-auto max-w-3xl text-4xl leading-tight sm:text-5xl" style={{ color: "var(--ink)" }}>
           The draft decides who plays.
           <br />
-          <span style={{ color: CHALK.yellow }}>It does not decide who is good.</span>
+          <span style={{ color: CHALK.gold }}>It does not decide who is good.</span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed" style={{ color: "var(--ink-dim)" }}>
           {anchorClaim}
@@ -45,18 +45,14 @@ export default function Home() {
         {positions.map((p) => (
           <Link key={p.href} href={p.href} className="group">
             <div className="chalk-card h-full px-6 py-6 transition-transform group-hover:-translate-y-1">
-              <div className="text-sm uppercase tracking-widest" style={{ color: "var(--ink-faint)" }}>
-                {p.label}
-              </div>
-              <div className="font-display mt-2 text-3xl font-bold leading-tight" style={{ color: p.color }}>
+              <div className="chalk-kicker relative">{p.label}</div>
+              <div className="font-sketch relative mt-2 text-2xl leading-tight" style={{ color: p.color }}>
                 {p.title}
               </div>
-              <p className="mt-3 leading-snug" style={{ color: "var(--ink-dim)" }}>
+              <p className="relative mt-3 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
                 {p.blurb}
               </p>
-              <div className="mt-4 text-lg" style={{ color: "var(--ink)" }}>
-                Open the board →
-              </div>
+              <div className="chalk-annotation relative mt-4">Open the board →</div>
             </div>
           </Link>
         ))}

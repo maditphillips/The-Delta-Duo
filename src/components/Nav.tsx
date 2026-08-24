@@ -17,14 +17,14 @@ export default function Nav() {
     <header className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <Link href="/" className="leading-none">
-          <span className="font-display block text-5xl font-bold" style={{ color: "var(--ink)" }}>
+          <span className="font-sketch block text-4xl" style={{ color: "var(--ink)" }}>
             The Delta Duo
           </span>
-          <span className="mt-1 block text-sm tracking-wide" style={{ color: "var(--ink-dim)" }}>
+          <span className="mt-1 block text-xs tracking-[0.28em] uppercase" style={{ color: "var(--chalk-gold)" }}>
             fantasy football, measured
           </span>
         </Link>
-        <nav className="flex flex-wrap gap-2 text-lg">
+        <nav className="flex flex-wrap gap-1.5 text-sm">
           {tabs.map((t) => {
             const active = t.href === "/" ? pathname === "/" : pathname.startsWith(t.href);
             return (
@@ -35,13 +35,7 @@ export default function Nav() {
           })}
         </nav>
       </div>
-      <div
-        className="mt-4 h-0.5 w-full"
-        style={{
-          background: "var(--ink-faint)",
-          borderRadius: "50% 40% 60% 45% / 60% 50% 45% 55%",
-        }}
-      />
+      <div className="mt-4 h-px w-full" style={{ background: "var(--ink-ghost)" }} />
     </header>
   );
 }

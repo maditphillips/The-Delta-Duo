@@ -94,9 +94,9 @@ export default function RbDashboard() {
       >
         <Legend
           items={[
-            { label: "RB3 (top-36)", color: CHALK.blue },
-            { label: "RB2 (top-24)", color: CHALK.violet },
-            { label: "RB1 (top-12)", color: CHALK.salmon },
+            { label: "RB3 (top-36)", color: CHALK.gold },
+            { label: "RB2 (top-24)", color: CHALK.pink },
+            { label: "RB1 (top-12)", color: CHALK.white },
           ]}
         />
         <ResponsiveContainer width="100%" height={300}>
@@ -112,9 +112,9 @@ export default function RbDashboard() {
             />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="rb3" name="RB3 (top-36)" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="rb2" name="RB2 (top-24)" fill={CHALK.violet} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="rb1" name="RB1 (top-12)" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb3" name="RB3 (top-36)" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb2" name="RB2 (top-24)" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb1" name="RB1 (top-12)" fill={CHALK.white} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChalkCard>
@@ -279,10 +279,10 @@ export default function RbDashboard() {
       >
         <Legend
           items={[
-            { label: "QB", color: CHALK.yellow },
-            { label: "WR", color: CHALK.blue },
-            { label: "TE", color: CHALK.violet },
-            { label: "RB", color: CHALK.salmon },
+            { label: "QB", color: CHALK.gold },
+            { label: "WR", color: CHALK.pink },
+            { label: "TE", color: CHALK.white },
+            { label: "RB", color: CHALK.blue },
           ]}
         />
         <ResponsiveContainer width="100%" height={320}>
@@ -291,10 +291,10 @@ export default function RbDashboard() {
             <XAxis dataKey="down" tick={axisTick} axisLine={axisLine} tickLine={false} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} domain={[0, 1.8]} />
             <Tooltip content={<ChalkTooltip format={(v) => v.toFixed(3)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="QB" fill={CHALK.yellow} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="WR" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="TE" fill={CHALK.violet} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="RB" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="QB" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="WR" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="TE" fill={CHALK.white} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="RB" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChalkCard>
@@ -313,9 +313,9 @@ export default function RbDashboard() {
         </div>
         <Legend
           items={[
-            { label: "RB3 rate (top-36)", color: CHALK.blue },
-            { label: "RB2 rate (top-24)", color: CHALK.violet },
-            { label: "RB1 rate (top-12)", color: CHALK.salmon },
+            { label: "RB3 rate (top-36)", color: CHALK.gold },
+            { label: "RB2 rate (top-24)", color: CHALK.pink },
+            { label: "RB1 rate (top-12)", color: CHALK.white },
           ]}
         />
         <ResponsiveContainer width="100%" height={300}>
@@ -338,9 +338,9 @@ export default function RbDashboard() {
               }
               cursor={{ fill: "rgba(242,238,226,0.06)" }}
             />
-            <Bar dataKey="rb3" name="RB3 rate" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="rb2" name="RB2 rate" fill={CHALK.violet} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
-            <Bar dataKey="rb1" name="RB1 rate" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb3" name="RB3 rate" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb2" name="RB2 rate" fill={CHALK.pink} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb1" name="RB1 rate" fill={CHALK.white} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
         <div className="scroll-x mt-3">
@@ -401,7 +401,7 @@ export default function RbDashboard() {
             <XAxis dataKey="down" tick={axisTick} axisLine={axisLine} tickLine={false} />
             <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
             <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
-            <Bar dataKey="pctReceiving" name="% of RB points from receiving" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
+            <Bar dataKey="pctReceiving" name="% of RB points from receiving" fill={CHALK.gold} fillOpacity={0.9} radius={[4, 4, 0, 0]}>
               <LabelList dataKey="pctReceiving" position="top" formatter={(v) => `${Number(v).toFixed(0)}%`} fill={CHALK.ink} fontSize={14} />
             </Bar>
           </BarChart>
@@ -611,7 +611,7 @@ export default function RbDashboard() {
             </li>
           ))}
         </ul>
-        <p className="chalk-card-alt mt-6 px-5 py-4 text-lg leading-relaxed" style={{ color: "var(--ink)" }}>
+        <p className="chalk-inset mt-6 px-5 py-4 text-lg leading-relaxed" style={{ color: "var(--ink)" }}>
           {rb.rbSummaryLine}
         </p>
       </ChalkCard>
