@@ -16,7 +16,7 @@ const positions = [
     label: "Quarterback",
     title: "The Quarterback Cliff",
     blurb: "The draft decides who plays. It does not decide who is good. 212 drafted QBs, 2008–2025.",
-    color: CHALK.gold,
+    color: "var(--accent)",
   },
   {
     href: "/running-back",
@@ -34,7 +34,7 @@ export default function Home() {
         <h1 className="font-sketch mx-auto max-w-3xl text-4xl leading-tight sm:text-5xl" style={{ color: "var(--ink)" }}>
           The draft decides who plays.
           <br />
-          <span style={{ color: CHALK.gold }}>It does not decide who is good.</span>
+          <span style={{ color: "var(--accent)" }}>It does not decide who is good.</span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed" style={{ color: "var(--ink-dim)" }}>
           {anchorClaim}
@@ -52,7 +52,9 @@ export default function Home() {
               <p className="relative mt-3 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
                 {p.blurb}
               </p>
-              <div className="chalk-annotation relative mt-4">Open the board →</div>
+              <div className="chalk-annotation relative mt-4" style={{ color: "var(--accent)" }}>
+                Open the board →
+              </div>
             </div>
           </Link>
         ))}

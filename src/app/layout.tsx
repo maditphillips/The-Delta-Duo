@@ -36,7 +36,7 @@ export default function RootLayout({
               getinsidethelab.com
             </a>
           </span>
-          <span className="chalk-annotation" style={{ fontSize: "1.05rem" }}>
+          <span className="chalk-annotation" style={{ fontSize: "1.05rem", color: "var(--accent)" }}>
             we don&apos;t draft players. we draft deltas.
           </span>
         </footer>

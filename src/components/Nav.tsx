@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { href: "/", label: "The Lab" },
+  { href: "/", label: "The Deltas" },
   { href: "/wide-receiver", label: "Wide Receiver" },
   { href: "/quarterback", label: "Quarterback" },
   { href: "/running-back", label: "Running Back" },
+  { href: "/explorer", label: "Player Explorer" },
   { href: "/rankings", label: "Rankings" },
 ];
 
@@ -20,7 +21,7 @@ export default function Nav() {
           <span className="font-sketch block text-4xl" style={{ color: "var(--ink)" }}>
             The Delta Duo
           </span>
-          <span className="mt-1 block text-xs tracking-[0.28em] uppercase" style={{ color: "var(--chalk-gold)" }}>
+          <span className="mt-1 block text-xs tracking-[0.28em] uppercase" style={{ color: "var(--accent)" }}>
             fantasy football, measured
           </span>
         </Link>
