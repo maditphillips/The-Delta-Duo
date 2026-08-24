@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Delta Duo — Fantasy Football Lab
 
-## Getting Started
+A green-chalkboard data dashboard for The Delta Duo's fantasy football research:
 
-First, run the development server:
+- **Wide Receiver** — *The Two Doors of Fantasy Relevance*
+- **Quarterback** — *The Quarterback Cliff*
+- **Running Back** — *The Running Back Cliff* + the third-down study
+- **Rankings** — positional and overall boards, updated by CSV upload (stored in Supabase)
+
+Built with Next.js (App Router) + Recharts, deployed to **Cloudflare Workers** via
+[`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare).
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
+npm run build        # production build (also runs type checks)
+npm run preview      # build + run the actual Cloudflare worker locally
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploying to Cloudflare
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Push this repo to GitHub.
+2. In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, pick this repo.
+   - Build command: `npx opennextjs-cloudflare build`
+   - Deploy command: `npx opennextjs-cloudflare deploy`
+3. Add the environment variables below under the Worker's **Settings → Variables and Secrets**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Or deploy from your machine: `npm run deploy` (requires `wrangler login`).
 
-## Learn More
+## Supabase (rankings storage)
 
-To learn more about Next.js, take a look at the following resources:
+Rankings live in Supabase so the boards update instantly without a redeploy:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create a project at [supabase.com](https://supabase.com).
+2. Run `supabase/migrations/0001_rankings.sql` in the SQL editor.
+3. Set these variables (see `.env.example`; locally put them in `.env.local`):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY` *(server-only — never expose to the browser)*
+   - `RANKINGS_UPLOAD_KEY` — any passphrase; typing it on the `/rankings` page authorizes an upload.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Uploads go through `POST /api/rankings` on the server using the service role; the browser never
+holds a write credential. Reads are public (RLS `select` policies only). Each upload creates a new
+ranking *set*, so history is preserved and the newest set is what the board shows.
 
-## Deploy on Vercel
+**CSV format:** headers are matched loosely — `rank, player, team, position, note` (only
+`player`/`name` is required; row order stands in for a missing rank column).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Where the data lives
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The study numbers are typed TypeScript modules in `src/data/`:
+
+- `qb.ts` — the Quarterback Cliff tables
+- `rb.ts` — the RB third-down study tables
+- `wr.ts` — WR findings (currently the numbers cited across the series; expands when the full
+  Two Doors dataset is imported)
+- `crossStudy.ts` — the cross-study callbacks table
+
+To update a number, edit the module and redeploy — every chart and table reads from these files.
+
+## Adding the Stripe paywall later
+
+The pieces are already shaped for it:
+
+1. **Auth** — add Supabase Auth (email or OAuth). The Supabase project is already wired.
+2. **Subscriptions** — add a `subscriptions` table keyed by Supabase `user_id`, written by a
+   Stripe webhook (`checkout.session.completed`, `customer.subscription.updated/deleted`) at
+   `src/app/api/stripe/webhook/route.ts`.
+3. **Checkout** — a route handler that creates a Stripe Checkout Session for a price ID.
+4. **Gate** — a Next.js `middleware.ts` (or a check in each page layout) that reads the Supabase
+   session and the subscription row, and redirects non-subscribers from the position pages to a
+   preview/upgrade page.
+5. Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
+
+Because the site renders on Cloudflare Workers (not static export), server-side gating like this
+is a drop-in addition — no re-architecture needed.

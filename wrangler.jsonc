@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-delta-duo",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Secrets (set in the Cloudflare dashboard or `wrangler secret put`):
+  //   NEXT_PUBLIC_SUPABASE_URL
+  //   NEXT_PUBLIC_SUPABASE_ANON_KEY
+  //   SUPABASE_SERVICE_ROLE_KEY
+  //   RANKINGS_UPLOAD_KEY
+  // Later, for the paywall: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+}

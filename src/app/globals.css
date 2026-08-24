@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
+/* ————— The Delta Duo chalkboard theme —————
+   Board surface + chalk ink + four validated chalk series colors.
+   Palette validated for CVD separation and 3:1 contrast against the board. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --board: #2d4a3e;
+  --board-deep: #253e34;
+  --board-edge: #1e332b;
+  --ink: #f2eee2;
+  --ink-dim: rgba(242, 238, 226, 0.72);
+  --ink-faint: rgba(242, 238, 226, 0.38);
+  --ink-ghost: rgba(242, 238, 226, 0.14);
+  --chalk-yellow: #e3bd3a;
+  --chalk-blue: #5cb0de;
+  --chalk-salmon: #e88062;
+  --chalk-violet: #bda5ec;
+  --chalk-green: #7fd07a;
+  --wood-1: #7a4f2d;
+  --wood-2: #5c3a1f;
+  --font-chalk: "Patrick Hand", "Comic Sans MS", "Segoe Print", cursive;
+  --font-display: "Caveat", "Patrick Hand", cursive;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-board: var(--board);
+  --color-ink: var(--ink);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--board-edge);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.045), transparent 45%),
+    radial-gradient(ellipse at 80% 85%, rgba(255, 255, 255, 0.035), transparent 40%),
+    radial-gradient(ellipse at 60% 40%, rgba(0, 0, 0, 0.12), transparent 70%),
+    linear-gradient(160deg, var(--board) 0%, var(--board-deep) 100%);
+  color: var(--ink);
+  font-family: var(--font-chalk);
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+/* chalk dust texture over the whole board */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+main,
+header,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-chalk);
+  letter-spacing: 0.02em;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* hand-drawn chalk frame */
+.chalk-card {
+  border: 2px solid var(--ink-faint);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.12);
+}
+
+.chalk-card-alt {
+  border: 2px dashed var(--ink-faint);
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.chalk-underline {
+  position: relative;
+}
+.chalk-underline::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  right: 4%;
+  bottom: -0.28em;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.75;
+  border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%;
+  transform: rotate(-0.35deg);
+}
+
+/* nav tab — chalk box that fills in when active */
+.chalk-tab {
+  border: 2px solid transparent;
+  border-radius: 225px 15px 255px 15px / 15px 255px 15px 225px;
+  padding: 0.15rem 0.9rem;
+  transition: border-color 120ms ease, background 120ms ease;
+  white-space: nowrap;
+}
+.chalk-tab:hover {
+  border-color: var(--ink-ghost);
+}
+.chalk-tab.active {
+  border-color: var(--ink-faint);
+  background: rgba(242, 238, 226, 0.07);
+}
+
+/* tables */
+.chalk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+.chalk-table th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-dim);
+  border-bottom: 2px solid var(--ink-faint);
+  padding: 0.35rem 0.75rem;
+  white-space: nowrap;
+}
+.chalk-table td {
+  padding: 0.32rem 0.75rem;
+  border-bottom: 1px dashed var(--ink-ghost);
+}
+.chalk-table tbody tr:hover {
+  background: rgba(242, 238, 226, 0.05);
+}
+.chalk-table .num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.chalk-table th.num {
+  text-align: right;
+}
+
+/* buttons & inputs */
+.chalk-btn {
+  border: 2px solid var(--ink-faint);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  padding: 0.3rem 1.1rem;
+  cursor: pointer;
+  font-family: var(--font-chalk);
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.chalk-btn:hover {
+  background: rgba(242, 238, 226, 0.08);
+}
+.chalk-btn.selected {
+  background: rgba(242, 238, 226, 0.14);
+  border-color: var(--ink-dim);
+}
+.chalk-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chalk-input {
+  border: 2px solid var(--ink-faint);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--ink);
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-chalk);
+}
+.chalk-input:focus {
+  outline: none;
+  border-color: var(--ink-dim);
+}
+
+/* chart region */
+.recharts-text {
+  font-family: var(--font-chalk);
+}
+
+/* scrollable wide content */
+.scroll-x {
+  overflow-x: auto;
+}
+
+::selection {
+  background: rgba(227, 189, 58, 0.4);
 }
