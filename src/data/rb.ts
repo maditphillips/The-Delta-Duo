@@ -5,10 +5,70 @@
 
 export const rbMeta = {
   title: "The Running Back Cliff",
-  subtitle: "Third down is a low-value down for running backs — uniquely so.",
+  subtitle: "What 388 drafted RBs reveal about talent, volume, and why the NFL stopped paying them.",
   population:
-    "Drafted and undrafted RBs, 2016–2025. 1,001 player-seasons with 100+ snaps (732 drafted, 269 undrafted). Full PPR, attributed play-by-play to specific downs.",
+    "388 running backs drafted 2008–2025, full PPR, plus a snap-level companion study (2016–2025: 1,001 player-seasons with 100+ snaps, every point attributed to a specific down).",
 };
+
+// ————— The Running Back Cliff (published article) —————
+
+// Table 3 — cumulative hit rate by draft round, 2008-2025 (PPR)
+export const hitRateByRound = [
+  { round: "1", n: 31, rb1: 67.7, rb2: 83.9, rb3: 93.5 },
+  { round: "2", n: 44, rb1: 34.1, rb2: 63.6, rb3: 77.3 },
+  { round: "3", n: 47, rb1: 25.5, rb2: 48.9, rb3: 68.1 },
+  { round: "4", n: 73, rb1: 9.6, rb2: 20.5, rb3: 35.6 },
+  { round: "5", n: 56, rb1: 8.9, rb2: 19.6, rb3: 30.4 },
+  { round: "6", n: 70, rb1: 2.9, rb2: 8.6, rb3: 10.0 },
+  { round: "7", n: 67, rb1: 3.0, rb2: 6.0, rb3: 10.4 },
+];
+
+export const twoCliffsNote =
+  "Draft capital does not slope down evenly — it falls off two cliffs: a steep drop after Round 3, a flat step from Round 4 to 5, another drop after Round 5, and a flat floor across Rounds 6–7. Within each plateau the round barely matters for ceiling (Rounds 4–7 are statistically flat for top-12, p = 0.19), but mid Day 3 buys a real floor: a Round 4 back reaches RB3 35.6% of the time, a Round 6 back 10.0%.";
+
+// Table 4 — the opportunity funnel
+export const opportunityFunnel = [
+  { milestone: "Reached 50+ carries", round1: 100, day2: 92.3, day3: 52.6 },
+  { milestone: "Reached 200+ carries", round1: 93.5, day2: 76.9, day3: 28.6 },
+  { milestone: "Reached 400+ carries", round1: 83.9, day2: 61.5, day3: 13.2 },
+];
+
+export const medianCareerTouches = { round1: 1065, day2: 607, day3: 74 };
+
+// Table 5 — per-touch production among RBs with 50+ career carries
+export const perTouchEquality = [
+  { metric: "Yards per carry", round1: 4.23, day2: 4.14, day3: 4.16 },
+  { metric: "Yards per touch", round1: 4.82, day2: 4.79, day3: 4.73 },
+  { metric: "PPR points per touch", round1: 0.823, day2: 0.812, day3: 0.8 },
+  { metric: "Touches per game", round1: 16.3, day2: 11.8, day3: 7.2 },
+];
+
+export const perTouchNote =
+  "Among backs who clear a real audition (50+ carries), not one efficiency comparison is significant (every Holm-adjusted p between 0.44 and 1.0). A Day 3 back who earns carries does exactly as much with each touch as a first-rounder. The only separator is volume: 16.3 touches per game vs 7.2.";
+
+// Table 6 — the one real skill gap: receiving
+export const receivingGap = [
+  { metric: "Catch rate", round1: 0.757, day2: 0.767, day3: 0.755, p: "0.37 (n.s.)" },
+  { metric: "Yards per catch", round1: 8.03, day2: 7.59, day3: 7.45, p: "0.034" },
+  { metric: "Yards per target", round1: 6.07, day2: 5.87, day3: 5.5, p: "0.005" },
+];
+
+// Table 7 — college pass-catchers vs everyone else (2015-2025, 202 matched RBs)
+export const collegeSignal = [
+  { outcome: "Reached 50+ carries", passCatcher: 75.0, everyoneElse: 62.7 },
+  { outcome: "Reached 200+ carries", passCatcher: 52.9, everyoneElse: 40.3 },
+  { outcome: "Reached RB3 (top-36)", passCatcher: 51.5, everyoneElse: 31.3 },
+  { outcome: "Reached RB1 (top-12)", passCatcher: 32.4, everyoneElse: 9.7 },
+];
+
+// Charts 10-11 — presence on passing downs
+export const passPresence = {
+  byDay: { round1: 51.2, day2: 39.4, day3: 16.6 },
+  hitVsMiss: { hit: 41.1, miss: 9.7 },
+  note: "Median share of team pass plays on the field. Early picks are installed on passing downs; late picks have to take those snaps from someone — and college receiving production is the most reliable tool for winning them (college-to-NFL receiving transfer is loose, r = 0.27, so it's an opportunity signal, not a skill promise).",
+};
+
+// ————— The third-down companion study —————
 
 // League play distribution — the denominator for every value index
 export const leagueDistribution = [

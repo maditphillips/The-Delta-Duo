@@ -88,7 +88,145 @@ export default function RbDashboard() {
       </div>
 
       <ChalkCard
-        kicker="Section 1"
+        kicker="The Cliff — Act One"
+        title="Cumulative hit rate by draft round"
+        note={rb.twoCliffsNote}
+      >
+        <Legend
+          items={[
+            { label: "RB3 (top-36)", color: CHALK.blue },
+            { label: "RB2 (top-24)", color: CHALK.violet },
+            { label: "RB1 (top-12)", color: CHALK.salmon },
+          ]}
+        />
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={rb.hitRateByRound} barCategoryGap="18%" barGap={2}>
+            <CartesianGrid {...gridProps} />
+            <XAxis
+              dataKey="round"
+              tick={axisTick}
+              axisLine={axisLine}
+              tickLine={false}
+              label={{ value: "draft round", position: "insideBottom", offset: -4, fill: CHALK.inkFaint, fontSize: 13 }}
+              height={50}
+            />
+            <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 100]} />
+            <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
+            <Bar dataKey="rb3" name="RB3 (top-36)" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb2" name="RB2 (top-24)" fill={CHALK.violet} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="rb1" name="RB1 (top-12)" fill={CHALK.salmon} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChalkCard>
+
+      <ChalkCard
+        kicker="The Cliff — Act Two"
+        title="The equality: once a back gets the ball, the round stops mattering"
+        note={rb.perTouchNote + " The median first-rounder logs 1,065 career touches; the median Day 3 back, 74."}
+      >
+        <div className="scroll-x">
+          <table className="chalk-table">
+            <thead>
+              <tr>
+                <th>Among RBs with 50+ carries</th>
+                <th className="num">Round 1 (n=31)</th>
+                <th className="num">Day 2 (n=84)</th>
+                <th className="num">Day 3 (n=140)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rb.perTouchEquality.map((r) => (
+                <tr key={r.metric}>
+                  <td>{r.metric}</td>
+                  <td className="num">{r.round1}</td>
+                  <td className="num">{r.day2}</td>
+                  <td className="num" style={{ color: r.metric === "Touches per game" ? CHALK.salmon : "var(--ink)" }}>
+                    {r.day3}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="scroll-x mt-5">
+          <table className="chalk-table">
+            <thead>
+              <tr>
+                <th>Opportunity funnel</th>
+                <th className="num">Round 1</th>
+                <th className="num">Day 2</th>
+                <th className="num">Day 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rb.opportunityFunnel.map((r) => (
+                <tr key={r.milestone}>
+                  <td>{r.milestone}</td>
+                  <td className="num">{r.round1}%</td>
+                  <td className="num">{r.day2}%</td>
+                  <td className="num">{r.day3}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </ChalkCard>
+
+      <ChalkCard
+        kicker="The Cliff — Acts Three & Four"
+        title="The one skill gap is receiving — and the one late signal is college receiving"
+        note={rb.passPresence.note}
+      >
+        <div className="scroll-x">
+          <table className="chalk-table">
+            <thead>
+              <tr>
+                <th>Among RBs with 20+ targets</th>
+                <th className="num">Round 1</th>
+                <th className="num">Day 2</th>
+                <th className="num">Day 3</th>
+                <th className="num">p</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rb.receivingGap.map((r) => (
+                <tr key={r.metric}>
+                  <td>{r.metric}</td>
+                  <td className="num">{r.round1}</td>
+                  <td className="num">{r.day2}</td>
+                  <td className="num">{r.day3}</td>
+                  <td className="num">{r.p}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-6">
+          <Legend
+            items={[
+              { label: "College pass-catcher (top ⅓ by college receiving yards)", color: CHALK.yellow },
+              { label: "Everyone else", color: CHALK.blue },
+            ]}
+          />
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={rb.collegeSignal} barCategoryGap="24%" barGap={2}>
+              <CartesianGrid {...gridProps} />
+              <XAxis dataKey="outcome" tick={{ ...axisTick, fontSize: 12 }} axisLine={axisLine} tickLine={false} interval={0} />
+              <YAxis tick={axisTick} axisLine={axisLine} tickLine={false} unit="%" domain={[0, 80]} />
+              <Tooltip content={<ChalkTooltip format={(v) => pct(v)} />} cursor={{ fill: "rgba(242,238,226,0.06)" }} />
+              <Bar dataKey="passCatcher" name="College pass-catcher" fill={CHALK.yellow} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="everyoneElse" name="Everyone else" fill={CHALK.blue} fillOpacity={0.9} radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <p className="mt-1 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
+            College pass-catchers hit RB1 at 32.4% vs 9.7% — more than triple the rate. Backs who hit top-36 were on the field for 41.1%
+            of team pass plays; backs who missed, 9.7%.
+          </p>
+        </div>
+      </ChalkCard>
+
+      <ChalkCard
+        kicker="The companion study — Section 1"
         title="What a snap is worth, by down"
         note="All RB snaps 2016–2025, full PPR. Third-and-long has the highest target rate and the lowest touch rate of any down — that combination is the whole story. Third-and-short is statistically indistinguishable from an early down (p = 0.25)."
       >
