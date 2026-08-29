@@ -1,0 +1,642 @@
+<title>The Coordinator Bump</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --page:#f2f4f6; --surface:#ffffff; --surface-2:#e9edf1;
+  --ink:#101820; --ink-2:#4a5763; --muted:#79878f;
+  --hairline:#dce2e7; --rule:#c3ccd3;
+  --accent:#b8790a; --accent-soft:#f6ecd5;
+  --off:#eb6834; --def:#2a78d6;
+  --y1:#86b6ef; --y2:#2a78d6; --y3:#104281;
+  --pos:#0ca30c; --neg:#d03b3b;
+  --shadow:0 1px 2px rgba(16,24,32,.06), 0 8px 24px -12px rgba(16,24,32,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0c1116; --surface:#141b22; --surface-2:#1c242c;
+    --ink:#eaeff3; --ink-2:#a6b4be; --muted:#7c8b95;
+    --hairline:#232e37; --rule:#31404b;
+    --accent:#e9ae2e; --accent-soft:#2a2317;
+    --off:#d95926; --def:#3987e5;
+    --y1:#b7d3f6; --y2:#5598e7; --y3:#184f95;
+    --pos:#0ca30c; --neg:#e66767;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0c1116; --surface:#141b22; --surface-2:#1c242c;
+  --ink:#eaeff3; --ink-2:#a6b4be; --muted:#7c8b95;
+  --hairline:#232e37; --rule:#31404b;
+  --accent:#e9ae2e; --accent-soft:#2a2317;
+  --off:#d95926; --def:#3987e5;
+  --y1:#b7d3f6; --y2:#5598e7; --y3:#184f95;
+  --pos:#0ca30c; --neg:#e66767;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--page); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 28px 96px}
+.measure{max-width:66ch}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:2px solid var(--ink);
+  padding:52px 0 20px; margin-bottom:40px;
+}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted);
+}
+h1{
+  font-family:Oswald,"Arial Narrow",sans-serif;
+  font-weight:600; font-size:clamp(44px,7.2vw,86px); line-height:.94;
+  letter-spacing:-.01em; text-transform:uppercase; text-wrap:balance;
+  margin:14px 0 0; color:var(--ink);
+}
+.dek{
+  font-size:20px; line-height:1.5; color:var(--ink-2);
+  max-width:60ch; margin:18px 0 0; text-wrap:pretty;
+}
+.byline{
+  display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:26px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11.5px; letter-spacing:.06em; color:var(--muted);
+  text-transform:uppercase;
+}
+
+/* ---------- verdict ---------- */
+.verdict{
+  background:var(--surface); border:1px solid var(--hairline);
+  border-left:4px solid var(--accent);
+  border-radius:3px; padding:26px 30px; margin:0 0 46px; box-shadow:var(--shadow);
+}
+.verdict h2{
+  font-family:Oswald,sans-serif; text-transform:uppercase; letter-spacing:.04em;
+  font-size:15px; font-weight:600; margin:0 0 12px; color:var(--accent);
+}
+.verdict p{margin:0 0 12px; font-size:18.5px}
+.verdict p:last-child{margin-bottom:0}
+
+/* ---------- stat row ---------- */
+.tiles{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1px; background:var(--hairline);
+  border:1px solid var(--hairline); border-radius:3px; overflow:hidden;
+  margin:0 0 46px;
+}
+.tile{background:var(--surface); padding:20px 22px}
+.tile .k{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+  line-height:1.4;
+}
+.tile .v{
+  font-family:Oswald,sans-serif; font-size:40px; font-weight:600; line-height:1;
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em; display:block;
+}
+.tile .s{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-2);
+  display:block; margin-top:8px; line-height:1.45;
+}
+.tile.claim .v{color:var(--accent)}
+
+/* ---------- sections ---------- */
+section{margin:0 0 12px}
+h2.sec{
+  font-family:Oswald,sans-serif; text-transform:uppercase; letter-spacing:.02em;
+  font-size:clamp(26px,3.4vw,36px); font-weight:600; line-height:1.06;
+  margin:58px 0 4px; text-wrap:balance;
+}
+h2.sec + .kicker{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 22px;
+}
+h3{
+  font-family:Oswald,sans-serif; font-weight:500; text-transform:uppercase;
+  letter-spacing:.04em; font-size:17px; margin:38px 0 10px;
+}
+p{margin:0 0 18px; text-wrap:pretty}
+strong{font-weight:600}
+em.term{font-style:normal; font-family:"IBM Plex Mono",monospace; font-size:.86em;
+  background:var(--surface-2); padding:1px 5px; border-radius:2px}
+a{color:var(--accent)}
+
+/* ---------- figures ---------- */
+figure{
+  margin:34px 0 40px; background:var(--surface);
+  border:1px solid var(--hairline); border-radius:3px;
+  padding:26px 26px 20px; box-shadow:var(--shadow);
+}
+figcaption{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; line-height:1.6;
+  color:var(--ink-2); margin-top:16px; padding-top:14px;
+  border-top:1px solid var(--hairline);
+}
+.fig-title{
+  font-family:Oswald,sans-serif; text-transform:uppercase; letter-spacing:.03em;
+  font-size:19px; font-weight:600; margin:0 0 3px; line-height:1.15;
+}
+.fig-sub{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+  color:var(--muted); text-transform:uppercase; margin:0 0 20px;
+}
+.legend{display:flex; flex-wrap:wrap; gap:6px 20px; margin:0 0 18px}
+.legend span{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-2);
+  letter-spacing:.04em;
+}
+.swatch{width:11px; height:11px; border-radius:2px; flex:none}
+.chart-scroll{overflow-x:auto; overflow-y:hidden}
+svg{display:block; max-width:100%}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+svg text.val{paint-order:stroke fill; stroke:var(--surface); stroke-width:3.5px; stroke-linejoin:round}
+.bar{transition:opacity .12s ease}
+.bar:hover{opacity:.75; cursor:default}
+
+/* ---------- tooltip ---------- */
+#tip{
+  position:fixed; pointer-events:none; opacity:0; transition:opacity .1s ease;
+  background:var(--ink); color:var(--page); padding:9px 12px; border-radius:3px;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; line-height:1.55;
+  z-index:60; max-width:280px; box-shadow:0 6px 20px -6px rgba(0,0,0,.5);
+}
+#tip b{font-weight:600; color:var(--page)}
+#tip .tt-n{color:var(--muted)}
+
+/* ---------- tables ---------- */
+.tbl-scroll{overflow-x:auto; margin:26px 0 40px;
+  border:1px solid var(--hairline); border-radius:3px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px; font-variant-numeric:tabular-nums}
+th{
+  text-align:right; padding:11px 14px; font-weight:600; font-size:10.5px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+  border-bottom:1px solid var(--rule); white-space:nowrap; background:var(--surface)
+}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 14px; text-align:right; border-bottom:1px solid var(--hairline);
+  white-space:nowrap; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface-2)}
+td.name{color:var(--ink); font-weight:500}
+.num-pos{color:var(--pos)} .num-neg{color:var(--neg)}
+caption{caption-side:top; text-align:left; padding:16px 14px 4px;
+  font-family:Oswald,sans-serif; text-transform:uppercase; letter-spacing:.03em;
+  font-size:16px; font-weight:600; color:var(--ink)}
+
+/* ---------- callout ---------- */
+.note{
+  border-left:2px solid var(--rule); padding:2px 0 2px 20px; margin:30px 0;
+  color:var(--ink-2); font-size:16px;
+}
+.note .lab{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+ul.clean{margin:0 0 20px; padding-left:22px}
+ul.clean li{margin-bottom:11px}
+footer{
+  margin-top:70px; padding-top:22px; border-top:1px solid var(--hairline);
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted);
+  line-height:1.7;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">NFL head-coaching hires &middot; 1999&ndash;2025 &middot; nflverse box scores</div>
+  <h1>The Coordinator Bump</h1>
+  <p class="dek">The claim: hire an offensive coordinator as your head coach and you win three more games than last year. Across 179 hires, the number is <strong>1.7</strong> &mdash; and almost all of it is the bounce any bad team gets, no matter who it hires.</p>
+  <div class="byline">
+    <span>179 hires &middot; 26 seasons</span>
+    <span>648-season control group</span>
+    <span>Source: nflverse <span style="text-transform:none">games.csv</span></span>
+  </div>
+</header>
+
+<div class="verdict">
+  <h2>Verdict</h2>
+  <p><strong>Not supported as stated.</strong> Offensive coordinators promoted to head coach gained an average of <strong>+1.7 wins</strong> in year one (95% CI +0.7 to +2.6). Three wins sits outside that interval.</p>
+  <p>The bump is also <strong>not an OC thing</strong>. Every hiring lane produced roughly the same year-one gain, because the gain is mostly regression to the mean: teams that fire a coach averaged 5.5 wins, and 5.5-win teams improve by about two wins whether or not they change anything.</p>
+  <p><strong>But there is a real version of the claim.</strong> Since 2017, OC hires have gained <strong>+3.3 wins</strong> in year one and held it through year three, while every other hiring lane went flat. That split is the actual finding here.</p>
+</div>
+
+<div class="tiles">
+  <div class="tile claim">
+    <span class="k">The claim</span><span class="v">+3.0</span>
+    <span class="s">wins, OC hire, year 1</span>
+  </div>
+  <div class="tile">
+    <span class="k">OC hires, all years</span><span class="v">+1.7</span>
+    <span class="s">n=57 &middot; CI +0.7 to +2.6</span>
+  </div>
+  <div class="tile">
+    <span class="k">Every hire, any lane</span><span class="v">+1.5</span>
+    <span class="s">n=179 &middot; the baseline bounce</span>
+  </div>
+  <div class="tile">
+    <span class="k">OC hires since 2017</span><span class="v">+3.3</span>
+    <span class="s">n=23 &middot; the claim, era-limited</span>
+  </div>
+</div>
+
+<section class="measure">
+  <h2 class="sec">What the data is</h2>
+  <p class="kicker">Every opening-week coaching change, 2000&ndash;2025</p>
+  <p>nflverse's schedule file carries the head coach for both teams on every game back to 1999, alongside the score. That yields 861 team-seasons and <strong>181 changes of opening-day head coach</strong>. Two are dropped &mdash; New Orleans in 2012 and 2013, where Sean Payton's season-long suspension put a caretaker in the chair &mdash; leaving <strong>179 hires</strong>.</p>
+  <p>What nflverse does <em class="term">not</em> carry is the job each coach held immediately before. Those 179 prior roles were labeled by hand into five lanes, and the label file ships with the analysis so any call can be checked or overturned.</p>
+</section>
+
+<div class="tbl-scroll">
+<table>
+  <caption>The five hiring lanes</caption>
+  <thead><tr><th>Lane</th><th>Hires</th><th>Prior-yr wins</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td class="name">Offensive coordinator</td><td>57</td><td>5.96</td><td style="text-align:left">Sean McVay, 2017 Rams</td></tr>
+    <tr><td class="name">Defensive coordinator</td><td>52</td><td>5.63</td><td style="text-align:left">Mike Tomlin, 2007 Steelers</td></tr>
+    <tr><td class="name">Previous NFL head coach</td><td>31</td><td>5.10</td><td style="text-align:left">Andy Reid, 2013 Chiefs</td></tr>
+    <tr><td class="name">College</td><td>16</td><td>4.69</td><td style="text-align:left">Jim Harbaugh, 2011 49ers</td></tr>
+    <tr><td class="name">Other &mdash; ST, position, interim</td><td>23</td><td>5.87</td><td style="text-align:left">John Harbaugh, 2008 Ravens</td></tr>
+  </tbody>
+</table>
+</div>
+
+<section class="measure">
+  <h2 class="sec">The raw answer</h2>
+  <p class="kicker">Wins gained versus the season before the hire</p>
+  <p>Taken at face value, every lane looks like a success. That is the first warning sign.</p>
+</section>
+
+<figure>
+  <p class="fig-title">Wins added after a coaching change</p>
+  <p class="fig-sub">Mean change vs. prior season &middot; pace-adjusted to 17 games</p>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--y1)"></i>Year 1</span>
+    <span><i class="swatch" style="background:var(--y2)"></i>Year 2</span>
+    <span><i class="swatch" style="background:var(--y3)"></i>Year 3</span>
+    <span><i class="swatch" style="background:var(--accent)"></i>The +3.0 claim</span>
+  </div>
+  <div class="chart-scroll"><svg id="c1" role="img" aria-label="Bar chart of wins added after a coaching change by prior role and year"></svg></div>
+  <figcaption>Every lane gains. College hires gain the most, offensive coordinators sit mid-pack, and only one lane &mdash; OC in year 1 &mdash; comes anywhere near the +3.0 claim. Because seasons ran 16 games before 2021 and 17 after, changes are scaled to a 17-game pace.</figcaption>
+</figure>
+
+<section class="measure">
+  <p>The problem with that chart is the group it is drawn from. A team that fires its head coach is, by construction, a bad team &mdash; the 179 hiring teams averaged <strong>5.5 wins</strong> the year before. And bad NFL teams get better on their own.</p>
+  <p>Fitting the 648 team-seasons in this window where the coach <em class="term">did not</em> change gives the size of that pull:</p>
+</section>
+
+<div class="note">
+  <span class="lab">Mean-reversion model &middot; n = 648 no-change team-seasons</span>
+  <p style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--ink)">win% <sub>next</sub> = 0.336 + 0.334 &times; win% <sub>prior</sub></p>
+  <p style="margin:10px 0 0; font-size:15px">Two-thirds of a team's distance from .500 evaporates in a single season with no intervention at all. For a 5.5-win team that is a predicted <strong>+1.9 wins</strong> &mdash; before the new coach has called a single play.</p>
+</div>
+
+<section class="measure">
+  <h2 class="sec">Subtracting the bounce</h2>
+  <p class="kicker">What the coach actually adds</p>
+  <p>Scoring each hire against what a team of that exact quality was expected to do anyway leaves the residual &mdash; the part attributable to the change itself. The chart collapses.</p>
+</section>
+
+<figure>
+  <p class="fig-title">Wins added <em style="font-style:italic">above</em> mean-reversion expectation</p>
+  <p class="fig-sub">Residual wins per 17 games &middot; zero = exactly what a team that bad normally does</p>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--y1)"></i>Year 1</span>
+    <span><i class="swatch" style="background:var(--y2)"></i>Year 2</span>
+    <span><i class="swatch" style="background:var(--y3)"></i>Year 3</span>
+  </div>
+  <div class="chart-scroll"><svg id="c2" role="img" aria-label="Bar chart of residual wins above mean-reversion expectation by prior role and year"></svg></div>
+  <figcaption>Nothing clears zero with confidence. Across all 179 hires the year-one residual is <strong>&minus;0.26 wins</strong> &mdash; new head coaches slightly underperform what a comparable team that kept its coach would have done. No lane's 95% interval excludes zero in any of the three years.</figcaption>
+</figure>
+
+<section class="measure">
+  <p>This is the central result. <strong>Averaged over 26 years, the lane a head coach comes from does not predict how much his team improves.</strong> The apparent +1.5 to +2.0 win bump in the raw chart is the regression the team was owed regardless.</p>
+  <p>Two secondary patterns survive the correction, and both cut against the original claim.</p>
+
+  <h3>OC hires front-load; DC hires compound</h3>
+  <p>Offensive coordinators post their best year first (+1.7 wins) and fade to +1.3 by year three. Defensive coordinators start slowest (+1.2) and are still climbing at +2.4. In net points per game &mdash; a less noisy measure than wins &mdash; the year-three gap is <strong>+4.9 for DC hires against +1.5 for OC hires</strong>, the only OC-versus-DC difference in the whole study that reaches significance (p = 0.032), and it points the opposite direction from the claim.</p>
+
+  <h3>Coaches fix the side of the ball they came from</h3>
+  <p>OC hires improve scoring and leave the defense alone. DC hires improve the defense (&minus;2.2 points allowed per game by year two, the largest defensive effect of any lane) while their offense goes backwards. The specialization is real; it just doesn't add up to more wins for one side than the other.</p>
+</section>
+
+<figure>
+  <p class="fig-title">Where the improvement shows up</p>
+  <p class="fig-sub">Change vs. prior season, points per game &middot; both panels: up = better</p>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--y1)"></i>Year 1</span>
+    <span><i class="swatch" style="background:var(--y2)"></i>Year 2</span>
+    <span><i class="swatch" style="background:var(--y3)"></i>Year 3</span>
+  </div>
+  <div class="chart-scroll"><svg id="c3" role="img" aria-label="Two panel bar chart of points scored and points allowed change by prior role and year"></svg></div>
+  <figcaption>Left: points scored per game. Right: points allowed per game, sign-flipped so a taller bar means a better defense. DC hires own the defensive panel; OC hires lead the offensive panel in year one only. College hires move both, but they were handed the worst rosters &mdash; 4.7 wins the prior year &mdash; and have the most room to regress upward.</figcaption>
+</figure>
+
+<section class="measure">
+  <h2 class="sec">Where the claim is true</h2>
+  <p class="kicker">Splitting by era</p>
+  <p>Pooling 26 years hides the one place the number holds up. Split the hires into three eras and the OC lane changes character completely.</p>
+</section>
+
+<figure>
+  <p class="fig-title">Year-one wins added, by era</p>
+  <p class="fig-sub">Pace-adjusted, vs. prior season &middot; OC hires against DC hires</p>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--off)"></i>Offensive coordinator</span>
+    <span><i class="swatch" style="background:var(--def)"></i>Defensive coordinator</span>
+    <span><i class="swatch" style="background:var(--accent)"></i>The +3.0 claim</span>
+  </div>
+  <div class="chart-scroll"><svg id="c4" role="img" aria-label="Bar chart comparing OC and DC year one win gains across three eras"></svg></div>
+  <figcaption>For seventeen years the OC lane was the <em style="font-style:italic">worst</em> place to hire from: +0.4 wins in 2000&ndash;2008, +0.8 in 2009&ndash;2016, both behind DC hires. Then it inverts. Since 2017 OC hires gain +3.3 while DC hires lose 0.2.</figcaption>
+</figure>
+
+<section class="measure">
+  <p>The modern split is not a rounding artifact. Against every other 2017&ndash;2025 hire, the OC group's residual is <strong>+2.4 wins better</strong> (p = 0.003); against pre-2017 OC hires it is <strong>+1.7 better</strong> (p = 0.040). Dropping the single best and single worst case leaves the mean at +3.3. And it holds: <strong>+3.3 in year one, +3.1 in year two, +3.0 in year three.</strong></p>
+  <p>Fourteen of these 23 hires cleared +3 wins outright.</p>
+</section>
+
+<div class="tbl-scroll">
+<table>
+  <caption>OC hires since 2017, year one</caption>
+  <thead><tr>
+    <th>Season</th><th>Team</th><th>Coach</th><th>Prior yr</th><th>Year 1</th>
+    <th>Wins (pace)</th><th>vs. expected</th><th>Net pts/gm</th>
+  </tr></thead>
+  <tbody id="modern-oc"></tbody>
+</table>
+</div>
+
+<section class="measure">
+  <h2 class="sec">Trends worth keeping</h2>
+  <p class="kicker">Six findings</p>
+  <ul class="clean">
+    <li><strong>The bump is real but small, and it is not about the coach.</strong> Median hire gains +1.9 wins; 38% gain nothing or get worse. Only 35% reach the +3 the claim treats as typical.</li>
+    <li><strong>Mean reversion is the dominant force.</strong> Two-thirds of a team's deviation from .500 disappears in one year without any intervention. Any coaching study that skips this control will find effects that are not there.</li>
+    <li><strong>Lane choice historically did not matter &mdash; timing of the payoff did.</strong> OC hires peak in year one; DC hires peak in years two and three and end up ahead on points.</li>
+    <li><strong>The modern OC premium is the genuine signal.</strong> Since 2017 it is large, statistically distinguishable, and stable across three seasons &mdash; the McVay&ndash;Shanahan&ndash;LaFleur generation, plus Daboll, O'Connell, Steichen, Ben Johnson and Liam Coen.</li>
+    <li><strong>Defensive coordinators keep their jobs.</strong> 85% are still the opening head coach in year three, against 67% of OC hires and 47% of college hires &mdash; despite similar win records. Slower, steadier improvement appears to buy patience.</li>
+    <li><strong>College hires are the highest-variance lane.</strong> Best raw gains (+2.6 wins), worst survival, and a residual of roughly zero. They are hired by the worst teams, which flatters the raw numbers.</li>
+  </ul>
+
+  <h2 class="sec">How to read this</h2>
+  <p class="kicker">Method and limits</p>
+  <p><strong>Sample.</strong> All opening-day head-coach changes, 2000&ndash;2025, from nflverse <span style="font-family:'IBM Plex Mono',monospace;font-size:.9em">games.csv</span>. Regular season only. Franchise moves (STL/LA, SD/LAC, OAK/LV) are treated as continuous. Years 2 and 3 measure the <em class="term">team</em>, not the coach, against the pre-hire baseline &mdash; so a fired coach's replacement still counts, which is the right way to score the decision to hire him.</p>
+  <p><strong>The 17-game problem.</strong> Seasons went from 16 to 17 games in 2021, which inflates raw win differences for any hire spanning that line. Every "wins" figure above is win-percentage change scaled to 17 games. Raw counts are in the shipped tables and differ by less than 0.1 wins overall.</p>
+  <p><strong>The labels.</strong> Prior roles were assigned by hand from knowledge, not scraped &mdash; Wikipedia and Pro-Football-Reference are unreachable from this environment. Fifteen hires are flagged ambiguous, mostly assistant-head-coach and interim titles that could sit in two lanes (Sean Payton in 2006, Jim Caldwell in 2009, Dan Campbell in 2021). Dropping all fifteen moves no bucket mean by more than 0.1 wins except "Other," which is small either way.</p>
+  <p><strong>The era split is post-hoc.</strong> The 2017 boundary was chosen after seeing the data, so its p-values are optimistic &mdash; the honest reading is that the modern OC premium is a strong hypothesis with a plausible mechanism (offense-driven rule changes, a generation of play-callers on rookie-contract quarterbacks), not a settled result. It needs the next few hiring cycles to confirm.</p>
+  <p><strong>Not controlled for.</strong> Quarterback change, roster turnover, draft position, schedule strength, and front-office change. A team that hires a new coach and drafts a franchise quarterback in the same offseason credits both to the coach here.</p>
+</section>
+
+<footer>
+  Data: nflverse <span style="text-transform:none">nfldata/games.csv</span>, retrieved August 2026 &middot; 7,548 games, 1999&ndash;2026<br>
+  179 hires analyzed &middot; 648-team-season control group &middot; all intervals are 95% normal-approximation<br>
+  Prior-role labels hand-assigned and shipped as CSV for review
+</footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script>
+const D = {
+  buckets: ["OC","DC","Prev NFL HC","College","Other"],
+  short: {"OC":"Off. coord.","DC":"Def. coord.","Prev NFL HC":"Prev. NFL HC","College":"College","Other":"Other"},
+  labels: {"OC":"Off. coordinator","DC":"Def. coordinator","Prev NFL HC":"Previous NFL HC","College":"College","Other":"Other"},
+  n: {"OC":57,"DC":52,"Prev NFL HC":31,"College":16,"Other":23},
+  raw:   {"OC":[1.69,1.54,1.33],"DC":[1.17,2.41,2.38],"Prev NFL HC":[1.77,2.06,2.77],"College":[2.59,3.01,2.44],"Other":[0.94,0.91,1.37]},
+  rawCI: {"OC":[[0.73,2.65],[0.40,2.67],[0.21,2.46]],"DC":[[0.11,2.24],[1.41,3.41],[1.20,3.56]],
+          "Prev NFL HC":[[0.54,3.01],[0.70,3.43],[1.21,4.33]],"College":[[0.90,4.28],[0.88,5.14],[0.22,4.65]],
+          "Other":[[-0.74,2.61],[-0.78,2.61],[-0.79,3.53]]},
+  resid: {"OC":[0.16,0.06,-0.08],"DC":[-0.60,0.65,0.59],"Prev NFL HC":[-0.37,-0.02,0.69],"College":[0.17,0.59,0.02],"Other":[-0.65,-0.68,-0.21]},
+  pf:    {"OC":[1.53,1.37,1.37],"DC":[0.40,2.08,2.71],"Prev NFL HC":[1.04,2.97,3.54],"College":[3.55,3.52,2.63],"Other":[0.04,1.18,0.59]},
+  pa:    {"OC":[0.43,0.35,0.13],"DC":[1.26,2.22,2.14],"Prev NFL HC":[1.58,0.95,1.23],"College":[2.23,3.40,3.19],"Other":[1.01,-0.04,0.80]},
+  eras: [["2000–2008",0.38,2.29,14,19],["2009–2016",0.80,1.56,20,14],["2017–2025",3.26,-0.22,23,19]],
+  modernOC: [
+    [2025,"JAX","Liam Coen",4,17,13,17,9.00,5.94,14.88],
+    [2017,"LA","Sean McVay",4,16,11,16,7.44,4.55,19.94],
+    [2018,"CHI","Matt Nagy",5,16,12,16,7.44,5.25,12.12],
+    [2019,"GB","Matt LaFleur",6,16,13,16,6.91,5.78,5.44],
+    [2018,"IND","Frank Reich",4,16,10,16,6.38,3.48,14.38],
+    [2025,"CHI","Ben Johnson",5,17,11,17,6.00,3.61,5.06],
+    [2022,"NYG","Brian Daboll",4,17,9,17,5.50,2.44,8.94],
+    [2020,"CLE","Kevin Stefanski",6,16,11,16,5.31,3.84,2.94],
+    [2022,"MIN","Kevin O'Connell",8,17,13,17,5.00,4.61,-0.12],
+    [2023,"IND","Shane Steichen",4,17,9,17,4.50,1.78,7.00],
+    [2017,"LAC","Anthony Lynn",5,16,9,16,4.25,2.07,6.00],
+    [2017,"SF","Kyle Shanahan",2,16,6,16,4.25,-0.06,7.44],
+    [2021,"PHI","Nick Sirianni",4,16,9,17,4.22,1.68,8.72],
+    [2024,"CAR","Dave Canales",2,17,5,17,3.00,-1.39,-0.76],
+    [2021,"ATL","Arthur Smith",4,16,7,17,2.75,-0.14,-7.46],
+    [2018,"NYG","Pat Shurmur",3,16,5,16,2.12,-1.47,6.19],
+    [2025,"NO","Kellen Moore",5,17,6,17,1.00,-1.39,-1.00],
+    [2025,"DAL","Brian Schottenheimer",7,17,7,17,0.50,-0.56,4.59],
+    [2022,"MIA","Mike McDaniel",9,17,9,17,0.00,0.27,1.76],
+    [2019,"CLE","Freddie Kitchens",7,16,6,16,-1.59,-2.01,-1.56],
+    [2022,"DEN","Nathaniel Hackett",7,17,5,17,-2.00,-3.06,-5.00],
+    [2024,"TEN","Brian Callahan",6,17,3,17,-3.00,-4.72,-5.12],
+    [2022,"LV","Josh McDaniels",10,17,6,17,-4.00,-3.06,2.47]
+  ]
+};
+
+const tip = document.getElementById('tip');
+function showTip(e, html){ tip.innerHTML = html; tip.style.opacity = 1; moveTip(e); }
+function moveTip(e){
+  const p = 14, r = tip.getBoundingClientRect();
+  let x = e.clientX + p, y = e.clientY + p;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - p;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - p;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip(){ tip.style.opacity = 0; }
+
+const NS = 'http://www.w3.org/2000/svg';
+const el = (n, a = {}) => { const x = document.createElementNS(NS, n);
+  for (const k in a) x.setAttribute(k, a[k]); return x; };
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const sgn = v => (v > 0 ? '+' : '') + v.toFixed(2);
+
+/* Grouped horizontal bars: rows = buckets, 3 bars per row (Y1/Y2/Y3) */
+function groupedBars(svg, opts){
+  const { rows, series, colors, domain, width, rowH = 62, barH = 13, gap = 4,
+          labelW = 132, padR = 26, refLine = null, tipFn, fmt = sgn } = opts;
+  const padT = 26, padB = 34;
+  const H = padT + rows.length * rowH + padB;
+  const plotW = width - labelW - padR;
+  svg.setAttribute('viewBox', `0 0 ${width} ${H}`);
+  svg.setAttribute('width', width); svg.setAttribute('height', H);
+  svg.textContent = '';
+  const [d0, d1] = domain;
+  const x = v => labelW + (v - d0) / (d1 - d0) * plotW;
+
+  // gridlines
+  const step = (d1 - d0) > 8 ? 2 : 1;
+  for (let t = Math.ceil(d0 / step) * step; t <= d1 + 1e-9; t += step){
+    const isZero = Math.abs(t) < 1e-9;
+    svg.appendChild(el('line', { x1: x(t), x2: x(t), y1: padT - 8, y2: H - padB + 4,
+      stroke: isZero ? cssv('--rule') : cssv('--hairline'),
+      'stroke-width': isZero ? 1.5 : 1 }));
+    const tx = el('text', { x: x(t), y: H - padB + 20, 'text-anchor': 'middle',
+      'font-size': 10.5, fill: cssv('--muted') });
+    tx.textContent = (t > 0 ? '+' : '') + t;
+    svg.appendChild(tx);
+  }
+  if (refLine !== null){
+    svg.appendChild(el('line', { x1: x(refLine), x2: x(refLine), y1: padT - 12, y2: H - padB + 4,
+      stroke: cssv('--accent'), 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
+  }
+
+  rows.forEach((row, i) => {
+    const y0 = padT + i * rowH;
+    const lab = el('text', { x: labelW - 14, y: y0 + rowH / 2 - 3, 'text-anchor': 'end',
+      'font-size': 12, fill: cssv('--ink'), 'font-weight': 500 });
+    lab.textContent = row.label; svg.appendChild(lab);
+    if (row.sub){
+      const s = el('text', { x: labelW - 14, y: y0 + rowH / 2 + 12, 'text-anchor': 'end',
+        'font-size': 10, fill: cssv('--muted') });
+      s.textContent = row.sub; svg.appendChild(s);
+    }
+    const totalH = series.length * barH + (series.length - 1) * gap;
+    series.forEach((s, j) => {
+      const v = row.values[j];
+      if (v === undefined || v === null) return;
+      const by = y0 + (rowH - totalH) / 2 + j * (barH + gap);
+      const xa = x(Math.min(0, v)), xb = x(Math.max(0, v));
+      const w = Math.max(Math.abs(xb - xa), 1.5);
+      const r = el('rect', { x: xa, y: by, width: w, height: barH,
+        rx: 3, fill: colors[j], class: 'bar' });
+      r.addEventListener('mouseenter', e => showTip(e, tipFn(row, s, v, j)));
+      r.addEventListener('mousemove', moveTip);
+      r.addEventListener('mouseleave', hideTip);
+      svg.appendChild(r);
+      const t = el('text', { x: v >= 0 ? xb + 7 : xa - 7, y: by + barH - 2.5,
+        'text-anchor': v >= 0 ? 'start' : 'end', 'font-size': 10.5, class: 'val',
+        fill: cssv('--ink-2'), 'font-weight': 500 });
+      t.textContent = fmt(v); svg.appendChild(t);
+    });
+  });
+}
+
+const YEARS = ['Year 1','Year 2','Year 3'];
+const yc = () => [cssv('--y1'), cssv('--y2'), cssv('--y3')];
+
+function drawAll(){
+  const W = Math.max(560, Math.min(1000, (document.querySelector('.wrap').clientWidth - 56)));
+
+  // C1 - raw wins
+  groupedBars(document.getElementById('c1'), {
+    width: W, domain: [-1, 5], refLine: 3, colors: yc(), series: YEARS,
+    rows: D.buckets.map(b => ({ label: D.labels[b], sub: 'n = ' + D.n[b], values: D.raw[b], key: b })),
+    tipFn: (row, s, v, j) => {
+      const ci = D.rawCI[row.key][j];
+      return `<b>${row.label} &middot; ${s}</b><br>${sgn(v)} wins vs. prior season<br>
+        <span class="tt-n">95% CI ${sgn(ci[0])} to ${sgn(ci[1])} &middot; n=${D.n[row.key]}</span>`;
+    }
+  });
+
+  // C2 - residual
+  groupedBars(document.getElementById('c2'), {
+    width: W, domain: [-2, 2], colors: yc(), series: YEARS,
+    rows: D.buckets.map(b => ({ label: D.labels[b], sub: 'n = ' + D.n[b], values: D.resid[b], key: b })),
+    tipFn: (row, s, v, j) =>
+      `<b>${row.label} &middot; ${s}</b><br>${sgn(v)} wins vs. expectation<br>
+       <span class="tt-n">raw change was ${sgn(D.raw[row.key][j])}</span>`
+  });
+
+  // C3 - two panels: PF and defensive improvement
+  const svg3 = document.getElementById('c3');
+  const panelW = Math.floor((W - 20) / 2);
+  const rowH = 62, padT = 46, padB = 34, labelW = 124, padR = 18;
+  const H = padT + D.buckets.length * rowH + padB;
+  svg3.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg3.setAttribute('width', W); svg3.setAttribute('height', H);
+  svg3.textContent = '';
+  [['pf', 'Points scored / gm', 0], ['pa', 'Defense: fewer allowed / gm', panelW + 20]].forEach(([key, title, ox]) => {
+    const g = el('g', { transform: `translate(${ox},0)` });
+    const plotW = panelW - labelW - padR;
+    const d0 = -1, d1 = 4;
+    const x = v => labelW + (v - d0) / (d1 - d0) * plotW;
+    const ht = el('text', { x: labelW, y: 16, 'font-size': 11, fill: cssv('--ink'),
+      'font-weight': 600, 'letter-spacing': '.05em' });
+    ht.textContent = title.toUpperCase(); g.appendChild(ht);
+    for (let t = d0; t <= d1; t++){
+      const z = t === 0;
+      g.appendChild(el('line', { x1: x(t), x2: x(t), y1: padT - 10, y2: H - padB + 4,
+        stroke: z ? cssv('--rule') : cssv('--hairline'), 'stroke-width': z ? 1.5 : 1 }));
+      const tx = el('text', { x: x(t), y: H - padB + 20, 'text-anchor': 'middle',
+        'font-size': 10.5, fill: cssv('--muted') });
+      tx.textContent = (t > 0 ? '+' : '') + t; g.appendChild(tx);
+    }
+    D.buckets.forEach((b, i) => {
+      const y0 = padT + i * rowH;
+      if (ox === 0){
+        const lab = el('text', { x: labelW - 12, y: y0 + rowH / 2 + 2, 'text-anchor': 'end',
+          'font-size': 11.5, fill: cssv('--ink'), 'font-weight': 500 });
+        lab.textContent = D.short[b]; g.appendChild(lab);
+      }
+      const cols = yc(), barH = 13, gap = 4;
+      const totalH = 3 * barH + 2 * gap;
+      D[key][b].forEach((v, j) => {
+        const by = y0 + (rowH - totalH) / 2 + j * (barH + gap);
+        const xa = x(Math.min(0, v)), xb = x(Math.max(0, v));
+        const r = el('rect', { x: xa, y: by, width: Math.max(Math.abs(xb - xa), 1.5),
+          height: barH, rx: 3, fill: cols[j], class: 'bar' });
+        const what = key === 'pf' ? 'points scored' : 'points allowed';
+        const dir = key === 'pf' ? (v >= 0 ? 'more' : 'fewer') : (v >= 0 ? 'fewer' : 'more');
+        r.addEventListener('mouseenter', e => showTip(e,
+          `<b>${D.labels[b]} &middot; ${YEARS[j]}</b><br>${Math.abs(v).toFixed(2)} ${dir} ${what} per game<br>
+           <span class="tt-n">vs. the season before the hire</span>`));
+        r.addEventListener('mousemove', moveTip);
+        r.addEventListener('mouseleave', hideTip);
+        g.appendChild(r);
+        const t = el('text', { x: v >= 0 ? xb + 6 : xa - 6, y: by + barH - 2.5,
+          'text-anchor': v >= 0 ? 'start' : 'end', 'font-size': 10, class: 'val',
+          fill: cssv('--ink-2') });
+        t.textContent = sgn(v); g.appendChild(t);
+      });
+    });
+    svg3.appendChild(g);
+  });
+
+  // C4 - era
+  groupedBars(document.getElementById('c4'), {
+    width: W, domain: [-1, 4], refLine: 3, rowH: 74, barH: 17, gap: 6, labelW: 118,
+    colors: [cssv('--off'), cssv('--def')], series: ['Offensive coordinator','Defensive coordinator'],
+    rows: D.eras.map(e => ({ label: e[0], sub: `OC n=${e[3]} · DC n=${e[4]}`, values: [e[1], e[2]] })),
+    tipFn: (row, s, v) => `<b>${row.label} &middot; ${s}</b><br>${sgn(v)} wins in year 1<br>
+      <span class="tt-n">${row.sub}</span>`
+  });
+}
+
+// modern OC table
+const tb = document.getElementById('modern-oc');
+D.modernOC.forEach(r => {
+  const [se, tm, co, w0, g0, w1, g1, pace, resid, dnet] = r;
+  const cls = v => v > 0 ? 'num-pos' : (v < 0 ? 'num-neg' : '');
+  tb.insertAdjacentHTML('beforeend',
+    `<tr><td>${se}</td><td>${tm}</td><td class="name">${co}</td>
+     <td>${w0}–${g0 - w0}</td><td>${w1}–${g1 - w1}</td>
+     <td class="${cls(pace)}">${sgn(pace)}</td>
+     <td class="${cls(resid)}">${sgn(resid)}</td>
+     <td class="${cls(dnet)}">${sgn(dnet)}</td></tr>`);
+});
+
+drawAll();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 150); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawAll);
+new MutationObserver(drawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+</script>

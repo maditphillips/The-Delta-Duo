@@ -45,3 +45,7 @@ next-env.d.ts
 /.open-next/
 cloudflare-env.d.ts
 .wrangler/
+
+# analysis working files
+analysis/**/games.csv
+analysis/**/*.json
