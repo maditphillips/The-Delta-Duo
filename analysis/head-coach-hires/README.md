@@ -22,6 +22,7 @@ python3 analyze.py         # all tables to stdout
 python3 detail.py          # per-hire detail, distribution, outliers
 python3 era.py             # era splits
 python3 export.py          # -> report_data.json    (figures used by report.html)
+python3 trace_back.py      # audits the hand labels against games.csv itself
 ```
 
 Standard library only — no pandas, no R.
@@ -65,6 +66,43 @@ errors — corrections are welcome and rerunning is cheap.
 
 `analyze.py` reports a sensitivity pass with all 15 ambiguous hires dropped; no bucket
 mean moves more than 0.1 wins except "Other".
+
+## What can be traced instead of asserted
+
+`away_coach`/`home_coach` in `games.csv` is the **only** staff field in the entire
+nflverse — the string `coordinator` does not appear anywhere in `nflreadr` or
+`nfldata`, and none of nflreadr's 21 datasets carries assistant staff. So the OC/DC
+distinction cannot be traced; it has to come from outside.
+
+But every coach's NFL *head*-coaching record from 1999 on is right there in that
+column, which settles two of the hand-labeled columns without judgment.
+`trace_back.py` derives them and audits the hand labels against the result:
+
+| | |
+|---|---|
+| `prior_nfl_hc` | **162 / 179 machine-confirmed** |
+| `internal_promo` | derived outright for all 179 |
+| OC / DC / college / ST | 0 / 179 — nothing to trace |
+
+All 17 disagreements resolve, none of them silently:
+
+- **6 are trace-blind.** Their only head-coaching job ended before 1999, so `games.csv`
+  cannot see it (Belichick's Browns, Gibbs' first Washington run, Schottenheimer's
+  Chiefs, Wannstedt's Bears, Shell's Raiders, Erickson's Seahawks). The hand label
+  stands.
+- **11 are definitional.** The prior stint was an interim/caretaker run. These labels
+  answer *what job was he hired from*, and a caretaker run is not a lane you get
+  hired out of, so they are deliberately not counted as retreads. Counting them the
+  other way moves the first-time-vs-retread residual from −0.14/−0.49 to −0.14/−0.46
+  — the finding (no difference) is unchanged either way.
+
+### One trap worth knowing
+
+`games.csv` stores **Jim Mora Sr.** (Colts, 1999–2001) and **Jim Mora Jr.** (Falcons
+2004–06, Seahawks 2009) under the identical string `Jim Mora`. Any name-keyed trace
+will call the 2004 Falcons hire a retread; it was not. Every other 5+ season gap in
+the file was checked and is a genuine same-person hiatus. `trace_back.py` carries the
+exception explicitly in `ALIASED`.
 
 ## Caveats
 
