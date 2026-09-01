@@ -45,3 +45,9 @@ next-env.d.ts
 /.open-next/
 cloudflare-env.d.ts
 .wrangler/
+
+# analysis working data
+analysis/consistency-study/pbp/
+analysis/consistency-study/stats/
+analysis/consistency-study/misc/
+analysis/consistency-study/*.parquet
