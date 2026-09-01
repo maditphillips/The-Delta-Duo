@@ -1,9 +1,11 @@
 -- The Delta Duo — rankings storage.
 -- Run this in the Supabase SQL editor (or `supabase db push`).
+-- Uploaded sets override the baked-in boards on the site; each upload creates
+-- a new set per format so history is preserved.
 
 create table if not exists public.ranking_sets (
   id uuid primary key default gen_random_uuid(),
-  scope text not null check (scope in ('overall', 'qb', 'rb', 'wr')),
+  scope text not null check (scope in ('ppr', 'halfppr', 'superflex')),
   filename text,
   created_at timestamptz not null default now()
 );
@@ -13,8 +15,11 @@ create table if not exists public.rankings (
   set_id uuid not null references public.ranking_sets (id) on delete cascade,
   rank int not null,
   player text not null,
+  pos text,
+  pos_rank text,
   team text,
-  position text,
+  bye int,
+  tier text,
   note text
 );
 

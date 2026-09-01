@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { SCOPES, type RankingRow, type Scope } from "@/lib/rankings";
+import { FORMATS, type Format, type RankingRow } from "@/lib/rankings";
 
-// Rankings API.
-// GET  /api/rankings?scope=qb   → the latest ranking set for that scope
-// POST /api/rankings            → upload a new set. Requires the x-upload-key
-//                                 header to match RANKINGS_UPLOAD_KEY. Writes
-//                                 go through the Supabase service role, which
-//                                 never reaches the browser.
+// Rankings API — Supabase-backed overrides for the baked-in boards.
+// GET  /api/rankings?format=ppr  → the latest uploaded ranking set for that
+//                                  format, or { set: null } if none uploaded
+//                                  (the page then falls back to the baked JSON)
+// POST /api/rankings             → upload a new set. Requires the x-upload-key
+//                                  header to match RANKINGS_UPLOAD_KEY. Writes
+//                                  go through the Supabase service role, which
+//                                  never reaches the browser.
 
 function supabaseServer() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,27 +18,27 @@ function supabaseServer() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
-function badScope(scope: string | null): scope is null {
-  return !scope || !SCOPES.includes(scope as Scope);
+function badFormat(format: string | null): format is null {
+  return !format || !FORMATS.includes(format as Format);
 }
 
 export async function GET(req: NextRequest) {
-  const scope = req.nextUrl.searchParams.get("scope");
-  if (badScope(scope)) {
-    return NextResponse.json({ error: "scope must be one of overall|qb|rb|wr" }, { status: 400 });
+  const format = req.nextUrl.searchParams.get("format") ?? req.nextUrl.searchParams.get("scope");
+  if (badFormat(format)) {
+    return NextResponse.json({ error: "format must be one of ppr|halfppr|superflex" }, { status: 400 });
   }
   const supabase = supabaseServer();
   if (!supabase) {
     return NextResponse.json(
-      { error: "supabase_not_configured", hint: "Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY." },
-      { status: 503 }
+      { set: null, unconfigured: true, hint: "Supabase not configured — serving the baked-in board." },
+      { status: 200 }
     );
   }
 
   const { data: set, error: setError } = await supabase
     .from("ranking_sets")
     .select("id, scope, filename, created_at")
-    .eq("scope", scope)
+    .eq("scope", format)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -46,12 +48,28 @@ export async function GET(req: NextRequest) {
 
   const { data: rows, error: rowsError } = await supabase
     .from("rankings")
-    .select("rank, player, team, position, note")
+    .select("rank, player, pos, pos_rank, team, bye, tier, note")
     .eq("set_id", set.id)
     .order("rank", { ascending: true });
 
   if (rowsError) return NextResponse.json({ error: rowsError.message }, { status: 500 });
-  return NextResponse.json({ set: { ...set, rows: rows ?? [] } });
+  return NextResponse.json({
+    set: {
+      format,
+      filename: set.filename,
+      updated: set.created_at,
+      rows: (rows ?? []).map((r) => ({
+        rank: r.rank,
+        player: r.player,
+        pos: r.pos,
+        posRank: r.pos_rank,
+        team: r.team,
+        bye: r.bye,
+        tier: r.tier,
+        note: r.note,
+      })),
+    },
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -74,16 +92,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: { scope?: string; filename?: string; rows?: RankingRow[] };
+  let body: { format?: string; scope?: string; filename?: string; rows?: RankingRow[] };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "invalid JSON body" }, { status: 400 });
   }
 
-  const scope = body.scope ?? null;
-  if (badScope(scope)) {
-    return NextResponse.json({ error: "scope must be one of overall|qb|rb|wr" }, { status: 400 });
+  const format = body.format ?? body.scope ?? null;
+  if (badFormat(format)) {
+    return NextResponse.json({ error: "format must be one of ppr|halfppr|superflex" }, { status: 400 });
   }
   const rows = (body.rows ?? []).filter((r) => r && typeof r.player === "string" && Number.isFinite(r.rank));
   if (rows.length === 0) {
@@ -95,7 +113,7 @@ export async function POST(req: NextRequest) {
 
   const { data: set, error: setError } = await supabase
     .from("ranking_sets")
-    .insert({ scope, filename: body.filename ?? null })
+    .insert({ scope: format, filename: body.filename ?? null })
     .select("id, created_at")
     .single();
 
@@ -108,8 +126,11 @@ export async function POST(req: NextRequest) {
       set_id: set.id,
       rank: r.rank,
       player: r.player.slice(0, 120),
+      pos: r.pos?.slice(0, 10) ?? null,
+      pos_rank: r.posRank?.slice(0, 10) ?? null,
       team: r.team?.slice(0, 20) ?? null,
-      position: r.position?.slice(0, 20) ?? null,
+      bye: r.bye ?? null,
+      tier: r.tier?.slice(0, 40) ?? null,
       note: r.note?.slice(0, 500) ?? null,
     }))
   );

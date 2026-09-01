@@ -8,7 +8,6 @@ import {
   volumeBands,
   volumeOf,
   type ExplorerPanel,
-  type ExplorerRow,
 } from "@/lib/explorer";
 
 type Pos = ExplorerPanel["pos"];
