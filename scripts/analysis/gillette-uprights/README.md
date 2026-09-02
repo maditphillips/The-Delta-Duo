@@ -154,3 +154,38 @@ Two things differ from the single-venue scripts above, both deliberate:
 
 The tab itself is `src/app/stadiums/page.tsx` +
 `src/components/dashboards/StadiumDashboard.tsx`.
+
+## Part five: lateral miss RATE, per attempt
+
+`lateral.py` -> `LATERAL.txt`. The earlier miss-geometry test (section 7 of
+`analyze.py`) conditioned on having missed, which answers "what kind of miss was
+it" but hides the per-attempt rate. This one classifies **every attempt**, so
+"lateral miss rate" means wide misses divided by kicks taken.
+
+| Group | Attempts | Wide | Short | Upright/crossbar | Any miss |
+|---|---|---|---|---|---|
+| Gillette — visitors | 363 | **14.88%** | 1.93% | 3.86% | 20.66% |
+| Gillette — Patriots | 431 | **11.37%** | 0.23% | 1.39% | 12.99% |
+| Elsewhere — visitors | 11,575 | 11.80% | 1.42% | 1.79% | 15.26% |
+| Elsewhere — home | 11,938 | 11.23% | 1.19% | 1.71% | 14.37% |
+
+The rates are **not** equal: visiting kickers miss wide 3.51 pp more often than
+New England does in the same building (Fisher p = 0.168). Distance-adjusted, the
+visitor lateral rate is +3.71 pp above expectation (z = +2.33, **p = 0.020**) —
+the single most supportive number for the video-board claim anywhere in this
+project. Three things cut against reading it that way:
+
+1. **New England is elevated too.** Distance-adjusted, the Patriots' own lateral
+   rate at Gillette runs +1.87 pp above expectation (p = 0.169). A board shown
+   only on opposing kicks cannot lift the home team's lateral misses.
+2. **The excess is not disproportionately lateral.** As a multiple of the
+   visiting-kicker baseline elsewhere: wide 1.26x, short 1.36x,
+   upright/crossbar 2.16x, **all misses 1.35x**. Wide misses are elevated *less*
+   than misses in general. A lateral mechanism requires the opposite.
+3. **No side bias, and the two teams lean opposite ways.** Visitors 32L/22R
+   (p = 0.22), Patriots 22L/27R (p = 0.57). A fixed offset would push everyone
+   the same direction.
+
+Note the power limit: at 363 vs 431 attempts, a +3.5 pp lateral gap carries only
+about 25% power. This test cannot rule out a modest real effect — it can only
+say the data do not require one.
