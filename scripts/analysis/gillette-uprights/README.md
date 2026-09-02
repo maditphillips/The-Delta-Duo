@@ -97,3 +97,34 @@ because neither has anything to do with uprights, video boards, or aiming.
    exactly like a normal home team. This is selection, not deception, and it
    explains part of why New England's raw 87% looks good — but the distance
    controls mean it does not manufacture the visitor penalty.
+
+## Part three: any venue
+
+`venue_profile.py <stadium_id>` runs the whole battery against any stadium,
+refitting the expected-make baseline each time to exclude the target venue.
+
+```bash
+python3 venue_profile.py NYC01   # MetLife      -> METLIFE.txt
+python3 venue_profile.py BOS00   # Gillette     -> GILLETTE_PROFILE.txt
+python3 venue_profile.py NYC00   # Giants Stadium
+```
+
+### MetLife (2010-2025): the reputation does not survive contact
+
+MetLife is widely called one of the hardest places in the league to kick. Over
+16 seasons and 550 visiting-kicker attempts it is the most precisely average
+venue in the dataset: **86.55% actual against 86.54% expected**, z = +0.01,
+19th of 29. Its home-minus-visitor gap is *negative* (−1.9%, 24th of 29) — the
+resident teams kick slightly worse there than their visitors do, and Giants
+kickers are 2.7 pp below expectation at home against +0.6 pp everywhere else.
+
+Ball flight is mildly suppressed (punts −0.25 yds, 15th of 38; kickoff distance
+8th) but visiting kickers there are *less* wind-sensitive than the league, not
+more: −0.6% in 15+ mph games against −3.6% league-wide. The home teams show no
+sign of local knowledge either — 18.8% of 50+ yard 4th-down chances kicked,
+against a league home rate of 18.3% (p = 0.92).
+
+The reputation appears to be inherited from the building it replaced. **Giants
+Stadium (2002-09), on the same site, was genuinely hard**: visitors −2.2% vs
+expectation (7th of 29) and punt distance −1.73 yds, the worst of all 38 venues
+in the dataset. MetLife opened in 2010 and the effect largely went away.

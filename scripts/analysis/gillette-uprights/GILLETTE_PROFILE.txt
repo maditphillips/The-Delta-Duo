@@ -1,0 +1,102 @@
+VENUE PROFILE: Gillette Stadium (BOS00), 2002-2025, resident team(s) ['NE']
+
+==================================================================================
+1. HEADLINE
+==================================================================================
+  Visiting kickers                         n=  363  act 79.34%  exp 85.81%  diff -6.48%  z=-3.75  p=0.000
+  Home kickers                             n=  431  act 87.01%  exp 88.10%  diff -1.10%  z=-0.75  p=0.455
+    NE kickers here                        n=  431  act 87.01%  exp 88.10%  diff -1.10%  z=-0.75  p=0.455
+    NE kickers everywhere else             n=  416  act 86.30%  exp 86.20%  diff +0.10%  z=+0.06  p=0.950
+
+==================================================================================
+2. RANK AMONG VENUES (2002-2025, >=200 visiting-kicker FGs)
+==================================================================================
+  hardest venues for VISITING kickers:
+    1. Gillette Stadium         outdoors  n= 363  -6.5%  z=-3.75   <<<< THIS VENUE
+    2. Soldier Field            outdoors  n= 355  -4.1%  z=-2.45
+    3. Cleveland Browns Stadi   outdoors  n= 356  -4.0%  z=-2.22
+    4. Oakland-Alameda County   outdoors  n= 278  -3.7%  z=-1.85
+    5. Lambeau Field            outdoors  n= 343  -3.0%  z=-1.67
+    6. Commanders Field         outdoors  n= 371  -2.5%  z=-1.44
+    7. Giants Stadium           outdoors  n= 230  -2.4%  z=-1.06
+    8. Lumen Field              outdoors  n= 394  -2.0%  z=-1.21
+       ...
+
+  visiting-kicker penalty: rank 1 of 29   (-6.5%, z=-3.75)
+  home-minus-visitor gap:  rank 2 of 29   (+5.4%, z=+2.37)
+  Bonferroni across 29 venues: p=0.005  SURVIVES
+
+==================================================================================
+3. DIRECTION OF PLAY (ends flip each quarter)
+==================================================================================
+  group                                                Q1+Q3               Q2+Q4   split
+  Visitors here                           -2.7% (n= 158)    -9.3% (n= 205)  -6.6%
+  Home kickers here                       -1.7% (n= 152)    -0.8% (n= 279)  +0.9%
+  Visitors, all other stadiums            -0.3% (n=4309)    -0.3% (n=7266)  +0.0%
+
+==================================================================================
+4. PUNTS - pure ball-flight probe
+==================================================================================
+    1. Giants Stadium           outdoors  n= 1178  -1.78 yds vs exp
+    2. Soldier Field            outdoors  n= 1816  -1.50 yds vs exp
+    3. Acrisure Stadium         outdoors  n= 1883  -1.14 yds vs exp
+    4. Lincoln Financial Fiel   outdoors  n= 1830  -1.11 yds vs exp
+    5. Lambeau Field            outdoors  n= 1717  -1.07 yds vs exp
+    6. Highmark Stadium         outdoors  n= 1723  -0.98 yds vs exp
+    7. Gillette Stadium         outdoors  n= 1858  -0.93 yds vs exp   <<<< THIS VENUE
+
+  punt rank: 7 of 38 (1 = shortest punts)
+  here, Q1+Q3: n=  902  -0.56 yds  (p=0.029)
+  here, Q2+Q4: n=  956  -1.29 yds  (p=0.000)
+
+==================================================================================
+5. KICKOFF TOUCHBACK RATE (2011-2023, fixed 35-yd tee)
+==================================================================================
+    1. Lambeau Field            outdoors  n= 1154  TB 42.3%
+    2. Soldier Field            outdoors  n= 1030  TB 43.5%
+    3. Qualcomm Stadium         outdoors  n=  485  TB 45.2%
+    4. Acrisure Stadium         outdoors  n= 1125  TB 46.4%
+    5. MetLife Stadium          outdoors  n= 2154  TB 47.3%
+       ...
+   12. Gillette Stadium         outdoors  n= 1254  TB 51.4%   <<<< THIS VENUE
+
+  touchback rank: 12 of 35 (1 = ball carrying least)
+
+==================================================================================
+6. WIND SENSITIVITY (visiting kickers)
+==================================================================================
+  0-5 mph    here  -8.2% (n=103)    other outdoor  -0.2% (n= 2430)
+  6-9 mph    here  -3.8% (n=128)    other outdoor  -0.3% (n= 2764)
+  10-14 mph  here  -7.0% (n= 82)    other outdoor  -1.9% (n= 1784)
+  15+ mph    here -13.7% (n= 39)    other outdoor  -3.1% (n= 1012)
+
+  wind x venue interaction: +0.0312 per mph (p=0.122); league wind effect -0.0221/mph
+
+==================================================================================
+7. HOW THEY MISS
+==================================================================================
+  Visitors here            n=  75  wide-only  72.0%  short-involved   9.3%  |  wide: 59.3%L / 40.7%R
+  Home kickers here        n=  56  wide-only  87.5%  short-involved   1.8%  |  wide: 44.9%L / 55.1%R
+  Visitors elsewhere       n=1736  wide-only  78.7%  short-involved   9.4%  |  wide: 48.9%L / 51.1%R
+
+==================================================================================
+8. 4th-DOWN DECISIONS: does the home team decline kicks here?
+==================================================================================
+  Home team here, 50+ available              n=  116  kicked   6.9%
+  Visitors here                              n=  162  kicked  16.7%
+    NE on the road                           n=  150  kicked  14.7%
+  All home teams, other stadiums             n= 4100  kicked  18.7%
+
+  home-here vs home-elsewhere: Fisher p=0.0006
+
+==================================================================================
+9. SEASON BY SEASON (visiting kickers)
+==================================================================================
+  2002:-22(14)  2003:-13(19)  2004:-8(10)  2005:-6(18)  2006:-1(18)  2007:+1(11)  2008:+0(13)  2009:+4(7)  2010:-13(14)  2011:-6(12)  2012:-2(15)  2013:-6(16)  2014:-4(19)  2015:-8(16)  2016:+0(20)  2017:-5(17)  2018:-6(15)  2019:+6(13)  2020:+0(16)  2021:-22(17)  2022:-11(12)  2023:-5(21)  2024:-10(19)  2025:-13(11)
+  seasons below expectation: 18 of 24
+
+==================================================================================
+10. SAME SITE, DIFFERENT BUILDING: Giants Stadium (2002-09) vs MetLife (2010-25)
+==================================================================================
+  Giants Stadium 2002-09     visitors  81.7% (-2.4% vs exp, n=230)   home -1.7%   punts -1.78 yds (n=1178)
+  MetLife 2010-25            visitors  86.5% (-0.1% vs exp, n=550)   home -1.9%   punts -0.26 yds (n=2473)   TB 47.3%
