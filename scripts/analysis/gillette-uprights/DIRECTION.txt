@@ -1,0 +1,62 @@
+
+================================================================================
+CONTROL: is Q2+Q4 harder EVERYWHERE, or only for visitors at Gillette?
+================================================================================
+group                                                    Q1+Q3                 Q2+Q4   split
+Visitors at GILLETTE                      -2.7% (n= 158)      -9.5% (n= 203)    -6.7%
+Patriots at GILLETTE                      -1.7% (n= 152)      -1.0% (n= 274)    +0.7%
+Visitors, all other stadiums              -0.3% (n=4309)      -0.2% (n=7106)    +0.1%
+Home teams, all other stadiums            +0.4% (n=4400)      +0.3% (n=7350)    -0.1%
+Visitors, other cold outdoor (CHI/GB/BUF/CLE/PIT/NYJ/NYG/WAS)  -2.0% (n=1082)      -2.1% (n=1802)    -0.1%
+
+================================================================================
+FORMAL: Gillette x visitor x quarter-parity, clustered by game
+================================================================================
+  G                beta=-0.211  se=0.254  p=0.406
+  V                beta=-0.068  se=0.066  p=0.306
+  G:V              beta=-0.005  se=0.342  p=0.989
+  P24              beta=-0.011  se=0.059  p=0.858
+  G:P24            beta=+0.076  se=0.299  p=0.799
+  V:P24            beta=+0.022  se=0.084  p=0.797
+  G:V:P24          beta=-0.554  se=0.413  p=0.179
+
+  TOTAL visitor-at-Gillette-in-Q2+Q4 effect: beta=-0.694 se=0.170 p=0.0000
+  TOTAL visitor-at-Gillette-in-Q1+Q3 effect: beta=-0.216 se=0.234 p=0.3563
+
+================================================================================
+QUARTER BY QUARTER, visitors at Gillette
+================================================================================
+  Q1  n= 85  act  80.0%  vs exp  -6.2%  z=-1.77
+  Q2  n=119  act  73.9%  vs exp -11.0%  z=-3.58
+  Q3  n= 73  act  87.7%  vs exp  +1.3%  z=+0.35
+  Q4  n= 84  act  78.6%  vs exp  -7.4%  z=-2.05
+
+================================================================================
+IS IT CLOCK PRESSURE? attempt profiles at Gillette by parity
+================================================================================
+  Visitors  Q1+Q3  n=158  mean dist 37.0  share 40+ 45%  mean secs left in half 2235
+  Visitors  Q2+Q4  n=203  mean dist 37.8  share 40+ 45%  mean secs left in half 1428
+  Patriots  Q1+Q3  n=152  mean dist 35.3  share 40+ 36%  mean secs left in half 2079
+  Patriots  Q2+Q4  n=274  mean dist 35.2  share 40+ 34%  mean secs left in half 1456
+
+================================================================================
+DOES THE PARITY SPLIT HOLD ACROSS ERAS? (visitors at Gillette)
+================================================================================
+  2002-09              Q1+Q3  +2.6% (n= 42)   Q2+Q4 -12.7% (n= 67)   split -15.3%
+  2010-22              Q1+Q3  -6.7% (n= 93)   Q2+Q4  -5.2% (n=109)   split +1.5%
+  2023-25 new board    Q1+Q3  +3.4% (n= 23)   Q2+Q4 -19.1% (n= 27)   split -22.4%
+
+================================================================================
+SURFACE: the two later grass years
+================================================================================
+  grass 2002-05      n= 61  act  70.5%  vs exp -12.5%  z=-2.73
+  grass 2019-20      n= 29  act  89.7%  vs exp  +2.7%  z=+0.46
+  fieldturf years    n=271  act  80.1%  vs exp  -6.2%  z=-3.15
+
+================================================================================
+SAME-GAME PAIRED TEST: both kickers, same day, same weather
+================================================================================
+  152 Gillette games where both teams attempted a FG
+  mean(NE over/under) - mean(visitor over/under) = +8.0%
+  paired t-test p=0.0189
+  NE beat the visitor in 80 games, lost in 72, tied 0

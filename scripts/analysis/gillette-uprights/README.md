@@ -52,3 +52,48 @@ video board is the cause, the data should carry its fingerprint:
 - Win impact: 7 New England home wins over 24 seasons where a visiting make
   would have tied or flipped it, times the 31% of misses that are "excess" —
   about 2 games, roughly 0.1 wins a season.
+
+## Part two: why is Gillette actually hard to kick at?
+
+`fetch_punts.py` and `fetch_fourth.py` pull two more slices of nflverse — punts
+and kickoffs (57,813 punts, 1,869 at Gillette) and every 4th-down play — chosen
+because neither has anything to do with uprights, video boards, or aiming.
+
+| Script | Output | What it tests |
+|---|---|---|
+| `why_hard.py` | `WHY_HARD.txt` | punt gross distance and kickoff touchbacks by venue; wind sensitivity; the grass→turf break; gust mentions; quarter parity |
+| `ends.py` | `ENDS.txt` | the same directional test on punts, kickoffs and extra points, where the samples are far larger |
+| `direction.py` | `DIRECTION.txt` | is the quarter-parity split Gillette-specific, and does it survive a clock-pressure control |
+| `decisions.py` | `DECISIONS.txt` | 4th-down kick/no-kick rates — did New England decline kicks at home that other teams took |
+
+### What holds up
+
+1. **The air at Gillette really is heavier than average, but only modestly.**
+   Gross punt distance runs 0.94 yards below expectation — 7th worst of 38
+   venues, 1.2 sd below the mean, behind NYG, CHI, PIT, PHI, GB and BUF.
+   Kickoff touchbacks rank 12th of 35. Real, but nowhere near enough to
+   explain a 6.5 pp field-goal penalty.
+
+2. **One direction of play is worse than the other, for everybody.** Punts at
+   Gillette lose 1.29 yds in Q2+Q4 versus 0.56 yds in Q1+Q3, and the Patriots'
+   own punters lose 1.05 yds in that direction (p = 0.007). Visiting kickers'
+   FG penalty sits almost entirely in the same half of the rotation: −9.5% in
+   Q2+Q4 against −2.7% in Q1+Q3, a split that appears at no other stadium.
+
+3. **It is not simply wind speed.** The penalty is −4.9% in games recorded at
+   0–5 mph, and the wind × Gillette interaction is *positive* (+0.031/mph,
+   p = 0.12) — Gillette is, if anything, less sensitive to measured wind than
+   other outdoor venues. Recorded wind is one scalar from outside the bowl, so
+   this argues against measured wind, not against swirl.
+
+4. **Not the surface.** Grass 2002–05: −12.5%. FieldTurf years: −6.2%. Grass
+   again 2019–20: +2.7%.
+
+5. **New England's real, measurable edge was declining kicks.** On 4th down in
+   competitive spots with a 50+ yard attempt available, the Patriots kicked
+   6.9% of the time at Gillette, against 14.7% for themselves on the road
+   (p = 0.052), 16.7% for visitors in the same building (p = 0.017), and 18.7%
+   for all home teams elsewhere (p = 0.0006). Visitors at Gillette behaved
+   exactly like a normal home team. This is selection, not deception, and it
+   explains part of why New England's raw 87% looks good — but the distance
+   controls mean it does not manufacture the visitor penalty.

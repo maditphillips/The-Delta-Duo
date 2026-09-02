@@ -1,0 +1,58 @@
+
+==================================================================================
+1. PUNT DISTANCE BY DIRECTION OF PLAY - 1,869 punts at Gillette
+==================================================================================
+  GILLETTE, all punts, Q1+Q3                 n=  902  gross  44.2  vs exp -0.56 yds  p=0.029
+  GILLETTE, all punts, Q2+Q4                 n=  956  gross  43.2  vs exp -1.29 yds  p=0.000
+
+  Gillette, visiting punters, Q1+Q3          n=  483  gross  44.0  vs exp -0.76 yds  p=0.025
+  Gillette, visiting punters, Q2+Q4          n=  496  gross  43.5  vs exp -1.50 yds  p=0.000
+  Gillette, Patriots punters, Q1+Q3          n=  419  gross  44.4  vs exp -0.33 yds  p=0.396
+  Gillette, Patriots punters, Q2+Q4          n=  460  gross  43.0  vs exp -1.05 yds  p=0.007
+
+  ALL OTHER outdoor venues, Q1+Q3            n=20019  gross  44.7  vs exp -0.06 yds  p=0.285
+  ALL OTHER outdoor venues, Q2+Q4            n=20723  gross  44.3  vs exp -0.28 yds  p=0.000
+
+  Gillette Q1+Q3 minus Q2+Q4 = +0.73 yds  (Welch p=0.0509)
+  same split at other outdoor venues = +0.21 yds  (p=0.007)
+
+==================================================================================
+2. IS THE PUNT PARITY GAP UNUSUAL? all outdoor venues ranked
+==================================================================================
+   1. GB   n= 1717  |Q1+Q3 - Q2+Q4| = -1.07 yds  p=0.006
+   2. BAL  n= 1877  |Q1+Q3 - Q2+Q4| = +0.81 yds  p=0.025
+   3. JAX  n= 1726  |Q1+Q3 - Q2+Q4| = +0.74 yds  p=0.056
+   4. NE   n= 1858  |Q1+Q3 - Q2+Q4| = +0.73 yds  p=0.051  <<<< GILLETTE
+   5. DEN  n= 1898  |Q1+Q3 - Q2+Q4| = +0.67 yds  p=0.060
+   6. DAL  n=  580  |Q1+Q3 - Q2+Q4| = -0.58 yds  p=0.357
+      ...
+
+  Gillette rank by size of directional punt gap: 4 of 25
+
+==================================================================================
+3. KICKOFF DISTANCE BY DIRECTION (2011-2023, fixed 35-yd tee)
+==================================================================================
+  GILLETTE Q1+Q3  n= 651  mean 64.3 yds  vs exp -0.20
+  GILLETTE Q2+Q4  n= 549  mean 63.5 yds  vs exp -0.92
+  other outdoor Q1+Q3  n=12532  mean 64.5 yds  vs exp +0.02
+  other outdoor Q2+Q4  n=10557  mean 63.9 yds  vs exp -0.55
+
+==================================================================================
+4. EXTRA POINTS BY DIRECTION AT GILLETTE (33 yds, dead centre, 2015-2025)
+==================================================================================
+  Gillette visitors  Q1+Q3  n=  80  92.50%  vs league 95.20%  diff -2.70%
+  Gillette visitors  Q2+Q4  n= 107  95.33%  vs league 95.20%  diff +0.13%
+  Gillette Patriots  Q1+Q3  n= 115  95.65%  vs league 95.20%  diff +0.45%
+  Gillette Patriots  Q2+Q4  n= 163  96.93%  vs league 95.20%  diff +1.73%
+
+==================================================================================
+5. DID NEW ENGLAND SIMPLY TAKE SHORTER KICKS AT HOME?
+==================================================================================
+  NE attempts at Gillette      n= 431  mean 35.3 yds  share 40+ 35%
+  NE attempts on the road      n= 416  mean 37.2 yds  share 40+ 44%
+  league, home attempts        n=11929  mean 37.5 yds  share 40+ 44%
+  league, road attempts        n=11531  mean 37.8 yds  share 40+ 46%
+  visitors AT Gillette         n= 363  mean 37.4 yds  share 40+ 45%
+
+  NE home-minus-road shift: -1.9 yds
+  league home-minus-road shift: -0.3 yds
