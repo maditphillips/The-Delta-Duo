@@ -128,3 +128,29 @@ The reputation appears to be inherited from the building it replaced. **Giants
 Stadium (2002-09), on the same site, was genuinely hard**: visitors −2.2% vs
 expectation (7th of 29) and punt distance −1.73 yds, the worst of all 38 venues
 in the dataset. MetLife opened in 2010 and the effect largely went away.
+
+## Part four: the site tab
+
+`export_all.py` computes the profile for every venue clearing 150 visiting-kicker
+attempts (36 of them) and writes `src/data/stadiums.ts`, which backs the
+**Stadiums** tab at `/stadiums`.
+
+```bash
+python3 export_all.py    # regenerates src/data/stadiums.ts
+```
+
+Two things differ from the single-venue scripts above, both deliberate:
+
+- **Leave-one-out baselines.** The expected-make model is refit 36 times, once
+  per venue with that venue's own kicks held out, so no stadium is ever graded
+  against itself. The spline basis is computed once over the full sample and
+  reused, so every refit shares identical knots and a held-out venue can never
+  fall outside them.
+- **A hard NaN gate.** Dome and closed-roof venues have no recorded wind and
+  some have too few coded misses, so several fields are genuinely absent. Every
+  value is scrubbed to `null` if non-finite and serialised with
+  `allow_nan=False`, which fails the run rather than emitting a bare `NaN`
+  literal into TypeScript. The UI renders those as `—`.
+
+The tab itself is `src/app/stadiums/page.tsx` +
+`src/components/dashboards/StadiumDashboard.tsx`.
