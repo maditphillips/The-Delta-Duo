@@ -1,204 +1,247 @@
-overall_rank,player,pos,pos_rank,team,bye,tier,delta_note
-1,Jahmyr Gibbs,RB,RB1,DET,6,Elite,
-2,Bijan Robinson,RB,RB2,ATL,11,Elite,
-3,Jaxon Smith-Njigba,WR,WR1,SEA,11,Elite,"Model WR1. 35.8 percent target share, best in our v2 features"
-4,Ja'Marr Chase,WR,WR2,CIN,6,Elite,
-5,Puka Nacua,WR,WR3,LAR,11,Elite,
-6,Christian McCaffrey,RB,RB3,SF,8,Elite,"Age 30 season. Only 16 of 240 RB1 finishes since 2006 came at 30 plus. Elite until proven otherwise, but the base rate is now against him"
-7,Amon-Ra St. Brown,WR,WR4,DET,6,Elite,
-8,Jonathan Taylor,RB,RB4,IND,13,Tier 1,
-9,De'Von Achane,RB,RB5,MIA,6,Tier 1,
-10,CeeDee Lamb,WR,WR5,DAL,14,Tier 1,"Model says WR16 off the 2025 dip. We side with consensus here; the dip was QB and injury noise, not usage decay"
-11,James Cook,RB,RB6,BUF,7,Tier 1,
-12,Justin Jefferson,WR,WR6,MIN,6,Tier 1,"Model says WR13 after the 2025 QB carousel. Kyler Murray stabilizes the position. We rank the talent, note the model's skepticism"
-13,Chase Brown,RB,RB7,CIN,6,Tier 1,
-14,Drake London,WR,WR7,ATL,11,Tier 1,"ATL QB is unresolved (Tua or Penix). Elite target share travels across QBs, but this is the risk in the profile"
-15,Rashee Rice,WR,WR8,KC,5,Tier 1,"Cleared for Week 1. Knee surgery May, jail time served, no further league discipline expected. 18.3 PPR PPG over his last 21 games"
-16,Saquon Barkley,RB,RB8,PHI,10,Tier 1,
-17,A.J. Brown,WR,WR9,NE,11,Tier 1,"Alpha WRs keep their role on a team change at 58.7 percent in our WR study. Traded to NE June 1, reunites with Vrabel, Maye at QB"
-18,Nico Collins,WR,WR10,HOU,8,Tier 2,
-19,Chris Olave,WR,WR11,NO,8,Tier 2,
-20,Ashton Jeanty,RB,RB9,LV,13,Tier 2,
-21,Omarion Hampton,RB,RB10,LAC,7,Tier 2,
-22,Kenneth Walker III,RB,RB11,KC,5,Tier 2,Signed with KC. Andy Reid lead back with Pacheco gone to DET
-23,Garrett Wilson,WR,WR12,NYJ,13,Tier 2,Model WR4 on target share and per target efficiency. Consensus has him WR14 to 18. Geno Smith is the best QB he has ever had. This is a delta we will take
-24,Malik Nabers,WR,WR13,NYG,8,Tier 2,"ACL recovery with a second procedure during rehab. Avoided PUP, expected Week 1, but build in a ramp"
-25,Zay Flowers,WR,WR14,BAL,13,Tier 2,
-26,George Pickens,WR,WR15,DAL,14,Tier 2,
-27,Jeremiyah Love,RB,RB12,ARI,14,Tier 2,Rookie first rounder walking into the Arizona lead role
-28,Trey McBride,TE,TE1,ARI,14,Elite,"TE1 and it is not close. 126-1239-11 in 2025, second best PPR TE season ever. Brissett back for one more year"
-29,Derrick Henry,RB,RB13,BAL,13,Tier 2,"Consensus RB8. We fade to RB13. No RB age 32 plus has ever finished better than RB4, and 30 plus RB1 seasons hit at 6 percent"
-30,Tetairoa McMillan,WR,WR16,CAR,5,Tier 2,
-31,DeVonta Smith,WR,WR17,PHI,10,Tier 2,
-32,Josh Allen,QB,QB1,BUF,7,Elite,
-33,Brock Bowers,TE,TE2,LV,13,Elite,Coming off the 2025 injury. Will play early but snaps may be monitored. Elite when right
-34,Emeka Egbuka,WR,WR18,TB,10,Tier 3,
-35,Kyren Williams,RB,RB14,LAR,11,Tier 3,
-36,Breece Hall,RB,RB15,NYJ,13,Tier 3,
-37,Rome Odunze,WR,WR19,CHI,10,Tier 3,"Model WR12 vs consensus WR26. Year 3, Ben Johnson offense, Burden pushing from the slot. Efficiency profile supports the leap"
-38,Tee Higgins,WR,WR20,CIN,6,Tier 3,
-39,Javonte Williams,RB,RB16,DAL,14,Tier 3,
-40,Travis Etienne Jr.,RB,RB17,NO,8,Tier 3,Signed with NO as the clear lead. Kamara is hurt and buried behind him
-41,Ladd McConkey,WR,WR21,LAC,7,Tier 3,
-42,Cam Skattebo,RB,RB18,NYG,8,Tier 3,
-43,Quinshon Judkins,RB,RB19,CLE,11,Tier 3,
-44,Jameson Williams,WR,WR22,DET,6,Tier 3,
-45,Jaylen Waddle,WR,WR23,DEN,10,Tier 3,Traded to DEN for a package headlined by a first. Nix deep game fit
-46,D'Andre Swift,RB,RB20,CHI,10,Tier 3,
-47,Bucky Irving,RB,RB21,TB,10,Tier 3,
-48,Terry McLaurin,WR,WR24,WAS,7,Tier 3,"Model WR18, ranks him above his WR25 ADP"
-49,DJ Moore,WR,WR25,BUF,7,Tier 3,"Signed with BUF. Josh Allen bump is real, but our vacancy study says targets fill from inside first. Shakir and Coleman do not vanish"
-50,Lamar Jackson,QB,QB2,BAL,13,Elite,
-51,Drake Maye,QB,QB3,NE,11,Elite,
-52,Josh Jacobs,RB,RB22,GB,11,Tier 4,
-53,Davante Adams,WR,WR26,LAR,11,Tier 3,"Age 33. Late career WR production cliffs hard in our data. Priced at WR21, we pay WR26"
-54,Colston Loveland,TE,TE3,CHI,10,Tier 1,
-55,Jayden Daniels,QB,QB4,WAS,7,Tier 1,"QB Cliff: college rushing is the one pre draft signal that survives, and rushing is the fantasy floor. Ranked over Burrow on floor"
-56,Joe Burrow,QB,QB5,CIN,6,Tier 1,
-57,Mike Evans,WR,WR27,SF,8,Tier 4,"Age 33, new team. The streak chaser narrative does not pay for the decline curve"
-58,Bhayshul Tuten,RB,RB23,JAX,7,Tier 4,
-59,Jadarian Price,RB,RB24,SEA,11,Tier 4,"Charbonnet opens on PUP, out at least 4 games. Price is the Seattle lead back out of the gate. 118.6 PFF elusive rating, 19 percent of college runs went 10 plus yards"
-60,Alec Pierce,WR,WR28,IND,13,Tier 4,Model WR19 vs consensus WR34. Per target efficiency is elite and the model does not care that it looks weird
-61,Marvin Harrison Jr.,WR,WR29,ARI,14,Tier 4,"Fully healthy after the 12 game 2025. New OC LaFleur, Brissett fed McBride 9 plus targets a game though. Volume is the question"
-62,Luther Burden III,WR,WR30,CHI,10,Tier 4,
-63,David Montgomery,RB,RB25,HOU,8,Tier 4,Signed with HOU
-64,Christian Watson,WR,WR31,GB,11,Tier 4,"Model WR23. TD dependent profile, better in half PPR"
-65,Jalen Hurts,QB,QB6,PHI,10,Tier 1,
-66,Tyler Warren,TE,TE4,IND,13,Tier 1,
-67,Jaylen Warren,RB,RB26,PIT,9,Tier 4,
-68,Brian Thomas Jr.,WR,WR32,JAX,7,Tier 4,"Down 2025 at 9.9 PPG. Talent says bounce, market already fled to WR35"
-69,Rhamondre Stevenson,RB,RB27,NE,11,Tier 4,
-70,DK Metcalf,WR,WR33,PIT,9,Tier 4,Model WR20. Rodgers at QB again caps the ceiling
-71,Dak Prescott,QB,QB7,DAL,14,Tier 2,
-72,TreVeyon Henderson,RB,RB28,NE,11,Tier 4,
-73,Rico Dowdle,RB,RB29,PIT,9,Tier 4,"Signed with PIT, splits with Warren"
-74,Ricky Pearsall,WR,WR34,SF,8,Tier 4,Model likes him at WR26 but SF added Evans and brought Deebo back. Crowded
-75,Michael Wilson,WR,WR35,ARI,14,Tier 4,
-76,Parker Washington,WR,WR36,JAX,7,Tier 4,
-77,Michael Pittman Jr.,WR,WR37,PIT,9,Flex,Traded to PIT
-78,Harold Fannin Jr.,TE,TE5,CLE,11,Tier 1,
-79,Tony Pollard,RB,RB30,TEN,9,Tier 4,
-80,Sam LaPorta,TE,TE6,DET,6,Tier 1,"ADP says TE11, projections say TE5. Market is punishing recency. We are not"
-81,Chuba Hubbard,RB,RB31,CAR,5,Flex,
-82,Quentin Johnston,WR,WR38,LAC,7,Flex,"Model WR29, back to back improving seasons"
-83,Chris Godwin,WR,WR39,TB,10,Flex,
-84,Caleb Williams,QB,QB8,CHI,10,Tier 2,
-85,Matthew Stafford,QB,QB9,LAR,11,Tier 2,
-86,Kyle Pitts,TE,TE7,ATL,11,Tier 2,
-87,Wan'Dale Robinson,WR,WR40,TEN,9,Flex,Model says WR21 but the model cannot see archetype. Fringe WRs keep their role on a team change only 32.4 percent of the time. This is the exact profile our WR study says to fade
-88,Carnell Tate,WR,WR41,TEN,9,Flex,"Rookie, instant WR1 path with Cam Ward"
-89,J.K. Dobbins,RB,RB32,DEN,10,Flex,
-90,Jakobi Meyers,WR,WR42,JAX,7,Flex,
-91,Brock Purdy,QB,QB10,SF,8,Tier 2,
-92,Kenneth Gainwell,RB,RB33,TB,10,Flex,Pass down role in TB. PPR only profile
-93,Courtland Sutton,WR,WR43,DEN,10,Flex,Waddle arrival cuts the target share
-94,Josh Downs,WR,WR44,IND,13,Flex,
-95,Jaxson Dart,QB,QB11,NYG,8,Tier 2,"Rushing QB, highest projection outside the elite tier. Market has him QB16, we do not"
-96,RJ Harvey,RB,RB34,DEN,10,Flex,
-97,Jayden Reed,WR,WR45,GB,11,Flex,
-98,Jordan Addison,WR,WR46,MIN,6,Flex,
-99,Jonathon Brooks,RB,RB35,CAR,5,Flex,Back from the knee. Hubbard still leads
-100,George Kittle,TE,TE8,SF,8,Tier 2,"Age 33, hamstring cost him time in 2025"
-101,Kyle Monangai,RB,RB36,CHI,10,Flex,Swift handcuff with standalone flex weeks in the Ben Johnson run game
-102,Bo Nix,QB,QB12,DEN,10,Tier 2,
-103,Tucker Kraft,TE,TE9,GB,11,Tier 2,
-104,Xavier Worthy,WR,WR47,KC,5,Flex,
-105,Stefon Diggs,WR,WR48,WAS,7,Flex,
-106,Jared Goff,QB,QB13,DET,6,Tier 3,
-107,Jacory Croskey-Merritt,RB,RB37,WAS,7,Flex,
-108,Rachaad White,RB,RB38,WAS,7,Flex,Signed with WAS
-109,Tre Tucker,WR,WR49,LV,13,Flex,"Model WR33, target share riser with Mendoza throwing"
-110,Keon Coleman,WR,WR50,BUF,7,Flex,DJ Moore arrival squeezes the perimeter targets
-111,Patrick Mahomes,QB,QB14,KC,5,Tier 3,
-112,Travis Kelce,TE,TE10,KC,5,Tier 2,Age 37. Name brand tax at this ADP
-113,Aaron Jones,RB,RB39,MIN,6,Flex,"Age 31, committee with Mason"
-114,Justin Herbert,QB,QB15,LAC,7,Tier 3,
-115,Troy Franklin,WR,WR51,DEN,10,Depth,Model WR48 liked the 2025 growth. Waddle trade caps it
-116,Travis Hunter,WR,WR52,JAX,7,Depth,
-117,Deebo Samuel,WR,WR53,SF,8,Depth,Back in SF
-118,Dallas Goedert,TE,TE11,PHI,10,Tier 2,
-119,MarShawn Lloyd,RB,RB40,GB,11,Flex,
-120,Trevor Lawrence,QB,QB16,JAX,7,Tier 3,
-121,Calvin Ridley,WR,WR54,TEN,9,Depth,
-122,Jerry Jeudy,WR,WR55,CLE,11,Depth,Watson at QB is a target quality problem
-123,Khalil Shakir,WR,WR56,BUF,7,Depth,"DJ Moore arrival adds real competition, but slot role is stickiest in our target data"
-124,Baker Mayfield,QB,QB17,TB,10,Tier 3,
-125,Mark Andrews,TE,TE12,BAL,13,Tier 2,
-126,Chris Rodriguez Jr.,RB,RB41,JAX,7,Flex,
-127,Blake Corum,RB,RB42,LAR,11,Flex,
-128,Zach Charbonnet,RB,RB43,SEA,11,Depth,"PUP to open the season, out at least 4 games on the ACL rehab. Stash if the bench allows, Price runs the show meanwhile"
-129,Woody Marks,RB,RB44,HOU,8,Depth,
-130,Kyler Murray,QB,QB18,MIN,6,Tier 3,Signed with MIN
-131,Rashid Shaheed,WR,WR57,SEA,11,Depth,Signed with SEA. Return yards leagues bump him further
-132,Jauan Jennings,WR,WR58,MIN,6,Depth,Signed with MIN
-133,Tyler Allgeier,RB,RB45,ARI,14,Depth,"Signed with ARI, veteran complement to Love"
-134,Jake Ferguson,TE,TE13,DAL,14,Tier 3,
-135,Jordan Mason,RB,RB46,MIN,6,Depth,
-136,Denzel Boston,WR,WR59,CLE,11,Depth,Rookie. Landing spot QB is the drag
-137,Adonai Mitchell,WR,WR60,NYJ,13,Depth,
-138,Jordan Love,QB,QB19,GB,11,Streamer,
-139,Sam Darnold,QB,QB20,SEA,11,Streamer,
-140,Tyjae Spears,RB,RB47,TEN,9,Depth,
-141,Isaiah Likely,TE,TE14,NYG,8,Tier 3,"Signed with NYG, first TE1 role of his career"
-142,Jalen Coker,WR,WR61,CAR,5,Depth,
-143,Romeo Doubs,WR,WR62,NE,11,Depth,"Signed with NE, then the AJB trade landed. Clear WR2 role, capped ceiling"
-144,Jayden Higgins,WR,WR63,HOU,8,Depth,"Year 2, second in the HOU pecking order behind Collins"
-145,Jonah Coleman,RB,RB48,DEN,10,Depth,
-146,Keaton Mitchell,RB,RB49,LAC,7,Depth,
-147,Tyler Shough,QB,QB21,NO,8,Streamer,
-148,Daniel Jones,QB,QB22,IND,13,Streamer,Starting Week 1 off the torn Achilles. Rushing floor is the question mark now
-149,Isiah Pacheco,RB,RB50,DET,6,Depth,"Signed with DET. MCL sprain plus back issue, Week 1 in doubt. Gibbs handcuff when right"
-150,David Njoku,TE,TE15,LAC,7,Tier 3,Signed with LAC
-151,Jalen McMillan,WR,WR64,TB,10,Depth,
-152,Fernando Mendoza,QB,QB23,LV,13,Streamer,"First overall pick. The draft decides who plays: Round 1 QBs survive bottom tercile seasons at 60.3 percent, so the starts are safe all year. Market QB24 underprices the floor"
-153,C.J. Stroud,QB,QB24,HOU,8,Streamer,
-154,Tank Bigsby,RB,RB51,PHI,10,Depth,
-155,Braelon Allen,RB,RB52,NYJ,13,Depth,
-156,Dalton Kincaid,TE,TE16,BUF,7,Tier 3,
-157,Caleb Douglas,WR,WR65,MIA,6,Depth,"Rookie. Miami traded Waddle and cut Hill, the target vacancy is enormous and our WR study says vacancy plus draft capital is the buy signal"
-158,De'Zhaun Stribling,WR,WR66,SF,8,Depth,
-159,Cam Ward,QB,QB25,TEN,9,Depth,
-160,Alvin Kamara,RB,RB53,NO,8,Depth,"MCL sprain, out about a month, and behind Etienne when back. Name value only"
-161,Justice Hill,RB,RB54,BAL,13,Depth,
-162,Juwan Johnson,TE,TE17,NO,8,Tier 3,
-163,Matthew Golden,WR,WR67,GB,11,Depth,
-164,Brian Robinson Jr.,RB,RB55,ATL,11,Depth,
-165,Dylan Sampson,RB,RB56,CLE,11,Depth,
-166,Aaron Rodgers,QB,QB26,PIT,9,Depth,
-167,Kenyon Sadiq,TE,TE18,NYJ,13,Tier 3,"Rookie TE. Our TE priors say the breakout is Year 2 or 3, not Year 1"
-168,Jaydon Blue,RB,RB57,DAL,14,Depth,
-169,Mike Washington Jr.,RB,RB58,LV,13,Depth,
-170,Jordyn Tyson,WR,WR68,NO,8,Depth,"Hamstring, expected out around two months. Late stash only"
-171,Hunter Henry,TE,TE19,NE,11,Depth,
-172,Bryce Young,QB,QB27,CAR,5,Depth,
-173,Jaylen Wright,RB,RB59,MIA,6,Depth,
-174,James Conner,RB,RB60,ARI,14,Depth,
-175,Skyler Bell,WR,WR69,BUF,7,Depth,"Year 2, 9.71 RAS, but the Moore signing buries the depth chart further. Deep league dart, watch the preseason snap data"
-176,Dont'e Thornton Jr.,WR,WR70,LV,13,Depth,
-177,Jalen Nailor,WR,WR71,LV,13,Depth,
-178,Dalton Schultz,TE,TE20,HOU,8,Depth,
-179,Jordan James,RB,RB61,SF,8,Depth,
-180,Ollie Gordon II,RB,RB62,MIA,6,Depth,
-181,Tua Tagovailoa,QB,QB28,ATL,11,Depth,Signed vet minimum with ATL. Job unresolved vs Penix as of Aug 26. Do not pay for either until it is
-182,Brenton Strange,TE,TE21,JAX,7,Depth,
-183,Kendre Miller,RB,RB63,NO,8,Depth,
-184,Tyrone Tracy Jr.,RB,RB64,NYG,8,Depth,
-185,Geno Smith,QB,QB29,NYJ,13,Depth,Traded back to the team that drafted him
-186,Chig Okonkwo,TE,TE22,WAS,7,Depth,Signed with WAS
-187,Devin Neal,RB,RB65,NO,8,Depth,
-188,Terrance Ferguson,TE,TE23,LAR,11,Depth,
-189,Deshaun Watson,QB,QB30,CLE,11,Depth,Named the Week 1 starter. Fantasy avoid
-190,T.J. Hockenson,TE,TE24,MIN,6,Depth,
-191,Samaje Perine,RB,RB66,CIN,6,Depth,
-192,Michael Penix Jr.,QB,QB31,ATL,11,Depth,"Nine months off the third ACL of his career, cleared for team drills Aug 22, no preseason snaps. No rushing production even when healthy"
-193,Trevor Etienne,RB,RB67,CAR,5,Depth,Deep dart behind Hubbard and Brooks
-194,Malik Willis,QB,QB32,MIA,6,Depth,Signed 3 years 67.5 million to start in Miami. Rushing gives him sneaky superflex weeks
-195,Matthew Hibner,TE,TE25,BAL,13,Depth,"Rookie Round 4 TE. Nearly all TE breakouts land in Years 2 and 3, so this is a dynasty pick, not a redraft one"
-196,Nick Singleton,RB,RB68,TEN,9,Depth,
-197,Ty Johnson,RB,RB69,BUF,7,Depth,
-198,Kayshon Boutte,WR,WR72,NE,11,Depth,
-199,Darius Slayton,WR,WR73,NYG,8,Depth,
-200,Xavier Legette,WR,WR74,CAR,5,Depth,
-201,Malik Washington,WR,WR75,MIA,6,Depth,Miami target vacancy dart alongside Douglas
-202,Chimere Dike,WR,WR76,TEN,9,Depth,
-203,Bryce Lance,WR,WR77,NO,8,Depth,
+overall_rank,player,pos,pos_rank,team,bye,tier,delta_note,flag
+1,Bijan Robinson,RB,RB1,ATL,11,Elite,,
+2,Jahmyr Gibbs,RB,RB2,DET,6,Elite,,
+3,Jaxon Smith-Njigba,WR,WR1,SEA,11,Elite,"Model WR1. 35.8 percent target share, best in our v2 features",
+4,Ja'Marr Chase,WR,WR2,CIN,6,Elite,,
+5,Puka Nacua,WR,WR3,LAR,11,Elite,,
+6,Christian McCaffrey,RB,RB3,SF,8,Elite,"Age 30 season. Only 16 of 240 RB1 finishes since 2006 came at 30 plus. Elite until proven otherwise, but the base rate is now against him",
+7,Amon-Ra St. Brown,WR,WR4,DET,6,Tier 1,,
+8,Jonathan Taylor,RB,RB4,IND,13,Tier 1,,
+9,Ashton Jeanty,RB,RB5,LV,13,Tier 1,,
+10,Justin Jefferson,WR,WR5,MIN,6,Tier 1,"Model says WR13 after the 2025 QB carousel. Kyler Murray stabilizes the position. We rank the talent, note the model's skepticism",
+11,Derrick Henry,RB,RB6,BAL,13,Tier 1,,
+12,CeeDee Lamb,WR,WR6,DAL,14,Tier 1,"Model says WR16 off the 2025 dip. We side with consensus here; the dip was QB and injury noise, not usage decay",
+13,James Cook,RB,RB7,BUF,7,Tier 1,,
+14,Emeka Egbuka,WR,WR7,TB,10,Tier 2,,Target
+15,Chris Olave,WR,WR8,NO,8,Tier 2,,
+16,Saquon Barkley,RB,RB8,PHI,10,Tier 1,,
+17,Drake London,WR,WR9,ATL,11,Tier 2,"ATL QB is unresolved (Tua or Penix). Elite target share travels across QBs, but this is the risk in the profile",
+18,A.J. Brown,WR,WR10,NE,11,Tier 2,"Alpha WRs keep their role on a team change at 58.7 percent in our WR study. Traded to NE June 1, reunites with Vrabel, Maye at QB",
+19,Rome Odunze,WR,WR11,CHI,10,Tier 2,"Model WR12 vs consensus WR26. Year 3, Ben Johnson offense, Burden pushing from the slot. Efficiency profile supports the leap",Target
+20,Jeremiyah Love,RB,RB9,ARI,14,Tier 2,Rookie first rounder walking into the Arizona lead role,
+21,Chase Brown,RB,RB10,CIN,6,Tier 2,,
+22,Omarion Hampton,RB,RB11,LAC,7,Tier 2,,
+23,Tetairoa McMillan,WR,WR12,CAR,5,Tier 2,,
+24,George Pickens,WR,WR13,DAL,14,Tier 2,,
+25,Nico Collins,WR,WR14,HOU,8,Tier 2,,
+26,Tee Higgins,WR,WR15,CIN,6,Tier 3,,
+27,Jadarian Price,RB,RB12,SEA,11,Tier 2,"Charbonnet opens on PUP, out at least 4 games. Price is the Seattle lead back out of the gate. 118.6 PFF elusive rating, 19 percent of college runs went 10 plus yards",
+28,Brock Bowers,TE,TE1,LV,13,Elite,Coming off the 2025 injury. Will play early but snaps may be monitored. Elite when right,
+29,Travis Etienne,RB,RB13,NO,8,Tier 2,Signed with NO as the clear lead. Kamara is hurt and buried behind him,
+30,Garrett Wilson,WR,WR16,NYJ,13,Tier 3,Model WR4 on target share and per target efficiency. Consensus has him WR14 to 18. Geno Smith is the best QB he has ever had. This is a delta we will take,
+31,Brian Thomas Jr.,WR,WR17,JAX,7,Tier 3,"Down 2025 at 9.9 PPG. Talent says bounce, market already fled to WR35",Target
+32,Josh Allen,QB,QB1,BUF,7,Elite,,
+33,Trey McBride,TE,TE2,ARI,14,Tier 1,,
+34,Ladd McConkey,WR,WR18,LAC,7,Tier 3,,
+35,Breece Hall,RB,RB14,NYJ,13,Tier 2,,
+36,De'Von Achane,RB,RB15,MIA,6,Tier 2,,
+37,Zay Flowers,WR,WR19,BAL,13,Tier 3,,
+38,Jaylen Waddle,WR,WR20,DEN,10,Tier 3,Traded to DEN for a package headlined by a first. Nix deep game fit,
+39,Kenneth Walker III,RB,RB16,KC,5,Tier 2,Signed with KC. Andy Reid lead back with Pacheco gone to DET,
+40,Javonte Williams,RB,RB17,DAL,14,Tier 2,,
+41,DJ Moore,WR,WR21,BUF,7,Tier 3,"Signed with BUF. Josh Allen bump is real, but our vacancy study says targets fill from inside first. Shakir and Coleman do not vanish",
+42,TreVeyon Henderson,RB,RB18,NE,11,Tier 2,,
+43,J.K. Dobbins,RB,RB19,DEN,10,Tier 2,,
+44,Luther Burden III,WR,WR22,CHI,10,Tier 3,,Riser
+45,DeVonta Smith,WR,WR23,PHI,10,Tier 3,,
+46,Kyren Williams,RB,RB20,LAR,11,Tier 2,,
+47,Quinshon Judkins,RB,RB21,CLE,11,Tier 2,,
+48,Malik Nabers,WR,WR24,NYG,8,Tier 3,"ACL recovery with a second procedure during rehab. Avoided PUP, expected Week 1, but build in a ramp",Injury
+49,Parker Washington,WR,WR25,JAX,7,Tier 3,,Riser
+50,Joe Burrow,QB,QB2,CIN,6,Elite,,
+51,Lamar Jackson,QB,QB3,BAL,13,Elite,,
+52,D'Andre Swift,RB,RB22,CHI,10,Tier 3,,
+53,Carnell Tate,WR,WR26,TEN,9,Tier 3,"Rookie, instant WR1 path with Cam Ward",
+54,Tyler Warren,TE,TE3,IND,13,Tier 1,,
+55,Drake Maye,QB,QB4,NE,11,Elite,,
+56,Trevor Lawrence,QB,QB5,JAX,7,Tier 1,,Target
+57,Jameson Williams,WR,WR27,DET,6,Tier 3,,
+58,David Montgomery,RB,RB23,HOU,8,Tier 3,Signed with HOU,
+59,Bhayshul Tuten,RB,RB24,JAX,7,Tier 3,,
+60,Davante Adams,WR,WR28,LAR,11,Tier 4,"Age 33. Late career WR production cliffs hard in our data. Priced at WR21, we pay WR26",
+61,Terry McLaurin,WR,WR29,WAS,7,Tier 4,"Model WR18, ranks him above his WR25 ADP",
+62,Wan'Dale Robinson,WR,WR30,TEN,9,Tier 4,Model says WR21 but the model cannot see archetype. Fringe WRs keep their role on a team change only 32.4 percent of the time. This is the exact profile our WR study says to fade,
+63,Cam Skattebo,RB,RB25,NYG,8,Tier 3,,
+64,Marvin Harrison Jr,WR,WR31,ARI,14,Tier 4,"Fully healthy after the 12 game 2025. New OC LaFleur, Brissett fed McBride 9 plus targets a game though. Volume is the question",
+65,Jalen Hurts,QB,QB6,PHI,10,Tier 1,,
+66,Sam LaPorta,TE,TE4,DET,6,Tier 1,"ADP says TE11, projections say TE5. Market is punishing recency. We are not",Target
+67,Bucky Irving,RB,RB26,TB,10,Tier 3,,
+68,Michael Pittman,WR,WR32,PIT,9,Tier 4,Traded to PIT,Riser
+69,Woody Marks,RB,RB27,HOU,8,Tier 4,,
+70,Michael Wilson,WR,WR33,ARI,14,Tier 4,,
+71,Baker Mayfield,QB,QB7,TB,10,Tier 1,,Target
+72,Chuba Hubbard,RB,RB28,CAR,5,Tier 4,,
+73,Jonathon Brooks,RB,RB29,CAR,5,Tier 4,Back from the knee. Hubbard still leads,
+74,Christian Watson,WR,WR34,GB,11,Tier 4,"Model WR23. TD dependent profile, better in half PPR",
+75,Rashee Rice,WR,WR35,KC,5,Tier 4,,Avoid
+76,Mike Evans,WR,WR36,SF,8,Tier 5,"Age 33, new team. The streak chaser narrative does not pay for the decline curve",Injury
+77,Chris Godwin Jr.,WR,WR37,TB,10,Tier 5,,
+78,Tucker Kraft,TE,TE5,GB,11,Tier 1,,Riser
+79,Kyle Monangai,RB,RB30,CHI,10,Tier 4,Swift handcuff with standalone flex weeks in the Ben Johnson run game,
+80,Colston Loveland,TE,TE6,CHI,10,Tier 1,,Faller
+81,Blake Corum,RB,RB31,LAR,11,Tier 4,,
+82,Courtland Sutton,WR,WR38,DEN,10,Tier 5,Waddle arrival cuts the target share,
+83,Stefon Diggs,WR,WR39,WAS,7,Tier 5,,
+84,Jayden Daniels,QB,QB8,WAS,7,Tier 1,"QB Cliff: college rushing is the one pre draft signal that survives, and rushing is the fantasy floor. Ranked over Burrow on floor",
+85,Bo Nix,QB,QB9,DEN,10,Tier 1,,Riser
+86,George Kittle,TE,TE7,SF,8,Tier 2,"Age 33, hamstring cost him time in 2025",
+87,Romeo Doubs,WR,WR40,NE,11,Tier 5,"Signed with NE, then the AJB trade landed. Clear WR2 role, capped ceiling",
+88,DK Metcalf,WR,WR41,PIT,9,Tier 5,Model WR20. Rodgers at QB again caps the ceiling,
+89,MarShawn Lloyd,RB,RB32,GB,11,Tier 4,,
+90,Matthew Golden,WR,WR42,GB,11,Tier 6,,
+91,Justin Herbert,QB,QB10,LAC,7,Tier 1,,Faller
+92,Rachaad White,RB,RB33,WAS,7,Tier 5,Signed with WAS,
+93,KC Concepcion,WR,WR43,CLE,11,Tier 6,,
+94,Makai Lemon,WR,WR44,PHI,10,Tier 6,,Injury
+95,Caleb Williams,QB,QB11,CHI,10,Tier 1,,
+96,Rhamondre Stevenson,RB,RB34,NE,11,Tier 5,,
+97,Quentin Johnston,WR,WR45,LAC,7,Tier 6,"Model WR29, back to back improving seasons",
+98,Denzel Boston,WR,WR46,CLE,11,Tier 6,Rookie. Landing spot QB is the drag,
+99,RJ Harvey,RB,RB35,DEN,10,Tier 5,,
+100,Brenton Strange,TE,TE8,JAX,7,Tier 2,,
+101,Jonah Coleman,RB,RB36,DEN,10,Tier 5,,
+102,Patrick Mahomes,QB,QB12,KC,5,Tier 2,,Faller
+103,Harold Fannin,TE,TE9,CLE,11,Tier 2,,
+104,Tank Dell,WR,WR47,HOU,8,Tier 6,,
+105,Josh Downs,WR,WR48,IND,13,Tier 7,,
+106,Brock Purdy,QB,QB13,SF,8,Tier 2,,
+107,Zach Charbonnet,RB,RB37,SEA,11,Tier 5,"PUP to open the season, out at least 4 games on the ACL rehab. Stash if the bench allows, Price runs the show meanwhile",
+108,Kaleb Johnson,RB,RB38,GB,11,Tier 5,,
+109,De'Zhaun Stribling,WR,WR49,SF,8,Tier 7,,
+110,Skyler Bell,WR,WR50,BUF,7,Tier 7,"Year 2, 9.71 RAS, but the Moore signing buries the depth chart further. Deep league dart, watch the preseason snap data",
+111,Jaxson Dart,QB,QB14,NYG,8,Tier 2,"Rushing QB, highest projection outside the elite tier. Market has him QB16, we do not",
+112,Isaiah Likely,TE,TE10,NYG,8,Tier 3,"Signed with NYG, first TE1 role of his career",
+113,Tony Pollard,RB,RB39,TEN,9,Tier 6,,
+114,Dak Prescott,QB,QB15,DAL,14,Tier 2,,
+115,Jayden Reed,WR,WR51,GB,11,Tier 7,,
+116,Xavier Worthy,WR,WR52,KC,5,Tier 7,,
+117,Travis Hunter,WR,WR53,JAX,7,Tier 7,,
+118,Kyle Pitts,TE,TE11,ATL,11,Tier 3,,
+119,Jaylen Warren,RB,RB40,PIT,9,Tier 6,,
+120,Tyler Shough,QB,QB16,NO,8,Tier 2,,
+121,Jordan Addison,WR,WR54,MIN,6,Tier 7,,
+122,Jakobi Meyers,WR,WR55,JAX,7,Tier 7,,
+123,Ja'Kobi Lane,WR,WR56,BAL,13,Tier 7,,Riser
+124,Matthew Stafford,QB,QB17,LAR,11,Tier 3,,
+125,Dalton Kincaid,TE,TE12,BUF,7,Tier 3,,Injury
+126,Emmett Johnson,RB,RB41,KC,5,Tier 6,,
+127,Braelon Allen,RB,RB42,NYJ,13,Tier 6,,
+128,Jacory Croskey-Merritt,RB,RB43,WAS,7,Tier 6,,
+129,Jordan Mason,RB,RB44,MIN,6,Tier 6,,
+130,Sam Darnold,QB,QB18,SEA,11,Tier 3,,Riser
+131,Troy Franklin,WR,WR57,DEN,10,Tier 7,Model WR48 liked the 2025 growth. Waddle trade caps it,
+132,Elic Ayomanor,WR,WR58,TEN,9,Tier 7,,
+133,Chris Rodriguez,RB,RB45,JAX,7,Tier 6,,
+134,Mark Andrews,TE,TE13,BAL,13,Tier 3,,
+135,Tyjae Spears,RB,RB46,TEN,9,Tier 6,,
+136,Christian Kirk,WR,WR59,SF,8,Tier 7,,Injury
+137,Rashid Shaheed,WR,WR60,SEA,11,Tier 7,Signed with SEA. Return yards leagues bump him further,Riser
+138,Daniel Jones,QB,QB19,IND,13,Tier 3,Starting Week 1 off the torn Achilles. Rushing floor is the question mark now,
+139,Jared Goff,QB,QB20,DET,6,Tier 3,,
+140,Rico Dowdle,RB,RB47,PIT,9,Tier 6,"Signed with PIT, splits with Warren",
+141,Gunnar Helm,TE,TE14,TEN,9,Tier 4,,
+142,Jerry Jeudy,WR,WR61,CLE,11,Tier 7,Watson at QB is a target quality problem,
+143,Malik Benson,WR,WR62,LV,13,Tier 7,,Riser
+144,Deebo Samuel,WR,WR63,SF,8,Tier 7,Back in SF,Riser
+145,Tyler Allgeier,RB,RB48,ARI,14,Tier 6,"Signed with ARI, veteran complement to Love",
+146,Nicholas Singleton,RB,RB49,TEN,9,Tier 6,,
+147,Jordan Love,QB,QB21,GB,11,Tier 3,,
+148,Kyler Murray,QB,QB22,MIN,6,Tier 4,Signed with MIN,
+149,Najee Harris,RB,RB50,NYG,8,Tier 6,,
+150,AJ Barner,TE,TE15,SEA,11,Tier 4,,
+151,Darnell Mooney,WR,WR64,NYG,8,Tier 7,,Faller
+152,Fernando Mendoza,QB,QB23,LV,13,Tier 4,"First overall pick. The draft decides who plays: Round 1 QBs survive bottom tercile seasons at 60.3 percent, so the starts are safe all year. Market QB24 underprices the floor",
+153,Kirk Cousins,QB,QB24,LV,13,Tier 4,,
+154,Alvin Kamara,RB,RB51,NO,8,Tier 6,"MCL sprain, out about a month, and behind Etienne when back. Name value only",
+155,Aaron Jones,RB,RB52,MIN,6,Tier 6,"Age 31, committee with Mason",
+156,Chig Okonkwo,TE,TE16,WAS,7,Tier 4,Signed with WAS,
+157,Jalen McMillan,WR,WR65,TB,10,Tier 7,,
+158,Jalen Coker,WR,WR66,CAR,5,Tier 7,,
+159,Malik Willis,QB,QB25,MIA,6,Tier 4,Signed 3 years 67.5 million to start in Miami. Rushing gives him sneaky superflex weeks,
+160,Josh Jacobs,RB,RB53,GB,11,Tier 6,,
+161,Demond Claiborne,RB,RB54,MIN,6,Tier 7,,
+162,Kenyon Sadiq,TE,TE17,NYJ,13,Tier 4,"Rookie TE. Our TE priors say the breakout is Year 2 or 3, not Year 1",
+163,Khalil Shakir,WR,WR67,BUF,7,Tier 7,"DJ Moore arrival adds real competition, but slot role is stickiest in our target data",
+164,Keaton Mitchell,RB,RB55,LAC,7,Tier 7,,
+165,Kaytron Allen,RB,RB56,WAS,7,Tier 7,,
+166,Cam Ward,QB,QB26,TEN,9,Tier 5,,
+167,David Njoku,TE,TE18,LAC,7,Tier 4,Signed with LAC,
+168,Kaelon Black,RB,RB57,SF,8,Tier 7,,
+169,Adam Randall,RB,RB58,BAL,13,Tier 7,,
+170,Malachi Fields,WR,WR68,NYG,8,Tier 7,,
+171,Eli Stowers,TE,TE19,PHI,10,Tier 4,,
+172,C.J. Stroud,QB,QB27,HOU,8,Tier 5,,
+173,Brian Robinson,RB,RB59,ATL,11,Tier 7,,
+174,Tank Bigsby,RB,RB60,PHI,10,Tier 7,,
+175,Ryan Flournoy,WR,WR69,DAL,14,Tier 7,,
+176,Germie Bernard,WR,WR70,PIT,9,Tier 7,,
+177,Bryce Lance,WR,WR71,NO,8,Tier 7,,
+178,Oronde Gadsden,TE,TE20,LAC,7,Tier 4,,
+179,Mike Washington,RB,RB61,LV,13,Tier 7,,
+180,Tyrone Tracy,RB,RB62,NYG,8,Tier 7,,
+181,Bryce Young,QB,QB28,CAR,5,Tier 5,,
+182,Greg Dulcich,TE,TE21,MIA,6,Tier 4,,
+183,DJ Giddens,RB,RB63,IND,13,Tier 7,,
+184,Dylan Sampson,RB,RB64,CLE,11,Tier 7,,
+185,Shedeur Sanders,QB,QB29,CLE,11,Tier 5,,
+186,Jake Ferguson,TE,TE22,DAL,14,Tier 5,,
+187,Sean Tucker,RB,RB65,TB,10,Tier 7,,
+188,T.J. Hockenson,TE,TE23,MIN,6,Tier 5,,
+189,Tua Tagovailoa,QB,QB30,ATL,11,Tier 5,Signed vet minimum with ATL. Job unresolved vs Penix as of Aug 26. Do not pay for either until it is,
+190,Dallas Goedert,TE,TE24,PHI,10,Tier 5,,
+191,Justice Hill,RB,RB66,BAL,13,Tier 7,,
+192,Aaron Rodgers,QB,QB31,PIT,9,Tier 5,,
+193,Isiah Pacheco,RB,RB67,DET,6,Tier 7,"Signed with DET. MCL sprain plus back issue, Week 1 in doubt. Gibbs handcuff when right",
+194,Geno Smith,QB,QB32,NYJ,13,Tier 5,Traded back to the team that drafted him,
+195,Travis Kelce,TE,TE25,KC,5,Tier 6,Age 37. Name brand tax at this ADP,
+196,Eli Heidenreich,RB,RB68,PIT,9,Tier 8,,
+197,Jalen Nailor,WR,WR72,LV,13,Tier 7,,Faller
+198,Isaac TeSlaa,WR,WR73,DET,6,Tier 7,,
+199,Jauan Jennings,WR,WR74,MIN,6,Tier 7,Signed with MIN,
+200,Marvin Mims,WR,WR75,DEN,10,Tier 7,,
+201,Chris Bell,WR,WR76,MIA,6,Tier 7,,
+202,Kevin Coleman,WR,WR77,MIA,6,Tier 7,,
+203,Jacoby Brissett,QB,QB33,ARI,14,Tier 5,,
+204,Riley Leonard,QB,QB34,IND,13,Tier 6,,
+205,Anthony Richardson,QB,QB35,IND,13,Tier 6,,
+206,Eli Raridon,TE,TE26,NE,11,Tier 7,,Target
+207,Matthew Hibner,TE,TE27,BAL,13,Tier 7,"Rookie Round 4 TE. Nearly all TE breakouts land in Years 2 and 3, so this is a dynasty pick, not a redraft one",Riser
+208,Oscar Delp,TE,TE28,NO,8,Tier 7,,
+209,Jordyn Tyson,WR,WR78,NO,8,Tier 7,"Hamstring, expected out around two months. Late stash only",Injury
+210,Marlin Klein,TE,TE29,HOU,8,Tier 7,,
+211,Charlie Kolar,TE,TE30,LAC,7,Tier 7,,
+212,Michael Mayer,TE,TE31,LV,13,Tier 7,,Riser
+213,Jameis Winston,QB,QB36,NYG,8,Tier 7,,
+214,Joe Flacco,QB,QB37,CIN,6,Tier 7,,
+215,Andrei Iosivas,WR,WR79,CIN,6,Tier 8,,
+216,Kayshon Boutte,WR,WR80,HOU,8,Tier 8,,Riser
+217,Alec Pierce,WR,WR81,IND,13,Tier 8,,
+218,Reggie Virgil,WR,WR82,ARI,14,Tier 8,,Riser
+219,Calvin Ridley,WR,WR83,TEN,9,Tier 8,,
+220,Zachariah Branch,WR,WR84,ATL,11,Tier 8,,
+221,Omar Cooper,WR,WR85,NYJ,13,Tier 8,,
+222,Rashod Bateman,WR,WR86,BAL,13,Tier 8,,
+223,Elijah Sarratt,WR,WR87,BAL,13,Tier 8,,
+224,Terrance Ferguson,TE,TE32,LAR,11,Tier 8,,
+225,Tre' Harris,WR,WR88,LAC,7,Tier 8,,
+226,Cooper Kupp,WR,WR89,SEA,11,Tier 8,,
+227,Jaylin Noel,WR,WR90,HOU,8,Tier 8,,
+228,Dalton Schultz,TE,TE33,HOU,8,Tier 8,,
+229,Cyrus Allen,WR,WR91,KC,5,Tier 8,,
+230,Deion Burks,WR,WR92,IND,13,Tier 8,,
+231,Hunter Henry,TE,TE34,NE,11,Tier 8,,
+232,Treylon Burks,WR,WR93,WAS,7,Tier 8,,
+233,John Metchie,WR,WR94,CAR,5,Tier 8,,
+234,Antonio Williams,WR,WR95,WAS,7,Tier 8,,
+235,Juwan Johnson,TE,TE35,NO,8,Tier 8,,
+236,Tyler Huntley,QB,QB38,BAL,13,Tier 8,,
+237,Keon Coleman,WR,WR96,BUF,7,Tier 8,DJ Moore arrival squeezes the perimeter targets,
+238,Kyle Williams,WR,WR97,NE,11,Tier 8,,
+239,Isaiah Bond,WR,WR98,CLE,11,Tier 8,,
+240,Cade Otton,TE,TE36,TB,10,Tier 8,,
+241,Tyson Bagent,QB,QB39,CHI,10,Tier 8,,
+242,Tory Horton,WR,WR99,SEA,11,Tier 8,,
+243,Jack Bech,WR,WR100,LV,13,Tier 8,,Faller
+244,Justin Joly,TE,TE37,,,Tier 8,,
+245,Mac Jones,QB,QB40,SF,8,Tier 8,,
+246,Tre Tucker,WR,WR101,LV,13,Tier 8,,Faller

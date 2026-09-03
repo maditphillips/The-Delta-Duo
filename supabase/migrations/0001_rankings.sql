@@ -20,7 +20,8 @@ create table if not exists public.rankings (
   team text,
   bye int,
   tier text,
-  note text
+  note text,
+  flag text
 );
 
 create index if not exists rankings_set_id_rank_idx on public.rankings (set_id, rank);

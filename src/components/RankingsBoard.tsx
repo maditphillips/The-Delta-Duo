@@ -7,6 +7,7 @@ import { CHALK } from "@/components/charts/theme";
 import {
   FORMATS,
   POSITION_FILTERS,
+  flagColors,
   formatLabels,
   formatSublabels,
   normalizeCsvRows,
@@ -150,6 +151,7 @@ export default function RankingsBoard() {
                   <th>Team</th>
                   <th className="num">Bye</th>
                   <th>Tier</th>
+                  <th>Flag</th>
                   <th>Delta note</th>
                 </tr>
               </thead>
@@ -166,6 +168,19 @@ export default function RankingsBoard() {
                     <td>{r.team ?? ""}</td>
                     <td className="num">{r.bye ?? ""}</td>
                     <td style={{ whiteSpace: "nowrap", color: tierColors[r.tier ?? ""] ?? "var(--ink-dim)" }}>{r.tier ?? ""}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>
+                      {r.flag ? (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-xs"
+                          style={{
+                            color: flagColors[r.flag] ?? "var(--ink-dim)",
+                            border: `1px solid ${flagColors[r.flag] ?? "var(--ink-ghost)"}`,
+                          }}
+                        >
+                          {r.flag}
+                        </span>
+                      ) : null}
+                    </td>
                     <td className="text-sm" style={{ color: "var(--ink-dim)", minWidth: 260 }}>
                       {r.note ?? ""}
                     </td>

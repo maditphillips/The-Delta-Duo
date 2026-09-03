@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
   const { data: rows, error: rowsError } = await supabase
     .from("rankings")
-    .select("rank, player, pos, pos_rank, team, bye, tier, note")
+    .select("rank, player, pos, pos_rank, team, bye, tier, note, flag")
     .eq("set_id", set.id)
     .order("rank", { ascending: true });
 
@@ -67,6 +67,7 @@ export async function GET(req: NextRequest) {
         bye: r.bye,
         tier: r.tier,
         note: r.note,
+        flag: r.flag,
       })),
     },
   });
@@ -132,6 +133,7 @@ export async function POST(req: NextRequest) {
       bye: r.bye ?? null,
       tier: r.tier?.slice(0, 40) ?? null,
       note: r.note?.slice(0, 500) ?? null,
+      flag: r.flag?.slice(0, 20) ?? null,
     }))
   );
 

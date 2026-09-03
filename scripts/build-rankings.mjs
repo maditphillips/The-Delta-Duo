@@ -53,6 +53,7 @@ for (const [key, cfg] of Object.entries(FORMATS)) {
     bye: r.bye ? Number(r.bye) : null,
     tier: r.tier || null,
     note: r.delta_note || null,
+    flag: r.flag || null,
   }));
   rows.sort((a, b) => a.rank - b.rank);
   const out = { format: key, label: cfg.label, updated: new Date().toISOString().slice(0, 10), rows };

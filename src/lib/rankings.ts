@@ -25,6 +25,7 @@ export type RankingRow = {
   bye?: number | null;
   tier?: string | null;
   note?: string | null;
+  flag?: string | null;
 };
 
 export type RankingSet = {
@@ -41,9 +42,21 @@ export const tierColors: Record<string, string> = {
   "Tier 2": "var(--chalk-blue)",
   "Tier 3": "var(--ink)",
   "Tier 4": "var(--ink-dim)",
+  "Tier 5": "var(--ink-dim)",
+  "Tier 6": "var(--ink-dim)",
+  "Tier 7": "var(--ink-faint)",
+  "Tier 8": "var(--ink-faint)",
   Flex: "var(--ink-dim)",
   Streamer: "var(--ink-dim)",
   Depth: "var(--ink-faint)",
+};
+
+export const flagColors: Record<string, string> = {
+  Target: "var(--chalk-green)",
+  Riser: "var(--chalk-blue)",
+  Faller: "var(--chalk-pink)",
+  Avoid: "var(--chalk-pink)",
+  Injury: "var(--chalk-gold)",
 };
 
 // Map loosely-named CSV headers onto our schema. Row order is the fallback rank.
@@ -74,6 +87,7 @@ export function normalizeCsvRows(records: Record<string, unknown>[]): RankingRow
       bye: byeStr ? parseInt(byeStr, 10) : null,
       tier: pick(rec, ["tier"]) ?? null,
       note: pick(rec, ["delta_note", "note", "notes", "comment", "comments", "blurb"]) ?? null,
+      flag: pick(rec, ["flag"]) ?? null,
     });
   }
   rows.sort((a, b) => a.rank - b.rank);
