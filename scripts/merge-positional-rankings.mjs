@@ -80,12 +80,15 @@ const norm = (name) =>
     .trim();
 
 // ————— load new positional lists —————
-const newLists = {}; // pos -> [{rank, tierIdx, tierLabel, player, team, flag, note}]
-for (const pos of POSITIONS) {
-  const rows = parseCsv(fs.readFileSync(path.join(POS_DIR, `${pos.toLowerCase()}.csv`), "utf8"));
+// Base lists live in data/rankings/positions/{pos}.csv (PPR order, also used
+// for Superflex). A format can override any position with its own list at
+// data/rankings/positions/{format}/{pos}.csv — e.g. positions/halfppr/wr.csv
+// reorders only the Half PPR receivers.
+function loadList(file) {
+  const rows = parseCsv(fs.readFileSync(file, "utf8"));
   const tierOrder = [];
   for (const r of rows) if (!tierOrder.includes(r.Tier)) tierOrder.push(r.Tier);
-  newLists[pos] = rows.map((r) => {
+  const list = rows.map((r) => {
     const tierIdx = tierOrder.indexOf(r.Tier);
     return {
       rank: Number(r.Rank),
@@ -97,8 +100,29 @@ for (const pos of POSITIONS) {
       csvNote: r.Note || null,
     };
   });
-  newLists[pos].sort((a, b) => a.rank - b.rank);
+  list.sort((a, b) => a.rank - b.rank);
+  return list;
 }
+
+const baseLists = {};
+for (const pos of POSITIONS) {
+  baseLists[pos] = loadList(path.join(POS_DIR, `${pos.toLowerCase()}.csv`));
+}
+
+function listsForFormat(format) {
+  const lists = {};
+  for (const pos of POSITIONS) {
+    const override = path.join(POS_DIR, format, `${pos.toLowerCase()}.csv`);
+    if (fs.existsSync(override)) {
+      lists[pos] = loadList(override);
+      console.log(`${format}: using override for ${pos} (${lists[pos].length} players)`);
+    } else {
+      lists[pos] = baseLists[pos];
+    }
+  }
+  return lists;
+}
+const newLists = baseLists; // used for the adds/drops report below
 
 // ————— load old boards —————
 const oldBoards = {};
@@ -133,9 +157,10 @@ const added = [...newPlayers].filter((k) => !oldPlayers.has(k));
 
 // ————— rebuild each format —————
 for (const f of FORMATS) {
+  const formatLists = listsForFormat(f);
   const template = oldBoards[f].map((r) => r.pos); // slot sequence
   const queues = {};
-  for (const pos of POSITIONS) queues[pos] = [...newLists[pos]];
+  for (const pos of POSITIONS) queues[pos] = [...formatLists[pos]];
 
   const filled = [];
   for (const pos of template) {
@@ -146,7 +171,7 @@ for (const f of FORMATS) {
   // leftovers → tail, ordered by tier depth then relative positional depth
   const leftovers = [];
   for (const pos of POSITIONS) {
-    const total = newLists[pos].length;
+    const total = formatLists[pos].length;
     for (const p of queues[pos]) leftovers.push({ pos, depth: p.rank / total, ...p });
   }
   leftovers.sort((a, b) => a.tierIdx - b.tierIdx || a.depth - b.depth || a.rank - b.rank);
