@@ -1,0 +1,6 @@
+[
+  { "op": "swap", "a": "Brock Bowers", "b": "Jadarian Price", "formats": ["ppr", "halfppr", "superflex"] },
+  { "op": "swap", "a": "Derrick Henry", "b": "James Cook", "formats": ["ppr"] },
+  { "op": "moveToSpot", "player": "Josh Allen", "spot": 23, "formats": ["ppr"] },
+  { "op": "moveBelow", "player": "Brian Thomas Jr.", "below": ["Josh Allen", "Trey McBride"], "formats": ["ppr"] }
+]
