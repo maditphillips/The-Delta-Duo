@@ -1,0 +1,89 @@
+
+================================================================================
+1. PUNTS - a pure air/aerodynamics probe. No uprights, no board, no aiming.
+================================================================================
+sample 57,813 punts (1,869 at Gillette)
+
+GROSS PUNT DISTANCE vs expectation, all venues (shortest = heaviest air / worst conditions):
+   1. NYG  outdoors  n= 1196  gross 40.7 yds  vs exp -1.79
+   2. CHI  outdoors  n= 1832  gross 43.2 yds  vs exp -1.50
+   3. PIT  outdoors  n= 1897  gross 43.5 yds  vs exp -1.13
+   4. PHI  outdoors  n= 1842  gross 43.8 yds  vs exp -1.12
+   5. GB   outdoors  n= 1730  gross 43.5 yds  vs exp -1.08
+   6. BUF  outdoors  n= 1734  gross 43.6 yds  vs exp -0.99
+   7. NE   outdoors  n= 1869  gross 43.7 yds  vs exp -0.94 <<<< GILLETTE
+   8. CLE  outdoors  n= 1909  gross 44.0 yds  vs exp -0.76
+      ...
+  35. IND  dome      n=  417  gross 43.4 yds  vs exp +1.08
+  36. LA   dome      n= 1090  gross 45.4 yds  vs exp +1.23
+  37. DAL  outdoors  n=  580  gross 44.1 yds  vs exp +1.34
+  38. DEN  outdoors  n= 1908  gross 47.1 yds  vs exp +1.84
+
+  Gillette punt rank: 7 of 38  (-0.94 yds vs expectation)
+  spread across venues: sd 0.84 yds; Gillette is -1.2 sd
+  Gillette punts out of bounds 8.8% vs 9.3% elsewhere (a wind-fighting tell)
+
+================================================================================
+2. KICKOFFS - the other pure ball-flight probe (2011-2023, 35-yd tee era)
+================================================================================
+TOUCHBACK RATE by venue (low = ball not carrying):
+   1. GB   outdoors  n= 1154  TB 42.3%
+   2. CHI  outdoors  n= 1030  TB 43.5%
+   3. LAC  outdoors  n=  485  TB 45.2%
+   4. PIT  outdoors  n= 1125  TB 46.4%
+   5. NYJ  outdoors  n= 2154  TB 47.3%
+   6. SEA  outdoors  n= 1154  TB 47.7%
+      ...
+  12. NE   outdoors  n= 1254  TB 51.4%  <<<< GILLETTE
+  33. LAC  dome      n=  715  TB 68.8%
+  34. LV   dome      n=  383  TB 69.7%
+  35. DEN  outdoors  n= 1149  TB 77.8%
+
+  Gillette touchback rank: 12 of 35 (1 = lowest)
+
+================================================================================
+3. IS GILLETTE MORE WIND-SENSITIVE THAN OTHER STADIUMS?
+================================================================================
+FG% vs expectation by recorded wind speed:
+  wind                          Gillette        other outdoor venues
+  0-5 mph     -4.9% (n=228)          +0.5% (n= 4993)
+  6-9 mph     -2.4% (n=275)          -0.5% (n= 5542)
+  10-14 mph   -4.8% (n=185)          -1.6% (n= 3688)
+  15+ mph     -3.9% (n= 87)          -3.0% (n= 1978)
+
+  wind x Gillette interaction: beta=+0.0312 per mph  p=0.122
+  baseline wind effect: -0.0221 per mph (p=0.000)
+
+================================================================================
+4. SURFACE BREAK: Gillette was natural grass 2002-2005, FieldTurf from 2006
+================================================================================
+  recorded surface at Gillette by season:
+   2002:grass  2003:grass  2004:grass  2005:grass  2006:fieldturf  2007:fieldturf  2008:fieldturf  2009:fieldturf  2010:fieldturf  2011:fieldturf  2012:fieldturf  2013:fieldturf  2014:fieldturf  2015:fieldturf  2016:fieldturf  2017:fieldturf  2018:fieldturf  2019:grass  2020:grass  2021:fieldturf  2022:fieldturf  2023:fieldturf  2024:fieldturf  2025:fieldturf
+  visiting kickers, grass 2002-2005      n= 61  act  70.5%  vs exp -12.5%  z=-2.73
+  visiting kickers, turf 2006-2025       n=302  act  81.1%  vs exp  -5.3%  z=-2.83
+
+================================================================================
+5. GUST & WIND-DIRECTION DETAIL from the weather string
+================================================================================
+share of games whose weather string mentions GUSTS (outdoor venues, >=80 games):
+   1. CIN   199 games  gusts mentioned 12.1%  mean gust 14 mph
+   2. NE    219 games  gusts mentioned 5.5%  mean gust 24 mph  <<<< GILLETTE
+   3. CHI   193 games  gusts mentioned 3.1%  mean gust 32 mph
+   4. DEN   206 games  gusts mentioned 1.5%  mean gust 19 mph
+   5. CAR   200 games  gusts mentioned 1.0%  mean gust 22 mph
+   6. PHI   201 games  gusts mentioned 1.0%  mean gust 32 mph
+      ...
+  23. TB    200 games  gusts mentioned 0.0%  mean gust nan mph
+  24. WAS   197 games  gusts mentioned 0.0%  mean gust nan mph
+
+  Gillette gust-mention rank: 2 of 24
+
+  wind direction at Gillette games: {'WEST': 20, 'WNW': 19, 'NW': 19, 'NE': 16, 'SE': 15, 'SW': 15, 'SOUTH': 13, 'NORTH': 13}
+
+================================================================================
+6. DOES THE PENALTY LAND ON ONE HALF OF THE GAME? (ends flip at the quarter)
+================================================================================
+  visitors, Q1+Q3 (one direction)      n=158  act  83.5%  vs exp  -2.7%  z=-1.06
+  visitors, Q2+Q4 (the other)          n=203  act  75.9%  vs exp  -9.5%  z=-4.06
+  Patriots, Q1+Q3                      n=152  act  86.8%  vs exp  -1.7%  z=-0.69
+  Patriots, Q2+Q4                      n=274  act  86.9%  vs exp  -1.0%  z=-0.56

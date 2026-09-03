@@ -203,6 +203,7 @@ footer {
 .chalk-table .num {
   font-variant-numeric: tabular-nums;
   text-align: right;
+  white-space: nowrap;
 }
 .chalk-table th.num {
   text-align: right;

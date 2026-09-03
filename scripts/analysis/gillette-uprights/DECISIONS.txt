@@ -1,0 +1,39 @@
+
+================================================================================
+FG ATTEMPT RATE ON 4th DOWN FROM 40-59 YD FG RANGE (competitive situations)
+================================================================================
+  New England at Gillette                      n=  191  kicked  38.7%  mean FG dist if kicked 45.0
+  Visitors at Gillette                         n=  203  kicked  46.3%  mean FG dist if kicked 46.3
+  New England on the road                      n=  219  kicked  46.6%  mean FG dist if kicked 46.0
+  All home teams, other stadiums               n= 5726  kicked  49.1%  mean FG dist if kicked 46.6
+  All road teams, other stadiums               n= 5824  kicked  49.3%  mean FG dist if kicked 46.5
+
+  NE home vs NE road attempt rate: 38.7% vs 46.6%  diff -7.8%  (chi2 p=0.134)
+  At Gillette, NE kicked 38.7% of these vs visitors 46.3%  (chi2 p=0.157)
+
+================================================================================
+BY DIRECTION OF PLAY AT GILLETTE - did NE avoid kicking one way?
+================================================================================
+  New England  Q1+Q3  n=  91  kicked  37.4%
+  New England  Q2+Q4  n= 100  kicked  40.0%
+  Visitors     Q1+Q3  n=  88  kicked  53.4%
+  Visitors     Q2+Q4  n= 115  kicked  40.9%
+  league       Q1+Q3  n= 5145  kicked  47.6%
+  league       Q2+Q4  n= 6405  kicked  50.5%
+
+================================================================================
+THE LONG END OF THE RANGE: 4th down, FG would be 50+ yds
+================================================================================
+  New England at Gillette                      n=  116  kicked   6.9%  mean FG dist if kicked 51.8
+  Visitors at Gillette                         n=  162  kicked  16.7%  mean FG dist if kicked 51.7
+  New England on the road                      n=  150  kicked  14.7%  mean FG dist if kicked 51.5
+  All home teams, other stadiums               n= 4100  kicked  18.7%  mean FG dist if kicked 52.4
+
+================================================================================
+SIGNIFICANCE OF THE 50+ DECISION GAP (within-team controls)
+================================================================================
+  NE at Gillette, 50+ available       6.9% (n= 116)  vs  NE on the road                 14.7% (n= 150)   Fisher p=0.0521
+  NE at Gillette                      6.9% (n= 116)  vs  visitors at Gillette           16.7% (n= 162)   Fisher p=0.0170
+  NE at Gillette                      6.9% (n= 116)  vs  all home teams elsewhere       18.7% (n=4100)   Fisher p=0.0006
+  visitors at Gillette               16.7% (n= 162)  vs  all home teams elsewhere       18.7% (n=4100)   Fisher p=0.6066
+  NE at Gillette (within 8 pts)       6.6% (n=  91)  vs  NE on road (within 8)          15.0% (n= 120)   Fisher p=0.0787
