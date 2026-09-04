@@ -126,6 +126,37 @@ def main():
         print(f"      {c:<10} {f.params[c]:+.3f} ppg/sd   t = {f.tvalues[c]:+.2f}"
               f"   p = {f.pvalues[c]:.3f}")
 
+    # ----------------------------------------------------------------- 1b ---
+    rule("1b. THOSE BUCKETS ARE MOSTLY AGE")
+    print("The three cohorts above pool a 22-year-old with a 30-year-old, and")
+    print("most of a receiver's decline risk is just age. Splitting the worst")
+    print("bucket shows what the pooled number is actually measuring.\n")
+    both = dec[role & eff]
+    print(f"    'lost both': n = {len(both)}, median age {both.age.median():.1f}, "
+          f"median experience year {both.exp.median():.0f}\n")
+    show([outcomes(both, both.age <= 24, "  lost both, age 24 and under"),
+          outcomes(both, both.age.between(25, 27, inclusive="left"), "  lost both, age 25-26"),
+          outcomes(both, both.age >= 27, "  lost both, age 27+")])
+    print()
+    show([outcomes(both, both.best_prior_finish <= 12, "  lost both, a top-12 season behind him"),
+          outcomes(both, both.best_prior_finish > 24, "  lost both, never top-24")])
+
+    print("\n    The cell that matters for a young receiver coming off a WR1 season:")
+    print("    any 20%+ decline, year 4 or earlier, with a top-12 finish already")
+    print("    on the shelf - regardless of which way the fall broke down.\n")
+    young = dec[(dec.exp <= 4) & (dec.best_prior_finish <= 12)]
+    show([outcomes(dec, dec.index.isin(young.index), "  young, pedigreed decliners"),
+          outcomes(dec, ~dec.index.isin(young.index), "  everyone else who declined")])
+    print(f"\n    Note the sample: n = {len(young)}. And note that no receiver in the")
+    print("    panel with 3 or fewer years and a top-12 season has ever landed in")
+    print("    'lost both' at all - the cell is empty, which is not the same as safe.\n")
+    cols = ["season", "player", "exp", "age", "prev_ppg_raw", "ppg", "finish", "next_finish"]
+    y = young.sort_values("season")[cols].copy()
+    y["mode"] = np.where((y.index.isin(both.index)), "both",
+                         np.where(y.index.isin(dec[role].index), "role",
+                                  np.where(y.index.isin(dec[eff].index), "eff", "-")))
+    print(y.to_string(index=False, float_format="{:.2f}".format))
+
     # ------------------------------------------------------------------ 2 ---
     rule("2. THE SAME QUESTION AS A PREDICTION PROBLEM")
     print("Leave-one-season-out R2 on next-year points per game, declining seasons.\n")
@@ -193,6 +224,88 @@ def main():
                      "ppr_per_tgt", "adot", "catchable", "contested", "drop_rate",
                      "catch_on_catchable"]].to_string(
                 index=False, float_format="{:.3f}".format))
+
+    section6(s)
+
+
+def adjusted_charting():
+    """Target quality and conversion, adjusted for the job he was asked to do.
+
+    A deep target is inherently less catchable and a contested one is inherently
+    harder to convert, so the raw rates partly measure the route tree. Residuals
+    against depth (and against depth plus contested rate) say whether he was
+    thrown bad balls and whether he failed to convert good ones, holding the
+    role constant.
+    """
+    c = pd.read_parquet(f"{HERE}/charting.parquet")
+    g = c.groupby(["season", "receiver_player_id", "receiver_player_name"]).apply(
+        lambda x: pd.Series({
+            "targets": x.targets.sum(),
+            "adot": np.average(x.adot.fillna(0), weights=x.targets),
+            "catchable": np.average(x.catchable.fillna(0), weights=x.targets),
+            "contested": np.average(x.contested.fillna(0), weights=x.targets),
+            "drop_rate": x.drops.sum() / x.targets.sum(),
+            "coc": np.average(x.catch_on_catchable.fillna(0), weights=x.targets),
+        }), include_groups=False).reset_index()
+    g = g[g.targets >= 40].reset_index(drop=True)
+    g["catchable_oe"] = sm.OLS(
+        g.catchable, sm.add_constant(pd.DataFrame({"a": g.adot, "a2": g.adot ** 2}))).fit().resid
+    g["coc_oe"] = sm.OLS(
+        g.coc, sm.add_constant(pd.DataFrame({"c": g.contested, "a": g.adot}))).fit().resid
+    return g.rename(columns={"receiver_player_id": "player_id"})
+
+
+def section6(s):
+    rule("6. WAS HE THROWN BAD BALLS, OR DID HE DROP GOOD ONES?")
+    print("Catchable rate residual against depth of target, and catch-on-catchable")
+    print("residual against contested rate and depth. Positive means better than")
+    print("the job he was asked to do would predict.\n")
+    g = adjusted_charting()
+    nxt = g[["player_id", "season", "coc_oe", "catchable_oe", "drop_rate"]].copy()
+    nxt["season"] -= 1
+    nxt = nxt.rename(columns={"coc_oe": "n_coc", "catchable_oe": "n_catch", "drop_rate": "n_drop"})
+    pair = g.merge(nxt, on=["player_id", "season"], how="inner")
+    print("    Persistence, receivers with 40+ targets in consecutive years:")
+    for a, b, lab in [("coc_oe", "n_coc", "adjusted catch-on-catchable"),
+                      ("catchable_oe", "n_catch", "adjusted target quality"),
+                      ("drop_rate", "n_drop", "drop rate")]:
+        r = stats.pearsonr(pair[a], pair[b])
+        print(f"      {lab:<30} n = {len(pair)}   r = {r.statistic:+.3f}"
+              f"   R2 = {r.statistic ** 2:.3f}")
+
+    m = sample(build()).merge(g.drop(columns=["receiver_player_name", "targets"]),
+                              on=["player_id", "season"], how="inner")
+    print(f"\n    Does any of it predict next season?  (n = {len(m)})\n")
+    for cols in ([["ppg"], ["ppg", "coc_oe"], ["ppg", "catchable_oe"], ["ppg", "drop_rate"],
+                  ["ppg", "age"], ["ppg", "age", "coc_oe"]]):
+        r2, _ = loso_r2(m, cols)
+        print(f"      {' + '.join(cols):<30} cv R2 = {r2:.4f}")
+    print("\n    Next season by quintile of adjusted conversion:\n")
+    q = pd.qcut(m.coc_oe, 5, labels=["worst", "2", "3", "4", "best"])
+    t = m.groupby(q, observed=True).agg(
+        n=("player_id", "size"), coc_oe=("coc_oe", "mean"), ppg=("ppg", "mean"),
+        next_ppg=("next_ppg_c", "mean"), med_next=("next_finish_c", "median"),
+        top24=("next_top24", "mean"))
+    t["top24"] = 100 * t.top24
+    print(t.to_string(float_format="{:.3f}".format))
+    print("\n    The worst quintile does finish worse - and its current points per")
+    print("    game is already the lowest, which is why the residual adds nothing")
+    print("    once scoring is in the model.")
+
+    print("\n\n    The three receivers, and where regression to the mean puts them:\n")
+    for a, b, lab in [("coc_oe", "n_coc", "adjusted catch-on-catchable"),
+                      ("drop_rate", "n_drop", "drop rate")]:
+        sl, ic, r, _, _ = stats.linregress(pair[a], pair[b])
+        print(f"    {lab}  (year-to-year slope {sl:+.3f})")
+        for who in ("B.Thomas", "P.Washington", "R.Odunze", "L.Burden"):
+            row = g[(g.receiver_player_name == who) & (g.season == 2025)]
+            if not len(row):
+                continue
+            v = float(row.iloc[0][a])
+            rank = int(g[a].rank().loc[row.index[0]])
+            print(f"      {who:<14} 2025 {v:+.3f}  (rank {rank} of {len(g)})"
+                  f"  ->  projected {sl * v + ic:+.3f}   league mean {pair[b].mean():+.3f}")
+        print()
 
 
 if __name__ == "__main__":

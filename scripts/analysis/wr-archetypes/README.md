@@ -253,10 +253,12 @@ full-season pace, and his last eight ran 14.6, a WR13 pace. Over the whole year
 he was WR27 with a health-adjusted pace of WR35.
 
 **Brian Thomas Jr. matches exactly.** WR4 as a rookie, WR42 in year two, three
-games missed. Worth separating what actually broke: his target share held
-(25.5% → 19.3%, still 60th percentile) while his efficiency collapsed — 2.14 →
-1.53 PPR per target, 9.64 → 7.77 yards per target, 0.41 → 0.19 EPA per target.
-He lost the per-target production, not the role.
+games missed. Both halves of his season broke: target share 25.5% → 19.3% (a 24%
+fall, even though 19.3% is still 60th percentile league-wide) and efficiency 2.14
+→ 1.53 PPR per target, 9.64 → 7.77 yards per target, 0.41 → 0.19 EPA per target.
+Measured against the league he still looks well used; measured against his own
+rookie year he lost a quarter of his role and a third of his production per
+target.
 
 **Rome Odunze's efficiency is not fantastic, and his pace was not top-15.** The
 target volume claim holds: 24% target share and 7.5 targets a game, 79th and 82nd
@@ -477,9 +479,25 @@ Same offence, same quarterback, one season:
 | Jakobi Meyers | 60 | 1.78 | 71.7% | 18.3% | 3.3% | 95.3% |
 
 Thomas got the **most catchable** targets on the team and converted them the
-**worst** by a distance. That is not a quarterback problem and it is not a role
-problem — his target share held at 19.3%. Washington, on the identical passer in
-the identical offence, out-produced him by 24% per target.
+**worst** by a distance. That is not a quarterback problem. It is not *only* a
+conversion problem either — his target share fell 24% from his rookie year, so
+the role shrank too — but Washington, on the identical passer in the identical
+offence, out-produced him by 24% per target.
+
+Adjust for the job each was asked to do and it gets worse for Thomas, not better.
+Regress catchable rate on depth of target, and catch-on-catchable on contested
+rate and depth, across all 657 charted receiver-seasons with 40+ targets:
+
+| 2025 | Target quality vs depth | Rank | Conversion vs contested + depth | Rank |
+|---|---|---|---|---|
+| Brian Thomas Jr. | **+0.084** (93rd pct) | 611/657 | **−0.150** | **6th worst of 657** |
+| Parker Washington | −0.035 (27th pct) | 179/657 | +0.038 (76th pct) | 497/657 |
+| Rome Odunze | −0.046 (23rd pct) | 148/657 | −0.089 (5th pct) | 31/657 |
+| Luther Burden III | +0.135 (99th pct) | 652/657 | −0.033 (24th pct) | 160/657 |
+
+Thomas was thrown unusually *good* balls for how deep he ran and converted them
+about as badly as anyone in the charted era. The contested-catch defence does not
+survive: the adjustment already accounts for his league-high 24.2% contested rate.
 
 ### Does that kind of decline come back?
 
@@ -521,6 +539,81 @@ years, on the team's highest aDOT (13.65, 13.92). Luther Burden III's 2025 line 
 at a 7.78 aDOT. They are not doing the same job, which weakens the assumption that
 Burden's finish comes straight out of Odunze's role.
 
+### The failure-mode table, read properly
+
+Two corrections to how that table was used above.
+
+**Thomas is in "lost both," the worst row — not "kept the role."** Against his own
+rookie year his target share fell 24% and his points per target fell 29%, so he
+clears both thresholds. Earlier text in this file compared his 19.3% share to the
+league instead of to himself; that was wrong.
+
+**But the pooled rows are measuring age, not failure mode.** "Lost both" has a
+median age of 28 and a median experience of year six. Split it:
+
+| lost both, by age | n | Median next | Top-24 | Fully recovered |
+|---|---|---|---|---|
+| 24 and under | 7 | WR54 | 0% | 14% |
+| 25-26 | 19 | WR113 | 11% | 11% |
+| 27+ | 65 | WR124 | 6% | 5% |
+
+The 9%-top-24, 10%-recovery figure quoted earlier is a description of receivers
+ageing out, and applying it to a 22-year-old is a category error. The cell that
+actually fits Thomas — a 20%+ decline, year four or earlier, with a top-12 season
+already banked — looks nothing like it:
+
+| | n | Median next | Top-12 | Top-24 | Fully recovered |
+|---|---|---|---|---|---|
+| young, pedigreed decliners | 14 | **WR20** | 36% | **57%** | 7% |
+| everyone else who declined | 285 | WR104 | 5% | 11% | 10% |
+
+That is DeAndre Hopkins 2016 → WR2, Mike Evans 2017 → WR9, Tyreek Hill 2019 →
+WR2, A.J. Brown 2021 → WR6, JuJu Smith-Schuster 2019 → WR16, Deebo Samuel 2022 →
+WR15 and T.Y. Hilton 2015 → WR5, against Allen Robinson 2016 → WR188, Steve Smith
+2010 → WR128 and Hunter Renfrow 2022 → WR114. Fourteen receivers. It is a
+direction, not a probability.
+
+**Also note what "fully recovered" means.** It is beating his season N−1 points
+per game — for Thomas, 16.71, a WR1 season. Even in the favourable cell that
+happens 7% of the time. A top-24 bounce and a return to WR4 form are very
+different bets, and only the first one is likely.
+
+### Do the charting numbers actually predict?
+
+The adjusted conversion metric is the most persistent of the three, and it still
+adds nothing:
+
+| | Year-to-year persistence |
+|---|---|
+| adjusted catch-on-catchable | r = +0.308, R² = 0.095 |
+| drop rate | r = +0.140, R² = 0.020 |
+| adjusted target quality | r = +0.125, R² = 0.016 |
+
+| Predictor of next-season ppg (n = 300) | cv R² |
+|---|---|
+| points per game | 0.4830 |
+| + adjusted conversion | 0.4751 |
+| + adjusted target quality | 0.4669 |
+| + drop rate | 0.4815 |
+| points per game + age | **0.5291** |
+| + adjusted conversion | 0.5255 |
+
+The worst quintile of adjusted conversion does finish worse the following year —
+6.62 next-season ppg against 10.08 for the fourth quintile — but its *current*
+points per game is already the lowest of the five, which is exactly why the
+residual adds nothing once scoring is in the model.
+
+And because both of Thomas's bad numbers are extreme, regression takes most of
+them away:
+
+| | 2025 | Rank of 657 | Projected 2026 | League mean |
+|---|---|---|---|---|
+| adjusted catch-on-catchable | −0.150 | 6th worst | **−0.028** | +0.014 |
+| drop rate | 11.0% | 10th worst | **4.8%** | 3.7% |
+
+Half a standard deviation below average, and a drop rate a point above the mean.
+Bad, not broken.
+
 ### So is Thomas still the pick?
 
 The premise fails but the conclusion mostly survives, by a different route.
@@ -529,17 +622,33 @@ The model's case for Thomas never rested on 2025 — it rested on age and an
 already-banked WR4 season, and the quarterback split makes that pedigree *more*
 credible, not less. Nothing in the model inputs changed.
 
-What changed is the confidence around it. He has no quarterback excuse, his
-failure is on the more persistent of the two conversion metrics, and a teammate
-beat him per target on the same passer. Against that, the drops are the single
-most regression-prone thing he could have been bad at.
+What changed is the confidence around it. He has no quarterback excuse, both
+halves of his season fell rather than one, and his adjusted conversion was the
+sixth worst of 657 charted seasons. Against that: every out-of-sample test of
+whether knowing that improves the forecast comes back null, the base rate for
+young pedigreed decliners is 57% top-24 rather than the 9% the pooled bucket
+suggests, and both of his bad numbers regress most of the way to average.
+
+The honest limit is that those null tests run on 300 seasons of charting. They
+are not powerful enough to prove the mechanism is worthless — only that it has
+not shown itself to be worth anything yet.
 
 Call it a coin flip between Thomas and Washington, which is what the comparables
 said before any of this: over every ordered pair, Thomas's comps finish ahead of
-Washington's **53%** of the time. Thomas keeps the wider range — 18% top-12
-against 8% — so he is the pick where upside is what you are buying, and Washington
-is the pick where you need the floor. Odunze sits between them and is the one whose
-2026 depends most on something outside his control.
+Washington's **53%** of the time.
+
+Two things it would be wrong to claim. Washington does **not** have a better
+floor: the comparables put his middle 50% at WR31-WR80 against Thomas at
+WR18-WR83, so their downside is the same and Thomas's upside is much better. What
+Washington has is a season with nothing broken in it — role up 64%, efficiency up
+2%, 76th-percentile conversion on 27th-percentile target quality — so there is
+less that has to bounce back. That is a narrower range, not a higher floor.
+
+And Odunze's dependence on things outside his control is specific, not a mood:
+Chicago gives him the worst target quality on the roster even after adjusting for
+his depth (7th percentile in 2024, 23rd in 2025). Whether that improves is Caleb
+Williams' and the play-caller's decision, not his. His own adjusted conversion in
+2025 was 5th percentile, so it is not all Williams either.
 
 ## Caveats
 

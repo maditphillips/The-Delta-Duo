@@ -28,6 +28,52 @@ kept the role, stopped converting  101    WR104 WR45 WR164    8%   16%     6.91 
       d_eff      -0.029 ppg/sd   t = -0.09   p = 0.925
 
 ==============================================================================
+1b. THOSE BUCKETS ARE MOSTLY AGE
+==============================================================================
+The three cohorts above pool a 22-year-old with a 30-year-old, and
+most of a receiver's decline risk is just age. Splitting the worst
+bucket shows what the pooled number is actually measuring.
+
+    'lost both': n = 105, median age 28.0, median experience year 6
+
+                       cohort  n med_next   q1    q3 top12 top24 next_ppg bounce
+  lost both, age 24 and under  7     WR54 WR43 WR160    0%    0%     6.12    14%
+         lost both, age 25-26 19    WR113 WR52 WR152    0%   11%     5.65    11%
+           lost both, age 27+ 65    WR124 WR69 WR209    2%    6%     5.06     5%
+
+                                 cohort  n med_next   q1    q3 top12 top24 next_ppg bounce
+  lost both, a top-12 season behind him 34    WR108 WR37 WR209    9%   21%     7.13     6%
+                lost both, never top-24 56    WR116 WR61 WR172    0%    2%     4.94    12%
+
+    The cell that matters for a young receiver coming off a WR1 season:
+    any 20%+ decline, year 4 or earlier, with a top-12 finish already
+    on the shelf - regardless of which way the fall broke down.
+
+                      cohort   n med_next   q1    q3 top12 top24 next_ppg bounce
+  young, pedigreed decliners  14     WR20  WR7  WR69   36%   57%    13.01     7%
+  everyone else who declined 285    WR104 WR50 WR173    5%   11%     6.29    10%
+
+    Note the sample: n = 14. And note that no receiver in the
+    panel with 3 or fewer years and a top-12 season has ever landed in
+    'lost both' at all - the cell is empty, which is not the same as safe.
+
+ season              player  exp   age  prev_ppg_raw   ppg  finish  next_finish mode
+   2010         Sidney Rice 4.00 24.00         16.32  9.50  103.00        77.00  eff
+   2010         Steve Smith 4.00 25.32         16.94 13.21   60.00       128.00 role
+   2012        Hakeem Nicks 4.00 24.63         15.81 11.68   53.00        45.00  eff
+   2015         T.Y. Hilton 4.00 25.80         17.23 13.21   22.00         5.00  eff
+   2016     DeAndre Hopkins 4.00 24.24         20.69 12.34   27.00         2.00 both
+   2016      Allen Robinson 3.00 23.02         19.00 12.46   25.00       188.00  eff
+   2017          Mike Evans 4.00 24.03         19.01 13.54   17.00         9.00 both
+   2019         Tyreek Hill 4.00 25.50         20.88 15.69   32.00         2.00  eff
+   2019 JuJu Smith-Schuster 3.00 22.77         18.56  9.43   65.00        16.00 role
+   2021          A.J. Brown 3.00 24.17         17.68 13.92   32.00         6.00  eff
+   2022      Hunter Renfrow 4.00 26.70         15.24  7.90   92.00       114.00 both
+   2022     Diontae Johnson 4.00 26.16         17.15 10.63   29.00        45.00  eff
+   2022    Deebo Samuel Sr. 4.00 26.63         21.18 12.95   37.00        15.00  eff
+   2024       Jaylen Waddle 4.00 25.77         14.19  9.97   46.00        24.00 role
+
+==============================================================================
 2. THE SAME QUESTION AS A PREDICTION PROBLEM
 ==============================================================================
 Leave-one-season-out R2 on next-year points per game, declining seasons.
@@ -125,3 +171,54 @@ receiver_player_name passer_player_name  targets    ypt  ppr_per_tgt   adot  cat
              D.Swift         C.Williams       48  6.042        1.438 -0.521      0.771      0.021      0.062               0.919
               C.Kmet         C.Williams       48  6.771        1.531  8.702      0.667      0.104      0.042               0.906
           K.Monangai         C.Williams       30  5.467        1.147  0.067      0.800      0.100      0.167               0.750
+
+==============================================================================
+6. WAS HE THROWN BAD BALLS, OR DID HE DROP GOOD ONES?
+==============================================================================
+Catchable rate residual against depth of target, and catch-on-catchable
+residual against contested rate and depth. Positive means better than
+the job he was asked to do would predict.
+
+    Persistence, receivers with 40+ targets in consecutive years:
+      adjusted catch-on-catchable    n = 342   r = +0.307   R2 = 0.094
+      adjusted target quality        n = 342   r = +0.123   R2 = 0.015
+      drop rate                      n = 342   r = +0.152   R2 = 0.023
+
+    Does any of it predict next season?  (n = 299)
+
+      ppg                            cv R2 = 0.4837
+      ppg + coc_oe                   cv R2 = 0.4768
+      ppg + catchable_oe             cv R2 = 0.4708
+      ppg + drop_rate                cv R2 = 0.4819
+      ppg + age                      cv R2 = 0.5293
+      ppg + age + coc_oe             cv R2 = 0.5263
+
+    Next season by quintile of adjusted conversion:
+
+         n  coc_oe    ppg  next_ppg  med_next  top24
+coc_oe                                              
+worst   60  -0.091  8.396     6.618    80.500 10.000
+2       60  -0.027 10.241     9.245    62.000 25.000
+3       59   0.001 11.143    10.330    51.000 22.034
+4       60   0.032 11.597     9.886    50.000 28.333
+best    60   0.072 11.494     9.080    67.000 20.000
+
+    The worst quintile does finish worse - and its current points per
+    game is already the lowest, which is why the residual adds nothing
+    once scoring is in the model.
+
+
+    The three receivers, and where regression to the mean puts them:
+
+    adjusted catch-on-catchable  (year-to-year slope +0.286)
+      B.Thomas       2025 -0.150  (rank 6 of 657)  ->  projected -0.028   league mean +0.014
+      P.Washington   2025 +0.039  (rank 498 of 657)  ->  projected +0.026   league mean +0.014
+      R.Odunze       2025 -0.088  (rank 35 of 657)  ->  projected -0.010   league mean +0.014
+      L.Burden       2025 -0.031  (rank 167 of 657)  ->  projected +0.006   league mean +0.014
+
+    drop rate  (year-to-year slope +0.157)
+      B.Thomas       2025 +0.110  (rank 648 of 657)  ->  projected +0.048   league mean +0.037
+      P.Washington   2025 +0.041  (rank 408 of 657)  ->  projected +0.037   league mean +0.037
+      R.Odunze       2025 +0.077  (rank 609 of 657)  ->  projected +0.043   league mean +0.037
+      L.Burden       2025 +0.100  (rank 641 of 657)  ->  projected +0.047   league mean +0.037
+
