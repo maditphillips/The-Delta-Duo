@@ -38,6 +38,69 @@ yard line
   you should kick on almost anything.
 
 ==============================================================================
+1b. THE ACTUAL GO/KICK BOUNDARY, BOTH DIMENSIONS AT ONCE
+==============================================================================
+Break-even is a surface, not a line, because the prize depends on
+field position and the conversion rate depends on yards to go. Here
+are both, and then the difference that decides it.
+
+  break-even conversion rate needed for GOING to beat a guaranteed 3
+          guaranteed FG  convert  fail  break-even %
+band                                                
+(0, 10]           -1.27     2.21 -3.50         39.01
+(10, 20]          -0.84     2.11 -3.32         45.57
+(20, 32]          -0.11     2.28 -3.19         56.33
+(32, 38]           0.81     2.73 -2.77         65.13
+(38, 42]           1.49     2.99 -2.61         73.17
+
+  actual conversion rate, by yards to go and field position
+band  (0, 10]  (10, 20]  (20, 32]  (32, 38]  (38, 42]
+tg2                                                  
+1.0      61.5      65.6      68.4      68.6      67.5
+2.0      56.8      70.5      60.0      55.1      64.6
+3.0      43.0      58.7      46.7      55.6      57.4
+4.0      48.5      48.8      55.7      48.6      53.7
+5.0      32.4      50.0      48.8      38.0      41.0
+6.0      34.8      22.2      24.6      30.9      36.5
+
+  MARGIN = actual minus break-even. Positive means GO FOR IT,
+  negative means take the guaranteed three.
+band  (0, 10]  (10, 20]  (20, 32]  (32, 38]  (38, 42]
+tg2                                                  
+1.0      22.4      20.0      12.0       3.5      -5.7
+2.0      17.7      24.9       3.7     -10.0      -8.5
+3.0       4.0      13.1      -9.7      -9.6     -15.8
+4.0       9.5       3.2      -0.6     -16.5     -19.5
+5.0      -6.6       4.4      -7.5     -27.1     -32.1
+6.0      -4.2     -23.4     -31.7     -34.2     -36.6
+
+  sample sizes
+band  (0, 10]  (10, 20]  (20, 32]  (32, 38]  (38, 42]
+tg2                                                  
+1.0       506       253       332       220       169
+2.0       185        78       135        98        82
+3.0       107        46        75        90        54
+4.0        66        41        70        74        41
+5.0        37        28        43        50        39
+6.0        66       117       191       165       104
+
+  The boundary runs diagonally, and it does not collapse to one
+  yards-to-go number:
+    inside the 20 : go on 4th & 4 or less
+    20 to 32      : go on 4th & 1 or 2
+    32 to 38      : go on 4th & 1 only, and it is nearly a coin flip
+                    (68.6% converted against 65.1% needed)
+    38 to 42      : kick everything, 4th & 1 included - but 4th & 1 is
+                    the closest call on the board (67.5% against 73.2%
+                    needed, a 5.7 point margin)
+
+  So yes: fourth and 1 is the one exception out at the edge of the
+  guarantee, and from the 32 to the 38 you should still go for it.
+  Only from the 38 to the 42, where the kick is 56 to 60 yards and the
+  prize for converting is at its smallest, does a guaranteed three
+  finally beat fourth and 1 - and it wins by a nose, not a mile.
+
+==============================================================================
 2. THE SWEEP: ONE THRESHOLD, APPLIED TO EVERY FOURTH DOWN IN THE GAME
 ==============================================================================
 
@@ -141,7 +204,17 @@ yardline_100
   the first overall pick, for comparison: +1.28 wins a season on average
   (9.8 wins, 57.5%), +1.59 median (59.4%)
 
-  The honest comparison is leg against quarterback: +0.71 at absolute
-  best, against +1.28 for the average 1.01 and +1.59 for the median.
-  The kicker loses. He only draws level if you credit him with the
-  fourth-down decisions too, and those were free all along.
+-- why the total is not the number to compare against the quarterback
+  The total (+1.15 at the best threshold) is close to the
+  average 1.01 quarterback (+1.28), but it is not the right
+  comparison, because +0.41 of it is the fourth-down chart
+  and any team can fix that with any kicker. Put both draft choices
+  side by side and the chart appears on both sides and cancels:
+
+    draft the kicker : 8.50 + 0.41 chart + 0.74 kicker = 9.65 wins
+    draft the QB     : 8.50 + 0.41 chart + 1.28 QB     = 10.19 wins
+    difference       : 0.54 wins a season, which is exactly QB minus leg
+
+  The quarterback's +1.28 is that player against a replacement
+  quarterback. It does not come bundled with a fourth-down chart
+  either. Compare like with like: 0.74 against 1.28, or 1.59 at the median.

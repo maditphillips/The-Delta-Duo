@@ -126,6 +126,50 @@ def main():
     print("  Inside the 10 you should go for it on almost anything; out at the 42")
     print("  you should kick on almost anything.")
 
+    # ------------------------------------------------- 1b. the full surface
+    hdr("1b. THE ACTUAL GO/KICK BOUNDARY, BOTH DIMENSIONS AT ONCE")
+    print("Break-even is a surface, not a line, because the prize depends on")
+    print("field position and the conversion rate depends on yards to go. Here")
+    print("are both, and then the difference that decides it.")
+    fb = [0, 10, 20, 32, 38, MAX_YL]
+    go["band"] = pd.cut(go.yardline_100, fb)
+    go["tg2"] = go.ydstogo.clip(upper=6)
+    gi2 = go[go.yardline_100.le(MAX_YL)]
+    f4b = w[w.down.eq(4) & w.yardline_100.le(MAX_YL)].assign(
+        band=lambda x: pd.cut(x.yardline_100, fb))
+    pzb = gi2[gi2.conv].groupby("band", observed=True).aepa.mean()
+    csb = gi2[~gi2.conv].groupby("band", observed=True).aepa.mean()
+    fgb = f4b.groupby("band", observed=True).v_perfect.mean()
+    be = 100 * (fgb - csb) / (pzb - csb)
+    print("\n  break-even conversion rate needed for GOING to beat a guaranteed 3")
+    print(pd.DataFrame({"guaranteed FG": fgb, "convert": pzb, "fail": csb,
+                        "break-even %": be}).round(2).to_string())
+    act = 100 * gi2.pivot_table(index="tg2", columns="band", values="conv",
+                                aggfunc="mean", observed=True)
+    nn = gi2.pivot_table(index="tg2", columns="band", values="conv",
+                         aggfunc="size", observed=True)
+    print("\n  actual conversion rate, by yards to go and field position")
+    print(act.round(1).to_string())
+    print("\n  MARGIN = actual minus break-even. Positive means GO FOR IT,")
+    print("  negative means take the guaranteed three.")
+    print((act - be).round(1).to_string())
+    print("\n  sample sizes")
+    print(nn.to_string())
+    print("\n  The boundary runs diagonally, and it does not collapse to one")
+    print("  yards-to-go number:")
+    print("    inside the 20 : go on 4th & 4 or less")
+    print("    20 to 32      : go on 4th & 1 or 2")
+    print("    32 to 38      : go on 4th & 1 only, and it is nearly a coin flip")
+    print("                    (68.6% converted against 65.1% needed)")
+    print("    38 to 42      : kick everything, 4th & 1 included - but 4th & 1 is")
+    print("                    the closest call on the board (67.5% against 73.2%")
+    print("                    needed, a 5.7 point margin)")
+    print("\n  So yes: fourth and 1 is the one exception out at the edge of the")
+    print("  guarantee, and from the 32 to the 38 you should still go for it.")
+    print("  Only from the 38 to the 42, where the kick is 56 to 60 yards and the")
+    print("  prize for converting is at its smallest, does a guaranteed three")
+    print("  finally beat fourth and 1 - and it wins by a nose, not a mile.")
+
     # ------------------------------------------------------- 2. the sweep
     hdr("2. THE SWEEP: ONE THRESHOLD, APPLIED TO EVERY FOURTH DOWN IN THE GAME")
     f = w[w.down.eq(4) & w.play_type.isin(DECISIONS) & w.yardline_100.notna()].copy()
@@ -303,12 +347,22 @@ def main():
     print(f"  ({BASE_WINS + QB_MEAN:.1f} wins, "
           f"{100 * (BASE_WINS + QB_MEAN) / GAMES:.1f}%), {QB_MEDIAN:+.2f} median "
           f"({100 * (BASE_WINS + QB_MEDIAN) / GAMES:.1f}%)")
-    print(f"\n  The honest comparison is leg against quarterback: "
-          f"{leg_opt:+.2f} at absolute")
-    print(f"  best, against {QB_MEAN:+.2f} for the average 1.01 and "
-          f"{QB_MEDIAN:+.2f} for the median.")
-    print(f"  The kicker loses. He only draws level if you credit him with the")
-    print(f"  fourth-down decisions too, and those were free all along.")
+    sub("why the total is not the number to compare against the quarterback")
+    print(f"  The total ({best['wins']:+.2f} at the best threshold) is close to the")
+    print(f"  average 1.01 quarterback ({QB_MEAN:+.2f}), but it is not the right")
+    print(f"  comparison, because {best['coach']:+.2f} of it is the fourth-down chart")
+    print(f"  and any team can fix that with any kicker. Put both draft choices")
+    print(f"  side by side and the chart appears on both sides and cancels:")
+    print(f"\n    draft the kicker : {BASE_WINS:.2f} + {best['coach']:.2f} chart "
+          f"+ {best['leg']:.2f} kicker = {BASE_WINS + best['wins']:.2f} wins")
+    print(f"    draft the QB     : {BASE_WINS:.2f} + {best['coach']:.2f} chart "
+          f"+ {QB_MEAN:.2f} QB     = {BASE_WINS + best['coach'] + QB_MEAN:.2f} wins")
+    print(f"    difference       : {QB_MEAN - best['leg']:.2f} wins a season, "
+          f"which is exactly QB minus leg")
+    print(f"\n  The quarterback's {QB_MEAN:+.2f} is that player against a replacement")
+    print(f"  quarterback. It does not come bundled with a fourth-down chart")
+    print(f"  either. Compare like with like: {best['leg']:.2f} against "
+          f"{QB_MEAN:.2f}, or {QB_MEDIAN:.2f} at the median.")
     return r
 
 

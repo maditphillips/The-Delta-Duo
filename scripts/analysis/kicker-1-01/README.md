@@ -274,10 +274,41 @@ away from the end zone**:
 | 20-32 | +2.28 | −3.19 | −0.11 | **56%** |
 | 32-42 | +2.84 | −2.71 | +1.10 | **69%** |
 
-All in adjusted EPA. `P* = (FG − fail) / (convert − fail)`. So inside the 10
-you should go for it on nearly anything; out at the 42 you should kick on
-nearly anything, because you would need to convert 69% of the time to beat a
-guaranteed three, and nobody converts 69% of anything except 4th & 1.
+All in adjusted EPA. `P* = (FG − fail) / (convert − fail)`.
+
+### It is a surface, not a line
+
+Break-even depends on field position; the conversion rate depends on yards to
+go. Both at once, as **actual conversion rate minus the break-even it needs**
+— positive means go for it, negative means take the guaranteed three:
+
+| To go | 0-10 | 10-20 | 20-32 | 32-38 | 38-42 |
+|---|---|---|---|---|---|
+| **4th & 1** | +22.4 | +20.0 | +12.0 | **+3.5** | **−5.7** |
+| 4th & 2 | +17.7 | +24.9 | +3.7 | −10.0 | −8.5 |
+| 4th & 3 | +4.0 | +13.1 | −9.7 | −9.6 | −15.8 |
+| 4th & 4 | +9.5 | +3.2 | −0.6 | −16.5 | −19.5 |
+| 4th & 5 | −6.6 | +4.4 | −7.5 | −27.1 | −32.1 |
+| 4th & 6+ | −4.2 | −23.4 | −31.7 | −34.2 | −36.6 |
+
+Break-even by band: 39% inside the 10, 46% at 10-20, 56% at 20-32, 65% at
+32-38, 73% at 38-42. Sample sizes run from 28 to 506 per cell.
+
+The boundary runs diagonally and does not collapse to a single yards-to-go
+number:
+
+- **inside the 20** — go on 4th & 4 or less
+- **20 to 32** — go on 4th & 1 or 2
+- **32 to 38** — go on 4th & 1 only, and barely (68.6% converted against
+  65.1% needed)
+- **38 to 42** — kick everything, 4th & 1 included, but 4th & 1 is the closest
+  call on the board (67.5% against 73.2% needed)
+
+So 4th & 1 is the one real exception at the edge of the guarantee. From the 32
+to the 38 you should still go for it even with a perfect kicker. Only from the
+38 to the 42 — where the kick is 56 to 60 yards and the prize for converting
+is smallest — does a guaranteed three finally beat 4th & 1, and it wins by a
+nose.
 
 ### Sweeping the threshold over every fourth down in the game
 
@@ -319,9 +350,19 @@ cost of using one number instead of thinking is **0.10 wins**.
 | 1.01 quarterback, median | +1.59 | 10.1-6.9 | 59.4% |
 
 **Optimal fourth-down policy is worth about half a win to any team with any
-kicker.** It is free and it is not the kicker's. Blend the two and the kicker
-appears to draw level with the 1.01; separate them and he is at 0.7 against
-1.28.
+kicker.** It is free, and it is not the kicker's. The total (+1.15) looks like
+it draws level with the average 1.01 (+1.28), but the fourth-down chart
+appears on both sides of the draft choice and cancels:
+
+```
+draft the kicker : 8.50 + 0.41 chart + 0.74 kicker = 9.65 wins
+draft the QB     : 8.50 + 0.41 chart + 1.28 QB     = 10.19 wins
+difference       : 0.54 wins a season = QB minus leg
+```
+
+The quarterback's +1.28 is that player against a replacement quarterback; it
+does not come bundled with a fourth-down chart either. Like for like, it is
+0.74 against 1.28, or 1.59 at the median.
 
 Three independent routes — channel accounting (0.94), the plain yards-to-go
 rule (0.83), and this policy sweep (0.74) — all land the guarantee between
