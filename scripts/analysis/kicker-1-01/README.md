@@ -19,6 +19,7 @@ python3 fetch_draft.py              # PFR draft-pick table via nflverse
 python3 kicker_value.py > FINDINGS.txt     # what the guarantee is worth
 python3 pick_value.py   > PICK.txt         # what the 1.01 is worth
 python3 opportunity.py  > OPPORTUNITY.txt  # does the extra work arrive?
+python3 simple_rule.py  > RULE.txt         # the same thing, one plain rule
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.
@@ -100,6 +101,7 @@ replacement quarterback (pooled rate of quarterback-seasons of 50-320 plays,
 | | wins a season |
 |---|---|
 | perfect kicker, optimally used, vs an average leg | **+0.94, guaranteed** |
+| perfect kicker, one simple rule (4th & 4+ inside the 42) | **+0.83, guaranteed** |
 | perfect kicker, used the way coaches actually use one | **+0.70, guaranteed** |
 | perfect kicker, vs a replacement leg | **+1.14, guaranteed** |
 | 1.01 quarterback, mean 1999-2021 | +1.28 |
@@ -128,6 +130,72 @@ and pay — who is still better than the alternative once you do.
 
 The 1.01 also buys optionality the kicker does not: you can trade it for
 multiple firsts.
+
+## The plain-English version: one rule on a wristband
+
+`simple_rule.py` drops the expected-points arithmetic and uses a rule you
+could tell a coach in one sentence: *inside the opponent's 42, if the league
+converts this yards-to-go less than X% of the time, kick it — regardless of
+how long the field goal is.*
+
+Fourth-down conversion rates, 2018-2025. Third down at the same distance is
+shown alongside, because fourth-down rates are flattered by selection —
+coaches go for it when they like the look. They agree closely, which says the
+selection problem is small:
+
+| To go | 4th down, all field | 4th down, inside the 42 | 3rd down, all field |
+|---|---|---|---|
+| 4th & 1 | 67.6% | 65.5% | 69.2% |
+| 4th & 2 | 58.6% | 60.2% | 57.5% |
+| 4th & 3 | 51.3% | 50.8% | 51.2% |
+| 4th & 4 | 49.9% | 51.0% | 47.7% |
+| 4th & 5 | 47.2% | 41.6% | 42.5% |
+| 4th & 6 | 41.3% | 38.0% | 41.6% |
+| 4th & 7 | 42.4% | 37.3% | 36.5% |
+| 4th & 8 | 36.0% | 30.1% | 33.4% |
+| 4th & 9 | 27.2% | 25.0% | 30.1% |
+| 4th & 10 | 29.9% | 26.3% | 27.8% |
+| 4th & 11+ | 19.6% | 16.9% | 15.4% |
+
+Since the rate falls with distance, a threshold is the same thing as "kick on
+fourth and N or longer". Every row below is charged for its own mistakes: if
+the rule says kick somewhere kicking was worse than the call the team made,
+that loss is in the total.
+
+| Rule | Implied threshold | Extra att/gm | Total att/gm | Bad kicks | Points/season | **Wins** | Same rule, normal leg |
+|---|---|---|---|---|---|---|---|
+| 4th & 1+ | 65% | 0.98 | 2.90 | 47% | 2.7 | 0.63 | 0.21 |
+| 4th & 2+ | 60% | 0.65 | 2.56 | 32% | 8.3 | 0.79 | 0.45 |
+| 4th & 3+ | 51% | 0.51 | 2.43 | 22% | 9.7 | 0.83 | 0.53 |
+| **4th & 4+** | **51%** | **0.42** | **2.34** | **15%** | **9.7** | **0.83** | 0.56 |
+| 4th & 5+ | 42% | 0.35 | 2.27 | 9% | 9.6 | 0.83 | 0.59 |
+| 4th & 7+ | 37% | 0.25 | 2.17 | 4% | 8.0 | 0.78 | 0.60 |
+| 4th & 9+ | 25% | 0.18 | 2.10 | 0% | 6.1 | 0.73 | 0.59 |
+| 4th & 11+ | 17% | 0.11 | 2.03 | 0% | 4.0 | 0.67 | 0.58 |
+
+**There is an interior optimum, and it is a 50% threshold.** Kick on fourth
+and 4 or longer inside the 42 and the guarantee is worth **0.83 wins**. The
+rule gets worse in both directions: too aggressive and you kick where a
+touchdown was live (at 4th & 1+, 47% of the extra kicks lose points); too
+conservative and you leave the long punts on the table.
+
+Where the value sits under that rule:
+
+| From | Avg kick | Extra kicks/gm | Was a punt | Pts/kick | Pts/season |
+|---|---|---|---|---|---|
+| inside 15 | 27 yd | 0.06 | 0% | **−0.40** | −0.4 |
+| 16-25 | 39 yd | 0.04 | 0% | +0.27 | +0.2 |
+| 26-32 | 47 yd | 0.05 | 3% | +0.93 | +0.8 |
+| 33-38 | 54 yd | 0.09 | 30% | +1.64 | +2.6 |
+| **39-42** | **59 yd** | **0.18** | **77%** | **+2.14** | **+6.6** |
+
+**9.2 of the 9.7 points come from between the 33 and the 42 — a 51-to-60 yard
+kick — on 0.27 attempts a game.** Three-quarters of those snaps were punts.
+Adding a "don't kick from inside the 25" clause cuts the bad kicks from 15% to
+2% and is worth 0.01 wins, so the simple rule is already at its ceiling.
+
+The cost of the simplicity is small: 0.83 wins for the rule against 0.94 for
+deciding every fourth down on expected points.
 
 ## Does the extra work actually arrive?
 
@@ -201,6 +269,10 @@ points, so he needs:
 - **+6.1 more in-range possessions a season (+0.36 a game)** to match the
   mean 1.01 quarterback
 - **+11.6 a season (+0.68 a game)** to match the median
+
+The plain-rule version says the same thing more bluntly: no threshold reaches
+the quarterback. Matching the mean 1.01 needs 25.8 points from new kicks, and
+the best rule any threshold produces is 9.7.
 
 on top of taking every fourth down. In raw volume: **2.84 attempts a game,
 48 a season**, against a league average of 1.94. Only two teams in 27 seasons
