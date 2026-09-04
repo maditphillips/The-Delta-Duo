@@ -1,0 +1,201 @@
+
+==============================================================================
+0. THE QUARTERBACK YARDSTICK
+==============================================================================
+quarterback-seasons, 1999-2025 regular season: 1,438 with 50+ plays
+  replacement level (50-320 plays, 675 seasons): -0.1207 adjusted EPA per play
+  full-time starters (400+ plays, 645 seasons)  : +0.0292
+  a 550-play season at replacement level is worth -66 points
+
+wins above replacement = (per-play rate - -0.1207) x plays / 35.8
+
+-- the scale, quarterback-seasons of 400+ plays
+    best: +8.22 wins above replacement
+    95th: +5.36 wins above replacement
+    75th: +3.61 wins above replacement
+  median: +2.28 wins above replacement
+    25th: +1.05 wins above replacement
+     5th: -0.59 wins above replacement
+   worst: -2.98 wins above replacement
+
+  top 10 quarterback-seasons in the window:
+ season      name  plays   aepa  war
+   2007   T.Brady  614.0 220.27 8.22
+   2013 P.Manning  678.0 203.33 7.97
+   2011 A.Rodgers  580.0 200.04 7.54
+   2011   D.Brees  698.0 178.77 7.35
+   2022 P.Mahomes  723.0 170.94 7.21
+   2018 P.Mahomes  635.0 179.22 7.15
+   2011   T.Brady  656.0 165.14 6.82
+   2020 P.Mahomes  653.0 158.12 6.62
+   2012   T.Brady  669.0 152.33 6.51
+   2014 A.Rodgers  577.0 159.62 6.40
+
+==============================================================================
+1. WHO THE 1.01 HAS ACTUALLY BEEN
+==============================================================================
+first overall picks 1999-2025: 27
+position
+QB    20
+DE     5
+T      2
+
+  quarterbacks: 74% of them
+  since 2010  : 75%
+
+-- the full list, with Pro Football Reference approximate value
+ season team  pfr_player_name position  games  seasons_started  probowls  allpro  w_av  dr_av
+   1999  CLE        Tim Couch       QB   62.0                3         0       0  30.0   30.0
+   2000  CLE   Courtney Brown       DE   61.0                4         0       0  27.0   21.0
+   2001  ATL     Michael Vick       QB  143.0                7         4       0  92.0   60.0
+   2002  HOU       David Carr       QB   94.0                5         0       0  45.0   42.0
+   2003  CIN    Carson Palmer       QB  182.0               12         3       0 107.0   60.0
+   2004  SDG      Eli Manning       QB  236.0               14         4       0 121.0    NaN
+   2005  SFO       Alex Smith       QB  174.0               14         3       0  98.0   28.0
+   2006  HOU   Mario Williams       DE  158.0                9         4       1  79.0   36.0
+   2007  OAK JaMarcus Russell       QB   31.0                2         0       0   6.0    6.0
+   2008  MIA        Jake Long        T  104.0                6         4       1  54.0   46.0
+   2009  DET Matthew Stafford       QB  239.0               16         3       1 133.0   91.0
+   2010  STL     Sam Bradford       QB   83.0                5         0       0  44.0   25.0
+   2011  CAR       Cam Newton       QB  148.0                9         3       1 115.0  107.0
+   2012  IND      Andrew Luck       QB   86.0                5         4       0  72.0   72.0
+   2013  KAN      Eric Fisher        T  132.0                8         2       0  62.0   56.0
+   2014  HOU Jadeveon Clowney       DE  153.0               10         3       0  63.0   38.0
+   2015  TAM   Jameis Winston       QB  108.0                5         1       0  63.0   54.0
+   2016  LAR       Jared Goff       QB  151.0                9         5       0 106.0   44.0
+   2017  CLE    Myles Garrett       DE  134.0                9         7       5 104.0  104.0
+   2018  CLE   Baker Mayfield       QB  123.0                7         2       0  80.0   35.0
+   2019  ARI     Kyler Murray       QB   87.0                5         2       0  71.0   71.0
+   2020  CIN       Joe Burrow       QB   77.0                5         3       0  63.0   63.0
+   2021  JAX  Trevor Lawrence       QB   77.0                5         1       0  52.0   52.0
+   2022  JAX    Travon Walker       DE   63.0                4         0       0  26.0   26.0
+   2023  CAR      Bryce Young       QB   46.0                2         0       0  23.0   23.0
+   2024  CHI   Caleb Williams       QB   34.0                2         0       0  26.0   26.0
+   2025  TEN         Cam Ward       QB   17.0                1         0       0   7.0    7.0
+
+  w_av = weighted career approximate value, dr_av = value to the
+  drafting team. Both are PFR's cross-position currency, not points.
+
+==============================================================================
+2. THE 1.01 QUARTERBACKS, PRICED IN WINS
+==============================================================================
+first overall quarterbacks drafted 1999-2021, first 5 seasons (the rookie deal plus the option year):
+ draft           player team  seasons_100+  plays    aepa  war_5yr  war_per_season  war_per_played
+  2020       Joe Burrow  CIN             5 2851.0  207.31    15.40            3.08            3.08
+  2011       Cam Newton  CAR             5 2784.0  173.13    14.22            2.84            2.84
+  2015   Jameis Winston  TAM             5 2887.0  152.97    14.01            2.80            2.80
+  2012      Andrew Luck  IND             5 3001.0  127.79    13.69            2.74            2.74
+  2016       Jared Goff  LAR             5 2621.0   72.47    10.86            2.17            2.17
+  2003    Carson Palmer  CIN             4 2144.0   78.56     9.42            1.88            2.36
+  2019     Kyler Murray  ARI             5 2554.0   18.22     9.12            1.82            1.82
+  2021  Trevor Lawrence  JAX             5 2920.0  -34.03     8.90            1.78            1.78
+  2009 Matthew Stafford  DET             5 2696.0  -40.13     7.97            1.59            1.59
+  2018   Baker Mayfield  CLE             5 2543.0  -44.52     7.33            1.47            1.47
+  2004      Eli Manning  SDG             5 2426.0 -113.27     5.02            1.00            1.00
+  2010     Sam Bradford  STL             4 1929.0 -212.04     0.58            0.12            0.15
+  2001     Michael Vick  ATL             5 1533.0 -167.52     0.49            0.10            0.10
+  1999        Tim Couch  CLE             5 1894.0 -254.17    -0.71           -0.14           -0.14
+  2002       David Carr  HOU             5 2382.0 -329.72    -1.18           -0.24           -0.24
+  2005       Alex Smith  SFO             4 1310.0 -258.04    -2.79           -0.56           -0.70
+  2007 JaMarcus Russell  OAK             2  768.0 -209.31    -3.26           -0.65           -1.63
+
+  mean   : +1.28 wins above replacement per season of the rookie deal
+  median : +1.59
+  spread : -0.65 to +3.08
+
+-- and over their whole careers to date, not just the rookie deal
+ draft           player  seasons_100+  plays  war_total  war_per_seas
+  2009 Matthew Stafford            17 9555.0      40.39          2.38
+  2016       Jared Goff            10 5645.0      27.70          2.77
+  2003    Carson Palmer            14 6734.0      26.89          1.92
+  2004      Eli Manning            16 8631.0      25.49          1.59
+  2011       Cam Newton            10 5093.0      18.63          1.86
+  2012      Andrew Luck             6 3682.0      17.64          2.94
+  2005       Alex Smith            14 5975.0      17.06          1.22
+  2018   Baker Mayfield             8 4465.0      16.51          2.06
+  2020       Joe Burrow             6 3137.0      16.27          2.71
+  2015   Jameis Winston             8 3674.0      15.67          1.96
+  2019     Kyler Murray             7 3359.0      13.12          1.87
+  2021  Trevor Lawrence             5 2920.0       8.90          1.78
+  2001     Michael Vick            11 3822.0       7.53          0.68
+  2010     Sam Bradford             6 3232.0       4.48          0.75
+  1999        Tim Couch             5 1894.0      -0.71         -0.14
+  2023      Bryce Young             3 1613.0      -1.11         -0.37
+  2002       David Carr             6 2615.0      -1.29         -0.21
+  2007 JaMarcus Russell             2  768.0      -3.26         -1.63
+
+==============================================================================
+3. THE SPREAD IS THE WHOLE POINT
+==============================================================================
+the kicker is a certainty. the pick is a draw from this distribution.
+
+  first overall quarterbacks, 5-year rookie-deal average:
+      best: +3.08 wins a season
+      75th: +2.17 wins a season
+    median: +1.59 wins a season
+      25th: +0.10 wins a season
+     worst: -0.65 wins a season
+  share clearing +0.00 wins a season:  76.5%
+  share clearing +0.94 wins a season:  64.7%
+  share clearing +1.14 wins a season:  58.8%
+  share clearing +2.00 wins a season:  29.4%
+  share clearing +3.00 wins a season:   5.9%
+
+  standard deviation across the 17 of them: 1.28 wins
+
+==============================================================================
+4. THE QUARTER OF FIRST PICKS WHO ARE NOT QUARTERBACKS
+==============================================================================
+play-by-play EPA has no defensive attribution, so a Myles Garrett
+cannot be priced the way a quarterback can. PFR approximate value is
+the only common currency available, and on it the two groups look
+about the same, which is the argument for reading the quarterback
+number as representative of the pick rather than flattering to it:
+
+  first picks 1999-2021 who were quarterbacks (17): mean weighted AV 76, median 72
+  first picks who were not (6): mean weighted AV 65, median 62
+  Pro Bowls per pick: 2.2 vs 3.3
+  All-Pros per pick : 0.1 vs 1.2
+
+   season  pfr_player_name position  probowls  allpro  w_av
+   2000   Courtney Brown       DE         0       0  27.0
+   2006   Mario Williams       DE         4       1  79.0
+   2008        Jake Long        T         4       1  54.0
+   2013      Eric Fisher        T         2       0  62.0
+   2014 Jadeveon Clowney       DE         3       0  63.0
+   2017    Myles Garrett       DE         7       5 104.0
+
+==============================================================================
+5. HOW LONG EACH ASSET LASTS
+==============================================================================
+the guarantee runs for his entire career. the pick's surplus runs for
+the rookie deal, after which you pay the market for the same player.
+
+  seasons as a real starter, careers observed start to finish:
+    kickers (10+ attempts a year, 55 careers): median 5, 75th 9, 90th 13, max 18
+    quarterbacks (100+ plays a year, 137 careers): median 2, 75th 5, 90th 7, max 19
+
+  conditioning both groups on being good, since a leg that never
+  misses is never cut and the median of all comers is not the
+  relevant number:
+    kickers, top quartile of career make rate (10 careers): median 10, 90th 17, max 18
+    quarterbacks, top quartile of career EPA per play (11): median 10, 90th 17, max 19
+
+  so the durability edge is real but much smaller than the raw
+  medians suggest: good quarterbacks last a long time too.
+
+==============================================================================
+6. SIDE BY SIDE
+==============================================================================
+  perfect kicker, vs an average leg     : +0.94 wins a season, guaranteed
+  perfect kicker, vs a replacement leg  : +1.14 wins a season, guaranteed
+  1.01 quarterback, mean of 1999-2021   : +1.28 wins a season, on the rookie deal
+  1.01 quarterback, median              : +1.59
+
+  share of 1.01 quarterbacks who beat the kicker over five years: 59%
+  over a career: 0.94 x 10 seasons for a good kicker = 9.4 wins,
+  against 1.28 x 5 = 6.4 wins of rookie-deal surplus
+  from the average 1.01 quarterback. That is the strongest form of the
+  case for the kicker, and it still needs the quarterback's post-rookie
+  seasons to be worth nothing, which they are not - you keep the player
+  and pay him, and he is still better than the alternative.
