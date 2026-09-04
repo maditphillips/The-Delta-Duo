@@ -4,11 +4,29 @@ The question, off a post: your team uses the first overall pick on a kicker,
 and in exchange he is guaranteed to make **every attempt of 60 yards or
 closer** for his entire career. Worth it?
 
-Short answer: he is worth **0.94 wins a season if the coach uses him
-optimally, 0.70 wins if the coach behaves the way real coaches actually
-behave** when handed an elite leg. The first overall pick has historically
-returned about **1.3 wins a season** with a 41% chance of returning less
-than the kicker. Closer than it sounds, and still not a good idea.
+Short answer, and it turns on one baseline choice that is worth stating out
+loud (`verdict.py`):
+
+| | Wins/season | Certain? |
+|---|---|---|
+| perfect leg, vs an **average** NFL leg | **0.84** | yes |
+| perfect leg, vs a **replacement** leg | **1.13** | yes |
+| 1.01 quarterback, vs a replacement QB, mean | 1.28 | no |
+| 1.01 quarterback, median | 1.59 | no |
+
+The quarterback is priced against a *replacement* quarterback, so the second
+row is the like-for-like comparison: **1.13 guaranteed against 1.28 expected,
+with 59% of the seventeen first-overall quarterbacks since 1999 coming in
+below 1.13 over their rookie deal.** Over ten years that is 11.3 wins against
+11.7 — a dead heat, one side certain and the other a draw from a distribution
+containing JaMarcus Russell.
+
+The practical baseline is the first row, because a team that passes on this
+kicker signs an average leg that afternoon, while a team that passes on the
+quarterback really does play a replacement quarterback. On that framing the
+quarterback wins comfortably, 1.28 to 0.84.
+
+So: yes you would be mad, and less than you would expect.
 
 ## Running it
 
@@ -21,6 +39,7 @@ python3 pick_value.py   > PICK.txt         # what the 1.01 is worth
 python3 opportunity.py  > OPPORTUNITY.txt  # does the extra work arrive?
 python3 simple_rule.py  > RULE.txt         # the same thing, one plain rule
 python3 threshold.py    > THRESHOLD.txt    # the 3-vs-7 break-even, swept
+python3 verdict.py      > VERDICT.txt      # the bottom line, baselines matched
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.

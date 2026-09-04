@@ -1,0 +1,73 @@
+
+==============================================================================
+1. THE MISMATCH, AND THE FIX
+==============================================================================
+the comparison leg, two rungs:
+  AVERAGE     : the league's own make curve, 85.1% inside 60
+  REPLACEMENT : the mid-season fill-in. Kicker-seasons of 5-20
+                attempts (994 attempts) made 79.5% against 85.9%
+                expected, a miss rate of x1.46
+
+the quarterback is priced against a REPLACEMENT quarterback, so the
+second row below is the like-for-like comparison. The first row is the
+practically relevant one, because a team that passes on this kicker
+signs an average leg that afternoon, while a team that passes on the
+quarterback actually does play a replacement quarterback.
+
+==============================================================================
+2. WHAT THE GUARANTEE IS WORTH
+==============================================================================
+            baseline  ch1_kicks_he_takes  ch3_kicks_he_unlocks  ch5_extra_points  points  wins
+   vs an AVERAGE leg               17.23                 10.72              2.15   30.11  0.84
+vs a REPLACEMENT leg               25.17                 12.08              3.14   40.39  1.13
+
+  coaching is identical on both sides of every one of these numbers,
+  so none of it is credit for fixing a fourth-down chart.
+
+==============================================================================
+3. AGAINST THE 1.01
+==============================================================================
+                                    wins/season   certain?
+  perfect leg, vs average leg             0.84        yes
+  perfect leg, vs replacement leg         1.13        yes
+  1.01 QB, vs replacement QB (mean)        1.28         no
+  1.01 QB, vs replacement QB (median)        1.59         no
+
+  like-for-like, both against replacement: 1.13 certain against 1.28 expected.
+  That is a 12% edge to the quarterback on the mean, and 59% of the seventeen
+  first overall quarterbacks since 1999 came in BELOW 1.13 over their
+  rookie deal. The kicker's figure has no distribution at all.
+
+  on the practical baseline: 0.84 against 1.28, and 35% of them came in below.
+
+-- over a career, not a season
+  kicker at 0.84 a year for 10 years vs average leg      :   8.4 wins
+  kicker at 1.13 a year for 10 years vs replacement leg  :  11.3 wins
+  average 1.01 quarterback, cumulative through year 10 :  11.7 wins
+
+  On the like-for-like baseline that is 11.3 against 11.7 - a dead heat over a decade,
+  with the kicker's half of it guaranteed and the quarterback's a draw
+  from a distribution that includes JaMarcus Russell. On the practical
+  baseline the quarterback wins clearly, 11.7 to 8.4.
+
+==============================================================================
+4. THE VERDICT, STATED HONESTLY
+==============================================================================
+  It depends on a baseline choice, and that should be said out loud
+  rather than buried:
+
+  - If passing on the kicker means signing an ordinary NFL leg -
+    which is what actually happens, because average kickers are
+    available on any Tuesday - he is worth 0.84 wins and the quarterback
+    wins comfortably, 1.28 on the mean and 1.59 on the median.
+
+  - If you insist on the strictly symmetric comparison, replacement
+    against replacement, he is worth 1.13 guaranteed against 1.28
+    expected, 59% of quarterbacks came in under him, and over ten
+    years it is a coin flip. On that framing the risk-adjusted case
+    for the kicker is real, not a joke.
+
+  The first framing is the better answer to the question as asked,
+  because the alternative to drafting a kicker is not fielding a
+  replacement kicker. But the honest range for 'would you be mad' is
+  'yes, and less than you would expect'.
