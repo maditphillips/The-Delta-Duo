@@ -22,8 +22,60 @@ to go
 4th & 11+    474       19.6         160            16.9  10337       15.4
 
 ==============================================================================
-2. THE RULE: KICK ON FOURTH AND N OR LONGER, INSIDE THE 42
+2. WHAT ONE GUARANTEED KICK IS WORTH, BY YARDS TO GO
 ==============================================================================
+Every fourth down inside the 42 that was NOT already a field goal,
+split by what the team actually did. 'gain' is the points a guaranteed
+make would have added over that choice. This is the raw material; the
+rule sweep in section 3 is just cumulative sums of these rows.
+
+           conv%  went for it_n  went_per_gm  went for it_gain  punt_n  punt_per_gm  punt_gain
+to go                                                                                         
+4th & 1    65.47           1480         0.33             -0.99      10         0.00       1.61
+4th & 2    60.21            578         0.13             -0.71      16         0.00       1.69
+4th & 3    50.81            372         0.08             -0.14      24         0.01       1.78
+4th & 4    51.03            292         0.07             -0.10      38         0.01       1.70
+4th & 5    41.62            197         0.04              0.59      43         0.01       2.00
+4th & 6    38.03            142         0.03              0.91      46         0.01       2.00
+4th & 7    37.27            110         0.02              0.82      70         0.02       2.05
+4th & 8    30.14             73         0.02              1.27      75         0.02       2.13
+4th & 9    25.00             44         0.01              1.64      73         0.02       2.12
+4th & 10   26.32            114         0.03              1.56      79         0.02       2.04
+4th & 11+  16.88            160         0.04              1.85     330         0.07       2.25
+
+  Two things read straight off this table.
+  1. Replacing a PUNT with a guaranteed 3 wins at every distance, by
+     about 2 points a go. Worst single case in 804 punts: +0.60. It is never close:
+     punting from the 39-42 is worth about -0.42 points, a guaranteed
+     3 from there is worth about +1.73.
+  2. Replacing a GO-FOR-IT flips sign at 4th & 5. Short yardage is
+     where a touchdown is still live and 3 is a step down; long
+     yardage is where the kick is free money.
+     4th & 1: -0.99   4th & 4: -0.10   4th & 5: +0.59   4th & 8: +1.27
+
+-- so where are the losing kicks, if you kick on every fourth down?
+  2,041 of the 4,366 non-kick fourth downs lose points (47%)
+  punts among them: 0. Every single one is a go-for-it.
+
+  ydstogo      1    2    3    4   5   6   7  8  10   All
+  yl                                                    
+  (0, 10]    506  185  103   63  34  19  17  4   1   932
+  (10, 20]   240   78   44   40  21  17   9  3   2   454
+  (20, 32]   295  124   46   47   8   2   3  1   0   526
+  (32, 42]    83   38    7    1   0   0   0  0   0   129
+  All       1124  425  200  151  63  38  29  8   3  2041
+
+  46% of them are inside the
+  opponent's 10, and 76% are 4th & 1 or 4th & 2. That is the whole story of the
+  losses: 4th and goal-ish from the 5, where 65% of the time you get a
+  first down worth nearly seven, and the rule takes three instead.
+
+==============================================================================
+3. THE RULE SWEPT: KICK WHENEVER IT IS FOURTH AND N OR LONGER
+==============================================================================
+Lower N means MORE kicking. N=1 kicks on every fourth down inside the
+42; N=11 kicks only on fourth and 11 or longer. Each row is the
+cumulative sum of section 2 from N downward.
   'conv% at N' is the fourth-down conversion rate at exactly N to go,
   inside the 42: the threshold the rule is implicitly using.
   'bad_kicks%' is the share of the extra kicks where kicking was worse
@@ -32,18 +84,18 @@ to go
   'wins_avg_leg' is the same rule run with an ordinary NFL kicker, so
   the gap between the last two columns is the guarantee itself.
 
-     rule  conv% at N  extra_att/gm  total_att/gm  bad_kicks%  ch3_pts  total_pts  wins  wins_avg_leg
- 4th & 1+       65.47          0.98          2.90       46.75     2.74      22.68  0.63          0.21
- 4th & 2+       60.21          0.65          2.56       31.88     8.25      28.19  0.79          0.45
- 4th & 3+       50.81          0.51          2.43       21.56     9.71      29.65  0.83          0.53
- 4th & 4+       51.03          0.42          2.34       15.48     9.74      29.68  0.83          0.56
- 4th & 5+       41.62          0.35          2.27        9.06     9.60      29.54  0.83          0.59
- 4th & 6+       38.03          0.30          2.21        5.93     8.83      28.77  0.80          0.60
- 4th & 7+       37.27          0.25          2.17        3.55     7.99      27.93  0.78          0.60
- 4th & 8+       30.14          0.21          2.13        1.16     7.10      27.04  0.76          0.60
- 4th & 9+       25.00          0.18          2.10        0.38     6.13      26.07  0.73          0.59
-4th & 10+       26.32          0.15          2.07        0.44     5.27      25.21  0.70          0.59
-4th & 11+       16.88          0.11          2.03        0.00     3.97      23.91  0.67          0.58
+ kick if togo >=  conv% at N  extra_att/gm  total_att/gm  bad_kicks%  ch3_pts  total_pts  wins  wins_avg_leg
+               1       65.47          0.98          2.90       46.75     2.74      22.68  0.63          0.21
+               2       60.21          0.65          2.56       31.88     8.25      28.19  0.79          0.45
+               3       50.81          0.51          2.43       21.56     9.71      29.65  0.83          0.53
+               4       51.03          0.42          2.34       15.48     9.74      29.68  0.83          0.56
+               5       41.62          0.35          2.27        9.06     9.60      29.54  0.83          0.59
+               6       38.03          0.30          2.21        5.93     8.83      28.77  0.80          0.60
+               7       37.27          0.25          2.17        3.55     7.99      27.93  0.78          0.60
+               8       30.14          0.21          2.13        1.16     7.10      27.04  0.76          0.60
+               9       25.00          0.18          2.10        0.38     6.13      26.07  0.73          0.59
+              10       26.32          0.15          2.07        0.44     5.27      25.21  0.70          0.59
+              11       16.88          0.11          2.03        0.00     3.97      23.91  0.67          0.58
 
 -- read it plainly
   kick on 4th & 3 or longer (a 51% conversion or worse):
@@ -59,7 +111,7 @@ to go
     8.0 points a season from the new kicks, 27.9 all in
     0.78 wins - against 0.60 for the same rule with a normal leg
 
--- under the best rule (4th & 4+), where do the extra kicks come from?
+-- under the best rule (4th & 4 or longer), where does the value sit?
            kick_len  extra_kicks  per_game  was_punt%  pts/kick  pts/season   bad%
 band                                                                              
 inside 15     26.80        257.0      0.06       0.00     -0.40       -0.39  71.21
@@ -88,9 +140,9 @@ inside 15     26.80        257.0      0.06       0.00     -0.40       -0.39  71.
   4th & 4+, outside the 33  : 0.27 extra att/game,   9.2 pts, 0.81 wins (0% bad kicks)
 
 ==============================================================================
-3. WHERE THAT LEAVES THE 1.01
+4. WHERE THAT LEAVES THE 1.01
 ==============================================================================
-  the rule that maximises his value is 4th & 4+: 0.83 wins
+  the rule that maximises his value is 4th & 4 or longer: 0.83 wins
   the first overall pick has returned +1.28 wins a season on average, +1.59 median
 
   to match the mean: 46 points a season, so 25.8 from new kicks

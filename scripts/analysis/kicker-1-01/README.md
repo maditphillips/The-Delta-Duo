@@ -157,27 +157,71 @@ selection problem is small:
 | 4th & 10 | 29.9% | 26.3% | 27.8% |
 | 4th & 11+ | 19.6% | 16.9% | 15.4% |
 
-Since the rate falls with distance, a threshold is the same thing as "kick on
-fourth and N or longer". Every row below is charged for its own mistakes: if
-the rule says kick somewhere kicking was worse than the call the team made,
-that loss is in the total.
+### What one guaranteed kick is actually worth
 
-| Rule | Implied threshold | Extra att/gm | Total att/gm | Bad kicks | Points/season | **Wins** | Same rule, normal leg |
+Before the rule sweep, the raw material. Every fourth down inside the 42 that
+was not already a field goal, split by what the team actually did. "Gain" is
+the points a guaranteed make adds over that choice:
+
+| To go | Conv% | Went for it (per gm) | Gain vs going | Punted (per gm) | Gain vs punting |
+|---|---|---|---|---|---|
+| 4th & 1 | 65% | 1,480 (0.33) | **−0.99** | 10 (0.00) | +1.61 |
+| 4th & 2 | 60% | 578 (0.13) | **−0.71** | 16 (0.00) | +1.69 |
+| 4th & 3 | 51% | 372 (0.08) | −0.14 | 24 (0.01) | +1.78 |
+| 4th & 4 | 51% | 292 (0.07) | −0.10 | 38 (0.01) | +1.70 |
+| 4th & 5 | 42% | 197 (0.04) | **+0.59** | 43 (0.01) | +2.00 |
+| 4th & 6 | 38% | 142 (0.03) | +0.91 | 46 (0.01) | +2.00 |
+| 4th & 7 | 37% | 110 (0.02) | +0.82 | 70 (0.02) | +2.05 |
+| 4th & 8 | 30% | 73 (0.02) | +1.27 | 75 (0.02) | +2.13 |
+| 4th & 9 | 25% | 44 (0.01) | +1.64 | 73 (0.02) | +2.12 |
+| 4th & 10 | 26% | 114 (0.03) | +1.56 | 79 (0.02) | +2.04 |
+| 4th & 11+ | 17% | 160 (0.04) | +1.85 | 330 (0.07) | +2.25 |
+
+**Replacing a punt with a guaranteed 3 wins at every distance.** All 804 of
+them, worst single case +0.60, mean +2.10. Punting from the 39-42 is worth
+−0.42 points; a guaranteed 3 from there is +1.73. Long punts are not the
+problem.
+
+**Replacing a go-for-it flips sign at 4th & 5.** At 4th & 1 the guaranteed 3
+is worth 0.99 points *less* than going, because 65% of the time you get a
+first down worth close to a touchdown. Of the 2,041 fourth downs where the
+guaranteed kick loses points, **zero are punts** — every one is a go-for-it,
+46% are inside the opponent's 10, and 76% are 4th & 1 or 4th & 2.
+
+### The rule swept
+
+Since the rate falls with distance, a threshold is the same thing as "kick on
+fourth and N or longer". **Lower N means more kicking**: N=1 kicks on every
+fourth down inside the 42, N=11 kicks only on fourth and 11 or longer. Each
+row is the cumulative sum of the table above from N downward, and is charged
+for its own mistakes.
+
+| Kick if to-go ≥ | Conv% at N | Extra att/gm | Total att/gm | Bad kicks | Points/season | **Wins** | Same rule, normal leg |
 |---|---|---|---|---|---|---|---|
-| 4th & 1+ | 65% | 0.98 | 2.90 | 47% | 2.7 | 0.63 | 0.21 |
-| 4th & 2+ | 60% | 0.65 | 2.56 | 32% | 8.3 | 0.79 | 0.45 |
-| 4th & 3+ | 51% | 0.51 | 2.43 | 22% | 9.7 | 0.83 | 0.53 |
-| **4th & 4+** | **51%** | **0.42** | **2.34** | **15%** | **9.7** | **0.83** | 0.56 |
-| 4th & 5+ | 42% | 0.35 | 2.27 | 9% | 9.6 | 0.83 | 0.59 |
-| 4th & 7+ | 37% | 0.25 | 2.17 | 4% | 8.0 | 0.78 | 0.60 |
-| 4th & 9+ | 25% | 0.18 | 2.10 | 0% | 6.1 | 0.73 | 0.59 |
-| 4th & 11+ | 17% | 0.11 | 2.03 | 0% | 4.0 | 0.67 | 0.58 |
+| **1** (kick always) | 65% | 0.98 | 2.90 | 47% | 2.7 | 0.63 | 0.21 |
+| **2** | 60% | 0.65 | 2.56 | 32% | 8.3 | 0.79 | 0.45 |
+| **3** | 51% | 0.51 | 2.43 | 22% | 9.7 | 0.83 | 0.53 |
+| **4** *(best)* | **51%** | **0.42** | **2.34** | **15%** | **9.7** | **0.83** | 0.56 |
+| **5** | 42% | 0.35 | 2.27 | 9% | 9.6 | 0.83 | 0.59 |
+| **7** | 37% | 0.25 | 2.17 | 4% | 8.0 | 0.78 | 0.60 |
+| **9** | 25% | 0.18 | 2.10 | 0% | 6.1 | 0.73 | 0.59 |
+| **11** | 17% | 0.11 | 2.03 | 0% | 4.0 | 0.67 | 0.58 |
 
 **There is an interior optimum, and it is a 50% threshold.** Kick on fourth
-and 4 or longer inside the 42 and the guarantee is worth **0.83 wins**. The
-rule gets worse in both directions: too aggressive and you kick where a
-touchdown was live (at 4th & 1+, 47% of the extra kicks lose points); too
-conservative and you leave the long punts on the table.
+and 4 or longer inside the 42 and the guarantee is worth **0.83 wins**.
+
+Reading the columns: *extra att/gm* is new attempts per team-game on top of
+the 1.92 teams already take. *Bad kicks* is the share of those new kicks
+where the guaranteed 3 was worth less than the play the team actually called
+— the rule's own mistakes, charged against its total. *Same rule, normal leg*
+runs the identical rule with an average NFL kicker, so the gap between the
+last two columns is the guarantee itself.
+
+The rule gets worse in both directions, but not symmetrically. Going *more*
+conservative than N=4 just leaves money on the table — every kick it skips
+was worth having. Going *more* aggressive actively destroys value: at N=1,
+47% of the extra kicks lose points, all of them short-yardage snaps near the
+goal line where a touchdown was still live.
 
 Where the value sits under that rule:
 

@@ -89,11 +89,16 @@ def main():
     print("\n" + tab.round(1).to_string())
     conv = (rates(w, 4, MAX_YL)["mean"] * 100).to_dict()
 
-    # ------------------------------------------------------------- the rule
-    hdr("2. THE RULE: KICK ON FOURTH AND N OR LONGER, INSIDE THE 42")
+    # ---------------------------------------- what one kick is worth, per spot
+    hdr("2. WHAT ONE GUARANTEED KICK IS WORTH, BY YARDS TO GO")
+    print("Every fourth down inside the 42 that was NOT already a field goal,")
+    print("split by what the team actually did. 'gain' is the points a guaranteed")
+    print("make would have added over that choice. This is the raw material; the")
+    print("rule sweep in section 3 is just cumulative sums of these rows.")
     fourth = w[w.down.eq(4) & w.yardline_100.le(MAX_YL)
                & w.play_type.isin(["field_goal", "punt"] + GO)].copy()
     nokick = fourth[~fourth.play_type.eq("field_goal")].copy()
+    nokick["was"] = np.where(nokick.play_type.eq("punt"), "punt", "went for it")
 
     yls = np.arange(1, MAX_YL + 1)
     punts = nokick[nokick.play_type.eq("punt")]
@@ -107,6 +112,51 @@ def main():
         nokick.yardline_100.map(pd.Series(punt_v, index=yls)),
         nokick.ydstogo.clip(upper=11).map(go_v).astype(float))
     nokick["gain"] = nokick.v_perfect - nokick.v_alt
+
+    per = nokick.groupby([nokick.ydstogo.clip(upper=11), "was"]).agg(
+        n=("gain", "size"), gain=("gain", "mean")).unstack()
+    per.columns = [f"{b}_{a}" for a, b in per.columns]
+    per["conv%"] = pd.Series(conv)
+    per["went_per_gm"] = per["went for it_n"] / n_tg
+    per["punt_per_gm"] = per["punt_n"] / n_tg
+    per.index = [f"4th & {int(i)}" + ("+" if i == 11 else "") for i in per.index]
+    per.index.name = "to go"
+    print("\n" + per[["conv%", "went for it_n", "went_per_gm", "went for it_gain",
+                      "punt_n", "punt_per_gm", "punt_gain"]].round(2).to_string())
+    print("\n  Two things read straight off this table.")
+    print("  1. Replacing a PUNT with a guaranteed 3 wins at every distance, by")
+    print(f"     about 2 points a go. Worst single case in "
+          f"{nokick.was.eq('punt').sum():,} punts: "
+          f"{nokick[nokick.was.eq('punt')].gain.min():+.2f}. It is never close:")
+    print("     punting from the 39-42 is worth about -0.42 points, a guaranteed")
+    print("     3 from there is worth about +1.73.")
+    print("  2. Replacing a GO-FOR-IT flips sign at 4th & 5. Short yardage is")
+    print("     where a touchdown is still live and 3 is a step down; long")
+    print("     yardage is where the kick is free money.")
+    xo = per["went for it_gain"]
+    print(f"     4th & 1: {xo.iloc[0]:+.2f}   4th & 4: {xo.iloc[3]:+.2f}   "
+          f"4th & 5: {xo.iloc[4]:+.2f}   4th & 8: {xo.iloc[7]:+.2f}")
+
+    sub("so where are the losing kicks, if you kick on every fourth down?")
+    bad = nokick[nokick.gain < 0]
+    print(f"  {len(bad):,} of the {len(nokick):,} non-kick fourth downs lose points "
+          f"({100 * len(bad) / len(nokick):.0f}%)")
+    print(f"  punts among them: {bad.was.eq('punt').sum()}. Every single one is a "
+          f"go-for-it.")
+    bb = bad.assign(yl=pd.cut(bad.yardline_100, [0, 10, 20, 32, 42]))
+    print("\n  " + pd.crosstab(bb.yl, bb.ydstogo.clip(upper=11).astype(int),
+                               margins=True).to_string().replace("\n", "\n  "))
+    print(f"\n  {100 * bad.yardline_100.le(10).mean():.0f}% of them are inside the")
+    print(f"  opponent's 10, and {100 * bad.ydstogo.le(2).mean():.0f}% are 4th & 1 "
+          f"or 4th & 2. That is the whole story of the")
+    print("  losses: 4th and goal-ish from the 5, where 65% of the time you get a")
+    print("  first down worth nearly seven, and the rule takes three instead.")
+
+    # ------------------------------------------------------------- the rule
+    hdr("3. THE RULE SWEPT: KICK WHENEVER IT IS FOURTH AND N OR LONGER")
+    print("Lower N means MORE kicking. N=1 kicks on every fourth down inside the")
+    print("42; N=11 kicks only on fourth and 11 or longer. Each row is the")
+    print("cumulative sum of section 2 from N downward.")
 
     # the same rule with an ordinary NFL leg, to separate the guarantee itself
     # from simply being more willing to kick. Make probability comes from a
@@ -132,7 +182,7 @@ def main():
         pts_avg = sel.gain_avg.sum() / tsn
         tot = CH1 + pts + CH5
         rows.append({
-            "rule": f"4th & {n}+", "conv% at N": conv.get(min(n, 11), np.nan),
+            "kick if togo >=": n, "conv% at N": conv.get(min(n, 11), np.nan),
             "extra_att/gm": len(sel) / n_tg,
             "total_att/gm": kicked_pg + len(sel) / n_tg,
             "bad_kicks%": 100 * sel.gain.lt(0).mean() if len(sel) else np.nan,
@@ -151,7 +201,7 @@ def main():
 
     sub("read it plainly")
     for n in [3, 5, 7]:
-        row = r[r.rule.eq(f"4th & {n}+")].iloc[0]
+        row = r[r["kick if togo >="].eq(n)].iloc[0]
         print(f"  kick on 4th & {n} or longer (a {row['conv% at N']:.0f}% "
               f"conversion or worse):")
         print(f"    {row['extra_att/gm']:.2f} extra attempts a game "
@@ -162,7 +212,7 @@ def main():
         print(f"    {row['wins']:.2f} wins - against "
               f"{row['wins_avg_leg']:.2f} for the same rule with a normal leg")
 
-    sub("under the best rule (4th & 4+), where do the extra kicks come from?")
+    sub("under the best rule (4th & 4 or longer), where does the value sit?")
     pick = nokick[nokick.ydstogo.ge(4)].copy()
     pick["band"] = pd.cut(pick.yardline_100, [0, 15, 25, 32, 38, 42],
                           labels=["inside 15", "16-25", "26-32", "33-38", "39-42"])
@@ -201,11 +251,11 @@ def main():
               f"{pts:5.1f} pts, {SLOPE * tot:.2f} wins "
               f"({100 * sel.gain.lt(0).mean():.0f}% bad kicks)")
 
-    # ------------------------------------------------------- 3. the verdict
-    hdr("3. WHERE THAT LEAVES THE 1.01")
+    # ------------------------------------------------------- 4. the verdict
+    hdr("4. WHERE THAT LEAVES THE 1.01")
     best = r.loc[r.wins.idxmax()]
-    print(f"  the rule that maximises his value is {best['rule']}: "
-          f"{best['wins']:.2f} wins")
+    print(f"  the rule that maximises his value is 4th & "
+          f"{best['kick if togo >=']:.0f} or longer: {best['wins']:.2f} wins")
     print(f"  the first overall pick has returned {QB_MEAN:+.2f} wins a season "
           f"on average, {QB_MEDIAN:+.2f} median")
     for lab, target in [("mean", QB_MEAN), ("median", QB_MEDIAN)]:
@@ -214,18 +264,21 @@ def main():
               f"{need:.1f} from new kicks")
         ok = r[r.ch3_pts >= need]
         if len(ok):
-            print(f"    reachable at {ok.iloc[0]['rule']}")
+            print(f"    reachable at 4th & "
+                  f"{ok.iloc[0]['kick if togo >=']:.0f}+")
         else:
             print(f"    no rule gets there. The most any threshold produces is "
                   f"{r.ch3_pts.max():.1f} points,")
-            print(f"    at {r.loc[r.ch3_pts.idxmax(), 'rule']}, and pushing "
-                  f"further makes it worse, not better.")
+            print(f"    at 4th & "
+                  f"{r.loc[r.ch3_pts.idxmax(), 'kick if togo >=']:.0f}+, and "
+                  f"pushing further makes it worse, not better.")
     print(f"\n  and every row above assumes the coach follows the rule every time.")
     print(f"  Real coaches handed an elite leg add {OBSERVED_RESPONSE:+.2f} attempts")
     print(f"  a game (OPPORTUNITY.txt). At that much extra kicking he is worth "
           f"about")
     small = r.iloc[(r["extra_att/gm"] - OBSERVED_RESPONSE).abs().argsort()].iloc[0]
-    print(f"  {small['wins']:.2f} wins, the {small['rule']} row.")
+    print(f"  {small['wins']:.2f} wins, the 4th & "
+          f"{small['kick if togo >=']:.0f}+ row.")
 
     return r, tab
 
