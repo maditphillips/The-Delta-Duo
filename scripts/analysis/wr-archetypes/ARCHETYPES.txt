@@ -1,0 +1,193 @@
+Reference model (forward-selected, leave-one-season-out R2 = 0.5004):
+  ppg (PPR points per game), age (age), finish (positional finish), prev_ppg (PPR points per game, season N-1), prior_top24 (count of earlier top-24 seasons), young_mate_finish (best finish among his 1st/2nd-year teammates)
+
+==============================================================================
+ARCHETYPE A - the five-week WR1
+==============================================================================
+A top-10-ish finish carried by a handful of enormous weeks, from a
+receiver who had never done anything before.
+
+                                    cohort    n med_next p10_p90 q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+             every WR season in the sample 1592       64   62-67 29 116   11%   21%   31%     8.98      8.99 -0.00
+                finished WR4-15, 14+ games  185       21   18-23 10  41   29%   56%   72%    14.91     14.53 +0.38
+      + top 5 games are 45%+ of his points  169       20   18-23 10  39   30%   57%   73%    15.04     14.52 +0.52
+            + never a top-24 season before   42       19   14-23 10  32   29%   62%   79%    14.92     14.26 +0.66
+  + not a rookie (a career to be quiet in)   33       19   14-23 13  32   24%   64%   79%    14.76     14.05 +0.71
+
+    Dose-response on the spike itself, inside the WR4-15 group:
+                 cohort   n med_next p10_p90 q1 q3 top12 top24 top36 next_ppg model_ppg  beat
+  top-5 share under 42%   4       67  23-106 32 99   25%   25%   25%    14.39     13.71 +0.67
+                 42-50%  81       22   18-26  9 42   30%   54%   69%    14.63     14.65 -0.02
+               over 50% 100       19   16-23 11 36   29%   58%   76%    15.16     14.45 +0.70
+               over 55%  26       15   14-17 10 24   31%   73%   88%    15.36     14.37 +0.99
+
+    Control: same finish range and era, but not spike-built and/or
+    with a top-24 season already on the shelf.
+                                    cohort   n med_next p10_p90 q1 q3 top12 top24 top36 next_ppg model_ppg  beat
+  WR4-15 finishers who are not archetype A 152       22   18-25  9 42   30%   54%   70%    14.94     14.63 +0.31
+
+    Who they were:
+      2009  Miles Austin           yr  4  WR  6  ->  WR13
+      2009  Sidney Rice            yr  3  WR 11  ->  WR103
+      2009  Steve Smith            yr  3  WR  8  ->  WR60
+      2009  DeSean Jackson         yr  2  WR 10  ->  WR20
+      2010  Mike Wallace           yr  2  WR  9  ->  WR10
+      2010  Steve Johnson          yr  3  WR 10  ->  WR16
+      2010  Jeremy Maclin          yr  2  WR 15  ->  WR31
+      2011  Nate Washington        yr  7  WR 15  ->  WR51
+      ... 17 more ...
+      2020  DK Metcalf             yr  2  WR  7  ->  WR14
+      2021  Mike Williams          yr  5  WR 13  ->  WR32
+      2022  Christian Kirk         yr  5  WR 12  ->  WR47
+      2022  Brandon Aiyuk          yr  3  WR 15  ->  WR14
+      2022  DeVonta Smith          yr  2  WR  9  ->  WR19
+      2023  Nico Collins           yr  3  WR 12  ->  WR23
+      2024  Drake London           yr  3  WR  5  ->  WR19
+      2024  Jaxon Smith-Njigba     yr  2  WR  9  ->  WR2
+
+==============================================================================
+ARCHETYPE B - the sophomore crash
+==============================================================================
+A monster rookie year, then injury and a slump in year two.
+
+First, the fact that governs everything else: since 2000 only ten
+receivers have finished top-12 as a rookie.  Here is every one, with
+what happened in year two and year three.
+
+      2003  Anquan Boldin          rookie WR  4   yr2 WR 52 (10g)   yr3 WR  4     
+      2014  Odell Beckham Jr.      rookie WR  7   yr2 WR  5        yr3 WR  4     
+      2016  Michael Thomas         rookie WR  7   yr2 WR  6        yr3 WR  6     
+      2020  Justin Jefferson       rookie WR  6   yr2 WR  4        yr3 WR  1     
+      2021  Jaylen Waddle          rookie WR 12   yr2 WR  8        yr3 WR 34     
+      2021  Ja'Marr Chase          rookie WR  5   yr2 WR 11 (12g)   yr3 WR 11     
+      2023  Puka Nacua             rookie WR  4   yr2 WR 26 (11g)   yr3 WR  1     
+      2024  Malik Nabers           rookie WR  6   yr2 WR101 (4g)   yr3   -  
+      2024  Brian Thomas Jr.       rookie WR  4   yr2 WR 42        yr3   -  
+      2024  Ladd McConkey          rookie WR 12   yr2 WR 30        yr3   -  
+
+    The cohorts:
+
+                                                        cohort    n med_next p10_p90  q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+                                 every WR season in the sample 1592       64   62-67  29 116   11%   21%   31%     8.98      8.99 -0.00
+              exact: 2nd yr, rookie top-12, yr2 outside top-30    0      NaN     NaN NaN NaN   NaN   NaN   NaN      NaN       NaN   NaN
+              near:  2nd yr, rookie top-24, yr2 outside top-30    4       44   30-57  35  52    0%   25%   25%    12.51     11.51 +1.00
+wide:  yrs 1-4, a top-12 season behind him, now outside top-30   14       34   16-54  15  71   21%   50%   50%    12.36     12.41 -0.05
+                            + missed 2+ games in the down year   14       34   16-54  15  71   21%   50%   50%    12.36     12.41 -0.05
+
+    Control: same age band, same collapse, but no top-12 season behind him.
+                                 cohort   n med_next p10_p90 q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+  yrs 1-4, outside top-30, never top-24 576       76   73-80 43 126    4%   10%   20%     7.37      7.55 -0.18
+
+    Who the wide cohort were:
+      2010  Sidney Rice            yr  4  WR103  ->  WR77
+      2010  Steve Smith            yr  4  WR 60  ->  WR128
+      2012  Percy Harvin           yr  4  WR 38  ->  WR179
+      2012  Hakeem Nicks           yr  4  WR 53  ->  WR45
+      2015  Alshon Jeffery         yr  4  WR 42  ->  WR54
+      2019  Tyreek Hill            yr  4  WR 32  ->  WR2
+      2019  JuJu Smith-Schuster    yr  3  WR 65  ->  WR16
+      2020  Chris Godwin Jr.       yr  4  WR 31  ->  WR15
+      2021  A.J. Brown             yr  3  WR 32  ->  WR6
+      2022  Hunter Renfrow         yr  4  WR 92  ->  WR114
+      2022  Deebo Samuel Sr.       yr  4  WR 37  ->  WR15
+      2023  Justin Jefferson       yr  4  WR 33  ->  WR2
+      2023  Jaylen Waddle          yr  3  WR 34  ->  WR46
+      2024  Jaylen Waddle          yr  4  WR 46  ->  WR24
+
+==============================================================================
+ARCHETYPE C - the hurt efficient one
+==============================================================================
+Missed real time, but the targets and the per-target production were
+there, and the per-game pace says the healthy version was a top-15 WR.
+Behind him, a younger receiver on the same team finished strong.
+
+                                     cohort    n med_next p10_p90 q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+              every WR season in the sample 1592       64   62-67 29 116   11%   21%   31%     8.98      8.99 -0.00
+                 years 2-4, missed 3+ games  181       76   68-81 39 135   11%   18%   24%     8.11      8.24 -0.13
+          + healthy-pace finish inside WR18   20       14    9-20  7  57   50%   70%   70%    15.34     15.07 +0.27
+                      + 6+ targets per game   20       14    9-20  7  57   50%   70%   70%    15.34     15.07 +0.27
+    + top-third efficiency (PPR per target)   15       12    8-19  4  42   53%   73%   73%    15.65     14.81 +0.84
+  + a 1st/2nd-year teammate finished top-36    2       10       -  6  15   50%  100%  100%    17.23     15.65 +1.57
+
+    Control: hurt receivers of the same age whose pace was NOT top-18.
+                                   cohort   n med_next p10_p90 q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+  years 2-4, missed 3+, pace outside WR18 161       79   74-98 46 140    6%   12%   18%     7.21      7.39 -0.18
+
+    Does the young teammate matter?
+                  cohort  n med_next p10_p90 q1 q3 top12 top24 top36 next_ppg model_ppg  beat
+  young riser behind him  2       10       -  6 15   50%  100%  100%    17.23     15.65 +1.57
+          no young riser 13       12    8-20  5 65   54%   69%   69%    15.40     14.68 +0.72
+
+    Who they were (before the teammate condition):
+      2010  Hakeem Nicks           yr  2  WR  8  ->  WR12
+      2010  Kenny Britt            yr  2  WR 34  ->  WR101
+      2010  Austin Collie          yr  2  WR 35  ->  WR65
+      2012  Percy Harvin           yr  4  WR 38  ->  WR179
+      2013  Randall Cobb           yr  3  WR 66  ->  WR8
+      2015  Sammy Watkins          yr  2  WR 19  ->  WR90
+      2018  Cooper Kupp            yr  2  WR 51  ->  WR4
+      2019  Tyreek Hill            yr  4  WR 32  ->  WR2
+      2019  Calvin Ridley          yr  2  WR 27  ->  WR5
+      2020  Chris Godwin Jr.       yr  4  WR 31  ->  WR15
+      2021  Tee Higgins            yr  2  WR 24  ->  WR19
+      2023  Justin Jefferson       yr  4  WR 33  ->  WR2
+      2024  Nico Collins           yr  4  WR 23  ->  WR8
+      2024  DeVonta Smith          yr  4  WR 27  ->  WR20
+      2024  Puka Nacua             yr  2  WR 26  ->  WR1
+
+==============================================================================
+HEAD TO HEAD
+==============================================================================
+Season N+1, all seasons pooled:
+
+                         cohort    n med_next p10_p90 q1  q3 top12 top24 top36 next_ppg model_ppg  beat
+               A  five-week WR1   33       19   14-23 13  32   24%   64%   79%    14.76     14.05 +0.71
+B  young ex-WR1, off a collapse   14       34   16-54 15  71   21%   50%   50%    12.36     12.41 -0.05
+            C  hurt + efficient   15       12    8-19  4  42   53%   73%   73%    15.65     14.81 +0.84
+  every WR season in the sample 1592       64   62-67 29 116   11%   21%   31%     8.98      8.99 -0.00
+
+    Overlap: A n B = 0,  A n C = 0,  B n C = 4
+
+P(the row archetype finishes ahead of the column archetype) next
+season, over every ordered pair of members, ties split.
+
+                                 A  five-week WR1  B  young ex-WR1, off a collapse  C  hurt + efficient
+A  five-week WR1                              NaN                              60%                  39%
+B  young ex-WR1, off a collapse               40%                              NaN                  36%
+C  hurt + efficient                           61%                              64%                  NaN
+
+Mann-Whitney on next-season points per game:
+
+    A  five-week WR1                 vs B  young ex-WR1, off a collapse  p = 0.205
+    A  five-week WR1                 vs C  hurt + efficient              p = 0.168
+    B  young ex-WR1, off a collapse  vs C  hurt + efficient              p = 0.132
+
+Against the model that knows nothing about archetypes.  'beat' is
+actual next-season ppg minus what the reference model predicted; a
+cohort the standard metrics misprice shows a beat away from zero.
+
+    A  five-week WR1                 n =  33   beat = +0.71 ppg   t = +1.51   p = 0.141
+    B  young ex-WR1, off a collapse  n =  14   beat = -0.05 ppg   t = -0.04   p = 0.972
+    C  hurt + efficient              n =  15   beat = +0.84 ppg   t = +0.55   p = 0.589
+
+==============================================================================
+WHO FITS RIGHT NOW, AND WHAT THE MODEL SAYS
+==============================================================================
+2025 receivers matching each archetype, with the reference model's
+projection for 2026 (points per game, and where that ranks among
+all 89 qualifying 2025 receivers).
+
+  A  five-week WR1: 4 receiver(s)
+      George Pickens         yr 4  WR  5  pace WR  6  17g  top5  51%   8.1 tgt/g  2.13 ppr/tgt  mate WR22/yr6    proj 14.91 ppg (#6)
+      Zay Flowers            yr 3  WR  7  pace WR 13  17g  top5  47%   6.9 tgt/g  2.06 ppr/tgt  mate WR93/yr13   proj 13.67 ppg (#13)
+      Wan'Dale Robinson      yr 4  WR 14  pace WR 17  16g  top5  54%   8.8 tgt/g  1.56 ppr/tgt  mate WR63/yr7    proj 12.90 ppg (#17)
+      Michael Wilson         yr 3  WR 10  pace WR 21  17g  top5  60%   7.4 tgt/g  1.75 ppr/tgt  mate WR50/yr2    proj 11.70 ppg (#24)
+
+  B  young ex-WR1, off a collapse: 3 receiver(s)
+      Brian Thomas Jr.       yr 2  WR 42  pace WR 47  14g  top5  54%   6.5 tgt/g  1.53 ppr/tgt  mate WR27/yr3    proj 12.45 ppg (#18)
+      Ladd McConkey          yr 2  WR 30  pace WR 38  16g  top5  53%   6.6 tgt/g  1.71 ppr/tgt  mate WR29/yr13   proj 12.37 ppg (#19)
+      Garrett Wilson         yr 4  WR 62  pace WR 15   7g  top5  96%   8.4 tgt/g  1.69 ppr/tgt  mate WR73/yr2    proj 11.55 ppg (#27)
+
+  C  hurt + efficient: 1 receiver(s)
+      Rashee Rice            yr 3  WR 40  pace WR  5   8g  top5  80%   9.8 tgt/g  1.92 ppr/tgt  mate WR44/yr7    proj 13.97 ppg (#12)
+

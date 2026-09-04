@@ -1,0 +1,161 @@
+
+==============================================================================
+THE SAMPLE
+==============================================================================
+WR-seasons, 2009-2024, 6+ games and 40+ targets: 1,592
+Distinct receivers: 464
+133 of them (8.4%) never played another qualifying WR season and are censored at the bottom.
+Median season N+1 finish: WR64   top-24 rate: 21.2%   top-12 rate: 11.1%
+
+==============================================================================
+1. ONE METRIC AT A TIME
+==============================================================================
+Spearman rho against season N+1 finish, oriented so + always means
+'the good direction of this metric predicts a better season N+1'.
+AUC = P(a top-24 season out-ranks a non-top-24 one) on this metric alone.
+cv R2 = leave-one-season-out R2 on next-year points per game, this
+metric and nothing else.
+
+           metric                                                  meaning signal   auc   cv_r2        p
+              ppg                                      PPR points per game +0.583 0.831  0.4298 1.7e-145
+      pace_finish health-adjusted finish (per-game pace over a full slate) +0.587 0.832  0.4105 8.4e-148
+           finish                                        positional finish +0.594 0.824  0.4031 2.9e-152
+       quiet_rate                         share of games at or under 8 PPR +0.543 0.812  0.3599 6.1e-123
+          targets                                            total targets +0.547 0.807  0.3534 1.1e-124
+              tpg                                         targets per game +0.526 0.811  0.3506 9.9e-114
+     target_share                                             target share +0.527 0.810  0.3421 1.9e-114
+        boom_rate                               share of games over 20 PPR +0.515 0.790  0.3354 2.4e-108
+             wopr                    WOPR (target + air-yards opportunity) +0.521 0.808  0.3294 1.2e-111
+  air_yards_share                                          air yards share +0.454 0.770  0.2450  5.7e-82
+             gini                  weekly-score Gini (spike concentration) +0.378 0.718  0.1721  2.5e-55
+          week_cv                    week-to-week coefficient of variation +0.372 0.714  0.1584  1.7e-53
+       top5_share             share of season points from the 5 best games +0.407 0.715  0.1507  1.6e-64
+         prev_ppg                          PPR points per game, season N-1 +0.299 0.703  0.1191  3.2e-34
+              ypt                                         yards per target +0.311 0.659  0.1167  4.3e-37
+   ppr_per_target                                    PPR points per target +0.323 0.659  0.1148  5.2e-40
+   epa_per_target                                 receiving EPA per target +0.305 0.657  0.1132  1.0e-35
+    fd_per_target                                   first downs per target +0.266 0.652  0.0911  2.9e-27
+       draft_pick                                               draft pick +0.224 0.648  0.0520  1.5e-19
+    td_per_target                                    touchdowns per target +0.235 0.620  0.0517  2.4e-21
+        catch_pct                                               catch rate +0.191 0.611  0.0466  1.8e-14
+           missed                                             games missed +0.237 0.606  0.0341  9.8e-22
+            games                                             games played +0.235 0.604  0.0335  2.0e-21
+      yac_per_rec                                        YAC per reception +0.185 0.575  0.0319  9.4e-14
+      prior_top24                          count of earlier top-24 seasons +0.226 0.645  0.0314  8.4e-20
+              age                                                      age +0.151 0.566  0.0226  1.3e-09
+best_prior_finish                        best finish in any earlier season +0.218 0.664  0.0218  1.5e-18
+          n_teams                             teams played for this season +0.123 0.513  0.0143  9.2e-07
+             racr                                RACR (yards per air yard) +0.166 0.595  0.0135  2.5e-11
+              exp                                      years of experience +0.105 0.530  0.0097  2.6e-05
+young_mate_finish             best finish among his 1st/2nd-year teammates +0.102 0.555  0.0086  4.7e-05
+      mate_finish              best finish among the other WRs on his team +0.088 0.571  0.0053  4.1e-04
+             adot                                  average depth of target +0.060 0.520  0.0006  1.7e-02
+         mate_exp                              experience of that teammate +0.009 0.501 -0.0021  7.3e-01
+
+==============================================================================
+2. THE HORSE RACE: forward selection, out of sample
+==============================================================================
+Greedily add the metric that most improves leave-one-season-out R2.
+A metric enters only if it earns its place on seasons the model has
+never seen, which is the only definition of predictive power that
+survives 33 correlated candidates.
+
+step  metric                cv R2     gain  meaning
+   1  ppg                  0.4298  +0.4298  PPR points per game
+   2  age                  0.4696  +0.0398  age
+   3  finish               0.4837  +0.0141  positional finish
+   4  prev_ppg             0.4932  +0.0095  PPR points per game, season N-1
+   5  prior_top24          0.4982  +0.0050  count of earlier top-24 seasons
+   6  young_mate_finish    0.5004  +0.0021  best finish among his 1st/2nd-year teammates
+
+  stopped: the best remaining metric (n_teams) adds only +0.0010
+
+  all 34 metrics together: cv R2 = 0.5042
+  the 6 selected:            cv R2 = 0.5004
+  selected model vs actual season N+1 finish: Spearman rho = -0.646, AUC(top-24) = 0.859
+
+==============================================================================
+3. WHAT EACH FAMILY OF METRICS IS WORTH
+==============================================================================
+Leave-one-season-out R2 for each block on its own, and the R2 lost
+when that block is dropped from the model that holds all 34.
+
+           block  k alone_cv_r2 adds_on_top
+Health / profile  5      0.1122     +0.0247
+      Production  6      0.4683     +0.0138
+          Volume  6      0.3795     +0.0047
+      Efficiency  8      0.1339     +0.0028
+    Team context  4      0.0302     +0.0018
+    Weekly shape  5      0.4250     -0.0003
+
+==============================================================================
+4. THE THREE QUESTIONS THE ARCHETYPES TURN ON
+==============================================================================
+
+(a) Spike concentration - archetype A, the five-week wonder.
+    Holding season-N points per game, targets per game and games played
+    fixed, does a season built out of a few huge weeks predict a worse
+    next year?  Coefficient is next-season ppg per sd, season FE, HC3.
+    The second block repeats it on near-full seasons only, where a
+    'top 5 games' share means the same thing for everyone.
+
+    the whole sample  (n = 1,592)
+      gini         +0.131 ppg/sd   t = +0.94   p = 0.348
+      top5_share   +0.167 ppg/sd   t = +0.83   p = 0.404
+      boom_rate    +0.097 ppg/sd   t = +0.40   p = 0.689
+      quiet_rate   -0.072 ppg/sd   t = -0.28   p = 0.778
+      week_cv      +0.195 ppg/sd   t = +1.46   p = 0.144
+
+    14+ games only  (n = 1,140)
+      gini         +0.198 ppg/sd   t = +1.22   p = 0.223
+      top5_share   +0.270 ppg/sd   t = +1.63   p = 0.104
+      boom_rate    +0.165 ppg/sd   t = +0.60   p = 0.546
+      quiet_rate   -0.122 ppg/sd   t = -0.40   p = 0.689
+      week_cv      +0.278 ppg/sd   t = +1.78   p = 0.076
+
+
+(b) Health adjustment - archetype C, the injured efficient one.
+    Which rank tells you more about next year: what he actually
+    finished, or what his per-game pace says he would have finished?
+
+    finish                             cv R2 = 0.4031
+    pace_finish                        cv R2 = 0.4105
+    ppg                                cv R2 = 0.4298
+    finish + pace_finish               cv R2 = 0.4257
+    ppg + finish                       cv R2 = 0.4441
+    ppg + pace_finish                  cv R2 = 0.4322
+    finish + pace_finish + missed      cv R2 = 0.4242
+    ppg + pace_finish + missed         cv R2 = 0.4448
+
+(c) Does an earlier big season survive a bad one? - archetype B.
+    Receivers coming off a season N finish outside the top 30:
+
+    an earlier top-12 season           n =  178   median next WR   83   top-24  15.7%   top-12   6.7%
+    an earlier top-24 but no top-12    n =  138   median next WR   78   top-24  13.0%   top-12   5.1%
+    no earlier top-24 season           n =  623   median next WR   93   top-24   5.6%   top-12   2.6%
+
+(d) The young teammate - archetype C's complication.
+    Among receivers who finished top-30, what does a 1st/2nd-year
+    teammate finishing ahead of a given line do to their next season?
+
+    young teammate inside WR24   n =   38  median next WR   28  top-24  42.1%  next ppg 13.35
+    no such teammate           n =  443  median next WR   25  top-24  49.2%  next ppg 13.82    Mann-Whitney p = 0.271
+
+    young teammate inside WR36   n =   68  median next WR   29  top-24  42.6%  next ppg 13.72
+    no such teammate           n =  413  median next WR   25  top-24  49.6%  next ppg 13.79    Mann-Whitney p = 0.591
+
+    young teammate inside WR60   n =  121  median next WR   29  top-24  43.8%  next ppg 13.68
+    no such teammate           n =  360  median next WR   24  top-24  50.3%  next ppg 13.81    Mann-Whitney p = 0.318
+
+
+(e) Efficiency without volume.
+    Among receivers at the same targets per game, does elite efficiency
+    predict a better next season?  Terciles of PPR per target, within
+    quartiles of targets per game.
+
+eff      low   mid  high
+tpg                     
+tpg Q1  4.44  4.73  6.64
+tpg Q2  5.54  7.22  8.43
+tpg Q3  7.16  9.92 12.67
+tpg Q4 11.63 14.47 15.21
