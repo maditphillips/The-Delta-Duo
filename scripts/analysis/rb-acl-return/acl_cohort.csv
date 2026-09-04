@@ -1,0 +1,45 @@
+player,gsis_id,team,injury_date,date_basis,mechanism,confidence,note
+Terrell Davis,00-0004054,DEN,1999-10-03,reported,game,high,ACL+MCL wk4 vs NYJ tackling after INT
+Jamal Anderson,00-0000316,ATL,1999-09-20,lastgame,game,high,torn knee ligaments game 2 of 1999
+Olandis Gary,00-0005816,DEN,2000-09-04,reported,game,high,ACL right knee 2000 opener vs STL
+Edgerrin James,00-0008241,IND,2001-10-25,lastgame,game,high,ACL wk7 vs KC
+Jamal Anderson,00-0000316,ATL,2001-09-30,lastgame,game,high,second ACL; career ending
+Jamal Lewis,00-0019693,BAL,2001-08-15,approx,camp,medium,ACL in 2001 camp; missed entire season
+Correll Buckhalter,00-0020270,PHI,2002-04-26,reported,practice,high,ACL left knee in minicamp
+Deuce McAllister,00-0020527,NO,2005-10-09,lastgame,game,high,ACL right knee; IR 2005-10-10
+Ronnie Brown,00-0023437,MIA,2007-10-21,lastgame,game,high,ACL wk7 vs NE
+Deuce McAllister,00-0020527,NO,2007-09-24,reported,game,high,ACL left knee vs TEN
+Kevin Smith,00-0026204,DET,2009-12-13,lastgame,game,high,ACL left knee wk14
+Jerious Norwood,00-0024294,ATL,2010-09-19,reported,game,high,ACL on kickoff return vs ARI
+Kevin Smith,00-0026204,DET,2010-11-14,lastgame,game,medium,second ACL
+Jamaal Charles,00-0026213,KC,2011-09-18,lastgame,game,high,ACL wk2 vs DET
+Tim Hightower,00-0026289,WAS,2011-10-23,lastgame,game,high,ACL wk7 vs CAR
+Knowshon Moreno,00-0026988,DEN,2011-11-13,lastgame,game,high,ACL wk10 vs KC
+Adrian Peterson,00-0025394,MIN,2011-12-24,lastgame,game,high,ACL+MCL wk16 vs WAS
+Rashard Mendenhall,00-0026163,PIT,2012-01-01,lastgame,game,high,ACL wk17 of 2011 season
+Bernard Scott,00-0026941,CIN,2012-10-07,lastgame,game,high,ACL vs MIA
+Vick Ballard,00-0029547,IND,2013-09-12,reported,practice,high,ACL in practice; IR 2013-09-13
+Mike Goodson,00-0027080,NYJ,2013-10-13,reported,game,high,ACL+MCL vs PIT
+Isaiah Pead,00-0029626,STL,2014-08-17,reported,preseason,high,ACL in preseason vs GB
+Stevan Ridley,00-0028011,NE,2014-10-12,lastgame,game,high,ACL+MCL wk6 vs BUF
+Knowshon Moreno,00-0026988,MIA,2014-10-12,lastgame,game,high,second ACL; career ending
+Jamaal Charles,00-0026213,KC,2015-10-11,lastgame,game,high,second ACL same knee wk5 vs CHI
+Lance Dunbar,00-0029004,DAL,2015-10-04,reported,game,high,ACL+MCL on 2nd half kickoff at NO
+Dion Lewis,00-0028087,NE,2015-11-08,reported,game,high,ACL left knee vs WAS
+Danny Woodhead,00-0026019,SD,2016-09-18,lastgame,game,high,ACL wk2 vs JAX
+Giovani Bernard,00-0030456,CIN,2016-11-20,lastgame,game,high,ACL wk11 vs BUF
+Dalvin Cook,00-0033893,MIN,2017-10-01,lastgame,game,high,ACL wk4 vs DET
+Jerick McKinnon,00-0031376,SF,2018-09-01,reported,practice,high,ACL day before wk1
+Jay Ajayi,00-0031590,PHI,2018-10-07,reported,game,high,ACL left knee wk5 vs MIN
+Lamar Miller,00-0029615,HOU,2019-08-17,reported,preseason,high,ACL in preseason vs DAL
+Rashaad Penny,00-0034750,SEA,2019-12-08,lastgame,game,high,ACL wk14 vs LAR
+Saquon Barkley,00-0034844,NYG,2020-09-20,lastgame,game,high,ACL wk2 at CHI
+Tarik Cohen,00-0033556,CHI,2020-09-27,lastgame,game,high,ACL wk3 at ATL
+J.K. Dobbins,00-0036158,BAL,2021-08-28,reported,preseason,high,ACL+LCL preseason finale vs WAS
+Gus Edwards,00-0034184,BAL,2021-09-08,reported,practice,high,ACL in practice
+Javonte Williams,00-0036997,DEN,2022-10-02,lastgame,game,high,ACL+LCL/PCL wk4 at LV
+Breece Hall,00-0038120,NYJ,2022-10-23,lastgame,game,high,ACL wk7 at DEN
+Nyheim Hines,00-0034367,BUF,2023-07-15,approx,offseason,medium,ACL in jet ski accident July 2023
+Nick Chubb,00-0034791,CLE,2023-09-18,lastgame,game,high,ACL+MCL wk2 at PIT
+Keaton Mitchell,00-0038454,BAL,2023-12-17,lastgame,game,high,ACL left knee wk15 vs JAX
+Jonathon Brooks,00-0039344,CAR,2024-12-08,lastgame,game,high,second ACL right knee wk14 vs PHI

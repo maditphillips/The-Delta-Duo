@@ -1,0 +1,145 @@
+
+=================
+1. RETURN TO PLAY
+=================
+episodes: 44   returned to a regular-season game: 38 (86%)
+never returned: Jamal Anderson (2001), Vick Ballard (2013), Mike Goodson (2013), Knowshon Moreno (2014), Tarik Cohen (2020), Jonathon Brooks (2024)
+
+Days from injury to first regular-season game (n=38, all returners)
+  mean 412   median 357   IQR 336-395   range 260-1477
+  months: mean 13.5   median 11.7
+
+Excluding the 3 multi-year layoffs >550 days (Tim Hightower, Jerick McKinnon, Nyheim Hines)  (n=35)
+  mean 360 d (11.8 mo)   median 357 d (11.7 mo)   IQR 331-390   range 260-500
+  team games missed: mean 14.0  median 14
+  days to first 10+ carry game: median 374 (n=29)
+
+By how the tear happened (returners <=550 days):
+  in-season game injury              n=29  median 349 d (11.5 mo)
+  practice / preseason / offseason   n= 6  median 402 d (13.2 mo)
+
+By era (returners <=550 days):
+  1999-2009: n=10  median 343 d  mean 358 d
+  2010-2016: n=14  median 357 d  mean 348 d
+  2017-2024: n=11  median 378 d  mean 376 d
+
+==============================================================
+2. PRE-INJURY vs FIRST YEAR BACK (matched against healthy RBs)
+==============================================================
+analysis sample: 32 episodes with a usable pre-injury baseline and a return season
+control pool: 1307 healthy RB season-to-season transitions, 1999-2024
+
+Medians across the cohort. 'ctl chg' is the median year-over-year change for age- and
+workload-matched healthy backs; 'excess' is the per-case case-minus-control median;
+p is a Wilcoxon signed-rank test on that excess.
+
+VOLUME / OPPORTUNITY
+metric                 pre   year 1      chg   chg %     ctl chg   ctl %      excess       p    n
+carries_pg          12.771    8.821   -3.949  -30.9%      -1.460  -11.4%      -3.267   0.007   32
+targets_pg           2.562    2.000   -0.562  -22.0%      -0.324  -12.7%      -0.508   0.016   32
+touches_pg          15.562    9.833   -5.729  -36.8%      -1.514   -9.7%      -3.817   0.003   32
+opp_pg              16.625   10.323   -6.302  -37.9%      -1.476   -8.9%      -4.115   0.002   32
+rush_share           0.452    0.320   -0.132  -29.2%      -0.048  -10.5%      -0.075   0.043   32
+tgt_share            0.087    0.065   -0.022  -25.4%      -0.009  -10.0%      -0.012   0.003   32
+snaps_pg            36.250   19.625  -16.625  -45.9%      -3.019   -8.3%      -9.824   0.000   15
+snap_pct             0.542    0.285   -0.257  -47.4%      -0.039   -7.3%      -0.132   0.001   15
+
+EFFICIENCY
+metric                 pre   year 1      chg   chg %     ctl chg   ctl %      excess       p    n
+ypc                  4.324    3.907   -0.417   -9.6%      -0.129   -3.0%      -0.361   0.066   31
+yds_per_touch        5.068    4.473   -0.595  -11.7%      -0.134   -2.7%      -0.704   0.006   32
+epa_per_rush        -0.026   -0.093   -0.067       -      -0.023       -      -0.073   0.034   31
+success_rate         0.399    0.364   -0.035   -8.8%      -0.009   -2.2%      -0.050   0.034   31
+explosive_rate       0.116    0.083   -0.033  -28.1%      -0.007   -5.6%      -0.029   0.055   31
+stuff_rate           0.199    0.185   -0.014   -7.0%       0.004   +1.9%       0.001   0.692   31
+rush_fd_rate         0.227    0.211   -0.015   -6.8%      -0.003   -1.4%      -0.022   0.107   31
+yds_per_tgt          7.032    5.250   -1.782  -25.3%      -0.135   -1.9%      -0.807   0.041   31
+ngs_ryoe_att         0.502    0.260   -0.242  -48.2%       0.031   +6.2%      -0.005   0.562    6
+
+PRODUCTION
+metric                 pre   year 1      chg   chg %     ctl chg   ctl %      excess       p    n
+rush_yds_pg         57.688   38.281  -19.407  -33.6%      -7.776  -13.5%      -9.070   0.008   32
+scrim_yds_pg        73.938   46.743  -27.194  -36.8%      -9.324  -12.6%     -19.071   0.001   32
+ppr_pg              13.469    8.258   -5.211  -38.7%      -1.668  -12.4%      -2.575   0.002   32
+
+=========================
+3. AVAILABILITY IN YEAR 1
+=========================
+games played in the return season: median 8 of 16 team games (50%)
+  played >=90% of team games: 31%
+  played <50% of team games:  41%
+
+=====================
+4. PER-EPISODE DETAIL
+=====================
+            player  injury_year  age_at_injury  days_to_return  games_missed  return_season  y1_games  pre_touches_pg  y1_touches_pg  pre_ypc  y1_ypc  pre_epa_per_rush  y1_epa_per_rush  pre_success_rate  y1_success_rate  pre_ppr_pg  y1_ppr_pg  tch_%  ypc_%
+      Olandis Gary         2000           25.3           384.0          16.0         2001.0       8.0          24.375          7.625    4.431   4.000            -0.043            0.056             0.370            0.351      17.325      4.462  -69.0  -10.0
+    Edgerrin James         2001           23.2           318.0          10.0         2002.0      14.0          30.500         24.143    4.359   3.570            -0.028           -0.118             0.431            0.383      24.950     15.236  -21.0  -18.0
+       Jamal Lewis         2001           22.0           389.0          16.0         2002.0      16.0          27.375         22.188    4.589   4.308             0.055           -0.092             0.436            0.403      19.988     16.994  -19.0   -6.0
+Correll Buckhalter         2002           23.6           500.0          16.0         2003.0      15.0           6.875          9.067    4.667   4.302             0.007           -0.019             0.479            0.421       5.325      8.767   32.0   -8.0
+  Deuce McAllister         2005           26.8           336.0          11.0         2006.0      15.0          26.750         18.333    3.835   4.331            -0.098            0.003             0.309            0.408      18.100     14.793  -31.0   13.0
+      Ronnie Brown         2007           25.9           322.0           9.0         2008.0      16.0          22.375         15.438    5.326   4.280             0.180           -0.029             0.482            0.397      22.650     13.125  -31.0  -20.0
+  Deuce McAllister         2007           28.7           356.0          14.0         2008.0      13.0          19.250          9.615    4.324   3.907            -0.026           -0.018             0.374            0.449      13.650      8.354  -50.0  -10.0
+       Kevin Smith         2009           23.0           294.0           6.0         2010.0       6.0          18.000          7.333    3.639   3.788            -0.206           -0.220             0.344            0.273      13.412      5.967  -59.0    4.0
+   Jerious Norwood         2010           27.1           357.0          15.0         2011.0       6.0          10.875          4.000    3.274   2.542            -0.172           -0.350             0.342            0.167       7.200      1.017  -63.0  -22.0
+       Kevin Smith         2010           23.9           364.0          15.0         2011.0       7.0          12.250         14.000    3.573   4.919            -0.124            0.026             0.427            0.351       8.612     18.371   14.0   38.0
+    Jamaal Charles         2011           24.7           357.0          14.0         2012.0      16.0          17.125         20.000    6.752   5.295             0.216           -0.011             0.451            0.393      19.025     15.344   17.0  -22.0
+     Tim Hightower         2011           25.4          1477.0          66.0         2015.0       8.0          15.500         13.500    3.963   3.906            -0.116           -0.060             0.343            0.417      12.325     10.800  -13.0   -1.0
+   Knowshon Moreno         2011           24.3           301.0           7.0         2012.0       8.0           7.375         19.875    4.065   3.804            -0.306           -0.037             0.217            0.428       6.275     14.275  169.0   -6.0
+   Adrian Peterson         2011           26.8           260.0           1.0         2012.0      16.0          18.250         24.250    4.609   6.026             0.040            0.069             0.399            0.408      16.688     21.838   33.0   31.0
+Rashard Mendenhall         2012           24.5           280.0           3.0         2012.0       6.0          17.125         10.000    4.278   3.569            -0.008           -0.232             0.389            0.294      14.125      6.567  -42.0  -17.0
+     Bernard Scott         2012           28.7           441.0          25.0         2013.0       2.0           6.875          3.000    3.040   3.500            -0.074           -0.326             0.360            0.000       4.338      2.200  -56.0   15.0
+     Stevan Ridley         2014           25.7           396.0          18.0         2015.0       8.0          15.250          5.000    4.025   2.500            -0.025           -0.276             0.412            0.222       8.038      1.600  -67.0  -38.0
+    Jamaal Charles         2015           28.8           357.0          14.0         2016.0       3.0          16.625          4.667    5.165   3.333             0.011            0.065             0.398            0.333      19.250      4.467  -72.0  -35.0
+        Dion Lewis         2015           25.1           378.0          17.0         2016.0       7.0          10.125         11.571    5.143   4.422             0.220            0.032             0.490            0.469      15.262      7.814   14.0  -14.0
+    Danny Woodhead         2016           31.6           357.0          14.0         2017.0       8.0          12.000          5.875    3.482   4.000            -0.134           -0.198             0.339            0.357      15.250      7.325  -51.0   15.0
+   Giovani Bernard         2016           25.0           294.0           6.0         2017.0      16.0          13.875          9.250    3.684   4.362            -0.117           -0.093             0.380            0.371      13.525      9.431  -33.0   18.0
+   Jerick McKinnon         2018           26.3           743.0          32.0         2020.0      16.0          13.000          7.125    3.494   3.938            -0.179           -0.129             0.358            0.358       9.888      7.888  -45.0   13.0
+         Jay Ajayi         2018           25.3           413.0          21.0         2019.0       3.0          13.125          3.333    4.293   3.000            -0.077           -0.193             0.370            0.300      11.512      1.000  -75.0  -30.0
+      Lamar Miller         2019           28.3           457.0          25.0         2020.0       1.0          16.125          2.000    5.235     NaN            -0.002              NaN             0.357              NaN      13.338      2.600  -88.0    NaN
+     Rashaad Penny         2019           23.8           378.0          16.0         2020.0       3.0           8.250          3.667    5.966   3.091             0.101           -0.161             0.441            0.364       9.112      1.133  -56.0  -48.0
+    Saquon Barkley         2020           23.6           357.0          14.0         2021.0      13.0          21.750         15.615    4.222   3.660            -0.168           -0.126             0.361            0.364      18.475     11.585  -28.0  -13.0
+      J.K. Dobbins         2021           22.7           393.0          19.0         2022.0       8.0          12.500         12.375    5.723   5.652             0.224            0.099             0.415            0.533      13.200     10.150   -1.0   -1.0
+       Gus Edwards         2021           26.4           410.0          23.0         2022.0       9.0           9.500          9.667    5.725   4.977             0.295           -0.000             0.580            0.437       9.538      6.811    2.0  -13.0
+  Javonte Williams         2022           22.4           343.0          13.0         2023.0      16.0          15.625         16.500    4.090   3.567            -0.089           -0.175             0.410            0.346      12.038     11.075    6.0  -13.0
+       Breece Hall         2022           21.4           323.0          10.0         2023.0      17.0          15.833         17.588    5.145   4.457             0.122           -0.098             0.421            0.341      17.317     16.971   11.0  -13.0
+        Nick Chubb         2023           27.7           398.0          21.0         2024.0       8.0          20.125         13.375    4.849   3.255             0.019           -0.202             0.425            0.343      13.775      8.163  -34.0  -33.0
+   Keaton Mitchell         2023           21.9           326.0          12.0         2024.0       5.0           6.429          3.200    8.500   2.000             0.361           -0.348             0.474            0.200       8.443      1.360  -50.0  -76.0
+
+==============
+5. YEAR 2 BACK
+==============
+episodes with a year-2 season of >=3 games: 23
+metric                  pre   year 1   year 2  y1 vs pre  y2 vs pre
+carries_pg           13.500   12.000   11.250     -11.1%     -16.7%
+touches_pg           16.625   13.500   12.500     -18.8%     -24.8%
+snap_pct              0.542    0.376    0.419     -30.6%     -22.6%
+rush_share            0.500    0.484    0.402      -3.3%     -19.6%
+ypc                   4.431    3.938    4.290     -11.1%      -3.2%
+yds_per_touch         5.155    4.654    4.714      -9.7%      -8.6%
+epa_per_rush         -0.008   -0.092   -0.053          -          -
+success_rate          0.410    0.364    0.370     -11.2%      -9.8%
+explosive_rate        0.119    0.090    0.108     -24.5%      -8.7%
+scrim_yds_pg         89.375   62.625   58.235     -29.9%     -34.8%
+ppr_pg               14.125   10.800   11.118     -23.5%     -21.3%
+
+games played: year 1 median 9 | year 2 median 14
+
+============================
+6. WHO RECOVERS THE WORKLOAD
+============================
+regained >=90% of pre-injury touches/game in year 1: 31% (10/32)
+fell below 60% of pre-injury touches/game:           44% (14/32)
+matched or beat pre-injury yards per carry:          25%
+
+By age at the tear:
+  25 and under           n=15  touches/g  15.6 ->  14.0 (-10%)   YPC 4.36 -> 3.80   games 13   RTP 343 d
+  over 25                n=17  touches/g  15.5 ->   7.6 (-51%)   YPC 4.32 -> 3.92   games 8   RTP 384 d
+
+By pre-injury workload:
+  bell cow (>=15 tch/g)  n=18  touches/g  18.1 ->  14.5 (-20%)   YPC 4.39 -> 3.91   games 13   RTP 356 d
+  rotational (<15 tch/g) n=14  touches/g  10.5 ->   8.1 (-23%)   YPC 4.18 -> 3.97   games 8   RTP 378 d
+
+By era:
+  1999-2012              n=16  touches/g  17.6 ->  13.8 (-22%)   YPC 4.30 -> 3.95   games 10   RTP 356 d
+  2013-2024              n=16  touches/g  13.5 ->   8.2 (-39%)   YPC 5.00 -> 3.66   games 8   RTP 378 d
