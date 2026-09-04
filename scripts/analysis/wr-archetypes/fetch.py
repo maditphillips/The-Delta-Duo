@@ -2,12 +2,15 @@
 
     python3 fetch.py [first_season] [last_season]
 
-Writes three gitignored files next to this script:
+Writes five gitignored files next to this script:
 
   wr_weeks.parquet   every regular-season WR game line, 2000-2025
   team_games.parquet season/team/week grid, so "games missed" is measured
                      against the games the player's team actually played
   players.parquet    rookie year, birth date and draft slot per player
+  injuries.parquet   weekly injury report, 2009-2025 - what he was listed with,
+                     his game status and his practice participation
+  snaps.parquet      offensive snap share by game, 2012-2025
 
 Each season's weekly file is downloaded, filtered, then deleted, so peak disk
 use stays under 100 MB.
@@ -31,6 +34,12 @@ WEEK_COLS = [
     "air_yards_share", "wopr", "carries", "rushing_yards", "rushing_tds",
     "fantasy_points", "fantasy_points_ppr",
 ]
+INJURY_COLS = [
+    "season", "season_type", "team", "week", "gsis_id", "position", "full_name",
+    "report_primary_injury", "report_status", "practice_primary_injury", "practice_status",
+]
+SNAP_COLS = ["season", "week", "player", "pfr_player_id", "position", "team",
+             "offense_snaps", "offense_pct"]
 ROSTER_COLS = [
     "season", "gsis_id", "full_name", "position", "birth_date", "draft_number",
     "entry_year", "rookie_year", "years_exp",
@@ -83,6 +92,31 @@ def main(start=2000, end=2025):
 
     tg = pd.concat(team_games, ignore_index=True)
     tg.to_parquet(f"{HERE}/team_games.parquet", index=False)
+
+    # Injury reports (2009+) and snap counts (2012+). Both are only needed for
+    # the "was he playing hurt" question, so a missing season is not fatal.
+    inj, snaps = [], []
+    for yr in range(max(start, 2009), end + 1):
+        try:
+            ipath = download(f"{REL}/injuries/injuries_{yr}.csv", f"{TMP}/i_{yr}.csv")
+            i = pd.read_csv(ipath, low_memory=False)
+            inj.append(i[[c for c in INJURY_COLS if c in i.columns]])
+            os.remove(ipath)
+        except SystemExit:
+            print(f"  no injury report for {yr}", flush=True)
+        if yr >= 2012:
+            try:
+                spath = download(f"{REL}/snap_counts/snap_counts_{yr}.csv", f"{TMP}/s_{yr}.csv")
+                sn = pd.read_csv(spath, low_memory=False)
+                sn = sn[sn.game_type == "REG"] if "game_type" in sn.columns else sn
+                snaps.append(sn[[c for c in SNAP_COLS if c in sn.columns]])
+                os.remove(spath)
+            except SystemExit:
+                print(f"  no snap counts for {yr}", flush=True)
+    if inj:
+        pd.concat(inj, ignore_index=True).to_parquet(f"{HERE}/injuries.parquet", index=False)
+    if snaps:
+        pd.concat(snaps, ignore_index=True).to_parquet(f"{HERE}/snaps.parquet", index=False)
 
     ros = pd.concat(rosters, ignore_index=True)
     ros = ros[ros.gsis_id.notna()]

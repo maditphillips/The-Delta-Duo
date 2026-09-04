@@ -1,0 +1,221 @@
+
+==============================================================================
+THE SAMPLE
+==============================================================================
+WR-seasons with 10+ games, 2009-2024: 1,502
+Injury report merged for 84% of them; the median receiver appears on it in 17% of his games.
+
+==============================================================================
+1. WHICH HALF OF THE SEASON PREDICTS NEXT SEASON
+==============================================================================
+Leave-one-season-out R2 on next-year points per game.
+
+    ppg                                          cv R2 = 0.4557
+    ppg_first_half                               cv R2 = 0.3544
+    ppg_second_half                              cv R2 = 0.3778
+    ppg_first_half + ppg_second_half             cv R2 = 0.4539
+    ppg + trend_ppg                              cv R2 = 0.4555
+    ppg_first4                                   cv R2 = 0.2800
+    ppg_last4                                    cv R2 = 0.3182
+    ppg + ppg_last4                              cv R2 = 0.4562
+    ppg + ppg_first4                             cv R2 = 0.4553
+
+    Both halves in one regression (season FE, HC3):
+      ppg_first_half           +1.988 ppg/sd   t = +14.64   p = 0.000
+      ppg_second_half          +2.275 ppg/sd   t = +16.56   p = 0.000
+
+    Full-season scoring plus the trend on top of it:
+      ppg                      +3.836 ppg/sd   t = +36.65   p = 0.000
+      trend_ppg                +0.078 ppg/sd   t = +0.72   p = 0.474
+
+==============================================================================
+2. A VOLUME TREND VS A SCORING TREND
+==============================================================================
+A fade in targets is a role change. A fade in points at the same
+targets is variance. Do they behave differently?
+
+    ppg + trend_ppg                              cv R2 = 0.4555
+    ppg + trend_tpg                              cv R2 = 0.4554
+    ppg + trend_ppg + trend_tpg                  cv R2 = 0.4547
+
+    All three together:
+      ppg                      +3.836 ppg/sd   t = +36.58   p = 0.000
+      trend_ppg                +0.086 ppg/sd   t = +0.55   p = 0.583
+      trend_tpg                -0.011 ppg/sd   t = -0.07   p = 0.946
+
+    Next season by quartile of each trend, holding the full-season
+    finish inside the top 36:
+
+    trend_ppg
+             n  med_next  top24  next_ppg
+trend_ppg                                
+fell hard  144      25.0   48.6      13.1
+fell       143      28.0   44.1      13.5
+rose       143      31.0   39.2      13.0
+rose hard  144      24.0   50.0      13.9
+
+    trend_tpg
+             n  med_next  top24  next_ppg
+trend_tpg                                
+fell hard  147      25.0   46.3      13.3
+fell       143      30.0   44.1      13.1
+rose       140      29.0   45.7      13.7
+rose hard  144      29.0   45.8      13.4
+
+
+    And the trend in SNAP share - the role itself rather than what
+    the role produced (2012 on, n = 1,027):
+
+    ppg                                          cv R2 = 0.4659
+    ppg + trend_snap                             cv R2 = 0.4655
+    ppg + snap_share                             cv R2 = 0.4674
+    ppg + snap_share + trend_snap                cv R2 = 0.4672
+    ppg + snap_share + trend_snap + trend_tpg    cv R2 = 0.4662
+
+    Scoring rate, snap share, and the change in snap share:
+      ppg                      +3.694 ppg/sd   t = +20.60   p = 0.000
+      snap_share               +0.346 ppg/sd   t = +2.01   p = 0.045
+      trend_snap               +0.174 ppg/sd   t = +1.37   p = 0.170
+
+    Next season by quartile of the snap-share trend, top-36 finishers:
+
+              n  med_next  top24  next_ppg
+trend_snap                                
+role shrank  99      26.0   49.5      14.2
+flat-        97      25.0   46.4      13.3
+flat+        96      31.5   44.8      12.7
+role grew    97      29.0   42.3      13.3
+
+==============================================================================
+3. TOUCHDOWNS: THE USUAL ENGINE OF A HOT START
+==============================================================================
+Points per game with receiving touchdowns stripped out, against
+points per game as scored.
+
+    ppg                                          cv R2 = 0.4557
+    ppg_ex_td                                    cv R2 = 0.4489
+    ppg + ppg_ex_td                              cv R2 = 0.4570
+    ppg_ex_td + td_per_target                    cv R2 = 0.4567
+
+    Non-touchdown scoring rate against touchdown rate:
+      ppg_ex_td                +3.694 ppg/sd   t = +34.89   p = 0.000
+      td_per_target            +0.571 ppg/sd   t = +5.20   p = 0.000
+
+==============================================================================
+4. SHUT DOWN AT THE END VS INTERRUPTED IN THE MIDDLE
+==============================================================================
+Among receivers who missed 3+ games, does it matter whether the
+absence was the end of the season or a gap inside it?
+
+    shut down (missed the last 3+)         n =   45   median next WR   88   top-24  15.6%   next ppg  8.00
+    interrupted (played after returning)   n =  357   median next WR   87   top-24  15.1%   next ppg  7.43
+
+    With scoring rate held fixed:
+      ppg                      +3.238 ppg/sd   t = +13.87   p = 0.000
+      shut_down                -0.113 ppg/sd   t = -0.49   p = 0.623
+
+==============================================================================
+5. SHOULD YOU DISCOUNT GAMES HE PLAYED WHILE ON THE INJURY REPORT?
+==============================================================================
+Points per game over the games he entered off the report, against
+points per game over the games he entered on it. Both need 4+ games,
+so this runs on the receivers who had a real amount of each.
+
+    n = 462 receiver-seasons with 4+ games each side
+    mean ppg off the report 12.39, on it 11.29 (difference +1.10)
+
+    ppg                                          cv R2 = 0.4280
+    ppg_off_report                               cv R2 = 0.3962
+    ppg_on_report                                cv R2 = 0.2749
+    ppg_off_report + ppg_on_report               cv R2 = 0.4239
+    ppg + ppg_off_report                         cv R2 = 0.4307
+
+    Both in one regression. If the healthy games told you more, the
+    first coefficient would carry and the second would not:
+      ppg_off_report           +2.879 ppg/sd   t = +12.02   p = 0.000
+      ppg_on_report            +1.165 ppg/sd   t = +4.81   p = 0.000
+    
+    And whether being on the report a lot is itself a signal:
+      ppg                      +3.955 ppg/sd   t = +36.00   p = 0.000
+      listed_share             -0.274 ppg/sd   t = -1.72   p = 0.086
+      limited_share            -0.228 ppg/sd   t = -1.39   p = 0.165
+
+==============================================================================
+6. THE 2025 GAME LOGS
+==============================================================================
+What the injury report and the snap counts actually say, week by week.
+
+    Rome Odunze, 2025
+
+       wk  opp   snap%   tgt    pts   injury report
+        1  MIN     94%     9   15.7
+        2  DET    100%    11   31.8
+        3  DAL     90%     7   15.2
+        4  LV      76%     8   16.9
+        6  WAS     97%     5    5.2
+        7  NO      94%     6    5.1
+        8  BAL     94%    10   18.4
+        9  CIN    100%     3    0.0   Full Participation in Practice
+       10  NYG     78%    10   20.6   Full Participation in Practice
+       11  MIN     76%     6    6.1   Full Participation in Practice
+       12  PIT     78%     9    8.3
+       13  PHI     80%     6    2.8
+       14  -         -     -    DNP   Foot / Out / Did Not Participate In Practice
+       15  -         -     -    DNP   Foot / Questionable / Limited Participation in Practice
+       16  -         -     -    DNP   Foot / Out / Did Not Participate In Practice
+       17  -         -     -    DNP   Foot / Out / Did Not Participate In Practice
+       18  -         -     -    DNP   Foot / Questionable / Limited Participation in Practice
+
+    Parker Washington, 2025
+
+       wk  opp   snap%   tgt    pts   injury report
+        1  CAR     26%     0    0.0
+        2  CIN     24%     5   12.6
+        3  HOU     71%    11    7.4
+        4  SF      85%     2    5.9
+        5  KC      26%     3    9.6
+        6  SEA     33%     4    4.9
+        7  LA      88%    10   10.2
+        9  LV      88%     9   17.0
+       10  HOU     87%     7   17.9
+       11  LAC     76%     2    4.0   Limited Participation in Practice
+       12  ARI     84%     7   18.1
+       13  TEN     38%     3    3.6
+       14  -         -     -    DNP   Hip / Questionable / Limited Participation in Practice
+       15  NYJ     45%     3    8.3   Hip / Questionable / Full Participation in Practice
+       16  DEN     56%    10   26.5
+       17  IND     81%    10   19.0
+       18  TEN     74%     9   19.7
+
+    Brian Thomas Jr., 2025
+
+       wk  opp   snap%   tgt    pts   injury report
+        1  CAR       -     7    9.0
+        2  CIN       -    12    8.9
+        3  HOU       -     6    7.5   Full Participation in Practice
+        4  SF        -     7   10.6   Full Participation in Practice
+        5  KC        -     6   12.0
+        6  SEA       -    10   23.0
+        7  LA        -     7    6.1
+        9  LV        -     5    8.5   Limited Participation in Practice
+       10  -         -     -    DNP   Ankle / Out / Did Not Participate In Practice
+       11  -         -     -    DNP   Ankle / Questionable / Limited Participation in Practice
+       12  -         -     -    DNP   Ankle / Out / Limited Participation in Practice
+       13  TEN       -     3    4.8   Full Participation in Practice
+       14  IND       -     6   11.7
+       15  NYJ       -     7   17.1
+       16  DEN       -     3    3.8
+       17  IND       -     7    7.9
+       18  TEN       -     5    7.9
+
+  Split around the first week each appears on the injury report:
+
+    Rome Odunze          before      7g   8.0 tgt/g  15.47 ppg   67.6 yds/g   5 TD
+    Rome Odunze          from wk 9   5g   6.8 tgt/g   7.56 ppg   37.6 yds/g   1 TD
+
+    Parker Washington    before      9g   5.7 tgt/g   9.50 ppg   36.7 yds/g   2 TD
+    Parker Washington    from wk 11  7g   6.3 tgt/g  14.17 ppg   73.9 yds/g   3 TD
+
+    Brian Thomas Jr.     before      2g   9.5 tgt/g   8.95 ppg   30.0 yds/g   0 TD
+    Brian Thomas Jr.     from wk 3  12g   6.0 tgt/g  10.08 ppg   53.9 yds/g   2 TD
+

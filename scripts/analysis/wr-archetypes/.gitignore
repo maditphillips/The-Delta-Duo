@@ -3,3 +3,5 @@ team_games.parquet
 players.parquet
 wr_panel.csv
 __pycache__/
+injuries.parquet
+snaps.parquet

@@ -312,6 +312,129 @@ will take targets from each other; the `young_mate_finish` term sees only the 20
 room. Treat the numbers as a prior to be updated by offseason news, not a
 forecast that has already priced it.
 
+## Does it matter WHEN in the season the points arrived?
+
+```bash
+python3 timing.py > TIMING.txt
+```
+
+`fetch.py` also pulls the weekly injury report (2009-2025) and offensive snap
+share (2012-2025), so "he was playing hurt" and "his role changed mid-season"
+become columns rather than assertions. `timing.py` splits every season of 10+
+games into the order it was actually played and asks whether the shape carries
+anything.
+
+**It does not. Nothing about timing survives.**
+
+| Predictor of next-season ppg | cv R² |
+|---|---|
+| full-season points per game | **0.4557** |
+| first half only | 0.3544 |
+| second half only | 0.3778 |
+| both halves as separate terms | 0.4539 |
+| first four games only | 0.2800 |
+| last four games only | 0.3182 |
+| full season + last four | 0.4562 |
+| full season + the first-to-second-half trend | 0.4555 |
+
+Put both halves in one regression and they come out nearly equal — first half
++1.99 ppg/sd, second half +2.28. The second half is worth a shade more, and the
+gap is far too small to justify throwing away the first. Add the trend on top of
+full-season scoring and it contributes +0.078 ppg/sd (p = 0.47).
+
+The same holds for every other way of measuring the fade:
+
+| Trend measured on | Coefficient on next-season ppg | p |
+|---|---|---|
+| points per game | +0.086 ppg/sd | 0.58 |
+| targets per game | −0.011 ppg/sd | 0.95 |
+| snap share (2012+) | +0.174 ppg/sd | 0.17 |
+
+Snap share *level* does add a little (+0.346 ppg/sd, p = 0.045) — the role he
+holds matters. The *change* in it does not, and by quartile the receivers whose
+snap share grew through the year finished slightly worse the following season
+(median WR29, 42% top-24) than the ones whose role shrank (WR26, 50%).
+
+**Touchdowns are the mechanism, and they are worth about a sixth as much.**
+Strip receiving touchdowns out of the scoring rate and race the two:
+non-touchdown points per game carries +3.69 ppg/sd against +0.57 for touchdown
+rate — both real, but a point scored on a touchdown tells you roughly a sixth of
+what a point scored on volume does. This is what a hot start usually is.
+
+**Being shut down at the end of the year is not worse than being interrupted in
+the middle.** Among receivers who missed 3+ games: shut down (n = 45) median next
+WR88, 15.6% top-24; interrupted (n = 357) median WR87, 15.1%. Holding scoring rate
+fixed, the shutdown flag moves next season by −0.11 ppg/sd (p = 0.62).
+
+**Games played on the injury report do count for less — but not enough to act
+on.** For the 462 receiver-seasons with at least four games on each side, points
+per game off the report ran 12.39 against 11.29 on it. In one regression the
+healthy games carry +2.88 ppg/sd against +1.17 for the games he entered listed —
+so injury-report games really are the noisier half. But out of sample the split
+(cv R² 0.424) does not beat simply averaging everything (0.428); the best you get
+is full-season ppg *plus* off-report ppg, at 0.431. Being listed often is at most
+a faint negative on its own (−0.27 ppg/sd, p = 0.09).
+
+### What the 2025 logs actually say
+
+**Rome Odunze was not hurt in week 6.** Chicago's bye was week 5. He first appears
+on the injury report in **week 9** (heel, full participation in practice), adds an
+ankle in weeks 10-11, and is listed with the season-ending foot injury from
+**week 14**. His snap share never dropped below 76% and hit 100% in week 9. He
+returned for both playoff games.
+
+His season came apart in two separate pieces, and only the second one is about
+health:
+
+| | Games | Targets/g | Yards/target | TDs | PPG |
+|---|---|---|---|---|---|
+| weeks 1-4 | 4 | 8.8 | 8.46 | **5** | **19.90** |
+| weeks 6-8 | 3 | 7.0 | **8.43** | 0 | 9.57 |
+| weeks 9-13 (on the report) | 5 | 6.8 | 5.53 | 1 | 7.56 |
+
+Weeks 6-8 are **pure touchdown regression**: identical yards per target, roughly
+the same targets, five touchdowns became zero. The efficiency collapse only
+arrives in week 9, alongside the heel. So the injury story is real but starts
+three weeks after the fall does, and covers five games, not eight.
+
+The other thing in those weeks was not injury either. Luther Burden III's snap
+share went 17-29% through week 7 to 44-71% from week 8, and his target share 7.8%
+to 12.9%. Odunze's own target share barely moved (24.7% weeks 1-7, 22.6% weeks
+8-13). Burden's real takeover is weeks 14-18 with Odunze out — 21.1% target share
+and 15.18 ppg — which is a 2026 concern, not a 2025 cause.
+
+**Parker Washington's late surge is a role change, not five spike weeks.** He
+played 24-33% of snaps in weeks 1, 2, 5 and 6 and 71-88% from week 7 on.
+
+| | Games | Targets/g | Yards/target | PPG | Snap share |
+|---|---|---|---|---|---|
+| weeks 1-6 | 6 | 4.2 | 6.20 | 6.73 | ~44% |
+| weeks 7-18 | 10 | 7.0 | 9.89 | **14.43** | ~75% |
+
+That is a different thing from a spiky season, and it is the one honest argument
+for weighting his back half. The tests above are the answer to it: no measure of
+a role trend — points, targets or snaps — adds anything to full-season scoring.
+The market will price his last ten games; the data says price the season.
+
+**Brian Thomas Jr.'s slump preceded his injury.** He missed weeks 10-12 with an
+ankle. Through week 9, before it, he was at 10.70 ppg on 7.5 targets a game — down
+from 16.71 as a rookie. After returning, 8.87 ppg on 5.2 targets. The injury cost
+him three games and made a bad year worse; it did not cause the drop.
+
+### What this changes about the three
+
+Nothing, which is the point. Every adjustment the three receivers' stories invite
+— credit Odunze's hot start, credit Washington's promotion, discount Thomas's
+injury — is one the data says not to make. Full-season points per game, age, and
+what he has done before are still the whole model, and the ordering from the
+comparables stands: Thomas, then Odunze, then Washington, all within a coin flip
+of each other on median outcome.
+
+The one legitimate adjustment sits outside the model. Burden's weeks 14-18 are a
+forward-looking claim on Chicago's targets that a 2025 box score cannot see, and
+Washington and Thomas will keep taking targets from each other in Jacksonville.
+Those are offseason facts, not timing effects.
+
 ## Caveats
 
 - Cohort sizes are 14 to 33. The ordering is consistent across every threshold
@@ -326,3 +449,8 @@ forecast that has already priced it.
   attempts.
 - The reference model is deliberately linear. It is a yardstick for whether an
   archetype is mispriced by ordinary metrics, not a projection system.
+- The injury report says who was listed, not how hurt anyone was. A receiver can
+  play through something he is never listed with, and the practice-participation
+  field is the only severity signal in it.
+- Snap counts start in 2012, so the snap-share tests run on 1,027 seasons rather
+  than the full 1,502.
