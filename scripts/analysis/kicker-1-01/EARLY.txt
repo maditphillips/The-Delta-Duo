@@ -1,0 +1,116 @@
+
+==============================================================================
+1. WHAT KICKING RIGHT NOW IS WORTH, BY DOWN
+==============================================================================
+  expected points ADDED by sending him out on this snap instead of
+  running the play (positive = kick, negative = do not kick)
+yl    (0, 10]  (10, 20]  (20, 30]  (30, 36]  (36, 42]
+down                                                 
+1.0     -3.96     -3.07     -2.45     -1.88     -1.53
+2.0     -3.58     -2.69     -2.08     -1.49     -1.07
+3.0     -2.87     -2.07     -1.51     -0.89     -0.35
+4.0     -1.89     -1.30     -0.56      0.23      1.00
+
+  and the same thing without the field-position split:
+       size  mean
+down             
+1.0   35775 -2.60
+2.0   28876 -2.23
+3.0   18468 -1.63
+4.0    2894 -0.56
+
+  First down inside the 42 is worth about 3.4 expected points on its
+  own. Trading that for three points, and handing the ball back, loses
+  around two and a half points every time you do it.
+
+  Note the bottom-right corner: fourth down from the 36-42 is +1.00.
+  That single cell is the entire real strategy. The commenter has the
+  right patch of grass and the wrong down.
+
+==============================================================================
+2. RUN THE POLICY: KICK ON THE FIRST SNAP IN RANGE, EVERY DRIVE
+==============================================================================
+drives that reached the opponent's 42: 24,334 = 5.46 a game
+  the snap the policy would fire on:
+          n  mean_v
+down               
+1.0   19445   -1.85
+2.0    3018   -1.12
+3.0    1388   -0.51
+4.0     364    1.03
+
+-- what those drives actually produced
+fixed_drive_result_end
+Touchdown            41.5
+Field goal           29.9
+Turnover              7.4
+Turnover on downs     6.4
+Punt                  6.0
+Missed field goal     5.2
+End of half           2.9
+Opp touchdown         0.6
+
+  average points those drives actually scored: 3.76
+  the policy scores exactly 3.00 on every one of them
+  raw scoreboard difference: -0.76 points a drive
+
+  So the policy loses on the raw scoreboard before any clever
+  accounting at all. 41% of drives that reach the 42 end in a
+  TOUCHDOWN; the policy caps every one of those at three. Only 29%
+  of them end in something worse than a field goal.
+
+-- the full accounting
+  expected points added, per drive : -1.63
+  drives in range per game         : 5.46
+  cost per game                    : -8.88 points
+  cost per 17-game season          : -150.9 points = -4.22 wins
+
+-- against the sensible policies
+  kick on the first snap in range        : -4.22 wins
+  kick on fourth down when it beats the
+    play the coach actually called       : +0.84 wins  (VERDICT.txt)
+  swing between the two                  : 5.06 wins
+
+==============================================================================
+3. BUT WHAT IF THE DEFENCE IS GREAT?
+==============================================================================
+The argument has a real kernel: guaranteed threes are low variance, and
+a good defence in a low-scoring game might prefer certainty to upside.
+The problem is the size of the toll. Check whether teams with elite
+defences actually lose less from the trade:
+
+          drives  pts_allowed_pg  cost_per_drive
+def_tier                                        
+elite       6619           19.04           -1.63
+good        6240           21.59           -1.63
+poor        5949           23.94           -1.63
+worst       5526           27.17           -1.60
+
+  The toll is the same whoever is on defence, because it is paid on
+  YOUR side of the ball: you are throwing away your own drive. A good
+  defence makes each point you hold more valuable, it does not make
+  giving up a point and a half per drive cheaper.
+
+==============================================================================
+4. WOULD IT HAVE PUT HOUSTON IN THE SUPER BOWL?
+==============================================================================
+
+  HOU 2024: 110 drives reached the 42 (6.47 a game over 17 games)
+    those drives actually scored      : 361 points (21.2 a game)
+    the policy would score            : 330 points (19.4 a game)
+    raw scoreboard change             : -31 points
+    but expected points added         : -194, i.e. -5.42 wins WORSE
+    and the opponent gets +35 extra possessions from drives that would otherwise have ended
+    in a punt or a turnover deep in their own territory
+
+  HOU 2025: 113 drives reached the 42 (6.65 a game over 17 games)
+    those drives actually scored      : 380 points (22.4 a game)
+    the policy would score            : 339 points (19.9 a game)
+    raw scoreboard change             : -41 points
+    but expected points added         : -204, i.e. -5.69 wins WORSE
+    and the opponent gets +28 extra possessions from drives that would otherwise have ended
+    in a punt or a turnover deep in their own territory
+
+  Houston scores FEWER points in both seasons on the raw scoreboard,
+  before counting the possessions handed back early. The idea does not
+  need the sophisticated accounting to fail; it fails on points.

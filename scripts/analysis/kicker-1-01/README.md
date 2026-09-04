@@ -55,6 +55,7 @@ python3 opportunity.py  > OPPORTUNITY.txt  # does the extra work arrive?
 python3 simple_rule.py  > RULE.txt         # the same thing, one plain rule
 python3 threshold.py    > THRESHOLD.txt    # the 3-vs-7 break-even, swept
 python3 verdict.py      > VERDICT.txt      # the bottom line, baselines matched
+python3 kick_early.py   > EARLY.txt        # "just kick as soon as you're in range"
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.
@@ -499,6 +500,57 @@ year 2 and never gives the lead back:
 
 So the instinct is right — the kicker is the better asset on draft day and for
 exactly one season. The break-even is one year, not five.
+
+## "Just kick as soon as you cross into range"
+
+A follow-up from the comments: don't wait for fourth down, send him out the
+moment the offence reaches the opponent's 42, and lean on the defence.
+`kick_early.py` tests it. It fails, and it does not need any clever accounting
+to fail.
+
+Expected points added by kicking on *this* snap instead of running the play:
+
+| Down | 0-10 | 10-20 | 20-30 | 30-36 | 36-42 |
+|---|---|---|---|---|---|
+| 1st | −3.96 | −3.07 | −2.45 | −1.88 | −1.53 |
+| 2nd | −3.58 | −2.69 | −2.08 | −1.49 | −1.07 |
+| 3rd | −2.87 | −2.07 | −1.51 | −0.89 | −0.35 |
+| **4th** | −1.89 | −1.30 | −0.56 | +0.23 | **+1.00** |
+
+One cell in that table is positive. **Fourth down from the 36-42 is the entire
+strategy.** The commenter has the right patch of grass and the wrong down.
+
+**Why: 41.5% of drives that reach the 42 end in a touchdown.** Over 2018-2025,
+24,334 drives got there — 5.46 a game — and they averaged **3.76 points**. The
+policy scores exactly 3.00 on every one, so it loses **0.76 points a drive on
+the raw scoreboard**, before counting anything else. Only 29% of those drives
+ended in something worse than a field goal.
+
+| Drive outcome after reaching the 42 | Share |
+|---|---|
+| Touchdown | 41.5% |
+| Field goal | 29.9% |
+| Turnover | 7.4% |
+| Turnover on downs | 6.4% |
+| Punt | 6.0% |
+| Missed field goal | 5.2% |
+
+Full accounting, which also charges for handing the ball back early:
+**−1.63 points a drive, −8.9 a game, −151 a season = −4.2 wins.** Against
++0.84 for kicking on fourth down when it beats the call — a **5.1 win swing**
+between the two policies.
+
+**The defence argument doesn't rescue it.** Splitting drives by the offence's
+own team defence, the cost per drive is −1.63 for elite defences (19.0 points
+allowed a game) and −1.60 for the worst (27.2). Identical, because the toll is
+paid on *your* side of the ball — you are throwing away your own drive. A good
+defence makes each point you hold more valuable; it does not make giving up a
+point and a half per drive cheaper.
+
+**Houston, specifically:** 110 drives reached the 42 in 2024 and 113 in 2025.
+Those drives actually scored 361 and 380 points. The policy scores 330 and 339
+— so Houston scores **31 and 41 fewer points**, and hands the opponent roughly
+30 extra possessions a year.
 
 ## Does the extra work actually arrive?
 
