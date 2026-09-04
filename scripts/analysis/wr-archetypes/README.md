@@ -614,6 +614,66 @@ them away:
 Half a standard deviation below average, and a drop rate a point above the mean.
 Bad, not broken.
 
+### Why the model likes Thomas, term by term
+
+The reference model's projection decomposes cleanly. Standardised coefficients:
+points per game +1.90, age −1.81, finish −1.47, prior-year points per game +0.71,
+earlier top-24 seasons +0.64, best young team-mate's finish +0.30, on a league
+mean of 8.99.
+
+Points of projected 2026 ppg each input contributes:
+
+| | ppg | age | finish | prev ppg | prior top-24 | young mate | Total |
+|---|---|---|---|---|---|---|---|
+| Brian Thomas Jr. | **−0.32** | +1.97 | +0.45 | **+0.93** | −0.06 | **+0.50** | **12.45** |
+| Rome Odunze | +0.68 | +1.67 | +0.49 | −0.06 | −0.37 | −0.26 | 11.14 |
+| Parker Washington | +0.40 | +1.65 | +1.17 | −0.25 | −0.37 | −0.29 | 11.29 |
+
+Odunze **out-scores** Thomas on the 2025 season itself by a full point of
+projection. Thomas's entire lead comes from his rookie year, being six months
+younger, and the team-mate term.
+
+**And the team-mate term is wrong for him.** It reads 200 — the sentinel for "no
+first- or second-year team-mate" — because Travis Hunter, a 2025 rookie who took
+45 targets for Jacksonville, is not in this panel. The panel is built from
+receivers nflverse lists at WR, and Hunter is listed elsewhere. Count him at his
+actual production (28-298-1, which would rank WR97) and Thomas's projection falls
+from 12.45 to **11.93**. Drop the term entirely and the three converge:
+
+| | Full model | Weakest term dropped |
+|---|---|---|
+| Brian Thomas Jr. | 12.45 | **11.95** |
+| Parker Washington | 11.29 | 11.64 |
+| Rome Odunze | 11.14 | 11.42 |
+
+A 1.31 ppg lead becomes 0.53. That term entered forward selection last, worth
++0.0021 R², and it was carrying more than half of a head-to-head ranking. Any
+ordering that depends on it is not a real ordering. `profile.py` now prints the
+trimmed projection alongside the full one and warns when a receiver is running on
+the sentinel.
+
+### Was Caleb Williams throwing Odunze better balls?
+
+Odunze's number improved. Williams did not.
+
+| | Catchable rate | vs expectation for depth | Percentile |
+|---|---|---|---|
+| Odunze 2024 | 58.4% | −0.089 | 7th |
+| Odunze 2025 | 62.6% | −0.046 | 23rd |
+| Williams 2024 (all targets) | 71.6% | −0.042 | 9th |
+| Williams 2025 (all targets) | 70.8% | −0.038 | 11th |
+
+Williams sat in the bottom tenth of qualified passers in both seasons and moved
+almost not at all. What changed is Odunze's share of that: in 2024 his own
+catchable rate was far below even Williams' poor team average, and in 2025 it
+came up to roughly match it. Some of the raw gain is also the league — mean
+catchable rate went 0.740 to 0.750 across 2024-25.
+
+So the improvement is real but it is Odunze moving from "the guy who gets the
+low-percentage deep shots" to "normally used inside a below-average passing
+operation". It is not evidence that the quarterback is getting better, which is
+what would have to happen for his target quality to reach average.
+
 ### So is Thomas still the pick?
 
 The premise fails but the conclusion mostly survives, by a different route.
@@ -675,3 +735,9 @@ Williams' and the play-caller's decision, not his. His own adjusted conversion i
 - Catchable, contested and drop are charter judgements, not measurements. They
   are consistent within FTN's own work, which is what the year-over-year
   persistence test needs, but they are not ground truth.
+- The panel holds only receivers nflverse lists at WR. A team-mate who takes
+  targets from another listed position - Travis Hunter on Jacksonville in 2025 is
+  the live example - is invisible to the team-context metrics, and a receiver with
+  no listed young team-mate gets a sentinel value that flatters his projection.
+  `profile.py` warns when a receiver is in that state and prints the projection
+  without the term.

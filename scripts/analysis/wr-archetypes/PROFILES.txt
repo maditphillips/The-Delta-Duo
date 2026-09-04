@@ -70,6 +70,7 @@ PARKER WASHINGTON   JAX   year 3   2025 season
       2009  Austin Collie          yr  1  WR 29  10.61 ppg   0 missed  ->  WR35
 
   Reference-model projection for 2026: 11.29 ppg (#29 of the 89 qualifying 2025 receivers)
+    without 'young_mate_finish', the weakest term: 11.64 ppg
 
 ==============================================================================
 BRIAN THOMAS JR.   JAX   year 2   2025 season
@@ -136,6 +137,11 @@ BRIAN THOMAS JR.   JAX   year 2   2025 season
       2024  George Pickens         yr  3  WR 42  11.74 ppg   3 missed  ->  WR5
 
   Reference-model projection for 2026: 12.45 ppg (#18 of the 89 qualifying 2025 receivers)
+    without 'young_mate_finish', the weakest term: 11.95 ppg
+    NOTE: no 1st/2nd-year team-mate is recorded for him, so that term
+    is running on a sentinel. If a rookie on his team takes targets but
+    nflverse lists him at another position, he is invisible here and
+    this projection is too high. Read the trimmed number instead.
 
 ==============================================================================
 ROME ODUNZE   CHI   year 2   2025 season
@@ -202,6 +208,7 @@ ROME ODUNZE   CHI   year 2   2025 season
       2017  Marqise Lee            yr  4  WR 40  11.38 ppg   3 missed  ->  did not play
 
   Reference-model projection for 2026: 11.14 ppg (#31 of the 89 qualifying 2025 receivers)
+    without 'young_mate_finish', the weakest term: 11.42 ppg
 
 ==============================================================================
 SIDE BY SIDE
@@ -209,10 +216,13 @@ SIDE BY SIDE
 
 Each receiver's 40 nearest historical seasons, and the reference model:
 
-           player yr finish med_next top12 top24 comp_ppg proj_ppg proj_rank
- Brian Thomas Jr.  2   WR42     WR46   18%   32%    10.50    12.45       #18
-Parker Washington  3   WR27     WR47    8%   15%    10.33    11.29       #29
-      Rome Odunze  2   WR41     WR48   10%   22%     9.34    11.14       #31
+           player yr finish med_next top12 top24 comp_ppg proj_ppg proj_rank proj_trim
+ Brian Thomas Jr.  2   WR42     WR46   18%   32%    10.50    12.45       #18     11.95
+Parker Washington  3   WR27     WR47    8%   15%    10.33    11.29       #29     11.64
+      Rome Odunze  2   WR41     WR48   10%   22%     9.34    11.14       #31     11.42
+
+proj_trim drops the weakest metric in the model. Where the two differ
+by more than a few tenths, the ranking is resting on that one term.
 
 P(the row receiver's comps finish ahead of the column receiver's),
 over every ordered pair of comparable seasons, ties split:

@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from horse_race import FEATURES, forward_select, loso_r2, sample
+from horse_race import FEATURES, NO_PRIOR_FINISH, forward_select, loso_r2, sample
 from panel import build
 
 warnings.filterwarnings("ignore")
@@ -117,6 +117,11 @@ def main(names):
     cur = cur[cur.season == last].copy()
     cur["proj_ppg"] = fit_predict(hist, cur, model)
     cur["proj_rank"] = cur.proj_ppg.rank(ascending=False, method="min")
+    # The last metric into the model is worth a couple of thousandths of R2 and
+    # can still swing an individual projection by half a point, so always show
+    # what the projection looks like without it.
+    trimmed = model[:-1]
+    cur["proj_trimmed"] = fit_predict(hist, cur, trimmed)
     eff_cut = cur.ppr_per_target.quantile(2 / 3)
 
     wv = match_weights(hist)
@@ -182,6 +187,7 @@ def main(names):
             "top24": 100 * near.next_top24.mean(),
             "comp_ppg": near.next_ppg_c.mean(),
             "proj_ppg": r.proj_ppg, "proj_rank": r.proj_rank,
+            "proj_trim": r.proj_trimmed,
         })
         comps[r.player] = near.next_finish_c.to_numpy()
         print(f"\n    closest 12 of the {K}:")
@@ -192,6 +198,12 @@ def main(names):
 
         print(f"\n  Reference-model projection for {last + 1}: {r.proj_ppg:.2f} ppg "
               f"(#{r.proj_rank:.0f} of the {len(cur)} qualifying {last} receivers)")
+        print(f"    without '{model[-1]}', the weakest term: {r.proj_trimmed:.2f} ppg")
+        if r.young_mate_finish >= NO_PRIOR_FINISH:
+            print("    NOTE: no 1st/2nd-year team-mate is recorded for him, so that term")
+            print("    is running on a sentinel. If a rookie on his team takes targets but")
+            print("    nflverse lists him at another position, he is invisible here and")
+            print("    this projection is too high. Read the trimmed number instead.")
 
     if len(summary) < 2:
         return
@@ -203,7 +215,10 @@ def main(names):
     print(t.to_string(index=False, formatters={
         "yr": "{:.0f}".format, "finish": "WR{:.0f}".format, "med_next": "WR{:.0f}".format,
         "top12": "{:.0f}%".format, "top24": "{:.0f}%".format,
-        "comp_ppg": "{:.2f}".format, "proj_ppg": "{:.2f}".format, "proj_rank": "#{:.0f}".format}))
+        "comp_ppg": "{:.2f}".format, "proj_ppg": "{:.2f}".format,
+        "proj_rank": "#{:.0f}".format, "proj_trim": "{:.2f}".format}))
+    print("\nproj_trim drops the weakest metric in the model. Where the two differ")
+    print("by more than a few tenths, the ranking is resting on that one term.")
 
     print("\nP(the row receiver's comps finish ahead of the column receiver's),")
     print("over every ordered pair of comparable seasons, ties split:\n")
