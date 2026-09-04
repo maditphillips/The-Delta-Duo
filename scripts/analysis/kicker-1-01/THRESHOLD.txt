@@ -1,0 +1,147 @@
+
+==============================================================================
+1. THE THREE LEGS OF THE DECISION, MEASURED
+==============================================================================
+what a fresh first and ten is worth, in expected points, by yard line
+              snaps  expected points
+yardline_100                        
+(0, 10]         611             5.08
+(10, 20]       7851             4.89
+(20, 25]       4413             4.46
+(25, 30]       4553             4.09
+(30, 35]       5071             3.72
+(35, 42]       7664             3.38
+(42, 50]      10054             2.88
+(50, 60]      14493             2.33
+(60, 80]      39171             1.36
+
+  THIS is the prize for converting, and it is 5.0 near the goal line
+  falling to 3.4 at the 42. Never 7. Seven is what you get if the
+  conversion turns into a touchdown, which is not the same event.
+
+-- the same three legs in adjusted EPA, which is what you can add up
+           convert (prize)  fail (cost)  guaranteed FG  break-even P*
+yard line                                                            
+(0, 5]                2.09        -3.64          -1.49          37.55
+(5, 10]               2.49        -3.20          -1.05          37.83
+(10, 20]              2.11        -3.32          -0.84          45.57
+(20, 32]              2.28        -3.19          -0.11          56.33
+(32, 42]              2.84        -2.71           1.10          68.54
+
+  break-even P* = (FG - fail) / (convert - fail): the conversion rate
+  going for it needs to beat a guaranteed three.
+
+  The 3/7 shortcut says 42.9% everywhere. The real answer runs from
+  38% at the goal line to 69% out at the 42, because that is
+  where the prize for converting collapses relative to three points.
+  Inside the 10 you should go for it on almost anything; out at the 42
+  you should kick on almost anything.
+
+==============================================================================
+2. THE SWEEP: ONE THRESHOLD, APPLIED TO EVERY FOURTH DOWN IN THE GAME
+==============================================================================
+
+field goal attempts not on fourth down: 723 (0.16 a game), outside the policy;
+the guarantee is worth +2.1 points a season on those, counted once.
+every fourth down, 2018-2025: 31,448 plays, 7.06 a game
+reference point: what teams actually called, valued the same way.
+  with an ordinary leg taking their field goals : -32.5 points a season
+  with the perfect leg taking their field goals : -17.3 points a season
+
+Each row runs the policy twice - once with the perfect leg, once
+with an ordinary one. 'coach' is what the policy is worth to any team
+regardless of kicker; 'leg' is what the guarantee adds on top. Only
+the last column is the kicker's.
+
+  P*   go if togo<=  go%  kick%  punt%  FGA/gm   pts  vs act  coach  leg   TOTAL
+   0.0       always  100.0    0.0    0.0    0.00  -83.2  -65.9  -1.42  0.12  -1.30
+  20.0           13   83.9    4.0   12.1    0.28  -45.7  -28.4  -0.49  0.24  -0.25
+  30.0           10   74.5    7.0   18.5    0.49  -29.6  -12.3  -0.12  0.32   0.20
+  35.0            8   62.0   11.4   26.6    0.80  -13.8    3.5   0.21  0.43   0.64
+  40.0            6   48.9   16.6   34.5    1.17   -2.6   14.7   0.40  0.55   0.95
+  42.9            5   41.7   19.5   38.8    1.38    1.4   18.7   0.46  0.61   1.07  <-- your 3/7 rule
+  50.0            3   26.5   26.1   47.4    1.85    4.5   21.8   0.41  0.74   1.15
+  55.0            2   19.0   29.6   51.4    2.09    3.0   20.3   0.30  0.81   1.11
+  60.0            1   11.5   33.1   55.4    2.34   -1.0   16.3   0.13  0.87   1.00
+  70.0            0    0.0   38.8   61.2    2.74  -18.3   -1.0  -0.45  0.96   0.51
+  100.0        never    0.0   38.8   61.2    2.74  -18.3   -1.0  -0.45  0.96   0.51
+
+  'go if togo<=' is the plain-English version of P*: the policy only
+  changes at whole yards, which is why 42.9% and 45% are the same row.
+  'FGA/gm' is fourth-down field goals a game. 'coach' is the policy
+  run with an ordinary leg, against what teams actually called with an
+  ordinary leg. 'leg' is the same policy run with the perfect leg minus
+  the ordinary one, plus extra points and the off-fourth-down kicks.
+  Both convert at 36 points a win. They add to the total.
+
+-- what the sweep says
+  your 3/7 rule, P* = 42.9%  (go if 4 or fewer to go):
+    total +1.07 wins = +0.46 from the decisions + +0.61 from the leg
+    1.38 fourth-down field goals a game
+  best total          : P* = 50%, +1.15 wins
+  the leg's share of that best row: +0.74 wins
+  (the 'leg' column rises all the way to never-go-for-it, because the
+   more you kick the more a guarantee is worth. That is not a
+   recommendation - the total is worse there. The number that counts
+   is the leg's share at the policy you would actually run.)
+  go for it always    : -1.30 wins (-1.42 coach, +0.12 leg)
+  never go for it     : +0.51 wins (-0.45 coach, +0.96 leg)
+
+  Two separate findings, and they should not be blended:
+  1. Fourth-down policy is worth up to +0.46 wins to any
+     team with any kicker. That is free, and it is not the kicker's.
+  2. The guarantee itself is worth 0.74 wins at that best
+     policy. That is the number to compare against the 1.01.
+
+  The total curve is flat across the middle - every threshold from 40%
+  to 60% lands within 0.20 wins of the best - so your 42.9% is inside the
+  plateau. The shortcut lands in about the right place despite the
+  wrong premise. Both ends of the sweep are where it costs you.
+
+==============================================================================
+3. WHAT A FIELD-POSITION-AWARE RULE BUYS YOU
+==============================================================================
+  take the best of the three options on every single fourth down,
+  with no rule at all: +8.2 points, +1.25 wins
+    of which coaching +0.55, the leg itself +0.71
+  best single-threshold rule: +1.15 total, +0.74 leg
+  the cost of using one number instead of thinking: 0.10 wins total, -0.03 of it the leg's
+
+-- what the no-rule optimum actually does, by field position
+opt             go  kick  punt
+yardline_100                  
+(0, 10]       75.3  24.7   0.0
+(10, 20]      37.7  62.3   0.0
+(20, 32]      21.6  78.4   0.0
+(32, 42]      13.3  86.7   0.0
+(42, 60]      39.3   0.1  60.6
+(60, 80]      23.2   0.0  76.8
+(80, 100]      9.1   0.0  90.9
+
+  it goes for it near the goal line, kicks from 32 to 42, and punts
+  outside the 42 - which is the field-position pattern a single
+  yards-to-go threshold cannot express.
+
+==============================================================================
+4. SO WHAT IS THE WIN RATE?
+==============================================================================
+  the kicker's own contribution, which is what the 1.01 buys:
+    your 3/7 rule, P* = 42.9%               : +0.61 wins
+                                              8.5-8.5 becomes 9.1-7.9, 53.6%
+    best threshold, P* = 50%                : +0.74 wins
+                                              8.5-8.5 becomes 9.2-7.8, 54.4%
+    no rule, best option every time         : +0.71 wins
+                                              8.5-8.5 becomes 9.2-7.8, 54.2%
+
+  and if you ALSO hand the team optimal fourth-down decisions, which
+  they could have had for free with any kicker:
+    both together                           : +1.25 wins
+                                              8.5-8.5 becomes 9.8-7.2, 57.4%
+
+  the first overall pick, for comparison: +1.28 wins a season on average
+  (9.8 wins, 57.5%), +1.59 median (59.4%)
+
+  The honest comparison is leg against quarterback: +0.71 at absolute
+  best, against +1.28 for the average 1.01 and +1.59 for the median.
+  The kicker loses. He only draws level if you credit him with the
+  fourth-down decisions too, and those were free all along.

@@ -20,6 +20,7 @@ python3 kicker_value.py > FINDINGS.txt     # what the guarantee is worth
 python3 pick_value.py   > PICK.txt         # what the 1.01 is worth
 python3 opportunity.py  > OPPORTUNITY.txt  # does the extra work arrive?
 python3 simple_rule.py  > RULE.txt         # the same thing, one plain rule
+python3 threshold.py    > THRESHOLD.txt    # the 3-vs-7 break-even, swept
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.
@@ -240,6 +241,91 @@ Adding a "don't kick from inside the 25" clause cuts the bad kicks from 15% to
 
 The cost of the simplicity is small: 0.83 wins for the rule against 0.94 for
 deciding every fourth down on expected points.
+
+## The 3-vs-7 break-even, and why it is not one number
+
+The obvious shortcut: a touchdown is 7, a guaranteed field goal is 3, so
+going for it needs `P x 7 > 3`, break-even `3/7 = 42.9%`. `threshold.py`
+tests it.
+
+**The premise is wrong in one place.** Converting a fourth down does not buy a
+touchdown, it buys a *first down*, and a first down is worth wildly different
+amounts depending on where you are:
+
+| Fresh 1st & 10 at | Expected points |
+|---|---|
+| opponent's 10 | 5.08 |
+| opponent's 20 | 4.89 |
+| opponent's 30 | 4.09 |
+| opponent's 42 | 3.38 |
+| midfield | 2.88 |
+| own 40 | 2.33 |
+
+Never 7. Seven is what you get if the conversion *becomes* a touchdown, which
+is a different event. Because the prize shrinks as you move back while the
+field goal stays worth 3, **the break-even conversion rate rises as you move
+away from the end zone**:
+
+| Yard line | Convert (prize) | Fail (cost) | Guaranteed FG | **Break-even P\*** |
+|---|---|---|---|---|
+| inside 5 | +2.09 | −3.64 | −1.49 | **38%** |
+| 5-10 | +2.49 | −3.20 | −1.05 | **38%** |
+| 10-20 | +2.11 | −3.32 | −0.84 | **46%** |
+| 20-32 | +2.28 | −3.19 | −0.11 | **56%** |
+| 32-42 | +2.84 | −2.71 | +1.10 | **69%** |
+
+All in adjusted EPA. `P* = (FG − fail) / (convert − fail)`. So inside the 10
+you should go for it on nearly anything; out at the 42 you should kick on
+nearly anything, because you would need to convert 69% of the time to beat a
+guaranteed three, and nobody converts 69% of anything except 4th & 1.
+
+### Sweeping the threshold over every fourth down in the game
+
+One threshold `P*`: go for it if the league converts that yards-to-go at least
+`P*`, otherwise kick (inside the 42) or punt (outside). `P* = 0` is go for it
+all game; `P* = 100` is never go for it. **coach** is what the policy is worth
+to any team with any kicker; **leg** is what the guarantee adds on top. They
+add to the total.
+
+| P\* | Go if to-go ≤ | Go% | Kick% | Punt% | FGA/gm | **coach** | **leg** | Total |
+|---|---|---|---|---|---|---|---|---|
+| 0 | always | 100 | 0 | 0 | 0.00 | −1.42 | +0.12 | −1.30 |
+| 30% | 10 | 74.5 | 7.0 | 18.5 | 0.49 | −0.12 | +0.32 | +0.20 |
+| 40% | 6 | 48.9 | 16.6 | 34.5 | 1.17 | +0.40 | +0.55 | +0.95 |
+| **42.9%** *(3/7)* | **4** | 41.7 | 19.5 | 38.8 | 1.38 | **+0.46** | **+0.61** | **+1.07** |
+| **50%** *(best)* | **3** | 26.5 | 26.1 | 47.4 | 1.85 | +0.41 | **+0.74** | **+1.15** |
+| 55% | 2 | 19.0 | 29.6 | 51.4 | 2.09 | +0.30 | +0.81 | +1.11 |
+| 60% | 1 | 11.5 | 33.1 | 55.4 | 2.34 | +0.13 | +0.87 | +1.00 |
+| 100% | never | 0 | 38.8 | 61.2 | 2.74 | −0.45 | +0.96 | +0.51 |
+
+The 3/7 rule lands inside the plateau — every threshold from 40% to 60% is
+within 0.20 wins of the best — so the shortcut gets roughly the right answer
+despite the wrong premise. Both ends of the sweep are where it costs you: go
+for it on everything and you lose 1.30 wins.
+
+Dropping the single-number rule entirely and taking the best of go/kick/punt
+on every snap is worth +1.25 wins total (+0.55 coach, +0.71 leg). The whole
+cost of using one number instead of thinking is **0.10 wins**.
+
+### The split that matters
+
+| | Wins/season | Record | Win rate |
+|---|---|---|---|
+| the leg, under the 3/7 rule | +0.61 | 9.1-7.9 | 53.6% |
+| the leg, under the best threshold | **+0.74** | 9.2-7.8 | 54.4% |
+| the leg, under perfect decisions | +0.71 | 9.2-7.8 | 54.2% |
+| *plus* optimal fourth-down policy | +1.25 | 9.8-7.2 | 57.4% |
+| 1.01 quarterback, mean | +1.28 | 9.8-7.2 | 57.5% |
+| 1.01 quarterback, median | +1.59 | 10.1-6.9 | 59.4% |
+
+**Optimal fourth-down policy is worth about half a win to any team with any
+kicker.** It is free and it is not the kicker's. Blend the two and the kicker
+appears to draw level with the 1.01; separate them and he is at 0.7 against
+1.28.
+
+Three independent routes — channel accounting (0.94), the plain yards-to-go
+rule (0.83), and this policy sweep (0.74) — all land the guarantee between
+0.7 and 0.9 wins. None of them reach the quarterback.
 
 ## Does the extra work actually arrive?
 
