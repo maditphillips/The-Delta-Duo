@@ -4,10 +4,11 @@ The question, off a post: your team uses the first overall pick on a kicker,
 and in exchange he is guaranteed to make **every attempt of 60 yards or
 closer** for his entire career. Worth it?
 
-Short answer: he is worth about **one extra win a season, guaranteed**, and
-the first overall pick has historically returned about **1.3 wins a season**
-with a 41% chance of returning less than the kicker. It is a much closer
-call than it sounds, and it is still not quite a good idea.
+Short answer: he is worth **0.94 wins a season if the coach uses him
+optimally, 0.70 wins if the coach behaves the way real coaches actually
+behave** when handed an elite leg. The first overall pick has historically
+returned about **1.3 wins a season** with a 41% chance of returning less
+than the kicker. Closer than it sounds, and still not a good idea.
 
 ## Running it
 
@@ -15,9 +16,12 @@ call than it sounds, and it is still not quite a good idea.
 pip install pandas pyarrow statsmodels scipy
 python3 fetch_plays.py 1999 2025    # 27 season files, one at a time
 python3 fetch_draft.py              # PFR draft-pick table via nflverse
-python3 kicker_value.py > FINDINGS.txt
-python3 pick_value.py   > PICK.txt
+python3 kicker_value.py > FINDINGS.txt     # what the guarantee is worth
+python3 pick_value.py   > PICK.txt         # what the 1.01 is worth
+python3 opportunity.py  > OPPORTUNITY.txt  # does the extra work arrive?
 ```
+
+`epa_common.py` holds the shared expected-points machinery all three use.
 
 `fetch_plays.py` writes `plays_1999_2025.parquet` (gitignored, ~100 MB):
 every play from 1999 through 2025, 1.28 million of them, in the ~70 columns
@@ -95,7 +99,8 @@ replacement quarterback (pooled rate of quarterback-seasons of 50-320 plays,
 
 | | wins a season |
 |---|---|
-| perfect kicker, vs an average leg | **+0.94, guaranteed** |
+| perfect kicker, optimally used, vs an average leg | **+0.94, guaranteed** |
+| perfect kicker, used the way coaches actually use one | **+0.70, guaranteed** |
 | perfect kicker, vs a replacement leg | **+1.14, guaranteed** |
 | 1.01 quarterback, mean 1999-2021 | +1.28 |
 | 1.01 quarterback, median | +1.59 |
@@ -104,7 +109,7 @@ replacement quarterback (pooled rate of quarterback-seasons of 50-320 plays,
 | worst (JaMarcus Russell) | −0.65 |
 
 41% of first overall quarterbacks since 1999 failed to clear the kicker's
-1.14 over their rookie deal. The pick is a draw with a standard deviation of
+1.14 over their rookie deal — 35% failed to clear 0.70. The pick is a draw with a standard deviation of
 1.28 wins; the kicker is a certainty.
 
 The obvious argument for the kicker is duration: the guarantee runs for his
@@ -123,6 +128,90 @@ and pay — who is still better than the alternative once you do.
 
 The 1.01 also buys optionality the kicker does not: you can trade it for
 multiple firsts.
+
+## Does the extra work actually arrive?
+
+Half the kicker's value is coaches choosing to kick where they currently
+punt. `opportunity.py` tests whether that ever happens, two independent ways.
+
+**Case studies.** Ten teams that acquired an elite leg, the four seasons
+before against the whole tenure, with the league's own drift subtracted
+(everyone kicks from further out now — the contested-band kick rate went from
+17.8% in 1999 to 48.7% in 2025):
+
+| Team | Kicker | From | Δ attempts/game | Δ contested-band kick rate |
+|---|---|---|---|---|
+| DAL | Aubrey | 2023 | +0.16 | +17.5 pts |
+| PIT | Boswell | 2015 | +0.13 | +11.0 |
+| BAL | Tucker | 2012 | +0.09 | +8.5 |
+| KC | Butker | 2017 | +0.05 | +9.7 |
+| ATL | Koo | 2020 | −0.04 | −14.1 |
+| **mean of 10** | | | **+0.10** | **+6.0** |
+
+Dallas is the cleanest case: 52.9% → 81.4% of fourth downs in the 50-to-60
+yard band kicked, raw. Baltimore's raw contested-band rate went 18.9% → 40.6%
+across the Tucker era.
+
+**Fixed-effects elasticity.** 682 team-seasons where the primary kicker had a
+30+ attempt prior record. Kicker quality is career makes-above-expected per
+attempt from *prior seasons only*, so this season's makes cannot drive this
+season's attempt counts, and every spec carries team and season fixed effects
+with errors clustered by team.
+
+| Outcome | per 1 sd better kicker | extrapolated to a perfect leg |
+|---|---|---|
+| attempts per game | +0.026 | **+0.11** (p = 0.06) |
+| 50+ yard attempts per game | +0.013 | +0.06 (p = 0.05) |
+| mean attempt distance | +0.13 yd | +0.55 yd (p = 0.17) |
+| contested-band kick rate | +1.3 pts | **+5.6 pts** (p = 0.07) |
+
+The two methods land in the same place: **+0.10 to +0.11 attempts a game.**
+A leg that never misses inside 60 would sit 4.3 standard deviations beyond
+the best real kicker, so that extrapolation is generous already.
+
+## The break-even
+
+Rank every fourth down inside the 42 that a team punted or went for by how
+much a guaranteed make beats the play they called, then take them best-first:
+
+| Extra att/game | Attempts/season | Points/season | Marginal pts/att | Wins |
+|---|---|---|---|---|
+| 0.05 | 0.9 | 2.5 | 2.92 | 0.63 |
+| **0.11** *(observed)* | 1.9 | 5.0 | 2.48 | **0.70** |
+| 0.30 | 5.1 | 11.0 | 1.62 | 0.87 |
+| **0.54** *(all of it)* | 9.2 | 13.7 | 0.38 | **0.94** |
+
+Two things fall out.
+
+**One: the 0.94 headline already assumes a coach five times more responsive
+than any real coach has ever been.** Priced at observed behaviour, the
+guarantee is worth 0.70 wins.
+
+**Two: the fourth-down supply is not big enough to reach the quarterback,
+even taking all of it.** The entire positive-value supply is 13.7 points;
+channels 1 and 5 give 19.9; that is 0.94 wins, still 12.2 points short of the
+mean 1.01 quarterback and 23.3 short of the median. Past 0.54 attempts a game
+the marginal kick is worth 0.38 points and falling, and then it goes negative
+— you are kicking where going for it was better.
+
+So the gap has to be closed with *new possessions that reach the 42*, which
+means the offence gaining yards it did not gain. Each one is worth 2.01
+points, so he needs:
+
+- **+6.1 more in-range possessions a season (+0.36 a game)** to match the
+  mean 1.01 quarterback
+- **+11.6 a season (+0.68 a game)** to match the median
+
+on top of taking every fourth down. In raw volume: **2.84 attempts a game,
+48 a season**, against a league average of 1.94. Only two teams in 27 seasons
+have ever kicked that much once — 2011 San Francisco (52) and 2025 Houston
+(52) — and break-even needs it every year, from an offence that has not
+improved. That is 8.3x the behavioural response the data shows, or 11.4x to
+match the median.
+
+The supply of near-misses is at least real: teams punt 1.23 times a game from
+just outside the guarantee, between the 43 and the 60. Turning those into
+kicks is the unmodelled channel that would have to do the work.
 
 ## What is not in here
 

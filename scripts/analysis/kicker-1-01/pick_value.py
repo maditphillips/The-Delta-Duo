@@ -32,6 +32,8 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import pandas as pd
 
+from epa_common import add_adjusted
+
 pd.set_option("display.width", 200)
 pd.set_option("display.max_columns", 60)
 
@@ -50,9 +52,7 @@ COLS = ["season", "season_type", "play_id", "game_id", "posteam", "play_type",
         "epa", "ep", "touchdown", "field_goal_result", "half_seconds_remaining",
         "passer_player_id", "passer_player_name", "rusher_player_id",
         "rusher_player_name", "qb_dropback", "qtr", "kicker_player_id",
-        "field_goal_attempt"]
-
-SCRIM = ["pass", "run", "punt", "field_goal", "qb_kneel", "qb_spike"]
+        "field_goal_attempt", "kick_distance", "yardline_100"]
 
 
 def hdr(t):
@@ -61,46 +61,6 @@ def hdr(t):
 
 def sub(t):
     print(f"\n-- {t}")
-
-
-def kern(x0, x, y, bw):
-    out = np.empty(len(x0))
-    for i, v in enumerate(x0):
-        w = np.exp(-0.5 * ((x - v) / bw) ** 2)
-        s = w.sum()
-        out[i] = (w * y).sum() / s if s > 0 else np.nan
-    return out
-
-
-def k_adjust(d):
-    """Same K as kicker_value.py: expected points conceded on the possession
-    after a score, as a smooth function of time left in the half, per era."""
-    d = d.sort_values(["game_id", "play_id"])
-    d["made"] = d.field_goal_result.eq("made")
-    d["scored"] = d.touchdown.fillna(0).eq(1) | d.made
-    d["era"] = np.where(d.season >= 2024, "dyn", "pre")
-    nxt = d[d.play_type.isin(SCRIM)][["game_id", "play_id", "posteam", "ep", "qtr"]]
-    nxt = nxt.rename(columns={"play_id": "n_pid", "posteam": "n_pos", "ep": "n_ep",
-                              "qtr": "n_qtr"})
-    src = d[d.made][["game_id", "play_id", "era", "posteam", "qtr",
-                     "half_seconds_remaining"]]
-    m = src.merge(nxt, on="game_id")
-    m = m[m.n_pid > m.play_id]
-    m = m.sort_values(["game_id", "play_id", "n_pid"]).groupby(
-        ["game_id", "play_id"], as_index=False).first()
-    same = m.n_qtr.notna() & (((m.qtr <= 2) & (m.n_qtr <= 2))
-                              | ((m.qtr >= 3) & (m.n_qtr >= 3)))
-    m["k"] = np.where(same & m.n_pos.ne(m.posteam), m.n_ep, 0.0)
-    grid = np.arange(0, 1901, 5.0)
-    keff = np.zeros(len(d))
-    for era, g in m.groupby("era"):
-        vals = kern(np.sqrt(grid), np.sqrt(g.half_seconds_remaining.to_numpy(float)),
-                    g.k.to_numpy(float), 2.2)
-        sel = (d.era == era).to_numpy()
-        keff[sel] = np.interp(d.half_seconds_remaining.fillna(0).to_numpy(float)[sel],
-                              grid, vals)
-    d["aepa"] = d.epa - np.where(d.scored, keff, 0.0)
-    return d
 
 
 def qb_seasons(d):
@@ -121,8 +81,10 @@ def qb_seasons(d):
 
 
 def main():
-    d = pd.read_parquet(PLAYS, columns=COLS)
-    d = k_adjust(d[d.season_type.eq("REG")].copy())
+    # K is fit on every play, then the quarterback aggregation is regular
+    # season only, so the yardstick matches kicker_value.py exactly
+    d, _ = add_adjusted(pd.read_parquet(PLAYS, columns=COLS))
+    d = d[d.season_type.eq("REG")]
     q = qb_seasons(d)
 
     hdr("0. THE QUARTERBACK YARDSTICK")

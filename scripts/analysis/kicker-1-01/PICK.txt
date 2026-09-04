@@ -21,15 +21,15 @@ wins above replacement = (per-play rate - -0.1207) x plays / 35.8
   top 10 quarterback-seasons in the window:
  season      name  plays   aepa  war
    2007   T.Brady  614.0 220.27 8.22
-   2013 P.Manning  678.0 203.33 7.97
-   2011 A.Rodgers  580.0 200.04 7.54
-   2011   D.Brees  698.0 178.77 7.35
-   2022 P.Mahomes  723.0 170.94 7.21
+   2013 P.Manning  678.0 203.32 7.97
+   2011 A.Rodgers  580.0 200.05 7.54
+   2011   D.Brees  698.0 178.78 7.35
+   2022 P.Mahomes  723.0 170.95 7.21
    2018 P.Mahomes  635.0 179.22 7.15
-   2011   T.Brady  656.0 165.14 6.82
+   2011   T.Brady  656.0 165.12 6.82
    2020 P.Mahomes  653.0 158.12 6.62
    2012   T.Brady  669.0 152.33 6.51
-   2014 A.Rodgers  577.0 159.62 6.40
+   2014 A.Rodgers  577.0 159.63 6.40
 
 ==============================================================================
 1. WHO THE 1.01 HAS ACTUALLY BEEN
@@ -81,23 +81,23 @@ T      2
 ==============================================================================
 first overall quarterbacks drafted 1999-2021, first 5 seasons (the rookie deal plus the option year):
  draft           player team  seasons_100+  plays    aepa  war_5yr  war_per_season  war_per_played
-  2020       Joe Burrow  CIN             5 2851.0  207.31    15.40            3.08            3.08
-  2011       Cam Newton  CAR             5 2784.0  173.13    14.22            2.84            2.84
-  2015   Jameis Winston  TAM             5 2887.0  152.97    14.01            2.80            2.80
-  2012      Andrew Luck  IND             5 3001.0  127.79    13.69            2.74            2.74
-  2016       Jared Goff  LAR             5 2621.0   72.47    10.86            2.17            2.17
-  2003    Carson Palmer  CIN             4 2144.0   78.56     9.42            1.88            2.36
-  2019     Kyler Murray  ARI             5 2554.0   18.22     9.12            1.82            1.82
-  2021  Trevor Lawrence  JAX             5 2920.0  -34.03     8.90            1.78            1.78
-  2009 Matthew Stafford  DET             5 2696.0  -40.13     7.97            1.59            1.59
-  2018   Baker Mayfield  CLE             5 2543.0  -44.52     7.33            1.47            1.47
-  2004      Eli Manning  SDG             5 2426.0 -113.27     5.02            1.00            1.00
-  2010     Sam Bradford  STL             4 1929.0 -212.04     0.58            0.12            0.15
+  2020       Joe Burrow  CIN             5 2851.0  207.37    15.41            3.08            3.08
+  2011       Cam Newton  CAR             5 2784.0  173.14    14.22            2.84            2.84
+  2015   Jameis Winston  TAM             5 2887.0  152.95    14.01            2.80            2.80
+  2012      Andrew Luck  IND             5 3001.0  127.77    13.69            2.74            2.74
+  2016       Jared Goff  LAR             5 2621.0   72.44    10.86            2.17            2.17
+  2003    Carson Palmer  CIN             4 2144.0   78.53     9.42            1.88            2.36
+  2019     Kyler Murray  ARI             5 2554.0   18.20     9.12            1.82            1.82
+  2021  Trevor Lawrence  JAX             5 2920.0  -33.97     8.90            1.78            1.78
+  2009 Matthew Stafford  DET             5 2696.0  -40.12     7.97            1.59            1.59
+  2018   Baker Mayfield  CLE             5 2543.0  -44.54     7.33            1.47            1.47
+  2004      Eli Manning  SDG             5 2426.0 -113.25     5.02            1.00            1.00
+  2010     Sam Bradford  STL             4 1929.0 -212.06     0.58            0.12            0.15
   2001     Michael Vick  ATL             5 1533.0 -167.52     0.49            0.10            0.10
-  1999        Tim Couch  CLE             5 1894.0 -254.17    -0.71           -0.14           -0.14
-  2002       David Carr  HOU             5 2382.0 -329.72    -1.18           -0.24           -0.24
-  2005       Alex Smith  SFO             4 1310.0 -258.04    -2.79           -0.56           -0.70
-  2007 JaMarcus Russell  OAK             2  768.0 -209.31    -3.26           -0.65           -1.63
+  1999        Tim Couch  CLE             5 1894.0 -254.15    -0.71           -0.14           -0.14
+  2002       David Carr  HOU             5 2382.0 -329.73    -1.18           -0.24           -0.24
+  2005       Alex Smith  SFO             4 1310.0 -258.06    -2.79           -0.56           -0.70
+  2007 JaMarcus Russell  OAK             2  768.0 -209.30    -3.26           -0.65           -1.63
 
   mean   : +1.28 wins above replacement per season of the rookie deal
   median : +1.59
@@ -113,14 +113,14 @@ first overall quarterbacks drafted 1999-2021, first 5 seasons (the rookie deal p
   2012      Andrew Luck             6 3682.0      17.64          2.94
   2005       Alex Smith            14 5975.0      17.06          1.22
   2018   Baker Mayfield             8 4465.0      16.51          2.06
-  2020       Joe Burrow             6 3137.0      16.27          2.71
+  2020       Joe Burrow             6 3137.0      16.28          2.71
   2015   Jameis Winston             8 3674.0      15.67          1.96
   2019     Kyler Murray             7 3359.0      13.12          1.87
   2021  Trevor Lawrence             5 2920.0       8.90          1.78
   2001     Michael Vick            11 3822.0       7.53          0.68
   2010     Sam Bradford             6 3232.0       4.48          0.75
   1999        Tim Couch             5 1894.0      -0.71         -0.14
-  2023      Bryce Young             3 1613.0      -1.11         -0.37
+  2023      Bryce Young             3 1613.0      -1.10         -0.37
   2002       David Carr             6 2615.0      -1.29         -0.21
   2007 JaMarcus Russell             2  768.0      -3.26         -1.63
 
