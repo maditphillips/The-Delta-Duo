@@ -166,6 +166,36 @@ and pay — who is still better than the alternative once you do.
 The 1.01 also buys optionality the kicker does not: you can trade it for
 multiple firsts.
 
+## How to read these numbers
+
+Everything here is in **expected points added** — a delta against what the
+situation was already worth, not the value of the play. That trips people up,
+so here is one number decomposed in full: a guaranteed field goal on 4th down
+from the opponent's 39-42, averaged over the 662 snaps where teams punted
+from there.
+
+```
++3.000   points on the scoreboard
+-1.122   you give the ball back: after the kickoff their drive
+         is worth 1.12 points to them
+-0.149   what the situation was ALREADY worth to you pre-snap
+--------
++1.730   expected points ADDED  (what the tables call v_perfect)
+```
+
+The same accounting on the punt gives -0.398. So the comparison that matters
+is +1.73 against -0.40, a **2.13 point swing**. In absolute terms:
+
+| | You score | Their next drive is worth | Net |
+|---|---|---|---|
+| guaranteed field goal | 3.00 | 1.12 to them | **+1.88** |
+| punt | 0.00 | 0.25 to them | **−0.25** |
+
+Note the punt row: **pinning them deep from the opponent's 40 is only worth
+0.25 points.** A punt from there nets about 25 yards, so they start near their
+own 15, which is not a bad spot. That is why three points wins so comfortably,
+and why field position is never the reason to decline this kick.
+
 ## The plain-English version: one rule on a wristband
 
 `simple_rule.py` drops the expected-points arithmetic and uses a rule you
