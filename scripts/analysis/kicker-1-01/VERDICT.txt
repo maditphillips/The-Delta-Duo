@@ -15,14 +15,33 @@ signs an average leg that afternoon, while a team that passes on the
 quarterback actually does play a replacement quarterback.
 
 ==============================================================================
-2. WHAT THE GUARANTEE IS WORTH
+2. WHAT THE GUARANTEE IS WORTH - ALL FOUR COMBINATIONS
 ==============================================================================
-            baseline  ch1_kicks_he_takes  ch3_kicks_he_unlocks  ch5_extra_points  points  wins
-   vs an AVERAGE leg               17.23                 10.72              2.15   30.11  0.84
-vs a REPLACEMENT leg               25.17                 12.08              3.14   40.39  1.13
+Two independent choices, so four cells. The PERFECT leg is in the
+'with' term of all four; the rows are what gets subtracted, and the
+columns are what coaching BOTH teams get.
 
-  coaching is identical on both sides of every one of these numbers,
-  so none of it is credit for fixing a fourth-down chart.
+                      real coaching  optimal coaching
+what is subtracted                                   
+vs an AVERAGE leg              0.84              0.63
+vs a REPLACEMENT leg           1.13              0.72
+
+  'real coaching' = what teams actually called, plus taking a
+  guaranteed three when it beats that call. 'optimal coaching' = both
+  teams take the best of kick/go/punt on every fourth down.
+
+  Optimal coaching LOWERS the guarantee's value, because a well-coached
+  team with an ordinary leg already kicks the 56-yarders and goes for it
+  near the goal line. Better coaching substitutes for a better kicker.
+
+  the components, real coaching:
+    vs an AVERAGE leg     : kicks he takes  17.2 + kicks he unlocks  10.7 + XP  2.2 =  30.1 pts
+    vs a REPLACEMENT leg  : kicks he takes  25.2 + kicks he unlocks  12.1 + XP  3.1 =  40.4 pts
+
+  A NOTE ON 0.94, which appeared in earlier drafts: that figure did
+  not subtract the part an ordinary leg would also have captured on the
+  fourth downs he 'unlocks'. Correcting that gives the 0.84 above. Use
+  this table; 0.94 is superseded.
 
 ==============================================================================
 3. AGAINST THE 1.01

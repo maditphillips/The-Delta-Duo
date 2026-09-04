@@ -128,20 +128,79 @@ def main():
     print("signs an average leg that afternoon, while a team that passes on the")
     print("quarterback actually does play a replacement quarterback.")
 
-    hdr("2. WHAT THE GUARANTEE IS WORTH")
-    rows = []
-    for lab, sc in [("vs an AVERAGE leg", 1.0),
-                    ("vs a REPLACEMENT leg", repl_scale)]:
+    hdr("2. WHAT THE GUARANTEE IS WORTH - ALL FOUR COMBINATIONS")
+    print("Two independent choices, so four cells. The PERFECT leg is in the")
+    print("'with' term of all four; the rows are what gets subtracted, and the")
+    print("columns are what coaching BOTH teams get.")
+
+    # optimal-coaching variant: both legs pick the best of kick / go / punt on
+    # every fourth down, so the only difference left is the leg
+    fourth = w[w.down.eq(4) & w.play_type.isin(["field_goal", "punt", "pass", "run"])
+               & w.yardline_100.notna()].copy()
+    tgo = fourth.ydstogo.clip(lower=1, upper=11).round().astype(int)
+    gv_all = w[w.down.eq(4) & w.play_type.isin(["pass", "run"])]
+    gvm = gv_all.groupby(gv_all.ydstogo.clip(upper=11)).aepa.mean()
+    grid = np.arange(1, 100)
+    pv_all = pd.Series(kern(grid, gv_all.yardline_100.to_numpy(float),
+                            gv_all.yardline_100.to_numpy(float) * 0, 5.0), index=grid)
+    allp = w[w.down.eq(4) & w.play_type.eq("punt")]
+    punt_full = pd.Series(kern(grid, allp.yardline_100.to_numpy(float),
+                               allp.aepa.to_numpy(float), 5.0), index=grid)
+    fourth["v_go"] = tgo.map(gvm).astype(float)
+    fourth["v_punt"] = fourth.yardline_100.round().astype(int).map(punt_full)
+    fir = fourth.yardline_100.le(MAX_YL).to_numpy()
+    p4 = np.full(len(fourth), np.nan)
+    p4[fir] = pm.predict(pd.DataFrame(
+        {"dist": fourth.loc[fir, "yardline_100"] + SNAP_TO_KICK})).to_numpy()
+    fourth["v_kick_perf"] = np.where(fir, fourth.v_perfect, np.nan)
+
+    def optimal(scale):
+        pb = 1 - scale * (1 - p4)
+        v_base_kick = np.where(
+            fir, pb * fourth.v_perfect
+            + (1 - pb) * fourth.yardline_100.round().astype(int).map(miss_v), np.nan)
+        best_perf = np.nanmax(np.vstack(
+            [fourth.v_go, fourth.v_kick_perf, fourth.v_punt]), axis=0)
+        best_base = np.nanmax(np.vstack(
+            [fourth.v_go, v_base_kick, fourth.v_punt]), axis=0)
+        # field goals off fourth down sit outside the policy, so add them once
+        off4 = w[w.is_fg & w.dist.le(60) & ~w.down.eq(4)]
+        po = 1 - scale * (1 - pm.predict(pd.DataFrame({"dist": off4.dist})).to_numpy())
+        off = (off4.v_perfect - (po * off4.v_perfect + (1 - po)
+               * off4.yardline_100.round().astype(int).map(miss_v))).sum() / tsn
+        ch5 = len(xp) * scale * xp_miss / tsn
+        return (np.nansum(best_perf - best_base) / tsn) + off + ch5
+
+    cells = {}
+    for rlab, sc in [("vs an AVERAGE leg", 1.0), ("vs a REPLACEMENT leg", repl_scale)]:
         c1, c3, c5 = leg(sc)
-        tot = c1 + c3 + c5
-        rows.append({"baseline": lab, "ch1_kicks_he_takes": c1,
-                     "ch3_kicks_he_unlocks": c3, "ch5_extra_points": c5,
-                     "points": tot, "wins": SLOPE * tot})
-    r = pd.DataFrame(rows)
-    print(r.round(2).to_string(index=False))
-    avg_w, repl_w = r.wins.iloc[0], r.wins.iloc[1]
-    print("\n  coaching is identical on both sides of every one of these numbers,")
-    print("  so none of it is credit for fixing a fourth-down chart.")
+        cells[(rlab, "real coaching")] = SLOPE * (c1 + c3 + c5)
+        cells[(rlab, "optimal coaching")] = SLOPE * optimal(sc)
+    grid_out = pd.DataFrame(
+        [[cells[(rl, cl)] for cl in ["real coaching", "optimal coaching"]]
+         for rl in ["vs an AVERAGE leg", "vs a REPLACEMENT leg"]],
+        index=["vs an AVERAGE leg", "vs a REPLACEMENT leg"],
+        columns=["real coaching", "optimal coaching"])
+    grid_out.index.name = "what is subtracted"
+    print("\n" + grid_out.round(2).to_string())
+    avg_w = grid_out.loc["vs an AVERAGE leg", "real coaching"]
+    repl_w = grid_out.loc["vs a REPLACEMENT leg", "real coaching"]
+    print("\n  'real coaching' = what teams actually called, plus taking a")
+    print("  guaranteed three when it beats that call. 'optimal coaching' = both")
+    print("  teams take the best of kick/go/punt on every fourth down.")
+    print("\n  Optimal coaching LOWERS the guarantee's value, because a well-coached")
+    print("  team with an ordinary leg already kicks the 56-yarders and goes for it")
+    print("  near the goal line. Better coaching substitutes for a better kicker.")
+    print("\n  the components, real coaching:")
+    for rlab, sc in [("vs an AVERAGE leg", 1.0), ("vs a REPLACEMENT leg", repl_scale)]:
+        c1, c3, c5 = leg(sc)
+        print(f"    {rlab:22}: kicks he takes {c1:5.1f} + kicks he unlocks "
+              f"{c3:5.1f} + XP {c5:4.1f} = {c1 + c3 + c5:5.1f} pts")
+    print("\n  A NOTE ON 0.94, which appeared in earlier drafts: that figure did")
+    print("  not subtract the part an ordinary leg would also have captured on the")
+    print("  fourth downs he 'unlocks'. Correcting that gives the 0.84 above. Use")
+    print("  this table; 0.94 is superseded.")
+    r = grid_out
 
     hdr("3. AGAINST THE 1.01")
     print(f"{'':34}{'wins/season':>13}{'certain?':>11}")

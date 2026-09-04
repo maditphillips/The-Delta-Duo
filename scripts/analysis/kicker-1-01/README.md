@@ -7,6 +7,21 @@ closer** for his entire career. Worth it?
 Short answer, and it turns on one baseline choice that is worth stating out
 loud (`verdict.py`):
 
+The perfect leg is in the "with" term of every number below. Two independent
+choices decide the answer — what gets subtracted, and what coaching *both*
+teams get — so there are four cells, not one:
+
+| What is subtracted | Real coaching | Optimal coaching |
+|---|---|---|
+| an **average** NFL leg | **0.84** | 0.63 |
+| a **replacement** leg | **1.13** | 0.72 |
+
+Optimal coaching *lowers* the guarantee's value, because a well-coached team
+with an ordinary leg already kicks the 56-yarders and already goes for it near
+the goal line. Better coaching substitutes for a better kicker.
+
+Against the pick:
+
 | | Wins/season | Certain? |
 |---|---|---|
 | perfect leg, vs an **average** NFL leg | **0.84** | yes |
@@ -383,10 +398,15 @@ The quarterback's +1.28 is that player against a replacement quarterback; it
 does not come bundled with a fourth-down chart either. Like for like, it is
 0.74 against 1.28, or 1.59 at the median.
 
-### Reconciling the three numbers
+### Reconciling the numbers
 
-Three scripts give 0.94, 0.83 and 0.74 for the same kicker. They differ only
-in what the *comparison* team is allowed to do:
+`kicker_value.py` reports 0.94, `simple_rule.py` 0.83 and `threshold.py` 0.74
+for the same kicker. **All three have the perfect leg in the "with" term** —
+what they differ on is what gets subtracted. `verdict.py` supersedes all of
+them with the four-cell table at the top of this file; 0.94 in particular is
+superseded, because it did not subtract the part an ordinary leg would also
+have captured on the fourth downs he "unlocks". These rows are kept because
+the intermediate detail is still useful:
 
 | | Baseline it measures against | Wins |
 |---|---|---|
