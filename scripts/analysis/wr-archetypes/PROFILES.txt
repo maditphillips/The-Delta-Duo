@@ -1,0 +1,223 @@
+Reference model (forward-selected, leave-one-season-out R2 = 0.5004):
+  ppg, age, finish, prev_ppg, prior_top24, young_mate_finish
+
+Comparable pool: 1,592 WR-seasons, 2009-2024.
+Matching weights (share of the distance each metric owns):
+  ppg 25%   age 16%   pace_finish 12%   missed 8%   prior_top24 8%   target_share 6%   ypt 4%   exp 4%   best_prior_finish 4%   finish 4%   ppr_per_target 3%   young_mate_finish 3%   quiet_rate 2%
+
+==============================================================================
+PARKER WASHINGTON   JAX   year 3   2025 season
+==============================================================================
+
+  16 games (1 missed), 95 targets, 184.7 PPR points -> WR27
+
+    ppg                   11.54    64th  #############
+    finish                 WR27    70th  ##############
+    pace_finish            WR35    63th  #############
+    tpg                    5.94    54th  ###########
+    target_share            18%    48th  ##########
+    ppr_per_target         1.94    79th  ################
+    ypt                    8.92    79th  ################
+    epa_per_target         0.31    67th  #############
+    adot                  12.49    72th  ##############
+    top5_share              55%    60th  ############
+    quiet_rate              38%    61th  ############
+    missed                 1.00    61th  ############
+    best_prior_finish      WR81    21th  ####
+    young_mate_finish      WR42    19th  ####
+
+    (percentile is within the same season, oriented so higher = better)
+
+  Archetype conditions:
+
+    A  five-week WR1  -  4/5 conditions met
+      [ ] finished WR4-15                          WR27
+      [x] 14+ games                                16
+      [x] top 5 games are 45%+ of his points       55%
+      [x] never a top-24 season before             0
+      [x] not a rookie                             yr 3
+
+    B  young ex-WR1 off a collapse  -  1/3 conditions met
+      [x] year 4 or earlier                        yr 3
+      [ ] a top-12 season already behind him       WR81
+      [ ] now finished outside the top 30          WR27
+
+    C  hurt + efficient  -  2/5 conditions met
+      [x] years 2-4                                yr 3
+      [ ] missed 3+ games                          1
+      [ ] healthy-pace finish inside WR18          WR35
+      [ ] 6+ targets per game                      5.9
+      [x] top-third efficiency (PPR per target)    1.94 vs 1.88
+
+  The most similar seasons since 2009, and what they did next:
+     comps   median next      quartiles   top-12   top-24   next ppg
+        20          WR63      WR33-WR97       0%       0%       9.59
+        40          WR47      WR31-WR80       8%      15%      10.33
+        80          WR41      WR26-WR79      14%      25%      10.71
+
+    closest 12 of the 40:
+      2015  Willie Snead           yr  2  WR 33  12.23 ppg   1 missed  ->  WR32
+      2022  Gabe Davis             yr  3  WR 35  11.44 ppg   1 missed  ->  WR41
+      2023  Jayden Reed            yr  1  WR 25  13.58 ppg   1 missed  ->  WR29
+      2024  Rashod Bateman         yr  4  WR 40  10.91 ppg   1 missed  ->  WR102
+      2014  Kenny Stills           yr  2  WR 37  11.59 ppg   1 missed  ->  WR82
+      2016  Willie Snead           yr  3  WR 32  12.77 ppg   1 missed  ->  WR146
+      2012  Golden Tate            yr  3  WR 40  10.85 ppg   1 missed  ->  WR30
+      2013  Marvin Jones           yr  2  WR 29  11.79 ppg   0 missed  ->  did not play
+      2017  Nelson Agholor         yr  3  WR 23  11.72 ppg   0 missed  ->  WR34
+      2009  Pierre Garcon          yr  2  WR 39  10.61 ppg   2 missed  ->  WR28
+      2024  Quentin Johnston       yr  2  WR 39  11.65 ppg   2 missed  ->  WR35
+      2009  Austin Collie          yr  1  WR 29  10.61 ppg   0 missed  ->  WR35
+
+  Reference-model projection for 2026: 11.29 ppg (#29 of the 89 qualifying 2025 receivers)
+
+==============================================================================
+BRIAN THOMAS JR.   JAX   year 2   2025 season
+==============================================================================
+
+  14 games (3 missed), 91 targets, 138.8 PPR points -> WR42
+
+    ppg                    9.91    51th  ##########
+    finish                 WR42    53th  ###########
+    pace_finish            WR47    49th  ##########
+    tpg                    6.50    67th  #############
+    target_share            19%    60th  ############
+    ppr_per_target         1.53    18th  ####
+    ypt                    7.77    56th  ###########
+    epa_per_target         0.19    38th  ########
+    adot                  14.45    94th  ###################
+    top5_share              54%    65th  #############
+    quiet_rate              43%    51th  ##########
+    missed                 3.00    28th  ######
+    best_prior_finish       WR4    86th  #################
+    young_mate_finish     WR200    91th  ##################
+
+    (percentile is within the same season, oriented so higher = better)
+
+  Archetype conditions:
+
+    A  five-week WR1  -  3/5 conditions met
+      [ ] finished WR4-15                          WR42
+      [x] 14+ games                                14
+      [x] top 5 games are 45%+ of his points       54%
+      [ ] never a top-24 season before             1
+      [x] not a rookie                             yr 2
+
+    B  young ex-WR1 off a collapse  -  3/3 conditions met
+      [x] year 4 or earlier                        yr 2
+      [x] a top-12 season already behind him       WR4
+      [x] now finished outside the top 30          WR42
+
+    C  hurt + efficient  -  3/5 conditions met
+      [x] years 2-4                                yr 2
+      [x] missed 3+ games                          3
+      [ ] healthy-pace finish inside WR18          WR47
+      [x] 6+ targets per game                      6.5
+      [ ] top-third efficiency (PPR per target)    1.53 vs 1.88
+
+  The most similar seasons since 2009, and what they did next:
+     comps   median next      quartiles   top-12   top-24   next ppg
+        20          WR33      WR16-WR68      20%      45%      11.88
+        40          WR45      WR18-WR83      18%      32%      10.50
+        80          WR50      WR22-WR83      15%      28%      10.11
+
+    closest 12 of the 40:
+      2021  Chase Claypool         yr  2  WR 37  11.11 ppg   2 missed  ->  WR67
+      2017  Amari Cooper           yr  3  WR 36  11.31 ppg   2 missed  ->  WR19
+      2016  Sammy Watkins          yr  3  WR 90  10.38 ppg   8 missed  ->  WR41
+      2019  JuJu Smith-Schuster    yr  3  WR 65   9.43 ppg   4 missed  ->  WR16
+      2024  Chris Olave            yr  3  WR 94   9.59 ppg   9 missed  ->  WR6
+      2022  Darnell Mooney         yr  3  WR 72   9.23 ppg   6 missed  ->  WR83
+      2020  DJ Chark               yr  3  WR 49  11.82 ppg   3 missed  ->  WR135
+      2014  Keenan Allen           yr  2  WR 35  12.66 ppg   2 missed  ->  WR41
+      2023  Drake London           yr  2  WR 37  10.90 ppg   1 missed  ->  WR5
+      2011  Mike Williams          yr  2  WR 39  10.43 ppg   1 missed  ->  WR18
+      2024  Tank Dell              yr  2  WR 51  10.00 ppg   3 missed  ->  did not play
+      2024  George Pickens         yr  3  WR 42  11.74 ppg   3 missed  ->  WR5
+
+  Reference-model projection for 2026: 12.45 ppg (#18 of the 89 qualifying 2025 receivers)
+
+==============================================================================
+ROME ODUNZE   CHI   year 2   2025 season
+==============================================================================
+
+  12 games (5 missed), 90 targets, 146.1 PPR points -> WR41
+
+    ppg                   12.17    72th  ##############
+    finish                 WR41    54th  ###########
+    pace_finish            WR28    71th  ##############
+    tpg                    7.50    82th  ################
+    target_share            24%    79th  ################
+    ppr_per_target         1.62    31th  ######
+    ypt                    7.34    36th  #######
+    epa_per_target         0.23    53th  ###########
+    adot                  13.91    90th  ##################
+    top5_share              71%    17th  ###
+    quiet_rate              42%    52th  ##########
+    missed                 5.00    12th  ##
+    best_prior_finish      WR49    35th  #######
+    young_mate_finish      WR49    26th  #####
+
+    (percentile is within the same season, oriented so higher = better)
+
+  Archetype conditions:
+
+    A  five-week WR1  -  3/5 conditions met
+      [ ] finished WR4-15                          WR41
+      [ ] 14+ games                                12
+      [x] top 5 games are 45%+ of his points       71%
+      [x] never a top-24 season before             0
+      [x] not a rookie                             yr 2
+
+    B  young ex-WR1 off a collapse  -  2/3 conditions met
+      [x] year 4 or earlier                        yr 2
+      [ ] a top-12 season already behind him       WR49
+      [x] now finished outside the top 30          WR41
+
+    C  hurt + efficient  -  3/5 conditions met
+      [x] years 2-4                                yr 2
+      [x] missed 3+ games                          5
+      [ ] healthy-pace finish inside WR18          WR28
+      [x] 6+ targets per game                      7.5
+      [ ] top-third efficiency (PPR per target)    1.62 vs 1.88
+
+  The most similar seasons since 2009, and what they did next:
+     comps   median next      quartiles   top-12   top-24   next ppg
+        20          WR35      WR22-WR82      10%      30%      10.16
+        40          WR47      WR28-WR90      10%      22%       9.34
+        80          WR42      WR21-WR81      14%      30%      10.85
+
+    closest 12 of the 40:
+      2011  Demaryius Thomas       yr  2  WR 64  11.16 ppg   6 missed  ->  WR6
+      2024  Josh Downs             yr  2  WR 35  13.11 ppg   3 missed  ->  WR43
+      2019  Christian Kirk         yr  2  WR 38  12.94 ppg   3 missed  ->  WR51
+      2020  Brandon Aiyuk          yr  1  WR 35  15.38 ppg   4 missed  ->  WR35
+      2009  Michael Crabtree       yr  1  WR 60  10.95 ppg   5 missed  ->  WR36
+      2014  Allen Robinson         yr  1  WR 64  11.68 ppg   6 missed  ->  WR6
+      2009  Chaz Schilens          yr  2  WR 85   9.69 ppg   8 missed  ->  WR150
+      2009  Mario Manningham       yr  2  WR 30  11.94 ppg   2 missed  ->  WR21
+      2013  Denarius Moore         yr  3  WR 46  11.19 ppg   3 missed  ->  WR131
+      2010  Pierre Garcon          yr  3  WR 28  13.16 ppg   2 missed  ->  WR23
+      2017  Sterling Shepard       yr  2  WR 42  13.14 ppg   5 missed  ->  WR30
+      2017  Marqise Lee            yr  4  WR 40  11.38 ppg   3 missed  ->  did not play
+
+  Reference-model projection for 2026: 11.14 ppg (#31 of the 89 qualifying 2025 receivers)
+
+==============================================================================
+SIDE BY SIDE
+==============================================================================
+
+Each receiver's 40 nearest historical seasons, and the reference model:
+
+           player yr finish med_next top12 top24 comp_ppg proj_ppg proj_rank
+ Brian Thomas Jr.  2   WR42     WR46   18%   32%    10.50    12.45       #18
+Parker Washington  3   WR27     WR47    8%   15%    10.33    11.29       #29
+      Rome Odunze  2   WR41     WR48   10%   22%     9.34    11.14       #31
+
+P(the row receiver's comps finish ahead of the column receiver's),
+over every ordered pair of comparable seasons, ties split:
+
+                   Parker Washington  Brian Thomas Jr.  Rome Odunze
+Parker Washington                NaN               47%          50%
+Brian Thomas Jr.                 53%               NaN          53%
+Rome Odunze                      50%               47%          NaN

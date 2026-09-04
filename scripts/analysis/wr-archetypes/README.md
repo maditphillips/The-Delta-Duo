@@ -228,6 +228,90 @@ anything. The one description that changes the answer is "had he not been hurt h
 would have finished very high," because that is a claim about a rate, and rates
 are what carry.
 
+## The three receivers, named
+
+Parker Washington (JAX), Brian Thomas Jr. (JAX), Rome Odunze (CHI).
+
+```bash
+python3 profile.py "Parker Washington" "Brian Thomas Jr." "Rome Odunze" > PROFILES.txt
+```
+
+`profile.py` finds each receiver's nearest historical seasons on within-season
+percentile ranks, weighted by |standardised coefficient| in a regression of next
+season on the whole matching set — what each metric is worth *alongside* the
+others. Weighting by solo predictive power instead would give age 0.8% of the
+distance when the horse race says it is the second most valuable metric, and
+would match a 22-year-old coming off a bad year to 31-year-olds coming off the
+same bad year.
+
+### Where the described profiles and the data disagree
+
+**Parker Washington finished WR27, not WR8.** The five-big-games part is right —
+his top five games were 55% of his points and the other eleven averaged 7.6 ppg.
+The WR8 is a *stretch*, not a season: his last five games ran 15.4 ppg, a WR11
+full-season pace, and his last eight ran 14.6, a WR13 pace. Over the whole year
+he was WR27 with a health-adjusted pace of WR35.
+
+**Brian Thomas Jr. matches exactly.** WR4 as a rookie, WR42 in year two, three
+games missed. Worth separating what actually broke: his target share held
+(25.5% → 19.3%, still 60th percentile) while his efficiency collapsed — 2.14 →
+1.53 PPR per target, 9.64 → 7.77 yards per target, 0.41 → 0.19 EPA per target.
+He lost the per-target production, not the role.
+
+**Rome Odunze's efficiency is not fantastic, and his pace was not top-15.** The
+target volume claim holds: 24% target share and 7.5 targets a game, 79th and 82nd
+percentile. But 7.34 yards per target is 36th percentile and 1.62 PPR per target
+is 31st. His health-adjusted finish is WR28, not top-15. The "very high finish"
+impression comes from weeks 1-4, where he ran 19.9 ppg — a WR3 pace — against
+8.3 ppg over weeks 6-13. The young teammate is Luther Burden III, who finished
+WR49 as a 2025 rookie: real competition for targets, but not a strong finisher.
+
+On the cohort definitions above, **none of the three is archetype C**. Odunze is
+the closest and fails on both of the conditions that made that cohort look good —
+top-18 healthy pace and top-third efficiency. He belongs in its control group:
+hurt receivers in years 2-4 whose pace was outside WR18 finish at a median WR79
+with a 6% top-12 rate.
+
+### What the comparables say
+
+Each receiver's 40 nearest seasons since 2009:
+
+| | Year | 2025 | Median next | Top-12 | Top-24 | Model projection |
+|---|---|---|---|---|---|---|
+| Brian Thomas Jr. | 2 | WR42 | WR46 | **18%** | **32%** | **12.45 ppg (#18)** |
+| Parker Washington | 3 | WR27 | WR47 | 8% | 15% | 11.29 ppg (#29) |
+| Rome Odunze | 2 | WR41 | WR48 | 10% | 22% | 11.14 ppg (#31) |
+
+**Thomas, then Odunze, then Washington** — the reverse of the archetype-level
+answer, because two of the three do not match the profiles they were described
+as. But the separation is thin. Over every ordered pair of comparable seasons,
+Thomas's comps finish ahead of Washington's 53% of the time and Odunze's 53%;
+Washington and Odunze split 50/50. The three have near-identical *median*
+outcomes around WR46-48. What separates them is the upside tail, and Thomas owns
+it at every neighbourhood size tested (top-24 rate 45% / 32% / 28% at k = 20 / 40
+/ 80, against 30% / 22% / 30% for Odunze and 0% / 15% / 25% for Washington).
+
+**Nothing Thomas did in 2025 supports him.** His 2025 rate metrics are the worst
+of the three — 18th percentile in PPR per target, 38th in EPA per target. The
+entire case is age (22.9, the youngest) and a WR4 season already banked, which
+is exactly the pair of things the horse race says nothing else contains. Section
+4(c): 15.7% of receivers coming off a sub-WR30 season with an earlier top-12
+finish reach top-24 the next year, against 5.6% with no top-24 history.
+
+**Washington ranks last despite the best 2025 finish** because he is the oldest
+of the three, has the smallest target share (18%, 48th percentile), no pedigree,
+and his season is built the way the study says carries no independent signal. His
+nearest comps are a list of one-year role spikes: Willie Snead 2015 and 2016,
+Gabe Davis 2022, Nelson Agholor 2017, Kenny Stills 2014, Quentin Johnston 2024.
+
+### What this cannot see
+
+Everything here is prior-season box score. It knows nothing about 2026 quarterback
+play, scheme, or target competition. Two of the three are on the same team and
+will take targets from each other; the `young_mate_finish` term sees only the 2025
+room. Treat the numbers as a prior to be updated by offseason news, not a
+forecast that has already priced it.
+
 ## Caveats
 
 - Cohort sizes are 14 to 33. The ordering is consistent across every threshold
