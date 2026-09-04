@@ -53,7 +53,7 @@ vs a REPLACEMENT leg           1.13              0.72
   1.01 QB, vs replacement QB (median)        1.59         no
 
   like-for-like, both against replacement: 1.13 certain against 1.28 expected.
-  That is a 12% edge to the quarterback on the mean, and 59% of the seventeen
+  That is a 12% edge to the quarterback on the mean, and 41% of the 17
   first overall quarterbacks since 1999 came in BELOW 1.13 over their
   rookie deal. The kicker's figure has no distribution at all.
 
@@ -82,11 +82,3 @@ vs a REPLACEMENT leg           1.13              0.72
 
   - If you insist on the strictly symmetric comparison, replacement
     against replacement, he is worth 1.13 guaranteed against 1.28
-    expected, 59% of quarterbacks came in under him, and over ten
-    years it is a coin flip. On that framing the risk-adjusted case
-    for the kicker is real, not a joke.
-
-  The first framing is the better answer to the question as asked,
-  because the alternative to drafting a kicker is not fielding a
-  replacement kicker. But the honest range for 'would you be mad' is
-  'yes, and less than you would expect'.

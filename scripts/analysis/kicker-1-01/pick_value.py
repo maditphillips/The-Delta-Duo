@@ -29,6 +29,8 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+import json
+
 import numpy as np
 import pandas as pd
 
@@ -45,7 +47,7 @@ WINDOW = list(range(1999, 2026))
 PTS_PER_WIN = 35.8      # from kicker_value.py section 7, 2018-2025
 GAMES = 17
 ROOKIE_YEARS = 5        # first contract plus the fifth-year option
-KICKER_LEG = 0.74       # the guarantee's value, from THRESHOLD.txt
+KICKER_LEG = 0.84       # the guarantee's headline value, from VERDICT.txt
 REPL_LO, REPL_HI = 50, 320
 STARTER = 400
 
@@ -293,6 +295,16 @@ def main():
     print("\n  so the durability edge is real but much smaller than the raw")
     print("  medians suggest: good quarterbacks last a long time too.")
 
+    # hand the quarterback numbers to verdict.py rather than have it hardcode
+    # them; an inverted percentage got published that way once already
+    with open(os.path.join(HERE, "qb_summary.json"), "w") as fh:
+        json.dump({"war_per_season": sorted(t.war_per_season.round(4).tolist()),
+                   "mean": round(float(t.war_per_season.mean()), 4),
+                   "median": round(float(t.war_per_season.median()), 4),
+                   "n": int(len(t)),
+                   "cum_mean_by_year": [round(float(x), 4)
+                                        for x in by.mean_war.cumsum().tolist()]},
+                  fh, indent=1)
     return dict(rate=rate, t=t, big=big, era=era,
                 k_med=kg["size"].median(), k_max=kg["size"].max(),
                 q_med=qg["size"].median())

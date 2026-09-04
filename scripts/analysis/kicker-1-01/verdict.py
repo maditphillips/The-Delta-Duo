@@ -29,6 +29,8 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+import json
+
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
@@ -47,11 +49,18 @@ GAMES = 17
 SLOPE = 0.02796          # win% per point of margin per game, 2018-2025
 BASE_WINS = 8.5
 
-# from PICK.txt: all 17 quarterbacks taken first overall 1999-2021, priced
-# against a REPLACEMENT quarterback over the five years of the rookie deal
-QB_MEAN, QB_MEDIAN = 1.28, 1.59
-QB_BELOW = {"0.84": 35.3, "1.13": 58.8}   # % of them under each kicker figure
-QB_CUM10 = 11.71         # mean cumulative WAR through career year 10
+# all quarterbacks taken first overall 1999-2021, priced against a REPLACEMENT
+# quarterback over the five years of the rookie deal. Written by pick_value.py
+# so that nothing here is transcribed by hand.
+QB = json.load(open(os.path.join(HERE, "qb_summary.json")))
+QB_WAR = np.array(QB["war_per_season"])
+QB_MEAN, QB_MEDIAN = QB["mean"], QB["median"]
+QB_CUM10 = QB["cum_mean_by_year"][9]
+
+
+def qb_below(x):
+    """share of first-overall quarterbacks who came in under x wins a season"""
+    return 100 * (QB_WAR < x).mean()
 
 
 def hdr(t):
@@ -212,12 +221,12 @@ def main():
           f"{repl_w:.2f} certain against {QB_MEAN:.2f} expected.")
     print(f"  That is a {100 * (QB_MEAN - repl_w) / QB_MEAN:.0f}% edge to the "
           f"quarterback on the mean, and "
-          f"{QB_BELOW['1.13']:.0f}% of the seventeen")
+          f"{qb_below(repl_w):.0f}% of the {len(QB_WAR)}")
     print(f"  first overall quarterbacks since 1999 came in BELOW {repl_w:.2f} over "
           f"their")
     print(f"  rookie deal. The kicker's figure has no distribution at all.")
     print(f"\n  on the practical baseline: {avg_w:.2f} against {QB_MEAN:.2f}, and "
-          f"{QB_BELOW['0.84']:.0f}% of them came in below.")
+          f"{qb_below(avg_w):.0f}% of them came in below.")
 
     sub("over a career, not a season")
     for lab, wv in [("vs average leg", avg_w), ("vs replacement leg", repl_w)]:

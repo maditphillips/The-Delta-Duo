@@ -31,7 +31,7 @@ Against the pick:
 
 The quarterback is priced against a *replacement* quarterback, so the second
 row is the like-for-like comparison: **1.13 guaranteed against 1.28 expected,
-with 59% of the seventeen first-overall quarterbacks since 1999 coming in
+with 41% of the seventeen first-overall quarterbacks since 1999 coming in
 below 1.13 over their rookie deal.** Over ten years that is 11.3 wins against
 11.7 — a dead heat, one side certain and the other a draw from a distribution
 containing JaMarcus Russell.
@@ -145,8 +145,8 @@ replacement quarterback (pooled rate of quarterback-seasons of 50-320 plays,
 | 25th percentile (Vick, Bradford) | +0.10 |
 | worst (JaMarcus Russell) | −0.65 |
 
-41% of first overall quarterbacks since 1999 failed to clear the kicker's
-1.14 over their rookie deal — 35% failed to clear 0.70. The pick is a draw with a standard deviation of
+41% of first-overall quarterbacks since 1999 failed to clear 1.13 over their
+rookie deal; 35% failed to clear 0.84. The pick is a draw with a standard deviation of
 1.28 wins; the kicker is a certainty.
 
 The obvious argument for the kicker is duration: the guarantee runs for his
@@ -437,7 +437,7 @@ not a hypothetical good quarterback; it is the historical draw.
 The kicker is flat from day one. The quarterback ramps. So the answer depends
 on when you ask:
 
-| Career year | Played 100+ snaps | Mean WAR | Median | % below the kicker's 0.74 |
+| Career year | Played 100+ snaps | Mean WAR | Median | % below the kicker's 0.84 |
 |---|---|---|---|---|
 | **1** | 15/17 | **+0.31** | 0.00 | **65%** |
 | 2 | 17/17 | +1.63 | 2.06 | 41% |
@@ -452,7 +452,7 @@ A season the player did not play counts as 0.00, because the team played
 someone else.
 
 **Year one belongs to the kicker.** The average first-overall quarterback is
-worth +0.31 wins as a rookie and 65% of them came in under 0.74. Goff was
+worth +0.31 wins as a rookie and 65% of them came in under 0.84. Goff was
 −2.11, Stafford −1.02, Carr −2.10, Alex Smith −1.86.
 
 **Then it is over.** Cumulatively the quarterback passes the kicker in career
@@ -460,12 +460,12 @@ year 2 and never gives the lead back:
 
 | Career year | QB cumulative (mean) | Kicker cumulative | QB lead |
 |---|---|---|---|
-| 1 | 0.31 | 0.74 | **−0.43** |
-| 2 | 1.94 | 1.48 | +0.46 |
-| 3 | 3.93 | 2.22 | +1.71 |
-| 5 | 6.42 | 3.70 | **+2.72** |
-| 8 | 10.09 | 5.92 | +4.17 |
-| 10 | 11.71 | 7.40 | +4.31 |
+| 1 | 0.31 | 0.84 | **−0.53** |
+| 2 | 1.94 | 1.68 | +0.26 |
+| 3 | 3.93 | 2.52 | +1.41 |
+| 5 | 6.42 | 4.20 | **+2.22** |
+| 8 | 10.09 | 6.72 | +3.37 |
+| 10 | 11.71 | 8.40 | +3.31 |
 
 So the instinct is right — the kicker is the better asset on draft day and for
 exactly one season. The break-even is one year, not five.
