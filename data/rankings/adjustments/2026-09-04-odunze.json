@@ -1,0 +1,15 @@
+[
+  {
+    "op": "moveBelow",
+    "player": "Rome Odunze",
+    "below": ["Jadarian Price"],
+    "formats": ["ppr", "halfppr", "superflex"]
+  },
+  {
+    "op": "set",
+    "player": "Rome Odunze",
+    "flag": "Injury",
+    "note": "Injury scare in camp (Sept 3). Likely nothing long lasting, but info is thin, and after the foot injury a changed running gait can stress other muscles and ligaments. We don't like starting the season tweaking something. The model still loves the profile (WR12, Ben Johnson offense) — this is a health fade, not a talent one.",
+    "formats": ["ppr", "halfppr", "superflex"]
+  }
+]

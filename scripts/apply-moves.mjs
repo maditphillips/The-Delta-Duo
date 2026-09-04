@@ -6,7 +6,9 @@
 //   { "op": "swap",      "a": "Player A", "b": "Player B", "formats": ["ppr", ...] }
 //   { "op": "moveToSpot","player": "P", "spot": 23,        "formats": [...] }
 //   { "op": "moveBelow", "player": "P", "below": ["X","Y"],"formats": [...] }
-// Rows keep their tier/flag/note; overall_rank and pos_rank are recomputed.
+//   { "op": "set",       "player": "P", "note": "...", "flag": "...", "tier": "...", "formats": [...] }
+// Rows keep their tier/flag/note unless a "set" op changes them; overall_rank
+// and pos_rank are recomputed.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -74,6 +76,12 @@ for (const format of ["ppr", "halfppr", "superflex"]) {
       const target = Math.max(...op.below.map((p) => idx(rows, p)));
       rows.splice(target + 1, 0, r);
       console.log(`${format}: moved ${op.player} below ${op.below.join(" & ")} (now #${target + 2})`);
+    } else if (op.op === "set") {
+      const r = rows[idx(rows, op.player)];
+      if (op.note !== undefined) r.delta_note = op.note;
+      if (op.flag !== undefined) r.flag = op.flag;
+      if (op.tier !== undefined) r.tier = op.tier;
+      console.log(`${format}: updated ${op.player} (${[op.note !== undefined && "note", op.flag !== undefined && "flag", op.tier !== undefined && "tier"].filter(Boolean).join(", ")})`);
     } else {
       throw new Error(`unknown op: ${op.op}`);
     }
