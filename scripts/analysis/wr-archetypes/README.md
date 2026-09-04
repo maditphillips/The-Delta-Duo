@@ -710,6 +710,111 @@ his depth (7th percentile in 2024, 23rd in 2025). Whether that improves is Caleb
 Williams' and the play-caller's decision, not his. His own adjusted conversion in
 2025 was 5th percentile, so it is not all Williams either.
 
+## Trending the right way vs the wrong way
+
+```bash
+python3 trajectory.py > TRAJECTORY.txt
+```
+
+`timing.py` above answers the *within-season* version of this and finds nothing.
+This is the year-over-year version: two receivers both score 12 points a game,
+one arrived from 8 and one arrived from 16. Sample is 1,137 WR-seasons with a
+real prior year (25+ targets, 4+ games — differencing against a three-target
+season produces noise, and one such row was wrecking a cross-validation fold).
+
+**At the same level of current production, the receiver who fell to it beats the
+one who climbed to it.** Rows are quintiles of this season's points per game, so
+every cell in a row scored about the same:
+
+Mean season N+1 points per game:
+
+| This season | Fell to it | Flat | Rose to it |
+|---|---|---|---|
+| ppg Q1 | 4.54 (149) | 4.30 (36) | 5.67 (43) |
+| Q2 | 6.48 (102) | 7.21 (44) | 5.63 (81) |
+| Q3 | 9.14 (82) | 9.15 (58) | 8.32 (87) |
+| Q4 | **12.90** (85) | 11.91 (45) | 11.11 (97) |
+| ppg Q5 | 15.96 (47) | 15.13 (40) | 14.71 (141) |
+
+Share finishing top-24 the next season:
+
+| This season | Fell | Flat | Rose |
+|---|---|---|---|
+| Q2 | 10% | 11% | 2% |
+| Q3 | 20% | 21% | 7% |
+| Q4 | **36%** | 38% | 25% |
+| Q5 | 62% | 50% | 60% |
+
+As a coefficient, holding this season's scoring fixed: the year-over-year change
+is **−0.634 ppg/sd (p < 0.001)**, and **−1.032 (p < 0.001)** once age is
+controlled. Stated the other way round — which is the identical regression —
+a higher *previous* season is worth +0.749 ppg/sd given where he is now.
+
+Four things make this more than a curiosity:
+
+**1. It is not survivorship or ageing.** The effect is the same size in every
+experience band: years 1-3 −0.905, years 4-6 −0.944, year 7+ −0.982, all
+p ≤ 0.002. Controlling for age makes it *stronger*, not weaker.
+
+**2. It pays out of sample**, which almost nothing else in this project does:
+
+| | cv R² |
+|---|---|
+| points per game | 0.4371 |
+| + year-over-year change | 0.4469 |
+| + career-best prior season | 0.4367 |
+| points per game + age | 0.4677 |
+| **+ year-over-year change** | **0.4920** |
+
+That +0.024 is the third-largest addition anywhere in this study, behind only
+points per game itself and age.
+
+**3. It is last season specifically, not "he was once good".** Swap the previous
+season for the career-best prior season and the signal disappears (−0.141,
+p = 0.379). A three-year slope adds nothing either (−0.232, p = 0.12; cv R²
+0.4528 → 0.4529). Only the one-year step matters.
+
+**4. It is the efficiency half of a rise that regresses, not the role half.**
+Split the change into target share and points per target:
+
+| Holding current scoring fixed | Coefficient | p |
+|---|---|---|
+| change in target share | −0.067 ppg/sd | 0.62 |
+| change in points per target | **−0.424 ppg/sd** | **0.001** |
+
+A receiver who climbed because his team started throwing to him carries no
+penalty. A receiver who climbed because he started converting better does. That
+is the whole mechanism: efficiency reverts, opportunity persists — the same
+finding as the Two Doors study, arriving from the other direction.
+
+This is mean reversion, and it is symmetric. It says a down year understates a
+receiver and an up year overstates him. It does **not** say a receiver returns to
+his old peak — the career-peak test above is null precisely because he usually
+does not.
+
+### The matchup it was asked about
+
+Receivers in years 2-4 who arrived at 9-13 points a game:
+
+| | n | Median next | Top-12 | Top-24 | Next ppg |
+|---|---|---|---|---|---|
+| fell to it (down 3+ ppg) | 23 | **WR45** | 8.7% | **39.1%** | 11.22 |
+| held roughly level | 91 | WR56 | 8.8% | 18.7% | 9.71 |
+| climbed to it (up 3+ ppg) | 59 | WR63 | 6.8% | **8.5%** | 8.69 |
+
+Mann-Whitney, fell against climbed: **p = 0.018**.
+
+Thomas fell to 9.91 from 16.71. Odunze climbed to 12.18 from 8.52, and climbed on
+both halves — target share up 25% *and* points per target up 13%, the half that
+reverts. On this cut they are in the two opposite cells, and the gap between those
+cells is much larger than the 0.53 ppg the model reports.
+
+The model already contains this — it is the `prev_ppg` term, worth +0.71 ppg/sd —
+so this is not new evidence on top of the projection. It is an explanation of
+where that projection's Thomas-over-Odunze margin comes from, and a demonstration
+that the margin rests on a replicated effect rather than on a modelling artifact,
+which is exactly what the team-mate term turned out to be.
+
 ## Caveats
 
 - Cohort sizes are 14 to 33. The ordering is consistent across every threshold

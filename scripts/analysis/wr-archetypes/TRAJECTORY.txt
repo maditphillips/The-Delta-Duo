@@ -1,0 +1,152 @@
+
+==============================================================================
+THE SAMPLE
+==============================================================================
+WR-seasons 2009-2024 with a real prior season (25+ targets, 4+ games): 1,137
+39% arrived rising, 41% falling, 20% flat.
+
+==============================================================================
+1. AT THE SAME LEVEL, DOES DIRECTION MATTER?
+==============================================================================
+Rows are quintiles of THIS season's points per game, so every cell in a
+row scored about the same. Columns are how he got there.
+
+    Everyone: mean season N+1 points per game
+
+dir           fell        flat         rose
+level                                      
+ppg Q1  4.54 (149)    4.3 (36)    5.67 (43)
+Q2      6.48 (102)   7.21 (44)    5.63 (81)
+Q3       9.14 (82)   9.15 (58)    8.32 (87)
+Q4       12.9 (85)  11.91 (45)   11.11 (97)
+ppg Q5  15.96 (47)  15.13 (40)  14.71 (141)
+
+    Same cells, share finishing top-24 the following season
+
+dir     fell  flat  rose
+level                   
+ppg Q1   2.0   3.0   5.0
+Q2      10.0  11.0   2.0
+Q3      20.0  21.0   7.0
+Q4      36.0  38.0  25.0
+ppg Q5  62.0  50.0  60.0
+
+==============================================================================
+2. THE SAME THING AS A COEFFICIENT
+==============================================================================
+Holding this season's scoring fixed, what does the change from last
+season add?  A positive coefficient would mean rising is good.
+
+    Current scoring and the year-over-year change:  (n = 1,137)
+      ppg                    +4.110 ppg/sd   t = +30.38   p = 0.000
+      d_ppg                  -0.634 ppg/sd   t = -4.35   p = 0.000
+
+    The same information stated as the level he came from:  (n = 1,137)
+      ppg                    +3.381 ppg/sd   t = +19.77   p = 0.000
+      prev_ppg_raw           +0.749 ppg/sd   t = +4.35   p = 0.000
+
+    Those are the same regression. Given where he is now, a HIGHER
+    previous season predicts a better next year, which is the same
+    statement as: at equal current scoring, falling beats rising.
+
+    Career-best season instead of last season:  (n = 1,137)
+      ppg                    +3.932 ppg/sd   t = +25.69   p = 0.000
+      peak_prior_ppg         -0.141 ppg/sd   t = -0.88   p = 0.379
+
+    With age and experience in, in case 'rising' is just 'young':  (n = 1,137)
+      ppg                    +4.251 ppg/sd   t = +31.68   p = 0.000
+      d_ppg                  -1.032 ppg/sd   t = -6.78   p = 0.000
+      age                    -1.184 ppg/sd   t = -2.66   p = 0.008
+      exp                    -0.120 ppg/sd   t = -0.27   p = 0.788
+
+==============================================================================
+3. DOES ANY OF IT HELP OUT OF SAMPLE?
+==============================================================================
+    ppg                                          cv R2 = 0.4371   n = 1,137
+    ppg + d_ppg                                  cv R2 = 0.4469   n = 1,137
+    ppg + prev_ppg_raw                           cv R2 = 0.4469   n = 1,137
+    ppg + peak_prior_ppg                         cv R2 = 0.4367   n = 1,137
+    ppg + age                                    cv R2 = 0.4677   n = 1,137
+    ppg + age + d_ppg                            cv R2 = 0.4920   n = 1,137
+    ppg + age + peak_prior_ppg                   cv R2 = 0.4803   n = 1,137
+
+==============================================================================
+4. IS IT DIFFERENT FOR YOUNG RECEIVERS?
+==============================================================================
+The whole effect could be survivorship: a 30-year-old who is rising is
+rare and probably real, a 30-year-old falling is just ageing.
+
+    years 1-3    n =  356   d_ppg -0.905 ppg/sd   t = -3.15   p = 0.002
+    years 4-6    n =  426   d_ppg -0.944 ppg/sd   t = -3.84   p = 0.000
+    year 7+      n =  355   d_ppg -0.982 ppg/sd   t = -3.61   p = 0.000
+
+
+    Years 1-4 only: mean season N+1 points per game
+
+dir           fell        flat        rose
+level                                     
+ppg Q1   5.81 (59)   5.12 (20)   6.59 (24)
+Q2       7.88 (31)   9.03 (20)   5.97 (51)
+Q3      10.61 (27)   8.68 (28)   9.31 (48)
+Q4      13.74 (29)   12.9 (18)  10.59 (55)
+ppg Q5  17.94 (13)  16.01 (13)  15.18 (77)
+
+    Same cells, share finishing top-24 the following season
+
+dir     fell  flat  rose
+level                   
+ppg Q1   2.0   5.0   8.0
+Q2      16.0  15.0   0.0
+Q3      33.0  21.0  10.0
+Q4      48.0  56.0  25.0
+ppg Q5  62.0  54.0  56.0
+
+==============================================================================
+5. A RISING ROLE VS RISING POINTS
+==============================================================================
+Target share is the part of a trend a receiver's team controls. If any
+trajectory matters it should be this one.
+
+    Change in target share, holding scoring fixed:  (n = 1,137)
+      ppg                    +3.876 ppg/sd   t = +29.70   p = 0.000
+      d_ts                   -0.067 ppg/sd   t = -0.50   p = 0.615
+
+    Splitting the change into role and conversion:  (n = 1,137)
+      ppg                    +3.975 ppg/sd   t = +29.86   p = 0.000
+      d_ts                   -0.073 ppg/sd   t = -0.54   p = 0.586
+      d_eff                  -0.424 ppg/sd   t = -3.21   p = 0.001
+
+    ppg                                          cv R2 = 0.4371   n = 1,137
+    ppg + d_ts                                   cv R2 = 0.4359   n = 1,137
+    ppg + d_ts + d_eff                           cv R2 = 0.4405   n = 1,137
+    ppg + target_share                           cv R2 = 0.4444   n = 1,137
+    ppg + target_share + d_ts                    cv R2 = 0.4436   n = 1,137
+
+==============================================================================
+6. MULTI-YEAR SLOPE
+==============================================================================
+Three seasons of history, fit a line, ask whether its slope adds
+anything to the last point on it.
+
+    n = 936 receiver-seasons with three consecutive years
+
+    Three-year slope, holding current scoring fixed:  (n = 936)
+      ppg                    +4.038 ppg/sd   t = +27.38   p = 0.000
+      slope3                 -0.232 ppg/sd   t = -1.54   p = 0.123
+
+    ppg                                          cv R2 = 0.4528   n = 936
+    ppg + slope3                                 cv R2 = 0.4529   n = 936
+    ppg + prev_ppg_raw                           cv R2 = 0.4673   n = 936
+    ppg + slope3 + age                           cv R2 = 0.4886   n = 936
+
+==============================================================================
+7. THE MATCHUP THIS STARTED FROM
+==============================================================================
+Receivers in years 2-4 who arrived at 9-13 points a game, split by
+whether they climbed to it or fell to it.
+
+    fell to it (down 3+ ppg)     n =  23   median next WR  45   top-12  8.7%   top-24 39.1%   next ppg 11.22
+    held roughly level           n =  91   median next WR  56   top-12  8.8%   top-24 18.7%   next ppg  9.71
+    climbed to it (up 3+ ppg)    n =  59   median next WR  63   top-12  6.8%   top-24  8.5%   next ppg  8.69
+
+    Mann-Whitney, fell vs climbed: p = 0.018
