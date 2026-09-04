@@ -364,9 +364,72 @@ The quarterback's +1.28 is that player against a replacement quarterback; it
 does not come bundled with a fourth-down chart either. Like for like, it is
 0.74 against 1.28, or 1.59 at the median.
 
-Three independent routes — channel accounting (0.94), the plain yards-to-go
-rule (0.83), and this policy sweep (0.74) — all land the guarantee between
-0.7 and 0.9 wins. None of them reach the quarterback.
+### Reconciling the three numbers
+
+Three scripts give 0.94, 0.83 and 0.74 for the same kicker. They differ only
+in what the *comparison* team is allowed to do:
+
+| | Baseline it measures against | Wins |
+|---|---|---|
+| **channel accounting** (`kicker_value.py`) | real NFL coaching, coach only ever changes his mind toward the free three | **0.94** |
+| **plain rule** (`simple_rule.py`) | real NFL coaching, one yards-to-go rule, charged for its own mistakes | **0.83** |
+| **policy sweep** (`threshold.py`) | an *average* leg on the *same* optimal policy | **0.74** |
+
+Recomputed on one footing, the 0.89-to-0.74 drop splits unevenly:
+
+- **0.07 wins is coaching an ordinary leg would also have captured.** An
+  average kicker attempting a 56-yarder already beats punting by 0.27 points,
+  so part of "the fourth downs he unlocks" was never the guarantee's to claim
+  — only the 35-40% he would have missed.
+- **0.08 wins is the single-threshold rule paying for its own mistakes.** It
+  kicks on 4th & 4 near the goal line where the surface above says go. Channel
+  accounting never charges for a bad kick, because of its `max(0, ·)` floor.
+
+**Honest range for the guarantee: 0.75 to 0.90 wins a season.** Every route
+lands inside it, and none reach the quarterback.
+
+## Who is the quarterback we are comparing against?
+
+`pick_value.py` uses **every quarterback actually taken first overall since
+1999** — all 17, busts included — priced in adjusted EPA per snap against a
+replacement quarterback, then converted at the same 35.8 points per win. It is
+not a hypothetical good quarterback; it is the historical draw.
+
+The kicker is flat from day one. The quarterback ramps. So the answer depends
+on when you ask:
+
+| Career year | Played 100+ snaps | Mean WAR | Median | % below the kicker's 0.74 |
+|---|---|---|---|---|
+| **1** | 15/17 | **+0.31** | 0.00 | **65%** |
+| 2 | 17/17 | +1.63 | 2.06 | 41% |
+| 3 | 17/17 | +1.99 | 2.35 | 29% |
+| 4 | 15/17 | +0.97 | 1.01 | 41% |
+| 5 | 15/17 | +1.51 | 1.76 | 47% |
+| 6 | 12/17 | +0.90 | 0.36 | 65% |
+| 7 | 11/17 | +1.62 | 1.64 | 35% |
+| 8 | 8/17 | +1.16 | 0.25 | 59% |
+
+A season the player did not play counts as 0.00, because the team played
+someone else.
+
+**Year one belongs to the kicker.** The average first-overall quarterback is
+worth +0.31 wins as a rookie and 65% of them came in under 0.74. Goff was
+−2.11, Stafford −1.02, Carr −2.10, Alex Smith −1.86.
+
+**Then it is over.** Cumulatively the quarterback passes the kicker in career
+year 2 and never gives the lead back:
+
+| Career year | QB cumulative (mean) | Kicker cumulative | QB lead |
+|---|---|---|---|
+| 1 | 0.31 | 0.74 | **−0.43** |
+| 2 | 1.94 | 1.48 | +0.46 |
+| 3 | 3.93 | 2.22 | +1.71 |
+| 5 | 6.42 | 3.70 | **+2.72** |
+| 8 | 10.09 | 5.92 | +4.17 |
+| 10 | 11.71 | 7.40 | +4.31 |
+
+So the instinct is right — the kicker is the better asset on draft day and for
+exactly one season. The break-even is one year, not five.
 
 ## Does the extra work actually arrive?
 

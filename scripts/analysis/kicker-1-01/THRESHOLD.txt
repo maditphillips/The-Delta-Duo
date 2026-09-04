@@ -186,6 +186,38 @@ yardline_100
   yards-to-go threshold cannot express.
 
 ==============================================================================
+3b. RECONCILING THIS WITH FINDINGS.txt AND RULE.txt
+==============================================================================
+Three scripts, three numbers for the same kicker. They differ only in
+what the comparison team is allowed to do.
+
+  channel 1, misses inside 60 become makes        :  17.3 points
+  channel 3, perfect leg vs what teams really did :  12.4
+    of which an ORDINARY leg would also have got  :   2.4  <- coaching, not kicking
+    attributable to the guarantee itself          :  10.0
+  extra points                                    :   2.1
+
+  FINDINGS.txt   channel 1 + 3 + XP, baseline = real NFL coaching
+                 = 31.9 points = 0.89 wins
+  leg only       same, minus the part an ordinary leg would capture
+                 = 29.4 points = 0.82 wins
+  this script    both legs on the same optimal policy
+                 = 26.5 points = 0.74 wins
+
+  So the drop from 0.89 to 0.74 splits in two, and NOT evenly:
+    0.07 wins is coaching an ordinary leg would also have captured.
+      An average kicker attempting a 56-yarder already beats punting
+      by 0.27 points; the guarantee only adds the 35-40% he misses.
+    0.08 wins is the single-threshold rule paying for its own
+      mistakes - it kicks on 4th & 4 near the goal line, where the
+      surface in section 1b says go - and reshuffling which kicks he
+      takes. Channel accounting never charges for a bad kick because
+      of its max(0, .) floor.
+
+  Honest range for the guarantee: 0.75 to 0.90 wins a season. Every
+  route lands inside it, and none of them reach the quarterback.
+
+==============================================================================
 4. SO WHAT IS THE WIN RATE?
 ==============================================================================
   the kicker's own contribution, which is what the 1.01 buys:

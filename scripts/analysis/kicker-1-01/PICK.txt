@@ -125,6 +125,75 @@ first overall quarterbacks drafted 1999-2021, first 5 seasons (the rookie deal p
   2007 JaMarcus Russell             2  768.0      -3.26         -1.63
 
 ==============================================================================
+2b. WHEN DOES THE QUARTERBACK PASS THE KICKER?
+==============================================================================
+The kicker is flat: the guarantee is worth the same every year from
+day one. The quarterback ramps. So the comparison depends on when you
+ask. Career year 1 is the draft season; a season the player did not
+play counts as 0.00, because the team played someone else.
+
+  KICKER_LEG = 0.74 wins, the guarantee's value under an
+  optimally coached team (THRESHOLD.txt). Flat, every year.
+
+            n  played  mean_war  median_war  pct_below_kicker
+career_yr                                                    
+1          17      15      0.31        0.00             64.71
+2          17      17      1.63        2.06             41.18
+3          17      17      1.99        2.35             29.41
+4          17      15      0.97        1.01             41.18
+5          17      15      1.51        1.76             47.06
+6          17      12      0.90        0.36             64.71
+7          17      11      1.62        1.64             35.29
+8          17       8      1.16        0.25             58.82
+9          17       5      0.79        0.00             70.59
+10         17       8      0.82        0.00             64.71
+
+  per-player, wins above replacement by career year:
+career_yr            1     2     3     4     5     6     7     8  yr1-5
+player                                                                 
+Joe Burrow        2.06  3.93  4.24  1.08  4.10  0.87  0.00  0.00  15.41
+Cam Newton        2.76  3.48  3.10  1.38  3.50  0.48  1.64  2.17  14.22
+Jameis Winston    2.92  3.26  2.35  2.63  2.84  0.08  1.25 -0.12  14.01
+Andrew Luck       2.86  2.87  3.74  0.81  3.41  0.00  3.95  0.00  13.69
+Jared Goff       -2.11  3.21  4.63  3.38  1.76  0.41  4.06  3.30  10.86
+Carson Palmer     0.00  0.04  3.93  2.85  2.60 -0.01  2.03  1.92   9.42
+Kyler Murray      1.38  2.80  3.24  1.05  0.66  3.10  0.90  0.00   9.12
+Trevor Lawrence   0.25  4.18  1.40  0.70  2.38  0.00  0.00  0.00   8.90
+Matthew Stafford -1.02  0.06  3.71  2.44  2.78  2.77  1.96  4.35   7.97
+Baker Mayfield    1.92  1.20  3.68  1.01 -0.50  2.85  4.20  2.13   7.33
+Eli Manning      -0.42  2.37  0.69 -0.14  2.52  3.64  2.12  3.68   5.02
+Sam Bradford      0.18 -1.22  1.61  0.01  0.00  1.36  2.71  0.47   0.58
+Michael Vick     -0.40  2.06 -0.08 -1.22  0.14 -0.11  0.00  0.00   0.49
+Tim Couch        -0.86  0.23 -0.56  1.14 -0.65  0.00  0.00  0.00  -0.71
+David Carr       -2.10 -0.24  1.80 -0.59 -0.04 -0.49  0.25  0.25  -1.18
+Alex Smith       -1.86  0.01 -1.19  0.00  0.25  0.36  2.39  1.59  -2.79
+JaMarcus Russell -0.31 -0.46 -2.48  0.00  0.00  0.00  0.00  0.00  -3.26
+
+-- cumulative: kicker at a flat rate against the average 1.01 quarterback
+           mean_war  median_war  kicker  QB_mean_lead  QB_med_lead
+career_yr                                                         
+1              0.31        0.00    0.74         -0.43        -0.74
+2              1.94        2.06    1.48          0.46         0.58
+3              3.93        4.41    2.22          1.71         2.19
+4              4.90        5.42    2.96          1.94         2.46
+5              6.42        7.18    3.70          2.72         3.48
+6              7.32        7.53    4.44          2.88         3.09
+7              8.93        9.17    5.18          3.75         3.99
+8             10.09        9.43    5.92          4.17         3.51
+9             10.88        9.43    6.66          4.22         2.77
+10            11.71        9.43    7.40          4.31         2.03
+
+  the average 1.01 quarterback goes ahead of the kicker on
+  cumulative wins in career year 2, and never gives the
+  lead back. By year 5 he is +2.7 wins up;
+  by year 8, +4.2.
+
+  but year one really does belong to the kicker: the average 1.01
+  quarterback is worth +0.31 wins as a rookie, and 65% of them
+  came in under 0.74. The kicker is better on day one and
+  behind for good by year 2.
+
+==============================================================================
 3. THE SPREAD IS THE WHOLE POINT
 ==============================================================================
 the kicker is a certainty. the pick is a draw from this distribution.

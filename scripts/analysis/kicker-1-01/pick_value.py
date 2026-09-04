@@ -45,6 +45,7 @@ WINDOW = list(range(1999, 2026))
 PTS_PER_WIN = 35.8      # from kicker_value.py section 7, 2018-2025
 GAMES = 17
 ROOKIE_YEARS = 5        # first contract plus the fifth-year option
+KICKER_LEG = 0.74       # the guarantee's value, from THRESHOLD.txt
 REPL_LO, REPL_HI = 50, 320
 STARTER = 400
 
@@ -166,6 +167,53 @@ def main():
                       "war_per_seas": s.war.sum() / max((s.plays >= 100).sum(), 1)})
     t2 = pd.DataFrame(rows2).sort_values("war_total", ascending=False)
     print(t2.round(2).to_string(index=False))
+
+    # ------------------------------------------- the career trajectory
+    hdr("2b. WHEN DOES THE QUARTERBACK PASS THE KICKER?")
+    print("The kicker is flat: the guarantee is worth the same every year from")
+    print("day one. The quarterback ramps. So the comparison depends on when you")
+    print("ask. Career year 1 is the draft season; a season the player did not")
+    print("play counts as 0.00, because the team played someone else.")
+    qb_all = era[era.position.eq("QB") & era.season.le(2021)]
+    recs = []
+    for _, r in qb_all.iterrows():
+        for yr in range(int(r.season), int(r.season) + 10):
+            row = q[q.pid.eq(r.gsis_id) & q.season.eq(yr)]
+            recs.append({"player": r.pfr_player_name, "draft": int(r.season),
+                         "career_yr": yr - int(r.season) + 1,
+                         "plays": float(row.plays.sum()),
+                         "war": float(row.war.sum()) if len(row) else 0.0})
+    tr = pd.DataFrame(recs)
+    by = tr.groupby("career_yr").agg(
+        n=("war", "size"), played=("plays", lambda x: (x >= 100).sum()),
+        mean_war=("war", "mean"), median_war=("war", "median"),
+        pct_below_kicker=("war", lambda x: 100 * (x < KICKER_LEG).mean()))
+    print(f"\n  KICKER_LEG = {KICKER_LEG:.2f} wins, the guarantee's value under an")
+    print(f"  optimally coached team (THRESHOLD.txt). Flat, every year.")
+    print("\n" + by.round(2).to_string())
+    print("\n  per-player, wins above replacement by career year:")
+    piv = tr[tr.career_yr <= 8].pivot_table(index="player", columns="career_yr",
+                                            values="war")
+    piv["yr1-5"] = piv[[c for c in piv.columns if c <= 5]].sum(axis=1)
+    print(piv.round(2).sort_values("yr1-5", ascending=False).to_string())
+
+    sub("cumulative: kicker at a flat rate against the average 1.01 quarterback")
+    cum = by[["mean_war", "median_war"]].cumsum()
+    cum["kicker"] = KICKER_LEG * np.arange(1, len(cum) + 1)
+    cum["QB_mean_lead"] = cum.mean_war - cum.kicker
+    cum["QB_med_lead"] = cum.median_war - cum.kicker
+    print(cum.round(2).to_string())
+    flip = cum[cum.QB_mean_lead > 0]
+    print(f"\n  the average 1.01 quarterback goes ahead of the kicker on")
+    print(f"  cumulative wins in career year {flip.index[0]}, and never gives the")
+    print(f"  lead back. By year 5 he is {cum.loc[5, 'QB_mean_lead']:+.1f} wins up;")
+    print(f"  by year 8, {cum.loc[8, 'QB_mean_lead']:+.1f}.")
+    y1 = by.loc[1]
+    print(f"\n  but year one really does belong to the kicker: the average 1.01")
+    print(f"  quarterback is worth {y1.mean_war:+.2f} wins as a rookie, and "
+          f"{y1.pct_below_kicker:.0f}% of them")
+    print(f"  came in under {KICKER_LEG:.2f}. The kicker is better on day one and")
+    print(f"  behind for good by year {flip.index[0]}.")
 
     # ------------------------------------------------ the spread, not the mean
     hdr("3. THE SPREAD IS THE WHOLE POINT")

@@ -326,6 +326,48 @@ def main():
     print("  outside the 42 - which is the field-position pattern a single")
     print("  yards-to-go threshold cannot express.")
 
+    # ------------------------------------------------ 3b. reconciliation
+    hdr("3b. RECONCILING THIS WITH FINDINGS.txt AND RULE.txt")
+    print("Three scripts, three numbers for the same kicker. They differ only in")
+    print("what the comparison team is allowed to do.")
+    ir = f[f.in_range & f.down.eq(4)]
+    nk2 = ir[~ir.play_type.eq("field_goal")]
+    v_alt = np.where(nk2.play_type.eq("punt"), nk2.v_punt, nk2.v_go)
+    ch3_perf = np.maximum(0, nk2.v_perfect - v_alt).sum() / tsn
+    ch3_avg = np.maximum(0, nk2.v_kick_avg - v_alt).sum() / tsn
+    fgs_all = w[w.is_fg & w.dist.le(60)]
+    ch1 = (fgs_all.v_perfect - fgs_all.aepa).sum() / tsn
+    print(f"\n  channel 1, misses inside 60 become makes        : {ch1:5.1f} points")
+    print(f"  channel 3, perfect leg vs what teams really did : {ch3_perf:5.1f}")
+    print(f"    of which an ORDINARY leg would also have got  : {ch3_avg:5.1f}  "
+          f"<- coaching, not kicking")
+    print(f"    attributable to the guarantee itself          : "
+          f"{ch3_perf - ch3_avg:5.1f}")
+    print(f"  extra points                                    : {CH5:5.1f}")
+    print(f"\n  FINDINGS.txt   channel 1 + 3 + XP, baseline = real NFL coaching")
+    print(f"                 = {ch1 + ch3_perf + CH5:.1f} points = "
+          f"{SLOPE * (ch1 + ch3_perf + CH5):.2f} wins")
+    print(f"  leg only       same, minus the part an ordinary leg would capture")
+    print(f"                 = {ch1 + ch3_perf - ch3_avg + CH5:.1f} points = "
+          f"{SLOPE * (ch1 + ch3_perf - ch3_avg + CH5):.2f} wins")
+    print(f"  this script    both legs on the same optimal policy")
+    print(f"                 = {best['leg'] / SLOPE:.1f} points = "
+          f"{best['leg']:.2f} wins")
+    print(f"\n  So the drop from {SLOPE * (ch1 + ch3_perf + CH5):.2f} to "
+          f"{best['leg']:.2f} splits in two, and NOT evenly:")
+    print(f"    {SLOPE * ch3_avg:.2f} wins is coaching an ordinary leg would also "
+          f"have captured.")
+    print(f"      An average kicker attempting a 56-yarder already beats punting")
+    print(f"      by 0.27 points; the guarantee only adds the 35-40% he misses.")
+    print(f"    {SLOPE * (ch1 + ch3_perf - ch3_avg + CH5) - best['leg']:.2f} wins "
+          f"is the single-threshold rule paying for its own")
+    print(f"      mistakes - it kicks on 4th & 4 near the goal line, where the")
+    print(f"      surface in section 1b says go - and reshuffling which kicks he")
+    print(f"      takes. Channel accounting never charges for a bad kick because")
+    print(f"      of its max(0, .) floor.")
+    print(f"\n  Honest range for the guarantee: 0.75 to 0.90 wins a season. Every")
+    print(f"  route lands inside it, and none of them reach the quarterback.")
+
     # ----------------------------------------------------------- 4. verdict
     hdr("4. SO WHAT IS THE WIN RATE?")
     print("  the kicker's own contribution, which is what the 1.01 buys:")
