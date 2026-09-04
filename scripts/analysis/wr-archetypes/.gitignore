@@ -5,3 +5,4 @@ wr_panel.csv
 __pycache__/
 injuries.parquet
 snaps.parquet
+charting.parquet

@@ -435,6 +435,112 @@ forward-looking claim on Chicago's targets that a 2025 box score cannot see, and
 Washington and Thomas will keep taking targets from each other in Jacksonville.
 Those are offseason facts, not timing effects.
 
+## The quarterback question, and which kind of decline comes back
+
+```bash
+python3 fetch_charting.py          # pbp joined to FTN charting, 2022-2025
+python3 decline.py > DECLINE.txt
+```
+
+`fetch_charting.py` joins nflverse play-by-play to FTN's charting so every target
+carries who threw it, whether the charters called it catchable, whether it was
+contested, and whether it was dropped. That turns two arguments that are normally
+assertions into measurements: *his good year was a backup quarterback* and *the
+throws were bad*.
+
+### "Thomas's rookie year was Mac Jones" is backwards
+
+Jacksonville split 2024 almost evenly — Lawrence 287 dropbacks (weeks 1-9 and 13),
+Mac Jones 265 (weeks 10-18 plus relief in 3, 6 and 13). Thomas by passer:
+
+| Brian Thomas Jr. | Targets | Yds/target | PPR/target | aDOT | Catchable | Drop rate | Catch on catchable |
+|---|---|---|---|---|---|---|---|
+| 2024, Lawrence | 55 | **10.55** | **2.20** | 13.19 | 74.5% | 5.5% | 80.5% |
+| 2024, Mac Jones | 80 | 8.78 | 1.93 | 10.54 | 71.2% | 2.5% | 94.7% |
+| 2025, Lawrence | 91 | 7.77 | 1.44 | 14.45 | **74.7%** | **11.0%** | **70.6%** |
+
+He was **better with Lawrence**, on a deeper route tree. The rookie season was not
+a backup-quarterback illusion.
+
+That cuts both ways, and the second edge is sharper. It removes the worry that his
+WR4 season was fake — but it also removes the excuse for 2025, which happened with
+the quarterback who had made him look best.
+
+### The 2025 collapse was conversion, not opportunity and not the throws
+
+Same offence, same quarterback, one season:
+
+| 2025 Jacksonville | Targets | PPR/target | Catchable | Contested | Drop rate | Catch on catchable |
+|---|---|---|---|---|---|---|
+| Parker Washington | 97 | **1.78** | 66.0% | 19.6% | 4.1% | **90.6%** |
+| Brian Thomas Jr. | 91 | 1.44 | **74.7%** | 24.2% | **11.0%** | **70.6%** |
+| Jakobi Meyers | 60 | 1.78 | 71.7% | 18.3% | 3.3% | 95.3% |
+
+Thomas got the **most catchable** targets on the team and converted them the
+**worst** by a distance. That is not a quarterback problem and it is not a role
+problem — his target share held at 19.3%. Washington, on the identical passer in
+the identical offence, out-produced him by 24% per target.
+
+### Does that kind of decline come back?
+
+Two answers, pointing opposite ways.
+
+**Drop rate barely persists, so the drops should mostly go away.** Year over year,
+for receivers with 40+ targets in both seasons, r = +0.152 (R² = 0.023). The worst
+decile of droppers averages 8.7% one year and **4.5%** the next, against a 3.7%
+league mean. Drop rate also adds nothing to next-season prediction once points per
+game is in (cv R² 0.4881 against 0.4884 without it).
+
+**Catch rate on catchable balls persists much better** — r = +0.383, R² = 0.147,
+six times the signal. That is the number Thomas is worst on, and it is the half
+that carries forward.
+
+And the historical base rate for his exact failure mode is not encouraging. Among
+receivers whose points per game fell 20%+ from the prior year:
+
+| | n | Median next | Top-24 | Fully recovered |
+|---|---|---|---|---|
+| lost the role only | 73 | WR88 | 15% | **18%** |
+| kept the role, stopped converting | 101 | WR104 | 16% | **5%** |
+| lost both | 105 | WR111 | 9% | 10% |
+| every season with a prior year | 1,267 | WR65 | 22% | 38% |
+
+"Fully recovered" means beating his season N−1 points per game two years later.
+Losing the job and keeping it but not converting land in the same place on median
+(p = 0.87), but the receivers who kept the job and stopped converting almost never
+get back to what they were. Neither decomposition adds anything to plain points
+per game as a predictor (d_share p = 0.18, d_eff p = 0.93) — the size of the fall
+is what matters, not its anatomy.
+
+### One thing this reframes about Odunze
+
+Chicago throws him the hardest targets on the roster. His catchable rate was
+**59.0%** in 2024 and **62.2%** in 2025, lowest among the Bears' pass catchers both
+years, on the team's highest aDOT (13.65, 13.92). Luther Burden III's 2025 line —
+10.97 yards per target, 2.08 PPR per target — came on an **89.8% catchable rate**
+at a 7.78 aDOT. They are not doing the same job, which weakens the assumption that
+Burden's finish comes straight out of Odunze's role.
+
+### So is Thomas still the pick?
+
+The premise fails but the conclusion mostly survives, by a different route.
+
+The model's case for Thomas never rested on 2025 — it rested on age and an
+already-banked WR4 season, and the quarterback split makes that pedigree *more*
+credible, not less. Nothing in the model inputs changed.
+
+What changed is the confidence around it. He has no quarterback excuse, his
+failure is on the more persistent of the two conversion metrics, and a teammate
+beat him per target on the same passer. Against that, the drops are the single
+most regression-prone thing he could have been bad at.
+
+Call it a coin flip between Thomas and Washington, which is what the comparables
+said before any of this: over every ordered pair, Thomas's comps finish ahead of
+Washington's **53%** of the time. Thomas keeps the wider range — 18% top-12
+against 8% — so he is the pick where upside is what you are buying, and Washington
+is the pick where you need the floor. Odunze sits between them and is the one whose
+2026 depends most on something outside his control.
+
 ## Caveats
 
 - Cohort sizes are 14 to 33. The ordering is consistent across every threshold
@@ -454,3 +560,9 @@ Those are offseason facts, not timing effects.
   field is the only severity signal in it.
 - Snap counts start in 2012, so the snap-share tests run on 1,027 seasons rather
   than the full 1,502.
+- FTN charting starts in 2022. The drop and catchable-ball work runs on 262
+  receiver-seasons and three year-pairs, which is enough for a persistence
+  estimate and not enough for anything finer.
+- Catchable, contested and drop are charter judgements, not measurements. They
+  are consistent within FTN's own work, which is what the year-over-year
+  persistence test needs, but they are not ground truth.
