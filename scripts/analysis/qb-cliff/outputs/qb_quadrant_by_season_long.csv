@@ -1,0 +1,504 @@
+player_name,season,round,pick,starts,quadrant_n,quadrant,career_q,rush_yd_pg,designed_yd_pg,scramble_yd_pg,epa_per_db,fp_per_game,qb_rank,is_qb1
+Aaron Rodgers,2008,1,24,16,1,1 Efficient + rushing,1,13.25,4.06,9.19,0.1525,18.17,2,True
+Aaron Rodgers,2009,1,24,16,1,1 Efficient + rushing,1,19.94,9.88,10.06,0.2128,21.45,1,True
+Aaron Rodgers,2010,1,24,14,1,1 Efficient + rushing,1,24.53,3.4,21.13,0.2105,20.38,2,True
+Aaron Rodgers,2011,1,24,15,1,1 Efficient + rushing,1,17.87,0.53,17.33,0.4098,25.45,2,True
+Aaron Rodgers,2012,1,24,16,1,1 Efficient + rushing,1,17.25,1.31,15.94,0.1972,21.59,2,True
+Aaron Rodgers,2014,1,24,16,1,1 Efficient + rushing,1,17.69,2.38,15.31,0.3301,22.22,1,True
+Aaron Rodgers,2015,1,24,16,3,3 Inefficient + rushing,1,22.25,0.19,22.06,0.0215,18.9,7,True
+Aaron Rodgers,2016,1,24,16,1,1 Efficient + rushing,1,24.12,0.75,23.38,0.2288,23.86,1,True
+Aaron Rodgers,2018,1,24,15,1,1 Efficient + rushing,1,17.12,-0.25,17.38,0.1129,19.57,6,True
+Aaron Rodgers,2019,1,24,16,1,1 Efficient + rushing,1,12.62,-0.06,12.69,0.0977,17.52,9,True
+Aaron Rodgers,2020,1,24,16,2,2 Efficient + no legs,1,9.81,0.5,9.31,0.341,23.98,2,True
+Aaron Rodgers,2021,1,24,16,2,2 Efficient + no legs,1,7.12,0.19,6.94,0.2433,20.88,5,True
+Aaron Rodgers,2022,1,24,17,4,4 Inefficient + no legs,1,6.47,0.47,6.0,-0.0063,14.16,13,False
+Aaron Rodgers,2024,1,24,17,4,4 Inefficient + no legs,1,6.53,0.47,6.06,0.0069,15.12,15,False
+Aaron Rodgers,2025,1,24,16,4,4 Inefficient + no legs,1,4.25,0.0,4.25,0.0347,14.23,16,False
+Aidan O'Connell,2023,4,135,10,4,4 Inefficient + no legs,4,1.55,1.55,0.0,-0.0603,11.49,28,False
+Alex Smith,2009,1,1,11,4,4 Inefficient + no legs,3,5.55,1.18,4.36,-0.0611,13.28,22,False
+Alex Smith,2010,1,1,10,4,4 Inefficient + no legs,3,6.0,2.36,3.64,-0.047,12.3,27,False
+Alex Smith,2011,1,1,16,3,3 Inefficient + rushing,3,12.19,2.0,10.19,0.0502,13.33,14,False
+Alex Smith,2013,1,1,15,3,3 Inefficient + rushing,3,29.33,7.47,21.87,0.0594,16.97,13,False
+Alex Smith,2014,1,1,15,1,1 Efficient + rushing,3,17.2,0.8,16.4,0.1021,14.69,18,False
+Alex Smith,2015,1,1,16,1,1 Efficient + rushing,3,31.88,5.0,26.88,0.0693,17.03,15,False
+Alex Smith,2016,1,1,14,2,2 Efficient + no legs,3,10.0,1.4,8.6,0.0997,15.01,22,False
+Alex Smith,2017,1,1,15,1,1 Efficient + rushing,3,22.27,3.07,19.2,0.1858,19.54,4,True
+Alex Smith,2018,1,1,10,3,3 Inefficient + rushing,3,17.3,4.2,13.1,-0.0233,13.85,30,False
+Andrew Luck,2012,1,1,16,3,3 Inefficient + rushing,1,16.88,1.81,15.06,0.0593,17.37,9,True
+Andrew Luck,2013,1,1,16,1,1 Efficient + rushing,1,24.38,0.81,23.56,0.0755,18.37,4,True
+Andrew Luck,2014,1,1,14,1,1 Efficient + rushing,1,17.81,0.12,17.69,0.1359,22.06,2,True
+Andrew Luck,2016,1,1,15,1,1 Efficient + rushing,1,23.73,2.93,20.8,0.1215,20.61,4,True
+Andrew Luck,2018,1,1,16,2,2 Efficient + no legs,1,10.25,0.25,10.0,0.1417,20.51,5,True
+Andy Dalton,2011,2,35,16,4,4 Inefficient + no legs,4,10.0,1.5,8.5,-0.0085,13.0,15,False
+Andy Dalton,2012,2,35,16,4,4 Inefficient + no legs,4,8.44,1.38,7.06,-0.0078,15.77,12,True
+Andy Dalton,2013,2,35,16,1,1 Efficient + rushing,4,12.25,3.81,8.44,0.0856,18.08,5,True
+Andy Dalton,2014,2,35,16,3,3 Inefficient + rushing,4,11.5,6.75,4.75,-0.0169,13.64,19,False
+Andy Dalton,2015,2,35,12,1,1 Efficient + rushing,4,11.85,3.15,8.69,0.2663,18.88,18,False
+Andy Dalton,2016,2,35,16,1,1 Efficient + rushing,4,12.0,1.44,10.56,0.0951,16.34,12,True
+Andy Dalton,2017,2,35,16,4,4 Inefficient + no legs,4,7.31,1.88,5.44,-0.0787,13.28,17,False
+Andy Dalton,2018,2,35,10,4,4 Inefficient + no legs,4,9.18,0.18,9.0,0.0644,15.89,24,False
+Andy Dalton,2019,2,35,13,4,4 Inefficient + no legs,4,6.54,2.15,4.38,-0.0321,15.71,25,False
+Andy Dalton,2022,2,35,14,4,4 Inefficient + no legs,4,4.64,0.86,3.79,0.0186,12.52,22,False
+Anthony Richardson,2024,1,4,10,3,3 Inefficient + rushing,3,46.18,29.45,16.73,-0.1173,14.85,25,False
+Baker Mayfield,2018,1,1,14,4,4 Inefficient + no legs,3,10.21,0.07,10.14,0.056,17.09,17,False
+Baker Mayfield,2019,1,1,16,4,4 Inefficient + no legs,3,9.0,0.62,8.38,-0.0114,14.34,20,False
+Baker Mayfield,2020,1,1,16,1,1 Efficient + rushing,3,11.25,1.75,9.5,0.1694,15.53,17,False
+Baker Mayfield,2021,1,1,14,4,4 Inefficient + no legs,3,10.14,0.79,9.36,-0.0166,12.9,26,False
+Baker Mayfield,2022,1,1,12,4,4 Inefficient + no legs,3,7.83,1.0,6.83,-0.1412,10.16,29,False
+Baker Mayfield,2023,1,1,17,1,1 Efficient + rushing,3,10.76,0.65,10.12,0.0728,16.24,9,True
+Baker Mayfield,2024,1,1,17,1,1 Efficient + rushing,3,22.71,1.06,21.65,0.1943,21.56,4,True
+Baker Mayfield,2025,1,1,17,3,3 Inefficient + rushing,3,23.0,1.06,21.94,0.0594,16.05,12,True
+Ben Roethlisberger,2008,1,11,16,4,4 Inefficient + no legs,2,6.94,0.75,6.19,-0.0294,11.23,19,False
+Ben Roethlisberger,2009,1,11,15,2,2 Efficient + no legs,2,6.4,1.4,5.0,0.1477,17.91,9,True
+Ben Roethlisberger,2010,1,11,12,1,1 Efficient + rushing,2,15.25,1.83,13.42,0.2099,17.51,16,False
+Ben Roethlisberger,2011,1,11,15,2,2 Efficient + no legs,2,5.4,0.4,5.0,0.1253,14.48,13,False
+Ben Roethlisberger,2012,1,11,13,2,2 Efficient + no legs,2,7.92,1.0,6.92,0.1385,17.3,18,False
+Ben Roethlisberger,2013,1,11,16,2,2 Efficient + no legs,2,6.94,0.12,6.81,0.0868,16.22,12,True
+Ben Roethlisberger,2014,1,11,16,2,2 Efficient + no legs,2,2.56,0.5,2.06,0.2173,19.26,5,True
+Ben Roethlisberger,2015,1,11,12,2,2 Efficient + no legs,2,3.17,0.33,2.83,0.1842,18.94,20,False
+Ben Roethlisberger,2016,1,11,14,2,2 Efficient + no legs,2,1.86,0.07,1.79,0.1668,18.1,18,False
+Ben Roethlisberger,2017,1,11,15,2,2 Efficient + no legs,2,4.4,0.27,4.13,0.1528,17.53,10,True
+Ben Roethlisberger,2018,1,11,16,2,2 Efficient + no legs,2,6.94,0.75,6.19,0.1902,21.39,3,True
+Ben Roethlisberger,2020,1,11,15,2,2 Efficient + no legs,2,1.8,0.4,1.4,0.0737,17.92,14,False
+Ben Roethlisberger,2021,1,11,16,4,4 Inefficient + no legs,2,1.06,-0.06,1.12,-0.0693,13.71,21,False
+Blaine Gabbert,2011,1,10,14,4,4 Inefficient + no legs,4,7.47,0.67,6.8,-0.2266,7.85,28,False
+Blake Bortles,2014,1,3,14,3,3 Inefficient + rushing,3,30.14,14.07,16.07,-0.1941,12.04,24,False
+Blake Bortles,2015,1,3,16,3,3 Inefficient + rushing,3,19.75,3.56,16.19,0.0222,19.8,4,True
+Blake Bortles,2016,1,3,16,3,3 Inefficient + rushing,3,22.75,4.12,18.62,-0.0329,16.41,10,True
+Blake Bortles,2017,1,3,16,1,1 Efficient + rushing,3,20.81,10.0,10.81,0.0692,15.67,13,False
+Blake Bortles,2018,1,3,11,3,3 Inefficient + rushing,3,28.46,8.38,20.08,-0.0746,13.36,25,False
+Bo Nix,2024,1,12,17,3,3 Inefficient + rushing,1,26.35,5.12,21.24,0.0593,18.34,8,True
+Bo Nix,2025,1,12,17,1,1 Efficient + rushing,1,21.94,3.88,18.06,0.1177,18.03,7,True
+Brandon Weeden,2012,1,22,15,4,4 Inefficient + no legs,4,7.73,0.87,6.87,-0.0538,11.13,26,False
+Brett Favre,2008,2,33,16,4,4 Inefficient + no legs,4,3.12,1.94,1.19,0.0145,11.99,16,False
+Brett Favre,2009,2,33,16,2,2 Efficient + no legs,4,0.69,0.56,0.12,0.2223,17.7,3,True
+Brett Favre,2010,2,33,11,4,4 Inefficient + no legs,4,1.23,0.15,1.08,-0.1277,7.54,31,False
+Brett Hundley,2017,5,147,10,3,3 Inefficient + rushing,3,24.82,5.73,19.09,-0.1572,11.16,31,False
+Brian Hoyer,2014,,,14,4,4 Inefficient + no legs,4,3.07,-0.07,3.14,-0.0127,11.24,25,False
+Brian Hoyer,2015,,,11,4,4 Inefficient + no legs,4,4.82,0.36,4.45,0.0269,15.23,25,False
+Brock Osweiler,2016,2,57,14,4,4 Inefficient + no legs,4,9.47,-0.07,9.53,-0.063,11.37,28,False
+Brock Purdy,2023,7,262,16,2,2 Efficient + no legs,1,9.69,1.06,8.62,0.3115,18.54,6,True
+Brock Purdy,2024,7,262,15,1,1 Efficient + rushing,1,21.87,1.87,20.0,0.184,17.82,14,False
+Bryce Young,2023,1,1,16,3,3 Inefficient + rushing,3,16.06,-0.12,16.19,-0.2282,9.8,23,False
+Bryce Young,2024,1,1,12,3,3 Inefficient + rushing,3,18.21,-0.14,18.36,-0.0273,13.97,20,False
+Bryce Young,2025,1,1,16,3,3 Inefficient + rushing,3,14.62,0.88,13.75,-0.0119,13.74,19,False
+C.J. Stroud,2023,1,2,15,1,1 Efficient + rushing,1,10.73,0.93,9.8,0.1082,18.29,10,True
+C.J. Stroud,2024,1,2,16,3,3 Inefficient + rushing,1,14.29,-0.59,14.88,-0.007,13.02,18,False
+C.J. Stroud,2025,1,2,13,1,1 Efficient + rushing,1,15.29,1.43,13.86,0.1115,14.93,21,False
+Caleb Williams,2024,1,1,17,3,3 Inefficient + rushing,3,29.12,6.12,23.0,-0.0494,15.01,16,False
+Caleb Williams,2025,1,1,17,1,1 Efficient + rushing,3,23.53,2.18,21.35,0.108,18.22,6,True
+Cam Newton,2011,1,1,16,1,1 Efficient + rushing,1,44.56,21.81,22.75,0.0794,22.96,3,True
+Cam Newton,2012,1,1,16,1,1 Efficient + rushing,1,47.06,28.88,18.19,0.1411,20.25,4,True
+Cam Newton,2013,1,1,16,1,1 Efficient + rushing,1,37.5,14.94,22.56,0.1172,18.7,3,True
+Cam Newton,2014,1,1,14,3,3 Inefficient + rushing,1,38.43,24.86,13.57,0.0086,17.78,17,False
+Cam Newton,2015,1,1,16,1,1 Efficient + rushing,1,40.56,28.12,12.44,0.1588,24.4,1,True
+Cam Newton,2016,1,1,15,3,3 Inefficient + rushing,1,24.27,20.47,3.8,-0.0577,16.98,17,False
+Cam Newton,2017,1,1,16,3,3 Inefficient + rushing,1,48.56,34.19,14.38,0.019,18.86,2,True
+Cam Newton,2018,1,1,14,1,1 Efficient + rushing,1,35.86,22.0,13.86,0.0692,20.29,12,True
+Cam Newton,2020,1,1,15,3,3 Inefficient + rushing,1,40.13,27.8,12.33,-0.028,16.7,16,False
+Cam Ward,2025,1,1,16,4,4 Inefficient + no legs,4,9.94,1.06,8.88,-0.1672,11.04,22,False
+Carson Palmer,2009,1,1,16,4,4 Inefficient + no legs,4,6.5,0.94,5.56,0.0642,13.14,17,False
+Carson Palmer,2010,1,1,16,4,4 Inefficient + no legs,4,3.81,0.88,2.94,0.0317,13.97,13,False
+Carson Palmer,2011,1,1,10,2,2 Efficient + no legs,4,2.1,-0.2,2.3,0.1038,13.77,25,False
+Carson Palmer,2012,1,1,14,4,4 Inefficient + no legs,4,2.6,0.93,1.67,0.0157,14.97,19,False
+Carson Palmer,2013,1,1,16,4,4 Inefficient + no legs,4,1.44,-0.12,1.56,-0.0008,13.7,17,False
+Carson Palmer,2015,1,1,16,2,2 Efficient + no legs,4,2.5,0.0,2.5,0.2644,19.43,5,True
+Carson Palmer,2016,1,1,15,4,4 Inefficient + no legs,4,2.8,0.07,2.73,0.0366,16.23,19,False
+Carson Wentz,2016,1,2,16,4,4 Inefficient + no legs,3,10.25,1.31,8.94,0.0368,13.36,24,False
+Carson Wentz,2017,1,2,13,1,1 Efficient + rushing,3,23.85,7.08,16.77,0.2094,21.76,5,True
+Carson Wentz,2018,1,2,11,2,2 Efficient + no legs,3,9.18,0.73,8.45,0.0904,17.55,23,False
+Carson Wentz,2019,1,2,16,3,3 Inefficient + rushing,3,15.75,4.75,11.0,0.0375,17.3,10,True
+Carson Wentz,2020,1,2,12,3,3 Inefficient + rushing,3,23.17,7.75,15.42,-0.1303,16.55,22,False
+Carson Wentz,2021,1,2,17,3,3 Inefficient + rushing,3,13.41,2.53,10.88,0.0237,15.25,13,False
+Case Keenum,2017,,,15,1,1 Efficient + rushing,4,12.0,0.87,11.13,0.1286,15.99,14,False
+Case Keenum,2018,,,16,4,4 Inefficient + no legs,4,6.31,0.56,5.75,-0.0299,13.48,19,False
+Chad Henne,2009,2,57,14,4,4 Inefficient + no legs,4,2.79,1.57,1.21,0.0219,10.36,23,False
+Chad Henne,2010,2,57,14,4,4 Inefficient + no legs,4,4.53,-0.13,4.67,-0.0126,10.58,23,False
+Chad Henne,2013,2,57,13,4,4 Inefficient + no legs,4,5.33,1.27,4.07,-0.0807,10.78,25,False
+Chad Pennington,2008,1,18,16,2,2 Efficient + no legs,2,4.56,0.19,4.38,0.1862,13.71,9,True
+Christian Ponder,2012,1,12,16,3,3 Inefficient + rushing,3,16.94,0.44,16.5,-0.0059,12.28,22,False
+Colin Kaepernick,2013,2,36,16,1,1 Efficient + rushing,3,33.31,8.06,25.25,0.1459,16.57,9,True
+Colin Kaepernick,2014,2,36,16,3,3 Inefficient + rushing,3,40.94,9.12,31.81,0.0344,15.77,16,False
+Colin Kaepernick,2016,2,36,10,3,3 Inefficient + rushing,3,43.27,13.0,30.27,0.0101,18.29,25,False
+Colt McCoy,2011,3,85,13,3,3 Inefficient + rushing,3,17.0,1.31,15.69,-0.0604,12.26,21,False
+Dak Prescott,2016,4,135,15,1,1 Efficient + rushing,1,18.88,4.75,14.12,0.2477,18.06,6,True
+Dak Prescott,2017,4,135,16,3,3 Inefficient + rushing,1,22.69,7.56,15.12,-0.0364,16.33,11,True
+Dak Prescott,2018,4,135,16,3,3 Inefficient + rushing,1,20.06,7.94,12.12,0.049,17.97,10,True
+Dak Prescott,2019,4,135,16,1,1 Efficient + rushing,1,17.94,8.81,9.12,0.1974,21.17,2,True
+Dak Prescott,2021,4,135,16,2,2 Efficient + no legs,1,8.88,0.88,8.0,0.1723,20.01,7,True
+Dak Prescott,2022,4,135,12,1,1 Efficient + rushing,1,15.92,9.67,6.25,0.0793,16.62,19,False
+Dak Prescott,2023,4,135,17,1,1 Efficient + rushing,1,14.76,3.71,11.06,0.207,20.22,3,True
+Dak Prescott,2025,4,135,16,1,1 Efficient + rushing,1,11.12,0.76,10.35,0.1734,18.53,5,True
+Daniel Jones,2019,1,6,12,3,3 Inefficient + rushing,3,21.77,4.23,17.54,-0.0499,16.57,24,False
+Daniel Jones,2020,1,6,14,3,3 Inefficient + rushing,3,31.29,18.86,12.43,-0.0477,12.97,24,False
+Daniel Jones,2021,1,6,10,3,3 Inefficient + rushing,3,27.91,14.36,13.55,-0.0291,15.07,27,False
+Daniel Jones,2022,1,6,16,3,3 Inefficient + rushing,3,45.19,19.94,25.25,0.0608,18.16,9,True
+Daniel Jones,2024,1,6,10,3,3 Inefficient + rushing,3,27.4,19.4,8.0,-0.0847,13.62,28,False
+Daniel Jones,2025,1,6,12,1,1 Efficient + rushing,3,12.92,1.54,11.38,0.151,17.45,18,False
+David Garrard,2008,4,108,16,3,3 Inefficient + rushing,3,20.62,5.25,15.38,0.0258,13.61,10,True
+David Garrard,2009,4,108,16,3,3 Inefficient + rushing,3,21.19,5.62,15.56,-0.016,13.86,13,False
+David Garrard,2010,4,108,13,3,3 Inefficient + rushing,3,19.86,11.0,8.86,0.0649,15.8,14,False
+Davis Mills,2021,3,67,13,4,4 Inefficient + no legs,4,3.62,0.38,3.23,-0.1266,12.1,29,False
+Davis Mills,2022,3,67,15,4,4 Inefficient + no legs,4,7.8,0.73,7.07,-0.133,12.16,21,False
+DeShone Kizer,2017,2,52,14,3,3 Inefficient + rushing,3,28.07,7.0,21.07,-0.2045,11.72,25,False
+Derek Carr,2014,2,36,16,4,4 Inefficient + no legs,4,6.06,2.56,3.5,-0.1183,12.03,20,False
+Derek Carr,2015,2,36,15,4,4 Inefficient + no legs,4,9.38,1.75,7.62,-0.0001,17.03,14,False
+Derek Carr,2016,2,36,15,2,2 Efficient + no legs,4,6.53,0.07,6.47,0.1364,18.09,9,True
+Derek Carr,2017,2,36,15,4,4 Inefficient + no legs,4,5.07,0.0,5.07,0.0,13.7,21,False
+Derek Carr,2018,2,36,16,4,4 Inefficient + no legs,4,3.56,0.38,3.19,-0.0011,13.6,18,False
+Derek Carr,2019,2,36,16,2,2 Efficient + no legs,4,5.56,0.75,4.81,0.1515,15.32,16,False
+Derek Carr,2020,2,36,15,2,2 Efficient + no legs,4,9.38,1.62,7.75,0.0934,17.07,13,False
+Derek Carr,2021,2,36,17,4,4 Inefficient + no legs,4,6.94,0.65,6.29,0.0397,15.17,14,False
+Derek Carr,2022,2,36,15,4,4 Inefficient + no legs,4,7.07,0.67,6.4,0.0306,14.63,17,False
+Derek Carr,2023,2,36,16,4,4 Inefficient + no legs,4,3.59,0.59,3.0,0.0511,14.31,15,False
+Derek Carr,2024,2,36,10,2,2 Efficient + no legs,4,7.3,2.3,5.0,0.1375,15.11,26,False
+Deshaun Watson,2018,1,12,16,1,1 Efficient + rushing,1,35.0,9.0,26.0,0.1117,20.79,4,True
+Deshaun Watson,2019,1,12,15,1,1 Efficient + rushing,1,28.27,8.13,20.13,0.1526,20.97,4,True
+Deshaun Watson,2020,1,12,16,1,1 Efficient + rushing,1,28.38,3.69,24.69,0.2154,23.14,5,True
+Desmond Ridder,2023,3,74,12,3,3 Inefficient + rushing,3,13.4,4.8,8.6,-0.0665,11.84,22,False
+Donovan McNabb,2008,1,2,15,2,2 Efficient + no legs,1,9.75,0.5,9.25,0.0947,15.26,8,True
+Donovan McNabb,2009,1,2,14,1,1 Efficient + rushing,1,11.07,2.07,9.0,0.0989,16.83,10,True
+Donovan McNabb,2010,1,2,13,3,3 Inefficient + rushing,1,12.15,1.08,11.08,-0.0488,13.45,21,False
+Drake Maye,2024,1,3,10,3,3 Inefficient + rushing,1,32.54,1.23,31.31,0.0057,13.64,23,False
+Drake Maye,2025,1,3,17,1,1 Efficient + rushing,1,28.06,2.82,25.24,0.3177,20.79,2,True
+Drew Brees,2008,2,32,16,2,2 Efficient + no legs,2,0.5,-1.0,1.5,0.2356,18.97,1,True
+Drew Brees,2009,2,32,15,2,2 Efficient + no legs,2,3.0,0.6,2.4,0.2763,19.6,2,True
+Drew Brees,2010,2,32,16,2,2 Efficient + no legs,2,0.56,0.0,0.56,0.115,16.86,6,True
+Drew Brees,2011,2,32,16,2,2 Efficient + no legs,2,5.62,0.5,5.12,0.3161,24.65,1,True
+Drew Brees,2012,2,32,16,2,2 Efficient + no legs,2,1.0,0.06,0.94,0.1413,21.67,1,True
+Drew Brees,2013,2,32,16,2,2 Efficient + no legs,2,4.44,-1.06,5.5,0.2226,22.47,2,True
+Drew Brees,2014,2,32,16,2,2 Efficient + no legs,2,4.81,0.19,4.62,0.1097,18.99,6,True
+Drew Brees,2015,2,32,15,2,2 Efficient + no legs,2,2.0,0.27,1.73,0.1397,20.39,6,True
+Drew Brees,2016,2,32,16,2,2 Efficient + no legs,2,2.0,1.06,0.94,0.1417,20.84,3,True
+Drew Brees,2017,2,32,16,2,2 Efficient + no legs,2,2.0,0.75,1.25,0.1546,16.54,9,True
+Drew Brees,2018,2,32,15,2,2 Efficient + no legs,2,2.67,0.87,1.8,0.2808,20.38,8,True
+Drew Brees,2019,2,32,10,2,2 Efficient + no legs,2,0.27,0.27,0.0,0.2409,20.5,22,False
+Drew Brees,2020,2,32,12,2,2 Efficient + no legs,2,0.83,0.58,0.25,0.1515,17.56,21,False
+Drew Lock,2020,2,42,12,3,3 Inefficient + rushing,3,13.23,3.23,10.0,-0.0881,14.04,23,False
+EJ Manuel,2013,1,16,10,3,3 Inefficient + rushing,3,21.2,5.7,15.5,-0.1237,13.61,28,False
+Eli Manning,2008,1,1,16,2,2 Efficient + no legs,2,1.62,0.31,1.31,0.0941,12.51,14,False
+Eli Manning,2009,1,1,15,2,2 Efficient + no legs,2,4.5,0.31,4.19,0.1646,14.5,11,True
+Eli Manning,2010,1,1,16,4,4 Inefficient + no legs,2,5.44,0.19,5.25,0.0633,14.55,10,True
+Eli Manning,2011,1,1,16,2,2 Efficient + no legs,2,2.12,-0.56,2.69,0.1313,17.65,6,True
+Eli Manning,2012,1,1,16,2,2 Efficient + no legs,2,2.56,0.0,2.56,0.1009,14.63,15,False
+Eli Manning,2013,1,1,16,4,4 Inefficient + no legs,2,2.75,-0.12,2.88,-0.0997,10.7,21,False
+Eli Manning,2014,1,1,16,2,2 Efficient + no legs,2,2.38,0.0,2.38,0.0693,16.89,10,True
+Eli Manning,2015,1,1,16,2,2 Efficient + no legs,2,4.38,0.0,4.38,0.0773,18.02,10,True
+Eli Manning,2016,1,1,16,4,4 Inefficient + no legs,2,0.69,0.0,0.69,-0.0357,14.14,21,False
+Eli Manning,2017,1,1,15,4,4 Inefficient + no legs,2,2.33,0.0,2.33,-0.1008,12.55,23,False
+Eli Manning,2018,1,1,16,4,4 Inefficient + no legs,2,1.5,0.5,1.0,0.0363,15.02,16,False
+Gardner Minshew,2019,6,178,14,3,3 Inefficient + rushing,3,25.43,0.43,25.0,-0.0084,16.46,19,False
+Gardner Minshew,2023,6,178,15,4,4 Inefficient + no legs,3,7.12,0.06,7.06,-0.0011,12.35,21,False
+Geno Smith,2013,2,39,15,3,3 Inefficient + rushing,3,23.25,7.38,15.88,-0.0988,12.07,20,False
+Geno Smith,2014,2,39,11,3,3 Inefficient + rushing,3,17.21,3.79,13.43,-0.0148,10.79,26,False
+Geno Smith,2022,2,39,17,3,3 Inefficient + rushing,3,22.24,4.24,18.0,0.0385,17.95,5,True
+Geno Smith,2023,2,39,15,1,1 Efficient + rushing,3,10.93,0.47,10.47,0.0772,15.16,19,False
+Geno Smith,2024,2,39,17,3,3 Inefficient + rushing,3,16.82,1.76,15.06,0.0322,15.73,13,False
+Geno Smith,2025,2,39,15,4,4 Inefficient + no legs,3,7.67,0.4,7.27,-0.1297,11.63,24,False
+Gus Frerotte,2008,7,197,11,4,4 Inefficient + no legs,4,1.73,0.45,1.27,-0.1166,10.02,29,False
+J.J. McCarthy,2025,1,10,10,3,3 Inefficient + rushing,3,19.1,3.5,15.6,-0.1511,12.64,31,False
+JaMarcus Russell,2008,1,1,14,4,4 Inefficient + no legs,4,8.6,3.13,5.47,-0.1329,9.19,26,False
+Jacoby Brissett,2017,3,91,15,3,3 Inefficient + rushing,3,16.88,1.38,15.5,-0.0835,12.93,19,False
+Jacoby Brissett,2019,3,91,14,3,3 Inefficient + rushing,3,15.8,2.4,13.4,0.0176,14.49,23,False
+Jacoby Brissett,2022,3,91,11,1,1 Efficient + rushing,3,17.64,3.43,14.21,0.0758,12.07,24,False
+Jacoby Brissett,2025,3,91,12,3,3 Inefficient + rushing,3,12.07,1.43,10.64,-0.0011,16.25,17,False
+Jake Delhomme,2008,,,16,4,4 Inefficient + no legs,4,2.12,0.62,1.5,0.0659,11.05,20,False
+Jake Delhomme,2009,,,11,4,4 Inefficient + no legs,4,5.91,1.82,4.09,-0.1594,7.19,30,False
+Jake Locker,2012,1,8,10,3,3 Inefficient + rushing,3,26.55,2.09,24.45,-0.0322,12.02,28,False
+Jalen Hurts,2021,2,53,15,1,1 Efficient + rushing,1,53.0,25.27,27.73,0.0846,20.88,9,True
+Jalen Hurts,2022,2,53,15,1,1 Efficient + rushing,1,52.07,30.67,21.4,0.1248,25.34,3,True
+Jalen Hurts,2023,2,53,16,1,1 Efficient + rushing,1,36.18,17.24,18.94,0.0953,21.05,2,True
+Jalen Hurts,2024,2,53,14,1,1 Efficient + rushing,1,43.27,18.93,24.33,0.1696,21.13,7,True
+Jalen Hurts,2025,2,53,16,1,1 Efficient + rushing,1,27.25,10.62,16.62,0.0827,18.91,8,True
+Jameis Winston,2015,1,1,16,1,1 Efficient + rushing,1,14.44,0.62,13.81,0.0894,17.3,13,False
+Jameis Winston,2016,1,1,16,1,1 Efficient + rushing,1,11.56,-0.06,11.62,0.1068,16.13,16,False
+Jameis Winston,2017,1,1,11,1,1 Efficient + rushing,1,10.69,0.54,10.15,0.0843,15.54,22,False
+Jameis Winston,2018,1,1,10,1,1 Efficient + rushing,1,25.91,2.73,23.18,0.1338,17.83,22,False
+Jameis Winston,2019,1,1,16,1,1 Efficient + rushing,1,16.38,0.88,15.5,0.0678,19.16,5,True
+Jared Goff,2017,1,1,15,2,2 Efficient + no legs,2,4.33,0.4,3.93,0.1575,17.11,12,True
+Jared Goff,2018,1,1,16,2,2 Efficient + no legs,2,7.69,0.06,7.62,0.1976,19.49,7,True
+Jared Goff,2019,1,1,16,2,2 Efficient + no legs,2,3.31,0.94,2.38,0.095,15.55,14,False
+Jared Goff,2020,1,1,15,4,4 Inefficient + no legs,2,7.73,1.2,6.53,0.0186,16.11,19,False
+Jared Goff,2021,1,1,14,4,4 Inefficient + no legs,2,6.21,1.43,4.79,-0.0601,13.89,24,False
+Jared Goff,2022,1,1,17,2,2 Efficient + no legs,2,4.88,0.24,4.65,0.1567,16.7,10,True
+Jared Goff,2023,1,1,17,2,2 Efficient + no legs,2,2.29,0.47,1.82,0.1046,17.11,7,True
+Jared Goff,2024,1,1,17,2,2 Efficient + no legs,2,4.24,0.18,4.06,0.2782,18.73,6,True
+Jared Goff,2025,1,1,17,2,2 Efficient + no legs,2,3.12,0.29,2.82,0.1767,17.52,9,True
+Jason Campbell,2008,1,25,16,3,3 Inefficient + rushing,3,17.06,3.5,13.56,-0.0173,12.57,13,False
+Jason Campbell,2009,1,25,16,3,3 Inefficient + rushing,3,15.5,0.62,14.88,0.0256,13.72,15,False
+Jason Campbell,2010,1,25,11,3,3 Inefficient + rushing,3,17.62,1.31,16.31,0.0459,12.18,24,False
+Jaxson Dart,2025,1,25,12,3,3 Inefficient + rushing,3,35.14,14.43,20.71,0.0498,17.29,13,False
+Jay Cutler,2008,1,11,16,1,1 Efficient + rushing,3,13.44,4.25,9.19,0.1742,17.41,4,True
+Jay Cutler,2009,1,11,16,3,3 Inefficient + rushing,3,11.31,1.69,9.62,-0.0706,14.3,12,True
+Jay Cutler,2010,1,11,15,3,3 Inefficient + rushing,3,16.73,0.2,16.53,-0.027,14.04,15,False
+Jay Cutler,2011,1,11,10,4,4 Inefficient + no legs,3,4.9,0.2,4.7,-0.0038,13.57,26,False
+Jay Cutler,2012,1,11,14,3,3 Inefficient + rushing,3,16.53,0.0,16.53,-0.014,12.41,23,False
+Jay Cutler,2013,1,11,10,3,3 Inefficient + rushing,3,11.27,1.09,10.18,0.0388,15.39,23,False
+Jay Cutler,2014,1,11,15,3,3 Inefficient + rushing,3,13.6,0.8,12.8,-0.0438,17.13,14,False
+Jay Cutler,2015,1,11,14,1,1 Efficient + rushing,3,13.8,5.53,8.27,0.074,15.14,21,False
+Jay Cutler,2017,1,11,11,4,4 Inefficient + no legs,3,2.79,0.5,2.29,-0.0934,11.32,27,False
+Jayden Daniels,2024,1,2,15,1,1 Efficient + rushing,1,53.06,19.12,33.94,0.1775,21.0,5,True
+Jeff Garcia,2008,,,11,1,1 Efficient + rushing,1,13.0,0.58,12.42,0.0952,13.67,22,False
+Jimmy Clausen,2010,2,48,11,4,4 Inefficient + no legs,4,4.54,0.0,4.54,-0.2759,4.48,37,False
+Jimmy Garoppolo,2019,2,62,16,2,2 Efficient + no legs,2,4.88,1.38,3.5,0.1586,15.56,13,False
+Jimmy Garoppolo,2021,2,62,15,2,2 Efficient + no legs,2,3.93,2.47,1.47,0.1612,15.22,17,False
+Jimmy Garoppolo,2022,2,62,10,2,2 Efficient + no legs,2,3.45,2.45,1.0,0.187,15.03,25,False
+Joe Burrow,2020,1,1,10,1,1 Efficient + rushing,1,14.6,6.3,8.3,0.0684,17.41,25,False
+Joe Burrow,2021,1,1,16,2,2 Efficient + no legs,1,7.88,1.25,6.62,0.1715,19.69,8,True
+Joe Burrow,2022,1,1,16,1,1 Efficient + rushing,1,17.38,4.69,12.69,0.1492,22.05,4,True
+Joe Burrow,2024,1,1,17,1,1 Efficient + rushing,1,12.47,0.41,12.06,0.1651,22.0,2,True
+Joe Flacco,2008,1,18,16,3,3 Inefficient + rushing,4,12.88,4.0,8.88,-0.0258,11.34,18,False
+Joe Flacco,2009,1,18,16,2,2 Efficient + no legs,4,4.25,1.12,3.12,0.0805,12.96,18,False
+Joe Flacco,2010,1,18,16,2,2 Efficient + no legs,4,6.38,1.44,4.94,0.0854,14.53,11,True
+Joe Flacco,2011,1,18,16,2,2 Efficient + no legs,4,6.81,1.12,5.69,0.0713,12.83,17,False
+Joe Flacco,2012,1,18,15,4,4 Inefficient + no legs,4,2.12,0.62,1.5,0.0334,14.76,14,False
+Joe Flacco,2013,1,18,16,4,4 Inefficient + no legs,4,8.62,0.38,8.25,-0.0237,13.02,19,False
+Joe Flacco,2014,1,18,16,2,2 Efficient + no legs,4,5.31,1.94,3.38,0.1041,16.5,13,False
+Joe Flacco,2015,1,18,10,4,4 Inefficient + no legs,4,2.4,0.8,1.6,0.0027,16.2,26,False
+Joe Flacco,2016,1,18,16,4,4 Inefficient + no legs,4,4.06,0.5,3.56,-0.0342,15.2,20,False
+Joe Flacco,2017,1,18,16,4,4 Inefficient + no legs,4,4.25,2.0,2.25,-0.0931,11.65,24,False
+Joe Flacco,2025,1,18,10,4,4 Inefficient + no legs,4,4.0,1.69,2.31,-0.1013,11.41,27,False
+Jon Kitna,2010,,,10,3,3 Inefficient + rushing,3,15.4,3.4,12.0,0.0676,15.8,25,False
+Jordan Love,2023,1,26,17,1,1 Efficient + rushing,1,15.24,3.29,11.94,0.1318,18.84,5,True
+Jordan Love,2024,1,26,14,2,2 Efficient + no legs,1,6.0,0.33,5.67,0.137,15.64,17,False
+Jordan Love,2025,1,26,14,1,1 Efficient + rushing,1,14.07,1.87,12.2,0.2623,15.76,15,False
+Josh Allen,2018,1,7,11,3,3 Inefficient + rushing,1,53.08,10.75,42.33,-0.0225,17.29,21,False
+Josh Allen,2019,1,7,15,3,3 Inefficient + rushing,1,32.69,13.12,19.56,0.0116,18.12,6,True
+Josh Allen,2020,1,7,16,1,1 Efficient + rushing,1,27.56,13.19,14.38,0.2865,24.37,1,True
+Josh Allen,2021,1,7,17,1,1 Efficient + rushing,1,45.53,19.65,25.88,0.1676,23.63,1,True
+Josh Allen,2022,1,7,16,1,1 Efficient + rushing,1,49.19,17.56,31.62,0.2175,24.88,2,True
+Josh Allen,2023,1,7,17,1,1 Efficient + rushing,1,31.35,10.0,21.35,0.1667,23.15,1,True
+Josh Allen,2024,1,7,16,1,1 Efficient + rushing,1,33.69,9.75,23.94,0.3055,23.32,3,True
+Josh Allen,2025,1,7,16,1,1 Efficient + rushing,1,37.44,10.81,26.62,0.1611,22.91,1,True
+Josh Freeman,2010,1,17,16,1,1 Efficient + rushing,3,23.31,2.69,20.62,0.1754,16.33,7,True
+Josh Freeman,2011,1,17,15,3,3 Inefficient + rushing,3,16.47,2.33,14.13,-0.078,13.75,16,False
+Josh Freeman,2012,1,17,16,4,4 Inefficient + no legs,3,10.19,1.0,9.19,0.0506,15.68,13,False
+Josh McCown,2014,3,81,10,3,3 Inefficient + rushing,3,11.55,0.36,11.18,-0.0909,11.54,28,False
+Josh McCown,2017,3,81,13,3,3 Inefficient + rushing,3,10.62,1.0,9.62,0.0441,15.91,20,False
+Josh Rosen,2018,1,10,13,4,4 Inefficient + no legs,4,10.36,0.0,10.36,-0.3261,8.12,34,False
+Joshua Dobbs,2023,4,135,13,3,3 Inefficient + rushing,3,32.77,11.15,21.62,-0.1153,15.47,20,False
+Justin Fields,2021,1,11,10,3,3 Inefficient + rushing,3,35.5,4.92,30.58,-0.1231,10.62,31,False
+Justin Fields,2022,1,11,15,3,3 Inefficient + rushing,3,76.67,33.87,42.8,-0.0722,19.78,6,True
+Justin Fields,2023,1,11,13,3,3 Inefficient + rushing,3,51.15,23.46,27.69,-0.0398,17.77,18,False
+Justin Herbert,2020,1,6,15,1,1 Efficient + rushing,1,16.13,6.87,9.27,0.1403,22.24,9,True
+Justin Herbert,2021,1,6,17,1,1 Efficient + rushing,1,18.53,2.12,16.41,0.1713,22.36,2,True
+Justin Herbert,2022,1,6,17,4,4 Inefficient + no legs,1,9.71,1.29,8.41,0.0271,16.59,11,True
+Justin Herbert,2023,1,6,12,3,3 Inefficient + rushing,1,18.77,0.31,18.46,0.0514,17.98,17,False
+Justin Herbert,2024,1,6,17,1,1 Efficient + rushing,1,20.06,1.76,18.29,0.1347,16.99,11,True
+Justin Herbert,2025,1,6,16,3,3 Inefficient + rushing,1,31.88,4.44,27.44,0.0544,18.01,10,True
+Kenny Pickett,2022,1,20,11,3,3 Inefficient + rushing,3,18.77,3.54,15.23,-0.002,11.58,28,False
+Kenny Pickett,2023,1,20,10,4,4 Inefficient + no legs,3,6.42,0.5,5.92,-0.1186,9.38,30,False
+Kerry Collins,2008,1,5,14,4,4 Inefficient + no legs,4,3.81,0.81,3.0,0.0447,9.21,24,False
+Kirk Cousins,2015,4,102,16,2,2 Efficient + no legs,2,3.56,1.75,1.81,0.163,18.4,8,True
+Kirk Cousins,2016,4,102,16,2,2 Efficient + no legs,2,6.81,1.81,5.0,0.1727,18.85,5,True
+Kirk Cousins,2017,4,102,16,3,3 Inefficient + rushing,2,11.81,3.06,8.75,0.011,17.41,6,True
+Kirk Cousins,2018,4,102,16,4,4 Inefficient + no legs,2,8.06,2.06,6.0,-0.0323,17.68,13,False
+Kirk Cousins,2019,4,102,15,2,2 Efficient + no legs,2,4.73,1.4,3.33,0.1682,16.35,15,False
+Kirk Cousins,2020,4,102,16,2,2 Efficient + no legs,2,10.25,1.62,8.62,0.1645,19.19,11,True
+Kirk Cousins,2021,4,102,16,2,2 Efficient + no legs,2,8.12,0.38,7.75,0.1097,18.87,10,True
+Kirk Cousins,2022,4,102,17,4,4 Inefficient + no legs,2,6.47,0.06,6.41,0.0408,17.23,8,True
+Kirk Cousins,2024,4,102,14,4,4 Inefficient + no legs,2,1.43,0.29,1.14,0.0337,12.74,22,False
+Kurt Warner,2008,,,16,2,2 Efficient + no legs,2,0.69,0.0,0.69,0.1477,16.4,5,True
+Kurt Warner,2009,,,14,2,2 Efficient + no legs,2,1.33,-0.33,1.67,0.0711,14.69,14,False
+Kyle Allen,2019,,,13,4,4 Inefficient + no legs,4,8.54,0.85,7.69,-0.0414,13.69,28,False
+Kyle Orton,2008,4,106,14,4,4 Inefficient + no legs,4,4.0,0.8,3.2,-0.0654,12.21,17,False
+Kyle Orton,2009,4,106,16,4,4 Inefficient + no legs,4,4.75,0.69,4.06,0.0446,13.48,16,False
+Kyle Orton,2010,4,106,13,4,4 Inefficient + no legs,4,8.0,0.38,7.62,0.0501,16.16,17,False
+Kyle Orton,2014,4,106,12,4,4 Inefficient + no legs,4,2.0,0.08,1.92,-0.012,14.76,23,False
+Kyler Murray,2019,1,1,16,3,3 Inefficient + rushing,1,34.88,22.75,12.12,-0.0099,17.92,8,True
+Kyler Murray,2020,1,1,15,1,1 Efficient + rushing,1,52.38,26.06,26.31,0.0775,23.79,4,True
+Kyler Murray,2021,1,1,14,1,1 Efficient + rushing,1,31.0,15.64,15.36,0.1378,21.49,11,True
+Kyler Murray,2022,1,1,10,3,3 Inefficient + rushing,1,38.45,19.64,18.82,-0.0044,18.27,18,False
+Kyler Murray,2024,1,1,17,1,1 Efficient + rushing,1,34.18,13.18,21.0,0.1111,17.54,10,True
+Lamar Jackson,2019,1,32,15,1,1 Efficient + rushing,1,81.73,56.4,25.33,0.3679,27.85,1,True
+Lamar Jackson,2020,1,32,15,1,1 Efficient + rushing,1,67.47,43.8,23.67,0.1767,22.23,10,True
+Lamar Jackson,2021,1,32,11,3,3 Inefficient + rushing,1,64.33,32.0,32.33,0.0571,20.04,16,False
+Lamar Jackson,2022,1,32,11,3,3 Inefficient + rushing,1,64.67,47.58,17.08,0.05,19.77,14,False
+Lamar Jackson,2023,1,32,16,1,1 Efficient + rushing,1,51.88,24.38,27.5,0.1038,20.76,4,True
+Lamar Jackson,2024,1,32,17,1,1 Efficient + rushing,1,54.53,30.35,24.18,0.3513,25.39,1,True
+Lamar Jackson,2025,1,32,12,3,3 Inefficient + rushing,1,27.62,10.77,16.85,0.0608,16.6,20,False
+Mac Jones,2021,1,15,17,2,2 Efficient + no legs,4,8.65,2.41,6.24,0.0678,13.34,18,False
+Mac Jones,2022,1,15,13,4,4 Inefficient + no legs,4,9.43,1.21,8.21,-0.069,12.36,23,False
+Mac Jones,2023,1,15,11,4,4 Inefficient + no legs,4,9.27,1.55,7.73,-0.1716,9.73,31,False
+Marc Bulger,2008,6,168,14,4,4 Inefficient + no legs,4,3.33,0.33,3.0,-0.1863,8.27,27,False
+Marcus Mariota,2015,1,2,11,3,3 Inefficient + rushing,3,21.08,6.67,14.42,0.0185,16.67,23,False
+Marcus Mariota,2016,1,2,14,1,1 Efficient + rushing,3,24.07,12.27,11.8,0.1166,17.41,13,False
+Marcus Mariota,2017,1,2,14,3,3 Inefficient + rushing,3,21.67,11.93,9.73,-0.026,14.12,18,False
+Marcus Mariota,2018,1,2,13,3,3 Inefficient + rushing,3,26.0,7.93,18.07,0.045,12.39,26,False
+Marcus Mariota,2022,1,2,13,3,3 Inefficient + rushing,3,34.38,19.0,15.38,0.0022,15.19,20,False
+Mark Sanchez,2009,1,5,15,4,4 Inefficient + no legs,4,7.93,1.53,6.4,-0.181,8.91,25,False
+Mark Sanchez,2010,1,5,15,4,4 Inefficient + no legs,4,7.67,0.93,6.73,-0.0078,13.54,18,False
+Mark Sanchez,2011,1,5,16,4,4 Inefficient + no legs,4,6.88,1.06,5.81,-0.1075,14.87,10,True
+Mark Sanchez,2012,1,5,15,4,4 Inefficient + no legs,4,2.2,0.2,2.0,-0.1706,7.91,30,False
+Mason Rudolph,2019,3,76,10,4,4 Inefficient + no legs,4,4.9,-0.1,5.0,-0.0996,10.95,30,False
+Matt Cassel,2008,7,230,16,1,1 Efficient + rushing,1,18.19,2.44,15.75,0.1438,15.43,7,True
+Matt Cassel,2009,7,230,15,3,3 Inefficient + rushing,1,13.27,2.47,10.8,-0.142,10.99,20,False
+Matt Cassel,2010,7,230,15,2,2 Efficient + no legs,1,8.93,1.07,7.87,0.1237,15.34,12,True
+Matt Hasselbeck,2009,6,187,13,4,4 Inefficient + no legs,4,8.64,2.86,5.79,-0.1361,11.52,21,False
+Matt Hasselbeck,2010,6,187,12,4,4 Inefficient + no legs,4,5.0,1.43,3.57,-0.0557,10.46,26,False
+Matt Hasselbeck,2011,6,187,15,4,4 Inefficient + no legs,4,4.0,1.25,2.75,-0.0191,11.82,19,False
+Matt Moore,2011,,,13,4,4 Inefficient + no legs,4,5.69,0.38,5.31,-0.0283,11.79,23,False
+Matt Ryan,2008,1,3,16,2,2 Efficient + no legs,2,7.62,3.31,4.31,0.1401,12.36,15,False
+Matt Ryan,2009,1,3,13,2,2 Efficient + no legs,2,4.36,1.0,3.36,0.0932,13.2,19,False
+Matt Ryan,2010,1,3,16,2,2 Efficient + no legs,2,8.81,0.62,8.19,0.1661,15.4,9,True
+Matt Ryan,2011,1,3,15,2,2 Efficient + no legs,2,6.69,0.38,6.31,0.1386,17.24,8,True
+Matt Ryan,2012,1,3,16,2,2 Efficient + no legs,2,9.5,0.25,9.25,0.2224,19.12,7,True
+Matt Ryan,2013,1,3,16,4,4 Inefficient + no legs,2,4.44,0.0,4.44,0.0383,15.61,15,False
+Matt Ryan,2014,1,3,16,2,2 Efficient + no legs,2,9.31,0.0,9.31,0.0891,17.79,7,True
+Matt Ryan,2015,1,3,16,2,2 Efficient + no legs,2,4.88,0.0,4.88,0.1115,14.72,19,False
+Matt Ryan,2016,1,3,16,2,2 Efficient + no legs,2,8.0,0.69,7.31,0.3011,21.78,2,True
+Matt Ryan,2017,1,3,16,2,2 Efficient + no legs,2,9.56,0.19,9.38,0.1523,14.32,15,False
+Matt Ryan,2018,1,3,16,2,2 Efficient + no legs,2,8.25,0.75,7.5,0.173,21.76,2,True
+Matt Ryan,2019,1,3,15,3,3 Inefficient + rushing,2,10.4,0.4,10.0,0.041,17.88,11,True
+Matt Ryan,2020,1,3,16,2,2 Efficient + no legs,2,6.25,-0.25,6.5,0.1012,17.7,12,True
+Matt Ryan,2021,1,3,17,4,4 Inefficient + no legs,2,5.41,0.76,4.65,-0.0332,13.17,19,False
+Matt Ryan,2022,1,3,12,4,4 Inefficient + no legs,2,6.42,-0.25,6.67,-0.085,13.0,27,False
+Matt Schaub,2008,3,90,10,4,4 Inefficient + no legs,2,7.18,1.55,5.64,0.0577,15.97,21,False
+Matt Schaub,2009,3,90,16,2,2 Efficient + no legs,2,5.19,0.31,4.88,0.1778,17.69,4,True
+Matt Schaub,2010,3,90,16,2,2 Efficient + no legs,2,2.25,0.5,1.75,0.1309,15.4,8,True
+Matt Schaub,2011,3,90,10,2,2 Efficient + no legs,2,1.6,0.3,1.3,0.2078,15.88,22,False
+Matt Schaub,2012,3,90,16,2,2 Efficient + no legs,2,0.62,0.0,0.62,0.1483,14.08,17,False
+Matthew Stafford,2009,1,1,10,3,3 Inefficient + rushing,2,11.0,0.0,11.0,-0.1761,12.57,26,False
+Matthew Stafford,2011,1,1,16,2,2 Efficient + no legs,2,5.19,0.75,4.44,0.116,21.64,5,True
+Matthew Stafford,2012,1,1,16,4,4 Inefficient + no legs,2,8.12,1.75,6.38,0.0181,17.23,11,True
+Matthew Stafford,2013,1,1,16,2,2 Efficient + no legs,2,5.12,1.06,4.06,0.0712,17.51,7,True
+Matthew Stafford,2014,1,1,16,4,4 Inefficient + no legs,2,6.94,0.62,6.31,0.0569,15.84,15,False
+Matthew Stafford,2015,1,1,15,3,3 Inefficient + rushing,2,10.94,0.25,10.69,0.027,18.25,9,True
+Matthew Stafford,2016,1,1,16,1,1 Efficient + rushing,2,13.5,0.31,13.19,0.1448,17.54,7,True
+Matthew Stafford,2017,1,1,16,4,4 Inefficient + no legs,2,6.69,0.0,6.69,0.0613,17.03,7,True
+Matthew Stafford,2018,1,1,16,4,4 Inefficient + no legs,2,5.0,0.44,4.56,0.0011,13.32,20,False
+Matthew Stafford,2020,1,1,15,2,2 Efficient + no legs,2,7.44,0.12,7.31,0.1191,16.33,15,False
+Matthew Stafford,2021,1,1,17,2,2 Efficient + no legs,2,3.59,0.71,2.88,0.1896,19.5,6,True
+Matthew Stafford,2023,1,1,15,2,2 Efficient + no legs,2,5.0,0.13,4.87,0.0925,16.14,16,False
+Matthew Stafford,2024,1,1,16,4,4 Inefficient + no legs,2,3.69,1.31,2.38,0.0671,13.52,19,False
+Matthew Stafford,2025,1,1,17,2,2 Efficient + no legs,2,1.29,0.0,1.29,0.2231,20.73,3,True
+Mike Glennon,2013,3,73,13,4,4 Inefficient + no legs,4,5.38,0.23,5.15,-0.0667,12.41,26,False
+Mike Vick,2010,1,1,11,1,1 Efficient + rushing,1,57.08,13.33,43.75,0.1803,25.94,1,True
+Mike Vick,2011,1,1,13,1,1 Efficient + rushing,1,45.85,5.0,40.85,0.1331,17.98,11,True
+Mitchell Trubisky,2017,1,2,12,3,3 Inefficient + rushing,3,21.25,3.42,17.83,-0.1007,11.27,28,False
+Mitchell Trubisky,2018,1,2,14,1,1 Efficient + rushing,3,30.93,8.07,22.86,0.1524,18.87,15,False
+Mitchell Trubisky,2019,1,2,14,3,3 Inefficient + rushing,3,13.27,5.2,8.07,-0.0546,13.56,26,False
+Nick Foles,2013,3,88,11,1,1 Efficient + rushing,3,18.69,6.46,12.23,0.2946,20.15,10,True
+Nick Foles,2015,3,88,11,4,4 Inefficient + no legs,3,2.55,0.64,1.91,-0.2823,8.81,32,False
+Patrick Mahomes,2018,1,10,16,1,1 Efficient + rushing,1,17.75,4.31,13.44,0.3574,26.14,1,True
+Patrick Mahomes,2019,1,10,13,1,1 Efficient + rushing,1,16.43,1.21,15.21,0.2811,20.59,7,True
+Patrick Mahomes,2020,1,10,15,1,1 Efficient + rushing,1,21.67,2.2,19.47,0.2947,25.47,3,True
+Patrick Mahomes,2021,1,10,17,1,1 Efficient + rushing,1,23.35,-0.24,23.59,0.2153,21.37,4,True
+Patrick Mahomes,2022,1,10,17,1,1 Efficient + rushing,1,21.53,1.18,20.35,0.2911,24.51,1,True
+Patrick Mahomes,2023,1,10,16,1,1 Efficient + rushing,1,25.81,0.31,25.5,0.0956,17.66,8,True
+Patrick Mahomes,2024,1,10,16,1,1 Efficient + rushing,1,21.06,0.25,20.81,0.1553,17.8,12,True
+Patrick Mahomes,2025,1,10,14,1,1 Efficient + rushing,1,30.64,0.64,30.0,0.1684,20.46,11,True
+Peyton Manning,2008,1,1,15,2,2 Efficient + no legs,2,1.94,0.19,1.75,0.231,15.95,6,True
+Peyton Manning,2009,1,1,15,2,2 Efficient + no legs,2,0.25,-0.06,0.31,0.2872,17.52,5,True
+Peyton Manning,2010,1,1,16,2,2 Efficient + no legs,2,2.06,1.69,0.38,0.1656,17.96,4,True
+Peyton Manning,2012,1,1,16,2,2 Efficient + no legs,2,1.62,-0.12,1.75,0.2536,19.56,6,True
+Peyton Manning,2013,1,1,16,2,2 Efficient + no legs,2,-0.56,-0.56,0.0,0.3747,25.76,1,True
+Peyton Manning,2014,1,1,16,2,2 Efficient + no legs,2,-0.56,-0.81,0.25,0.1911,19.64,4,True
+Philip Rivers,2008,1,4,16,2,2 Efficient + no legs,2,5.56,1.81,3.75,0.2451,17.44,3,True
+Philip Rivers,2009,1,4,15,2,2 Efficient + no legs,2,3.5,0.62,2.88,0.3216,16.86,8,True
+Philip Rivers,2010,1,4,16,2,2 Efficient + no legs,2,3.88,0.0,3.88,0.2607,17.66,5,True
+Philip Rivers,2011,1,4,16,2,2 Efficient + no legs,2,2.56,-0.5,3.06,0.1747,15.94,9,True
+Philip Rivers,2012,1,4,16,4,4 Inefficient + no legs,2,3.06,-0.25,3.31,-0.0112,13.07,21,False
+Philip Rivers,2013,1,4,16,2,2 Efficient + no legs,2,4.69,-0.31,5.0,0.2772,18.04,6,True
+Philip Rivers,2014,1,4,16,2,2 Efficient + no legs,2,6.56,-0.62,7.19,0.1215,16.62,12,True
+Philip Rivers,2015,1,4,16,2,2 Efficient + no legs,2,2.25,-0.06,2.31,0.0697,17.83,12,True
+Philip Rivers,2016,1,4,16,4,4 Inefficient + no legs,2,2.56,0.62,1.94,0.0636,16.22,15,False
+Philip Rivers,2017,1,4,16,2,2 Efficient + no legs,2,0.81,0.0,0.81,0.1839,16.99,8,True
+Philip Rivers,2018,1,4,16,2,2 Efficient + no legs,2,0.88,-0.19,1.06,0.2267,17.86,11,True
+Philip Rivers,2019,1,4,16,2,2 Efficient + no legs,2,1.88,-0.19,2.06,0.0923,14.73,18,False
+Philip Rivers,2020,1,4,16,2,2 Efficient + no legs,2,0.38,0.19,0.19,0.1664,15.08,20,False
+Rex Grossman,2011,1,22,13,4,4 Inefficient + no legs,4,1.69,0.46,1.23,-0.0351,11.4,24,False
+Robert Griffin III,2012,1,2,15,1,1 Efficient + rushing,1,55.0,34.47,20.53,0.2238,21.23,5,True
+Robert Griffin III,2013,1,2,13,3,3 Inefficient + rushing,1,37.85,16.31,21.54,0.0071,16.41,18,False
+Russell Wilson,2012,3,75,16,1,1 Efficient + rushing,1,31.31,10.81,20.5,0.2032,17.3,10,True
+Russell Wilson,2013,3,75,16,1,1 Efficient + rushing,1,34.81,7.69,27.12,0.1746,17.0,8,True
+Russell Wilson,2014,3,75,16,1,1 Efficient + rushing,1,54.31,23.06,31.25,0.1241,20.49,3,True
+Russell Wilson,2015,3,75,16,1,1 Efficient + rushing,1,35.56,10.38,25.19,0.2425,21.12,3,True
+Russell Wilson,2016,3,75,16,1,1 Efficient + rushing,1,17.12,4.5,12.62,0.074,16.38,11,True
+Russell Wilson,2017,3,75,16,3,3 Inefficient + rushing,1,37.62,9.81,27.81,0.0654,21.84,1,True
+Russell Wilson,2018,3,75,16,1,1 Efficient + rushing,1,24.69,6.69,18.0,0.1735,18.84,9,True
+Russell Wilson,2019,3,75,16,1,1 Efficient + rushing,1,22.31,1.38,20.94,0.1211,20.51,3,True
+Russell Wilson,2020,3,75,16,1,1 Efficient + rushing,1,33.12,4.44,28.69,0.1316,22.59,6,True
+Russell Wilson,2021,3,75,14,3,3 Inefficient + rushing,1,13.43,1.5,11.93,0.0329,17.38,15,False
+Russell Wilson,2022,3,75,15,3,3 Inefficient + rushing,1,18.93,4.4,14.53,-0.0752,15.02,16,False
+Russell Wilson,2023,3,75,15,3,3 Inefficient + rushing,1,23.93,6.27,17.67,-0.0452,17.25,13,False
+Russell Wilson,2024,3,75,11,3,3 Inefficient + rushing,1,15.0,1.73,13.27,0.0056,15.8,24,False
+Ryan Fitzpatrick,2008,7,250,12,3,3 Inefficient + rushing,3,26.17,1.92,24.25,-0.1594,10.3,28,False
+Ryan Fitzpatrick,2010,7,250,13,3,3 Inefficient + rushing,3,20.85,7.15,13.69,-0.0166,15.29,19,False
+Ryan Fitzpatrick,2011,7,250,16,3,3 Inefficient + rushing,3,13.94,2.81,11.12,-0.0162,13.91,12,True
+Ryan Fitzpatrick,2012,7,250,16,3,3 Inefficient + rushing,3,12.75,1.19,11.56,-0.0095,13.4,20,False
+Ryan Fitzpatrick,2013,7,250,10,1,1 Efficient + rushing,3,21.09,2.0,19.09,0.112,15.21,24,False
+Ryan Fitzpatrick,2014,7,250,11,1,1 Efficient + rushing,3,16.25,0.25,16.0,0.0905,15.07,21,False
+Ryan Fitzpatrick,2015,7,250,15,1,1 Efficient + rushing,3,17.56,2.75,14.81,0.121,17.89,11,True
+Ryan Fitzpatrick,2016,7,250,12,4,4 Inefficient + no legs,3,9.57,2.36,7.21,-0.0662,9.56,29,False
+Ryan Fitzpatrick,2019,7,250,13,3,3 Inefficient + rushing,3,17.27,-0.53,17.8,0.0422,16.2,17,False
+Ryan Tannehill,2012,1,8,15,3,3 Inefficient + rushing,3,14.0,5.62,8.38,-0.0507,11.51,24,False
+Ryan Tannehill,2013,1,8,16,3,3 Inefficient + rushing,3,15.31,6.56,8.75,0.0059,14.94,16,False
+Ryan Tannehill,2014,1,8,16,3,3 Inefficient + rushing,3,20.25,18.44,1.81,0.0299,17.51,8,True
+Ryan Tannehill,2015,1,8,16,4,4 Inefficient + no legs,3,9.31,5.0,4.31,-0.0042,16.08,17,False
+Ryan Tannehill,2016,1,8,13,3,3 Inefficient + rushing,3,12.92,4.77,8.15,0.0318,14.66,27,False
+Ryan Tannehill,2018,1,8,11,3,3 Inefficient + rushing,3,14.0,7.55,6.45,-0.1679,12.41,32,False
+Ryan Tannehill,2019,1,8,10,1,1 Efficient + rushing,3,18.27,3.27,15.0,0.2241,20.53,21,False
+Ryan Tannehill,2020,1,8,16,1,1 Efficient + rushing,3,17.06,7.81,9.25,0.2549,21.5,7,True
+Ryan Tannehill,2021,1,8,17,3,3 Inefficient + rushing,3,16.41,5.35,11.06,0.0601,15.84,12,True
+Ryan Tannehill,2022,1,8,12,2,2 Efficient + no legs,3,9.08,1.33,7.75,0.0678,13.53,26,False
+Sam Bradford,2010,1,1,16,4,4 Inefficient + no legs,4,4.5,0.06,4.44,-0.0863,11.89,20,False
+Sam Bradford,2011,1,1,10,4,4 Inefficient + no legs,4,3.3,-0.8,4.1,-0.221,8.72,32,False
+Sam Bradford,2012,1,1,16,4,4 Inefficient + no legs,4,8.5,0.19,8.31,0.0107,14.48,16,False
+Sam Bradford,2015,1,1,14,4,4 Inefficient + no legs,4,3.57,0.0,3.57,-0.003,14.0,24,False
+Sam Bradford,2016,1,1,15,4,4 Inefficient + no legs,4,4.4,0.0,4.4,0.0661,14.78,23,False
+Sam Darnold,2018,1,3,13,3,3 Inefficient + rushing,3,11.38,2.54,8.85,-0.0504,13.03,27,False
+Sam Darnold,2019,1,3,13,4,4 Inefficient + no legs,3,5.92,0.92,5.0,-0.019,14.67,27,False
+Sam Darnold,2020,1,3,12,3,3 Inefficient + rushing,3,18.67,1.25,17.42,-0.1758,11.23,31,False
+Sam Darnold,2021,1,3,12,3,3 Inefficient + rushing,3,19.42,3.83,15.58,-0.1489,13.2,28,False
+Sam Darnold,2024,1,3,17,1,1 Efficient + rushing,3,13.71,0.65,13.06,0.0838,18.24,9,True
+Sam Darnold,2025,1,3,17,2,2 Efficient + no legs,3,6.35,1.12,5.24,0.1341,14.04,14,False
+Sam Howell,2023,5,144,17,3,3 Inefficient + rushing,3,15.71,1.65,14.06,-0.1327,15.09,14,False
+Shaun Hill,2010,,,10,3,3 Inefficient + rushing,3,11.0,1.82,9.18,0.0462,14.5,22,False
+Tarvaris Jackson,2011,2,64,15,4,4 Inefficient + no legs,4,7.67,0.87,6.8,-0.0261,10.74,20,False
+Taylor Heinicke,2021,,,16,3,3 Inefficient + rushing,3,20.12,2.81,17.31,-0.0522,13.93,20,False
+Teddy Bridgewater,2014,1,32,13,3,3 Inefficient + rushing,3,16.92,1.62,15.31,0.0366,13.9,22,False
+Teddy Bridgewater,2015,1,32,16,3,3 Inefficient + rushing,3,12.81,0.81,12.0,0.0275,12.61,22,False
+Teddy Bridgewater,2020,1,32,15,1,1 Efficient + rushing,3,19.07,0.93,18.13,0.0953,16.13,18,False
+Teddy Bridgewater,2021,1,32,13,2,2 Efficient + no legs,3,8.0,0.93,7.07,0.1194,14.52,22,False
+Tim Tebow,2011,1,25,11,3,3 Inefficient + rushing,3,51.0,31.92,19.08,-0.1578,15.34,18,False
+Tom Brady,2009,6,199,16,2,2 Efficient + no legs,2,3.44,1.25,2.19,0.2245,16.96,7,True
+Tom Brady,2010,6,199,16,2,2 Efficient + no legs,2,2.62,1.38,1.25,0.2748,18.76,3,True
+Tom Brady,2011,6,199,16,2,2 Efficient + no legs,2,7.44,2.88,4.56,0.2996,22.77,4,True
+Tom Brady,2012,6,199,16,2,2 Efficient + no legs,2,2.38,1.0,1.38,0.277,21.31,3,True
+Tom Brady,2013,6,199,16,2,2 Efficient + no legs,2,2.31,0.81,1.5,0.1075,15.84,14,False
+Tom Brady,2014,6,199,15,2,2 Efficient + no legs,2,4.69,1.25,3.44,0.1752,17.49,9,True
+Tom Brady,2015,6,199,16,2,2 Efficient + no legs,2,4.31,1.12,3.19,0.1798,21.36,2,True
+Tom Brady,2016,6,199,12,2,2 Efficient + no legs,2,6.17,0.83,5.33,0.3124,21.63,14,False
+Tom Brady,2017,6,199,16,2,2 Efficient + no legs,2,2.44,0.88,1.56,0.2241,18.56,3,True
+Tom Brady,2018,6,199,16,2,2 Efficient + no legs,2,2.69,0.62,2.06,0.1495,17.53,14,False
+Tom Brady,2019,6,199,16,4,4 Inefficient + no legs,2,2.88,0.81,2.06,0.0274,16.56,12,True
+Tom Brady,2020,6,199,16,2,2 Efficient + no legs,2,1.12,0.62,0.5,0.1869,21.2,8,True
+Tom Brady,2021,6,199,17,2,2 Efficient + no legs,2,5.29,0.82,4.47,0.1882,22.1,3,True
+Tom Brady,2022,6,199,17,4,4 Inefficient + no legs,2,0.71,0.47,0.24,0.0484,16.06,12,True
+Tony Romo,2008,,,13,4,4 Inefficient + no legs,2,4.23,-0.08,4.31,0.0639,15.8,12,True
+Tony Romo,2009,,,16,2,2 Efficient + no legs,2,7.56,1.81,5.75,0.1774,17.21,6,True
+Tony Romo,2011,,,15,2,2 Efficient + no legs,2,3.5,0.12,3.38,0.1532,17.31,7,True
+Tony Romo,2012,,,16,2,2 Efficient + no legs,2,4.44,0.38,4.06,0.116,17.58,8,True
+Tony Romo,2013,,,15,2,2 Efficient + no legs,2,3.13,0.0,3.13,0.0781,17.45,11,True
+Tony Romo,2014,,,15,2,2 Efficient + no legs,2,5.07,0.0,5.07,0.2848,17.85,11,True
+Trent Edwards,2008,3,92,13,4,4 Inefficient + no legs,4,9.29,3.07,6.21,0.022,11.07,23,False
+Trevor Lawrence,2021,1,1,17,3,3 Inefficient + rushing,3,20.18,6.41,13.76,-0.0897,11.76,23,False
+Trevor Lawrence,2022,1,1,17,1,1 Efficient + rushing,3,17.65,4.76,12.88,0.1448,17.44,7,True
+Trevor Lawrence,2023,1,1,16,3,3 Inefficient + rushing,3,22.0,1.5,20.5,-0.0102,16.36,12,True
+Trevor Lawrence,2025,1,1,17,1,1 Efficient + rushing,3,21.71,3.47,18.24,0.0797,19.95,4,True
+Trevor Siemian,2016,7,250,13,4,4 Inefficient + no legs,4,5.07,0.43,4.64,-0.0165,13.8,26,False
+Trevor Siemian,2017,7,250,10,3,3 Inefficient + rushing,4,12.09,0.0,12.09,-0.1351,11.52,30,False
+Tua Tagovailoa,2021,1,5,11,3,3 Inefficient + rushing,2,10.62,1.0,9.62,0.0635,13.99,25,False
+Tua Tagovailoa,2022,1,5,12,2,2 Efficient + no legs,2,5.92,0.08,5.85,0.2176,17.82,15,False
+Tua Tagovailoa,2023,1,5,17,2,2 Efficient + no legs,2,4.94,-0.18,5.12,0.1743,15.96,11,True
+Tua Tagovailoa,2024,1,5,11,2,2 Efficient + no legs,2,4.91,-0.27,5.18,0.221,16.55,21,False
+Tua Tagovailoa,2025,1,5,14,4,4 Inefficient + no legs,2,3.29,0.14,3.14,0.016,11.5,25,False
+Tyler Shough,2025,2,40,10,3,3 Inefficient + rushing,3,17.91,6.55,11.36,-0.0049,14.46,26,False
+Tyler Thigpen,2008,7,217,12,3,3 Inefficient + rushing,3,28.0,8.0,20.0,-0.0064,14.82,11,True
+Tyrod Taylor,2015,6,180,14,1,1 Efficient + rushing,1,41.86,13.43,28.43,0.1417,19.43,16,False
+Tyrod Taylor,2016,6,180,15,1,1 Efficient + rushing,1,39.07,15.33,23.73,0.1095,18.1,8,True
+Tyrod Taylor,2017,6,180,15,3,3 Inefficient + rushing,1,29.53,8.67,20.87,0.0398,14.95,16,False
+Will Levis,2024,2,33,10,3,3 Inefficient + rushing,3,15.42,3.83,11.58,-0.1635,10.01,30,False
+Zach Wilson,2021,1,2,12,3,3 Inefficient + rushing,3,14.54,0.54,14.0,-0.1935,11.71,30,False
+Zach Wilson,2023,1,2,11,3,3 Inefficient + rushing,3,18.0,0.17,17.83,-0.2479,10.04,29,False

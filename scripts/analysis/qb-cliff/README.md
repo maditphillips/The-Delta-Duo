@@ -21,6 +21,14 @@ and deleted, so peak disk use stays around 25 MB.
 `02` is a port of the original R script `qb_cliff_02_quadrant_rosters.R`. It
 prints six parts and writes three CSVs to `outputs/`.
 
+`03` expands Part 4 of that script. Part 4 only reported a QB's first cell and
+his last one; `03` prints every starter season he had and which quadrant it
+landed in, so the whole path through the 2x2 is visible.
+
+```bash
+python3 qb_cliff_03_migration_detail.py > MIGRATION_DETAIL.txt
+```
+
 ## Definitions
 
 | Field | Definition |
@@ -61,3 +69,7 @@ denominator, not a different definition. Everything downstream reconciles.
 - `outputs/qb_quadrants_by_season.csv` — 503 starter seasons, one row each
 - `outputs/qb_quadrants_by_career.csv` — career quadrant, 3+ starter seasons
 - `outputs/qb_quadrant_migration.csv` — first cell → last cell per QB
+- `QUADRANT_PLAYERS.txt`, `outputs/qb_quadrants_all_players.csv` — all 123 QBs placed by career median
+- `MIGRATION_DETAIL.txt` — season-by-season timeline per QB, grouped by career cell
+- `outputs/qb_quadrant_by_season_long.csv` — one row per QB season, with his career cell alongside
+- `outputs/qb_quadrant_grid.csv` — 123 QBs down the side, 2008–2025 across the top, quadrant number in each cell
