@@ -1,0 +1,138 @@
+Career quadrant by the median of a QB's 10+ start seasons, 2008-2025.
+Splits: rushing 10.36 yds/game, EPA/dropback 0.0676. 123 quarterbacks.
+
+
+=== EFFICIENT + RUSHING — 26 QBs ===
+            player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+        Josh Allen 2018-2025     8    35.6   0.167  23.2    7     1
+         Mike Vick 2010-2011     2    51.5   0.157  22.0    2     1
+       Jalen Hurts 2021-2025     5    43.3   0.095  21.0    5     2
+    Jayden Daniels 2024-2024     1    53.1   0.178  21.0    1     5
+   Patrick Mahomes 2018-2025     8    21.6   0.248  21.0    8     1
+    Deshaun Watson 2018-2020     3    28.4   0.153  21.0    3     4
+        Joe Burrow 2020-2024     4    13.5   0.157  20.8    3     2
+     Lamar Jackson 2019-2025     7    64.3   0.104  20.8    4     1
+       Andrew Luck 2012-2018     5    17.8   0.122  20.5    5     2
+     Aaron Rodgers 2008-2025    15    17.1   0.197  20.4   12     1
+        Cam Newton 2011-2020     9    40.1   0.069  18.9    6     1
+Robert Griffin III 2012-2013     2    46.4   0.115  18.8    1     5
+      Dak Prescott 2016-2025     8    16.9   0.173  18.3    7     2
+      Kyler Murray 2019-2024     5    34.9   0.077  18.3    4     4
+            Bo Nix 2024-2025     2    24.1   0.089  18.2    2     7
+       Brock Purdy 2023-2024     2    15.8   0.248  18.2    1     6
+      Tyrod Taylor 2015-2017     3    39.1   0.109  18.1    1     8
+    Justin Herbert 2020-2025     6    18.6   0.095  18.0    5     2
+    Russell Wilson 2012-2024    13    24.7   0.121  17.4    9     1
+    Jameis Winston 2015-2019     5    14.4   0.089  17.3    1     5
+        Drake Maye 2024-2025     2    30.3   0.162  17.2    1     2
+       Jordan Love 2023-2025     3    14.1   0.137  15.8    1     5
+       Matt Cassel 2008-2010     3    13.3   0.124  15.3    2     7
+    Donovan McNabb 2008-2010     3    11.1   0.095  15.3    2     8
+       C.J. Stroud 2023-2025     3    14.3   0.108  14.9    1    10
+       Jeff Garcia 2008-2008     1    13.0   0.095  13.7    0    22
+
+=== EFFICIENT + NOT RUSHING — 16 QBs ===
+            player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+        Drew Brees 2008-2020    13     2.0   0.155  20.4   11     1
+    Peyton Manning 2008-2014     6     0.9   0.242  18.8    6     1
+         Tom Brady 2009-2022    14     2.8   0.188  18.7   11     2
+      Kirk Cousins 2015-2024     9     6.8   0.110  17.7    6     5
+Ben Roethlisberger 2008-2021    13     5.4   0.148  17.5    5     3
+         Tony Romo 2008-2014     6     4.3   0.135  17.4    6     6
+  Matthew Stafford 2009-2025    14     5.9   0.069  17.1    8     3
+        Jared Goff 2017-2025     9     4.3   0.157  17.1    6     6
+     Philip Rivers 2008-2020    13     2.6   0.175  16.9    9     3
+    Tua Tagovailoa 2021-2025     5     4.9   0.174  16.0    1    11
+       Matt Schaub 2008-2012     5     2.2   0.148  15.9    2     4
+         Matt Ryan 2008-2022    15     7.6   0.112  15.6    8     2
+       Kurt Warner 2008-2009     2     1.0   0.109  15.5    1     5
+   Jimmy Garoppolo 2019-2022     3     3.9   0.161  15.2    0    13
+       Eli Manning 2008-2018    11     2.4   0.069  14.5    5     6
+   Chad Pennington 2008-2008     1     4.6   0.186  13.7    1     9
+
+=== NOT EFFICIENT + RUSHING — 47 QBs ===
+            player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+     Justin Fields 2021-2023     3    51.2  -0.072  17.8    1     6
+       Jaxson Dart 2025-2025     1    35.1   0.050  17.3    0    13
+      Carson Wentz 2016-2021     6    14.6   0.037  16.9    2     5
+   Trevor Lawrence 2021-2025     4    20.9   0.035  16.9    3     4
+    Caleb Williams 2024-2025     2    26.3   0.029  16.6    1     6
+  Colin Kaepernick 2013-2016     3    40.9   0.034  16.6    1     9
+      Daniel Jones 2019-2025     6    27.7  -0.038  15.8    1     9
+         Jon Kitna 2010-2010     1    15.4   0.068  15.8    0    25
+    Baker Mayfield 2018-2025     8    10.5   0.058  15.8    3     4
+      Josh Freeman 2010-2012     3    16.5   0.051  15.7    1     7
+     Blake Bortles 2014-2018     5    22.8  -0.033  15.7    2     4
+      Joshua Dobbs 2023-2023     1    32.8  -0.115  15.5    0    20
+    Ryan Tannehill 2012-2022    10    14.7   0.031  15.4    3     7
+         Tim Tebow 2011-2011     1    51.0  -0.158  15.3    0    18
+    Marcus Mariota 2015-2022     5    24.1   0.018  15.2    0    13
+        Sam Howell 2023-2023     1    15.7  -0.133  15.1    0    14
+  Ryan Fitzpatrick 2008-2019     9    17.3  -0.010  15.1    2    11
+Anthony Richardson 2024-2024     1    46.2  -0.117  14.9    0    25
+     Tyler Thigpen 2008-2008     1    28.0  -0.006  14.8    1    11
+        Alex Smith 2009-2018     9    17.2   0.059  14.7    1     4
+        Shaun Hill 2010-2010     1    11.0   0.046  14.5    0    22
+        Nick Foles 2013-2015     2    10.6   0.006  14.5    1    10
+      Tyler Shough 2025-2025     1    17.9  -0.005  14.5    0    26
+   Gardner Minshew 2019-2023     2    16.3  -0.005  14.4    0    19
+        Jay Cutler 2008-2017     9    13.4  -0.014  14.3    2     4
+ Teddy Bridgewater 2014-2021     4    14.9   0.066  14.2    0    18
+         Drew Lock 2020-2020     1    13.2  -0.088  14.0    0    23
+   Taylor Heinicke 2021-2021     1    20.1  -0.052  13.9    0    20
+     David Garrard 2008-2010     3    20.6   0.026  13.9    1    10
+       Bryce Young 2023-2025     3    16.1  -0.027  13.7    0    19
+       Josh McCown 2014-2017     2    11.1  -0.023  13.7    0    20
+   Jacoby Brissett 2017-2025     4    16.3   0.008  13.7    0    17
+       Sam Darnold 2018-2025     6    12.5  -0.035  13.6    1     9
+        Geno Smith 2013-2025     6    17.0   0.009  13.6    1     5
+         EJ Manuel 2013-2013     1    21.2  -0.124  13.6    0    28
+ Mitchell Trubisky 2017-2019     3    21.2  -0.055  13.6    0    15
+     J.J. McCarthy 2025-2025     1    19.1  -0.151  12.6    0    31
+    Jason Campbell 2008-2010     3    17.1   0.026  12.6    0    13
+  Christian Ponder 2012-2012     1    16.9  -0.006  12.3    0    22
+        Colt McCoy 2011-2011     1    17.0  -0.060  12.3    0    21
+       Jake Locker 2012-2012     1    26.5  -0.032  12.0    0    28
+    Desmond Ridder 2023-2023     1    13.4  -0.067  11.8    0    22
+     DeShone Kizer 2017-2017     1    28.1  -0.204  11.7    0    25
+     Brett Hundley 2017-2017     1    24.8  -0.157  11.2    0    31
+       Zach Wilson 2021-2023     2    16.3  -0.221  10.9    0    29
+     Kenny Pickett 2022-2023     2    12.6  -0.060  10.5    0    28
+        Will Levis 2024-2024     1    15.4  -0.164  10.0    0    30
+
+=== NOT EFFICIENT + NOT RUSHING — 34 QBs ===
+          player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+     Andy Dalton 2011-2022    10     9.6   0.005  15.7    3     5
+      Derek Carr 2014-2024    11     6.5   0.040  15.1    1     9
+     Case Keenum 2017-2018     2     9.2   0.049  14.7    0    14
+      Kyle Orton 2008-2014     4     4.4   0.016  14.1    0    16
+    Sam Bradford 2010-2016     5     4.4  -0.003  14.0    0    16
+   Carson Palmer 2009-2016     7     2.6   0.037  14.0    1     5
+      Kyle Allen 2019-2019     1     8.5  -0.041  13.7    0    28
+     Brian Hoyer 2014-2015     2     3.9   0.007  13.2    0    25
+      Joe Flacco 2008-2025    11     4.2   0.003  13.0    1    11
+  Trevor Siemian 2016-2017     2     8.6  -0.076  12.7    0    26
+    Mike Glennon 2013-2013     1     5.4  -0.067  12.4    0    26
+       Mac Jones 2021-2023     3     9.3  -0.069  12.4    0    18
+     Davis Mills 2021-2022     2     5.7  -0.130  12.1    0    21
+     Brett Favre 2008-2010     3     1.2   0.015  12.0    1     3
+      Matt Moore 2011-2011     1     5.7  -0.028  11.8    0    23
+ Matt Hasselbeck 2009-2011     3     5.0  -0.056  11.5    0    19
+ Aidan O'Connell 2023-2023     1     1.5  -0.060  11.5    0    28
+    Rex Grossman 2011-2011     1     1.7  -0.035  11.4    0    24
+  Brock Osweiler 2016-2016     1     9.5  -0.063  11.4    0    28
+    Mark Sanchez 2009-2012     4     7.3  -0.139  11.2    1    10
+  Brandon Weeden 2012-2012     1     7.7  -0.054  11.1    0    26
+   Trent Edwards 2008-2008     1     9.3   0.022  11.1    0    23
+        Cam Ward 2025-2025     1     9.9  -0.167  11.0    0    22
+   Mason Rudolph 2019-2019     1     4.9  -0.100  11.0    0    30
+Tarvaris Jackson 2011-2011     1     7.7  -0.026  10.7    0    20
+      Chad Henne 2009-2013     3     4.5  -0.013  10.6    0    23
+    Gus Frerotte 2008-2008     1     1.7  -0.117  10.0    0    29
+   Kerry Collins 2008-2008     1     3.8   0.045   9.2    0    24
+JaMarcus Russell 2008-2008     1     8.6  -0.133   9.2    0    26
+   Jake Delhomme 2008-2009     2     4.0  -0.047   9.1    0    20
+     Marc Bulger 2008-2008     1     3.3  -0.186   8.3    0    27
+      Josh Rosen 2018-2018     1    10.4  -0.326   8.1    0    34
+  Blaine Gabbert 2011-2011     1     7.5  -0.227   7.9    0    28
+   Jimmy Clausen 2010-2010     1     4.5  -0.276   4.5    0    37
