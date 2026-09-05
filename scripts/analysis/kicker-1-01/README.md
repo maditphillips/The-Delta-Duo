@@ -56,6 +56,7 @@ python3 simple_rule.py  > RULE.txt         # the same thing, one plain rule
 python3 threshold.py    > THRESHOLD.txt    # the 3-vs-7 break-even, swept
 python3 verdict.py      > VERDICT.txt      # the bottom line, baselines matched
 python3 kick_early.py   > EARLY.txt        # "just kick as soon as you're in range"
+python3 distance_sweep.py > DISTANCE.txt   # what if the guarantee were 70 yards?
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.
@@ -551,6 +552,53 @@ point and a half per drive cheaper.
 Those drives actually scored 361 and 380 points. The policy scores 330 and 339
 — so Houston scores **31 and 41 fewer points**, and hands the opponent roughly
 30 extra possessions a year.
+
+## What if the guarantee were 70 yards?
+
+Also from the comments. 70 yards is a snap from the opponent's 52 — your own
+48 — so it would cover a bit more than half the field. `distance_sweep.py`
+runs the same valuation at every guarantee distance.
+
+**It changes the answer.** The extra ten yards is worth more than the first
+sixty:
+
+| Guarantee | Reaches the | ch1 | ch3 | ch5 | Points | **vs average leg** | **vs replacement leg** |
+|---|---|---|---|---|---|---|---|
+| 50 yds | 32 | 10.3 | 1.0 | 2.2 | 13.5 | 0.38 | 0.54 |
+| 55 yds | 37 | 15.2 | 2.9 | 2.2 | 20.2 | 0.56 | 0.79 |
+| **60 yds** | **42** | 17.1 | 11.2 | 2.2 | 30.5 | **0.85** | **1.10** |
+| 62 yds | 44 | 17.4 | 15.8 | 2.2 | 35.4 | 0.99 | 1.24 |
+| 65 yds | 47 | 17.7 | 23.1 | 2.2 | 42.9 | 1.20 | 1.45 |
+| **70 yds** | **52** | 17.8 | 37.9 | 2.2 | 57.9 | **1.62** | **1.87** |
+| 75 yds | 57 | 17.8 | 55.6 | 2.2 | 75.5 | 2.11 | 2.36 |
+
+Against the 1.01 quarterback's **1.28 mean / 1.59 median** — measured against
+a replacement quarterback, so the last column is the like-for-like one — the
+**70-yard version beats both.**
+
+**Why the jump is so large: it is all virgin territory.** 26.7 of the 27.4
+extra points come from fourth downs nobody currently kicks on. The 43-to-52
+strip carries **0.81 fourth downs a game**, and teams punt **72%** of them and
+kick **0.8%** — 27 attempts in eight seasons. Channel 1 barely moves (17.1 →
+17.8) because he was already making everything teams attempt.
+
+Note the two win columns converge as the guarantee lengthens. That is not a
+quirk: you cannot be worse than a replacement kicker at a 65-yarder he was
+never going to attempt, so past the 42 both baselines are identical.
+
+**Two caveats get much heavier at 70.** First, nobody has ever done this — the
+longest made field goal in 1999-2025 is 68 yards, hit once by Cam Little in
+2025; there are 6 attempts of 70+ in 27 seasons and none were made. The
+valuation prices the field position correctly, but whether snap, hold and
+protection survive at that range is untested. Second, the opponent adapts
+across more than half the field rather than a narrow strip — punt coverage,
+two-minute defence and their own fourth-down policy all change, and none of
+that survives a frozen-history study.
+
+**And "kick the moment you cross the 50" still fails**, though less badly:
+−1.07 points a drive at 70 yards against −1.63 at 60, still −3.3 wins a
+season. Every down except fourth is negative even out at the 47-52. The value
+is on fourth down at any distance.
 
 ## Does the extra work actually arrive?
 

@@ -1,0 +1,128 @@
+
+==============================================================================
+1. THE FIELD THE GUARANTEE COVERS
+==============================================================================
+fourth downs by field position, and what teams do with them
+              kick_dist        n  per_game  kick%  punt%    go%
+yardline_100                                                   
+(0, 42]           40.42  12188.0      2.74  64.18   6.60  29.23
+(42, 45]          62.06   1064.0      0.24   1.60  66.07  32.33
+(45, 48]          65.06    989.0      0.22   0.81  72.70  26.49
+(48, 50]          67.54    805.0      0.18   0.25  74.41  25.34
+(50, 52]          69.50    737.0      0.17   0.00  77.88  22.12
+(52, 55]          72.10   1244.0      0.28   0.00  80.63  19.37
+(55, 60]          76.07   2178.0      0.49   0.00  85.77  14.23
+(60, 100]         91.77  12243.0      2.75   0.00  92.14   7.86
+
+  The 43-to-52 strip - a 61 to 70 yard kick - carries 0.81 fourth
+  downs a game, 72% of them punted and 0.8% kicked. Extending the
+  guarantee from 60 to 70 hands him a piece of field nobody uses.
+
+-- longest field goals actually made, 1999-2025
+ season posteam kicker_player_name  dist
+   2025     JAX           C.Little  68.0
+   2025     JAX           C.Little  67.0
+   2021     BAL           J.Tucker  66.0
+   2024     LAC           C.Dicker  65.0
+   2025      TB       C.McLaughlin  65.0
+   2013     DEN           M.Prater  64.0
+   2024     DAL           B.Aubrey  64.0
+   2025     DAL           B.Aubrey  64.0
+
+  The record across 1999-2025 is 68 yards, hit once. A 70-yard
+  guarantee is not an extension of something kickers already do -
+  it is a new thing entirely.
+
+==============================================================================
+2. THE SWEEP: WHAT EACH GUARANTEE DISTANCE IS WORTH
+==============================================================================
+  'from the' is the opponent's yard line the guarantee reaches.
+  Per 17-game team-season. 'wins' is against an AVERAGE NFL leg;
+  'wins_vs_repl' is against a replacement leg, the same rung the
+  quarterback's 1.28 is measured on, so that is the like-for-like one.
+
+guarantee  from the   ch1   ch3  ch5  points  wins  wins_vs_repl  extra_kicks/gm
+   50 yds        32 10.30  1.04 2.15   13.50  0.38          0.54            0.09
+   55 yds        37 15.17  2.87 2.15   20.19  0.56          0.79            0.19
+   60 yds        42 17.14 11.21 2.15   30.50  0.85          1.10            0.49
+   62 yds        44 17.43 15.77 2.15   35.36  0.99          1.24            0.64
+   65 yds        47 17.65 23.05 2.15   42.86  1.20          1.45            0.87
+   70 yds        52 17.79 37.91 2.15   57.86  1.62          1.87            1.29
+   75 yds        57 17.79 55.58 2.15   75.53  2.11          2.36            1.76
+
+  60 yards : 0.85 wins
+  70 yards : 1.62 wins  (+0.76, a 90% jump)
+  the extra ten yards is worth more than DOUBLE the first sixty,
+  because it is all new territory: 26.7 of the
+  27.4 extra points come from fourth downs
+  nobody currently kicks on.
+
+-- against the first overall pick
+   50 yds:  0.38 wins
+   55 yds:  0.56 wins
+   60 yds:  0.85 wins
+   62 yds:  0.99 wins
+   65 yds:  1.20 wins
+   70 yds:  1.62 wins  <-- beats the MEDIAN 1.01 quarterback
+   75 yds:  2.11 wins  <-- beats the MEDIAN 1.01 quarterback
+
+  1.01 quarterback: 1.28 mean, 1.59 median
+
+-- like-for-like, both against replacement level
+   50 yds:  0.54 wins
+   55 yds:  0.79 wins
+   60 yds:  1.10 wins
+   62 yds:  1.24 wins
+   65 yds:  1.45 wins  <-- beats the AVERAGE 1.01
+   70 yds:  1.87 wins  <-- beats the MEDIAN 1.01
+   75 yds:  2.36 wins  <-- beats the MEDIAN 1.01
+
+  The two columns converge as the guarantee lengthens, because the
+  new value is all in territory where NEITHER comparison leg has a
+  field goal option. You cannot be worse than someone at a kick they
+  were never going to attempt.
+
+==============================================================================
+3. DOES 'KICK THE MOMENT YOU CROSS THE 50' WORK AT 70 YARDS?
+==============================================================================
+At 60 yards this idea lost 4.2 wins a season (EARLY.txt). The longer
+guarantee starts the range further out, where a drive is worth less,
+so the trade should be less bad. Expected points added by kicking on
+this snap instead of running the play:
+
+yl    (0, 20]  (20, 32]  (32, 42]  (42, 47]  (47, 52]
+down                                                 
+1.0     -3.48     -2.38     -1.64     -1.17     -0.87
+2.0     -3.11     -2.01     -1.20     -0.76     -0.48
+3.0     -2.47     -1.44     -0.52     -0.05      0.24
+4.0     -1.68     -0.45      0.75      1.21      1.51
+
+  Still negative on every down except fourth. It is less bad out at
+  the 47-52, but 'less bad' is not 'good': first down there is worth
+  -0.87. The answer does not change - the value is on FOURTH down.
+
+  60-yard guarantee: 5.46 drives a game reach the 42, kicking on arrival costs -1.63 a drive
+    = -151 points a season = -4.22 wins
+
+  70-yard guarantee: 6.51 drives a game reach the 52, kicking on arrival costs -1.07 a drive
+    = -118 points a season = -3.31 wins
+
+==============================================================================
+4. THE CATCH
+==============================================================================
+  Two things get shakier at 70 that were solid at 60.
+
+  1. Nobody has ever done this. The longest made field goal in the
+     data is 68 yards. Across 1999-2025 there are 6 attempts of
+     70 or more, 0 of them made, and 43 attempts of 64 to 69,
+     8 made. Every number above prices a play that does not exist,
+     using the value of the field position it replaces. That part is
+     solid; what is untested is whether the snap, hold and protection
+     even hold up at that range.
+
+  2. The opponent adapts harder. At 60 the guarantee touches a
+     narrow strip of field. At 70 it covers everything past your own
+     48, which changes punt coverage, two-minute defence and
+     fourth-down policy for the other team on more than half the
+     field. A frozen-history study cannot see any of that, and it all
+     cuts against the kicker.
