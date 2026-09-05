@@ -1,11 +1,12 @@
 
 ================ QUADRANT DEFINITIONS ================
+  era: 2008-2025 starter seasons (10+ starts)
   rushing split (kneel-excluded):  10.357 yds/game
   efficiency split:                0.06762 EPA/dropback
   population: 503 starter seasons, 123 quarterbacks
 =====================================================
 
-[COUNTS - should match Act Three 3.3]
+[COUNTS]
                 quadrant   n  share
      1. Efficient + legs 120  0.239
   2. Efficient + no legs 131  0.260
@@ -973,7 +974,7 @@ Teddy Bridgewater        4            3 3. Inefficient + legs   2. Efficient + n
 
 
 
-=========== PART 5: CURRENT QBs (2023-2025 seasons only) ===========
+=========== PART 5: CURRENT QBs (2023-2025 only) ===========
 The dynasty-actionable version.
                 quadrant  seasons  qb1_n  qb1_rate
      1. Efficient + legs       31     26     0.839

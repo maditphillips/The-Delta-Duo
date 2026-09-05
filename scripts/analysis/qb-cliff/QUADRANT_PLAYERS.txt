@@ -31,6 +31,7 @@ Robert Griffin III 2012-2013     2    46.4   0.115  18.8    1     5
        C.J. Stroud 2023-2025     3    14.3   0.108  14.9    1    10
        Jeff Garcia 2008-2008     1    13.0   0.095  13.7    0    22
 
+
 === EFFICIENT + NOT RUSHING — 16 QBs ===
             player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
         Drew Brees 2008-2020    13     2.0   0.155  20.4   11     1
@@ -49,6 +50,7 @@ Ben Roethlisberger 2008-2021    13     5.4   0.148  17.5    5     3
    Jimmy Garoppolo 2019-2022     3     3.9   0.161  15.2    0    13
        Eli Manning 2008-2018    11     2.4   0.069  14.5    5     6
    Chad Pennington 2008-2008     1     4.6   0.186  13.7    1     9
+
 
 === NOT EFFICIENT + RUSHING — 47 QBs ===
             player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
@@ -100,6 +102,7 @@ Anthony Richardson 2024-2024     1    46.2  -0.117  14.9    0    25
      Kenny Pickett 2022-2023     2    12.6  -0.060  10.5    0    28
         Will Levis 2024-2024     1    15.4  -0.164  10.0    0    30
 
+
 === NOT EFFICIENT + NOT RUSHING — 34 QBs ===
           player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
      Andy Dalton 2011-2022    10     9.6   0.005  15.7    3     5
@@ -136,3 +139,6 @@ JaMarcus Russell 2008-2008     1     8.6  -0.133   9.2    0    26
       Josh Rosen 2018-2018     1    10.4  -0.326   8.1    0    34
   Blaine Gabbert 2011-2011     1     7.5  -0.227   7.9    0    28
    Jimmy Clausen 2010-2010     1     4.5  -0.276   4.5    0    37
+
+
+Wrote qb_quadrants_all_players.csv to /home/user/The-Delta-Duo/scripts/analysis/qb-cliff/outputs

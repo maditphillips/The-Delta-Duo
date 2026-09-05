@@ -15,7 +15,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from qb_cliff_00_setup import CONFIG
+from qb_cliff_00_setup import CONFIG, ERA, career_cell, load_panel, out_path
 
 QUAD = {
     "1": "1 Efficient + rushing",
@@ -24,29 +24,10 @@ QUAD = {
     "4": "4 Inefficient + no legs",
 }
 
-s = pd.read_parquet(os.path.join(CONFIG["cache_dir"], "qb_season.parquet"))
-z = s[(s.starts >= CONFIG["start_bar_season"])
-      & s.rush_yd_pg.notna() & s.epa_per_db.notna()].copy()
-
-MED_RUSH = z.rush_yd_pg.median()
-MED_EFF = z.epa_per_db.median()
-z["q"] = np.select(
-    [(z.epa_per_db > MED_EFF) & (z.rush_yd_pg > MED_RUSH),
-     (z.epa_per_db > MED_EFF) & (z.rush_yd_pg <= MED_RUSH),
-     (z.epa_per_db <= MED_EFF) & (z.rush_yd_pg > MED_RUSH)],
-    ["1", "2", "3"], default="4")
-z["quadrant"] = z.q.map(QUAD)
+z, MED_RUSH, MED_EFF = load_panel()
 z = z.sort_values(["player_name", "season"])
-
-# career cell, the median of a QB's starter seasons against the same splits
-car = z.groupby("qb_id").agg(med_rush=("rush_yd_pg", "median"),
-                             med_epa=("epa_per_db", "median")).reset_index()
-car["career_q"] = np.select(
-    [(car.med_epa > MED_EFF) & (car.med_rush > MED_RUSH),
-     (car.med_epa > MED_EFF) & (car.med_rush <= MED_RUSH),
-     (car.med_epa <= MED_EFF) & (car.med_rush > MED_RUSH)],
-    ["1", "2", "3"], default="4")
-z = z.merge(car[["qb_id", "career_q"]], on="qb_id")
+z = z.merge(career_cell(z, MED_RUSH, MED_EFF)[["qb_id", "career_q"]], on="qb_id")
+z["quadrant"] = z.q.map(QUAD)
 
 # ---- long CSV, one row per QB season
 long = z.assign(
@@ -59,21 +40,21 @@ long = z.assign(
 )[["player_name", "season", "round", "pick", "starts", "quadrant_n", "quadrant",
    "career_q", "rush_yd_pg", "designed_yd_pg", "scramble_yd_pg", "epa_per_db",
    "fp_per_game", "qb_rank", "is_qb1"]]
-long.to_csv(os.path.join(CONFIG["out_dir"], "qb_quadrant_by_season_long.csv"), index=False)
+long.to_csv(out_path("qb_quadrant_by_season_long.csv"), index=False)
 
 # ---- grid: quadrant number per QB per season, blank where he did not start 10
 grid = z.pivot_table(index="player_name", columns="season", values="q",
                      aggfunc="first").fillna("")
 grid = grid.reindex(sorted(grid.columns), axis=1)
-grid.to_csv(os.path.join(CONFIG["out_dir"], "qb_quadrant_grid.csv"))
+grid.to_csv(out_path("qb_quadrant_grid.csv"))
 
 # ---- printed timelines, ordered by career cell then by career FP/game
 order = z.groupby(["qb_id", "player_name", "career_q"]).fp_per_game.median() \
          .reset_index().sort_values(["career_q", "fp_per_game"], ascending=[True, False])
 
-print(f"QUADRANT MIGRATION, SEASON BY SEASON")
+print(f"QUADRANT MIGRATION, SEASON BY SEASON — {ERA}")
 print(f"Splits: rushing {MED_RUSH:.2f} yds/game, EPA/dropback {MED_EFF:.4f}")
-print(f"{len(z)} starter seasons, {z.qb_id.nunique()} quarterbacks, 2008-2025")
+print(f"{len(z)} starter seasons, {z.qb_id.nunique()} quarterbacks")
 print("Quadrants: 1 eff+rush | 2 eff+no legs | 3 ineff+rush | 4 ineff+no legs")
 print("A season only appears if he started 10+ games that year.\n")
 
@@ -97,5 +78,5 @@ for career_q in "1234":
         print(t.to_string(index=False))
 
 print(f"\n\nWrote to {CONFIG['out_dir']}:")
-print("  qb_quadrant_by_season_long.csv   one row per QB season")
-print("  qb_quadrant_grid.csv             QBs x seasons, quadrant number per cell")
+print(f"  {os.path.basename(out_path('qb_quadrant_by_season_long.csv')):40s} one row per QB season")
+print(f"  {os.path.basename(out_path('qb_quadrant_grid.csv')):40s} QBs x seasons, quadrant per cell")

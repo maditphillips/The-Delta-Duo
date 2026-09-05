@@ -21,6 +21,17 @@ and deleted, so peak disk use stays around 25 MB.
 `02` is a port of the original R script `qb_cliff_02_quadrant_rosters.R`. It
 prints six parts and writes three CSVs to `outputs/`.
 
+All three scripts take an era window. The per-season numbers — EPA per
+dropback, rushing yards per game, fantasy rank — are computed within a season
+and do not move with the window. What the window changes is the population the
+medians are taken over, and so where the two splits fall:
+
+```bash
+QB_CLIFF_FROM=2017 python3 qb_cliff_02_quadrant_rosters.py > ROSTERS_2017_2025.txt
+```
+
+Outputs from a non-default window carry an era suffix, so both sets coexist.
+
 `03` expands Part 4 of that script. Part 4 only reported a QB's first cell and
 his last one; `03` prints every starter season he had and which quadrant it
 landed in, so the whole path through the 2x2 is visible.
@@ -62,6 +73,29 @@ is rebuilt from nflverse here. It lands on the same numbers:
 One season of difference at the 10-start bar, and the rushing split lands at
 10.36 yds/game against the R pipeline's 10.47 — a slightly different per-game
 denominator, not a different definition. Everything downstream reconciles.
+
+## The 2008-2025 splits understate rushing
+
+Rushing rose sharply across the study window; passing efficiency did not.
+
+| split | 2008-2016 | 2017-2025 |
+|---|---|---|
+| median rushing yds/game | 7.67 | 14.18 |
+| median EPA/dropback | 0.0693 | 0.0663 |
+
+Pooling all 18 seasons puts the rushing bar at 10.36, which is above the old
+era's median and well below the new one. Re-cutting on 2017-2025 alone widens
+the 2x2 rather than flattening it:
+
+| quadrant | top-12, 2008-2025 | top-12, 2017-2025 |
+|---|---|---|
+| Efficient + legs | 76.7% | 83.9% |
+| Efficient + no legs | 66.4% | 51.5% |
+| Inefficient + legs | 20.6% | 22.7% |
+| Inefficient + no legs | 8.3% | 11.3% |
+
+The gap between the two efficient cells goes from 10.3 points to 32.4. Among
+efficient quarterbacks in the modern game, legs are close to the whole story.
 
 ## Outputs
 

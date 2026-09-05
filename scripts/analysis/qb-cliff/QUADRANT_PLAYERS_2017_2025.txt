@@ -1,0 +1,99 @@
+Career quadrant by the median of a QB's 10+ start seasons, 2017-2025.
+Splits: rushing 14.18 yds/game, EPA/dropback 0.0663. 78 quarterbacks.
+
+
+=== EFFICIENT + RUSHING — 16 QBs ===
+         player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+     Josh Allen 2018-2025     8    35.6   0.167  23.2    7     1
+    Jalen Hurts 2021-2025     5    43.3   0.095  21.0    5     2
+ Jayden Daniels 2024-2024     1    53.1   0.178  21.0    1     5
+Patrick Mahomes 2018-2025     8    21.6   0.248  21.0    8     1
+ Deshaun Watson 2018-2020     3    28.4   0.153  21.0    3     4
+  Lamar Jackson 2019-2025     7    64.3   0.104  20.8    4     1
+   Dak Prescott 2017-2025     7    15.9   0.172  18.5    6     2
+   Kyler Murray 2019-2024     5    34.9   0.077  18.3    4     4
+         Bo Nix 2024-2025     2    24.1   0.089  18.2    2     7
+    Brock Purdy 2023-2024     2    15.8   0.248  18.2    1     6
+ Justin Herbert 2020-2025     6    18.6   0.095  18.0    5     2
+ Jameis Winston 2017-2019     3    16.4   0.084  17.8    1     5
+     Drake Maye 2024-2025     2    30.3   0.162  17.2    1     2
+     Alex Smith 2017-2018     2    19.8   0.081  16.7    1     4
+ Ryan Tannehill 2018-2022     5    16.4   0.068  15.8    2     7
+    C.J. Stroud 2023-2025     3    14.3   0.108  14.9    1    10
+
+
+=== EFFICIENT + NOT RUSHING — 14 QBs ===
+            player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+        Joe Burrow 2020-2024     4    13.5   0.157  20.8    3     2
+       Andrew Luck 2018-2018     1    10.2   0.142  20.5    1     5
+        Drew Brees 2017-2020     4     1.4   0.198  19.0    2     8
+         Tom Brady 2017-2022     6     2.6   0.168  18.0    5     3
+Ben Roethlisberger 2017-2021     4     3.1   0.113  17.7    2     3
+     Aaron Rodgers 2018-2025     7     7.1   0.098  17.5    4     2
+        Jared Goff 2017-2025     9     4.3   0.157  17.1    6     6
+  Matthew Stafford 2017-2025     7     5.0   0.092  16.3    3     3
+     Philip Rivers 2017-2020     4     0.8   0.175  16.0    2     8
+         Matt Ryan 2017-2022     6     7.3   0.071  16.0    3     2
+    Tua Tagovailoa 2021-2025     5     4.9   0.174  16.0    1    11
+       Jordan Love 2023-2025     3    14.1   0.137  15.8    1     5
+ Teddy Bridgewater 2020-2021     2    13.5   0.107  15.3    0    18
+   Jimmy Garoppolo 2019-2022     3     3.9   0.161  15.2    0    13
+
+
+=== NOT EFFICIENT + RUSHING — 26 QBs ===
+            player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+        Cam Newton 2017-2020     3    40.1   0.019  18.9    2     2
+    Russell Wilson 2017-2024     8    23.1   0.049  18.1    4     1
+     Justin Fields 2021-2023     3    51.2  -0.072  17.8    1     6
+      Carson Wentz 2017-2021     5    15.8   0.037  17.3    2     5
+       Jaxson Dart 2025-2025     1    35.1   0.050  17.3    0    13
+   Trevor Lawrence 2021-2025     4    20.9   0.035  16.9    3     4
+    Caleb Williams 2024-2025     2    26.3   0.029  16.6    1     6
+  Ryan Fitzpatrick 2019-2019     1    17.3   0.042  16.2    0    17
+      Daniel Jones 2019-2025     6    27.7  -0.038  15.8    1     9
+      Joshua Dobbs 2023-2023     1    32.8  -0.115  15.5    0    20
+        Sam Howell 2023-2023     1    15.7  -0.133  15.1    0    14
+      Tyrod Taylor 2017-2017     1    29.5   0.040  15.0    0    16
+Anthony Richardson 2024-2024     1    46.2  -0.117  14.9    0    25
+     Blake Bortles 2017-2018     2    24.6  -0.003  14.5    0    13
+      Tyler Shough 2025-2025     1    17.9  -0.005  14.5    0    26
+   Gardner Minshew 2019-2023     2    16.3  -0.005  14.4    0    19
+    Marcus Mariota 2017-2022     3    26.0   0.002  14.1    0    18
+   Taylor Heinicke 2021-2021     1    20.1  -0.052  13.9    0    20
+       Bryce Young 2023-2025     3    16.1  -0.027  13.7    0    19
+   Jacoby Brissett 2017-2025     4    16.3   0.008  13.7    0    17
+ Mitchell Trubisky 2017-2019     3    21.2  -0.055  13.6    0    15
+     J.J. McCarthy 2025-2025     1    19.1  -0.151  12.6    0    31
+     DeShone Kizer 2017-2017     1    28.1  -0.204  11.7    0    25
+     Brett Hundley 2017-2017     1    24.8  -0.157  11.2    0    31
+       Zach Wilson 2021-2023     2    16.3  -0.221  10.9    0    29
+        Will Levis 2024-2024     1    15.4  -0.164  10.0    0    30
+
+
+=== NOT EFFICIENT + NOT RUSHING — 22 QBs ===
+         player       yrs  szns  rush/g  epa/db  fp/g  qb1  best
+   Kirk Cousins 2017-2024     7     8.1   0.041  17.4    4     6
+    Josh McCown 2017-2017     1    10.6   0.044  15.9    0    20
+ Baker Mayfield 2018-2025     8    10.5   0.058  15.8    3     4
+     Geno Smith 2022-2025     4    13.9   0.035  15.4    1     5
+     Derek Carr 2017-2024     8     6.3   0.045  14.9    0    13
+    Case Keenum 2017-2018     2     9.2   0.049  14.7    0    14
+    Andy Dalton 2017-2022     4     6.9  -0.007  14.5    0    17
+      Drew Lock 2020-2020     1    13.2  -0.088  14.0    0    23
+    Eli Manning 2017-2018     2     1.9  -0.032  13.8    0    16
+     Kyle Allen 2019-2019     1     8.5  -0.041  13.7    0    28
+    Sam Darnold 2018-2025     6    12.5  -0.035  13.6    1     9
+      Mac Jones 2021-2023     3     9.3  -0.069  12.4    0    18
+    Davis Mills 2021-2022     2     5.7  -0.130  12.1    0    21
+ Desmond Ridder 2023-2023     1    13.4  -0.067  11.8    0    22
+     Joe Flacco 2017-2025     2     4.1  -0.097  11.5    0    24
+ Trevor Siemian 2017-2017     1    12.1  -0.135  11.5    0    30
+Aidan O'Connell 2023-2023     1     1.5  -0.060  11.5    0    28
+     Jay Cutler 2017-2017     1     2.8  -0.093  11.3    0    27
+       Cam Ward 2025-2025     1     9.9  -0.167  11.0    0    22
+  Mason Rudolph 2019-2019     1     4.9  -0.100  11.0    0    30
+  Kenny Pickett 2022-2023     2    12.6  -0.060  10.5    0    28
+     Josh Rosen 2018-2018     1    10.4  -0.326   8.1    0    34
+
+
+Wrote qb_quadrants_all_players_2017_2025.csv to /home/user/The-Delta-Duo/scripts/analysis/qb-cliff/outputs

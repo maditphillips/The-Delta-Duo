@@ -1,6 +1,6 @@
-QUADRANT MIGRATION, SEASON BY SEASON
+QUADRANT MIGRATION, SEASON BY SEASON — 2008-2025
 Splits: rushing 10.36 yds/game, EPA/dropback 0.0676
-503 starter seasons, 123 quarterbacks, 2008-2025
+503 starter seasons, 123 quarterbacks
 Quadrants: 1 eff+rush | 2 eff+no legs | 3 ineff+rush | 4 ineff+no legs
 A season only appears if he started 10+ games that year.
 
@@ -895,5 +895,5 @@ Jimmy Clausen  (1 starter season, stayed put)   path: 4
 
 
 Wrote to /home/user/The-Delta-Duo/scripts/analysis/qb-cliff/outputs:
-  qb_quadrant_by_season_long.csv   one row per QB season
-  qb_quadrant_grid.csv             QBs x seasons, quadrant number per cell
+  qb_quadrant_by_season_long.csv           one row per QB season
+  qb_quadrant_grid.csv                     QBs x seasons, quadrant per cell

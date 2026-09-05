@@ -26,7 +26,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from qb_cliff_00_setup import CONFIG
+from qb_cliff_00_setup import CONFIG, ERA, load_panel, out_path
 
 pd.set_option("display.width", 200)
 pd.set_option("display.max_columns", 50)
@@ -40,37 +40,16 @@ def show(df, n=None):
         print(df.to_string(index=False))
 
 
-qb_season = pd.read_parquet(os.path.join(CONFIG["cache_dir"], "qb_season.parquet"))
-
-szn = qb_season[(qb_season.starts >= CONFIG["start_bar_season"])
-                & qb_season.rush_yd_pg.notna()
-                & qb_season.epa_per_db.notna()
-                & qb_season.fp.notna()].copy()
-
-MED_RUSH = szn.rush_yd_pg.median()
-MED_EFF = szn.epa_per_db.median()
+szn, MED_RUSH, MED_EFF = load_panel()
 
 print("\n================ QUADRANT DEFINITIONS ================")
+print(f"  era: {ERA} starter seasons ({CONFIG['start_bar_season']}+ starts)")
 print(f"  rushing split (kneel-excluded):  {MED_RUSH:.3f} yds/game")
 print(f"  efficiency split:                {MED_EFF:.5f} EPA/dropback")
 print(f"  population: {len(szn)} starter seasons, {szn.qb_id.nunique()} quarterbacks")
 print("=====================================================")
 
-szn["rush_hi"] = szn.rush_yd_pg > MED_RUSH
-szn["eff_hi"] = szn.epa_per_db > MED_EFF
-szn["quadrant"] = np.select(
-    [szn.eff_hi & szn.rush_hi, ~szn.eff_hi & szn.rush_hi,
-     szn.eff_hi & ~szn.rush_hi, ~szn.eff_hi & ~szn.rush_hi],
-    ["1. Efficient + legs", "3. Inefficient + legs",
-     "2. Efficient + no legs", "4. Inefficient + no legs"],
-    default="")
-
-# round/pick are blank for the undrafted quarterbacks in the panel
-szn["rd"] = szn["round"].astype("Int64")
-szn["pk"] = szn["pick"].astype("Int64")
-szn["draft_day"] = szn.draft_day.fillna("Undrafted")
-
-print("\n[COUNTS - should match Act Three 3.3]")
+print("\n[COUNTS]")
 cnt = szn.quadrant.value_counts().sort_index().rename("n").to_frame().reset_index()
 cnt["share"] = (cnt.n / cnt.n.sum()).round(3)
 show(cnt)
@@ -213,10 +192,11 @@ show(mig[~mig.first_q.str.contains("no legs") & mig.last_q.str.contains("no legs
 
 
 # ---- 5. CURRENT QUARTERBACKS ------------------------------------------------
-print("\n\n\n=========== PART 5: CURRENT QBs (2023-2025 seasons only) ===========")
+CUR_FROM = max(2023, CONFIG["panel_first"])
+print(f"\n\n\n=========== PART 5: CURRENT QBs ({CUR_FROM}-{CONFIG['panel_last']} only) ===========")
 print("The dynasty-actionable version.")
 
-cur = szn[szn.season >= 2023]
+cur = szn[szn.season >= CUR_FROM]
 
 g = cur.groupby("quadrant").agg(seasons=("season", "size"), qb1_n=("is_qb1", "sum"),
                                 qb1_rate=("is_qb1", "mean")).round(3).reset_index()
@@ -237,8 +217,8 @@ for qd in QUADS:
        "epa_db", "fp_pg", "rank"]]
     show(out, 60)
 
-print("\n[Most recent season for every QB who started in 2025]")
-out = szn[szn.season == 2025].sort_values("qb_rank").assign(
+print(f"\n[Most recent season for every QB who started in {CONFIG['panel_last']}]")
+out = szn[szn.season == CONFIG["panel_last"]].sort_values("qb_rank").assign(
     player=lambda x: x.player_name,
     rush_pg=lambda x: x.rush_yd_pg.round(1),
     epa_db=lambda x: x.epa_per_db.round(3),
@@ -273,10 +253,12 @@ show(dead.player_name.value_counts().rename("n").to_frame().reset_index(), 25)
 szn[["player_name", "season", "round", "pick", "draft_day", "starts", "quadrant",
      "rush_yd_pg", "designed_yd_pg", "scramble_yd_pg", "epa_per_db", "any_a",
      "att_pg", "fp", "fp_per_game", "qb_rank", "is_qb1", "is_sfx"]].to_csv(
-    os.path.join(CONFIG["out_dir"], "qb_quadrants_by_season.csv"), index=False)
+    out_path("qb_quadrants_by_season.csv"), index=False)
 
-career_q.to_csv(os.path.join(CONFIG["out_dir"], "qb_quadrants_by_career.csv"), index=False)
-mig.to_csv(os.path.join(CONFIG["out_dir"], "qb_quadrant_migration.csv"), index=False)
+career_q.to_csv(out_path("qb_quadrants_by_career.csv"), index=False)
+mig.to_csv(out_path("qb_quadrant_migration.csv"), index=False)
 
 print(f"\n\nWrote three CSVs to {CONFIG['out_dir']}:")
-print("  qb_quadrants_by_season.csv\n  qb_quadrants_by_career.csv\n  qb_quadrant_migration.csv")
+for f in ("qb_quadrants_by_season.csv", "qb_quadrants_by_career.csv",
+          "qb_quadrant_migration.csv"):
+    print(f"  {os.path.basename(out_path(f))}")
