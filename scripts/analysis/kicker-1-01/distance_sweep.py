@@ -112,6 +112,25 @@ def main():
     print(f"  guarantee is not an extension of something kickers already do -")
     print(f"  it is a new thing entirely.")
 
+    sub("who is actually good from 60+?")
+    lg = fg_ever[fg_ever.dist.ge(60)]
+    print(f"  every attempt of 60 or more, 1999-2025: {len(lg)} attempts, "
+          f"{int(lg.made.sum())} made ({100 * lg.made.mean():.1f}%)")
+    lb = lg.groupby("kicker_player_name").agg(
+        att=("made", "size"), made=("made", "sum")).reset_index()
+    lb["pct"] = (100 * lb.made / lb.att).round(1)
+    print("\n  most makes from 60+:")
+    print(lb.nlargest(8, "made").sort_values(["made", "pct"], ascending=False)
+            .to_string(index=False))
+    print("\n  best percentage, minimum 4 attempts:")
+    print(lb[lb.att.ge(4)].nlargest(8, "pct").to_string(index=False))
+    pr = fg_ever[fg_ever.kicker_player_name.eq("M.Prater")]
+    print(f"\n  Matt Prater, for the record: {int(pr[pr.dist.ge(60)].made.sum())}"
+          f"/{len(pr[pr.dist.ge(60)])} from 60+, and his makes span "
+          f"{int(pr[pr.dist.ge(60) & pr.made].season.min())} to "
+          f"{int(pr[pr.dist.ge(60) & pr.made].season.max())}. He held the record")
+    print(f"  at 64 yards for eight years. Third in career 60+ makes, not first.")
+
     # ------------------------------------------------------- 2. the sweep
     hdr("2. THE SWEEP: WHAT EACH GUARANTEE DISTANCE IS WORTH")
 

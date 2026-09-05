@@ -33,6 +33,34 @@ yardline_100
   guarantee is not an extension of something kickers already do -
   it is a new thing entirely.
 
+-- who is actually good from 60+?
+  every attempt of 60 or more, 1999-2025: 171 attempts, 51 made (29.8%)
+
+  most makes from 60+:
+kicker_player_name  att  made   pct
+          B.Aubrey    9     6  66.7
+           B.Maher    4     4 100.0
+          M.Prater    5     3  60.0
+        G.Zuerlein   10     3  30.0
+          C.Little    2     2 100.0
+          H.Butker    3     2  66.7
+         J.Elliott    3     2  66.7
+            J.Slye    8     2  25.0
+
+  best percentage, minimum 4 attempts:
+kicker_player_name  att  made   pct
+           B.Maher    4     4 100.0
+          B.Aubrey    9     6  66.7
+          M.Prater    5     3  60.0
+        G.Zuerlein   10     3  30.0
+            J.Slye    8     2  25.0
+            W.Lutz    4     1  25.0
+          J.Tucker    9     2  22.2
+      S.Janikowski    9     2  22.2
+
+  Matt Prater, for the record: 3/5 from 60+, and his makes span 2013 to 2023. He held the record
+  at 64 yards for eight years. Third in career 60+ makes, not first.
+
 ==============================================================================
 2. THE SWEEP: WHAT EACH GUARANTEE DISTANCE IS WORTH
 ==============================================================================
