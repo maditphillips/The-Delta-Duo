@@ -57,6 +57,7 @@ python3 threshold.py    > THRESHOLD.txt    # the 3-vs-7 break-even, swept
 python3 verdict.py      > VERDICT.txt      # the bottom line, baselines matched
 python3 kick_early.py   > EARLY.txt        # "just kick as soon as you're in range"
 python3 distance_sweep.py > DISTANCE.txt   # what if the guarantee were 70 yards?
+python3 pick_curve.py   > PICKCURVE.txt    # which draft pick is he worth?
 ```
 
 `epa_common.py` holds the shared expected-points machinery all three use.
@@ -599,6 +600,67 @@ that survives a frozen-history study.
 −1.07 points a drive at 70 yards against −1.63 at 60, still −3.3 wins a
 season. Every down except fourth is negative even out at the 47-52. The value
 is on fourth down at any distance.
+
+## The two crossovers
+
+**How long does the guarantee have to be to beat the 1.01?** Running the
+distance sweep at one-yard resolution, on the like-for-like replacement-leg
+baseline:
+
+| Guarantee | Wins vs replacement leg | |
+|---|---|---|
+| 60 yds | 1.10 | |
+| **62.5 yds** | **1.28** | **matches the average 1.01 quarterback** |
+| 65 yds | 1.45 | |
+| **66.8 yds** | **1.59** | **matches the median** |
+| 70 yds | 1.87 | |
+
+**About 63 yards.** Three yards past the original question and the whole
+argument flips. Against an average leg rather than a replacement one it is 66
+and 70 yards respectively.
+
+**Which draft pick is he worth?** `pick_curve.py` builds a draft-value curve
+in wins: Pro Football Reference approximate value by pick, converted with a
+non-parametric fit of career AV against career wins above replacement,
+calibrated on quarterbacks where both measures exist. It reproduces the
+directly-measured groups closely — first-overall quarterbacks 15.8 measured
+against 17.2 predicted, quarterbacks picked 2-32 12.5 against 11.8, picked
+33+ 1.7 against 1.5.
+
+| Pick | Round | Career wins | Kept by drafting team |
+|---|---|---|---|
+| 1 | 1 | 12.43 | 8.63 |
+| 5 | 1 | 9.53 | 6.72 |
+| **7** | 1 | **8.4** | — |
+| 10 | 1 | 7.67 | 6.08 |
+| 16 | 1 | 6.23 | 4.89 |
+| 32 | 1 | 4.55 | 3.41 |
+| 64 | 2 | 2.32 | 1.61 |
+| 100 | 4 | 1.18 | 0.79 |
+| 200 | 7 | 0.19 | 0.20 |
+
+At 0.84 wins a season over a 10-year career — the median for a top-quartile
+kicker — he is worth **8.4 career wins, which crosses the curve at pick 7.**
+On the replacement-leg baseline (11.3 career wins) it is **pick 3**.
+
+| If he lasts | vs average leg | vs replacement leg |
+|---|---|---|
+| 6 seasons | pick 22 | pick 15 |
+| 8 seasons | pick 15 | pick 6 |
+| **10 seasons** | **pick 7** | **pick 3** |
+| 12 seasons | pick 4 | pick 1 |
+
+**This does not contradict "he loses to the 1.01."** Both are true because the
+top of the draft curve is steep. Pick 1 returns 12.4 career wins and pick 7
+returns 8.4; per season that is 1.28 against 0.84, a ratio of 1.52 — which
+matches the career ratio of 1.48. The two framings agree.
+
+Caveats: the conversion is fitted on quarterbacks, who are generally held to
+be *understated* by approximate value, so wins-per-AV is too generous applied
+to a guard or a safety. That inflates the curve and pushes the crossover
+later, making pick 7 a conservative answer. And this is the *expected* return
+of a slot — the spread around it is enormous, and 4% of second-rounders never
+play a down for the team that drafted them.
 
 ## Does the extra work actually arrive?
 
