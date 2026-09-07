@@ -46,12 +46,17 @@ SEASON, WEEK = 2026, 1
 # venue / kicker split, overridable: W_VENUE=0.5 python3 week1_kickers.py
 W_VENUE = float(os.environ.get("W_VENUE", 0.75))
 W_KICKER = 1.0 - W_VENUE
-# Attempts at which a kicker's own rate earns half weight. From the
-# year-to-year correlation of distance-adjusted FG% (r = 0.102 on 335
-# consecutive kicker-season pairs, both 20+ attempts): k = n(1-r)/r with a
-# typical n of 28. Raw FG% is even less reliable, r = 0.044, implying k = 600.
-# 250 is the generous end of the range.
-K_SHRINK = 250
+# Attempts at which a kicker's own rate earns half weight. The empirical value
+# from the year-to-year correlation of distance-adjusted FG% (r = 0.102, so
+# k = n(1-r)/r at a typical n of 28) is about 250; raw FG% implies 600. Lower
+# values trust the kicker more. Overridable.
+K_SHRINK = float(os.environ.get("K_SHRINK", 250))
+# "symmetric" shrinks every kicker toward the league average, which is the
+# statistically correct move but pulls BAD small-sample kickers up as well as
+# good ones down. "onesided" shrinks only kickers above average - a prove-it
+# rule that discounts small-sample hot numbers while letting a poor record
+# stand. Not standard statistics; a deliberate design choice.
+SHRINK_MODE = os.environ.get("SHRINK_MODE", "symmetric")
 SCHED = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 ROSTER = ("https://github.com/nflverse/nflverse-data/releases/download/"
           f"rosters/roster_{SEASON}.parquet")
@@ -144,7 +149,13 @@ def main():
     # ------------------------------------------------------------ scoring
     r["score"] = W_VENUE * r.venue_rate + W_KICKER * r.kicker_rate
     r["rel"] = r.k_att / (r.k_att + K_SHRINK)
-    r["kicker_shrunk"] = league + r.rel * (r.kicker_rate - league)
+    if SHRINK_MODE == "onesided":
+        # only discount kickers whose rate is ABOVE the league average
+        w = np.where(r.kicker_rate > league, r.rel, 1.0)
+    else:
+        w = r.rel
+    r["shrink_w"] = w
+    r["kicker_shrunk"] = league + w * (r.kicker_rate - league)
     r["score_shrunk"] = W_VENUE * r.venue_rate + W_KICKER * r.kicker_shrunk
     r = r.sort_values("score", ascending=False).reset_index(drop=True)
     r["rank"] = r.index + 1
@@ -179,7 +190,8 @@ def main():
 
     hdr("RANKING WITH THE KICKER TERM SHRUNK BY SAMPLE SIZE")
     print(f"  score = {W_VENUE:.2f} x venue + {W_KICKER:.2f} x [league + "
-          f"n/(n+{K_SHRINK}) x (kicker - league)]")
+          f"w x (kicker - league)],  w = n/(n+{K_SHRINK:.0f})")
+    print(f"  shrink mode: {SHRINK_MODE}")
     print("  Weights still sum to 1, so the score stays on the make-rate scale.")
     print(f"\n{'#':>3}  {'kicker':18} {'tm':4} {'role':8} {'venue':26} "
           f"{'venue':>7} {'shrunk':>7} {'score':>7}  {'as-spec':>8}")
@@ -201,7 +213,8 @@ def main():
     print("  term. Volume is the honest home for team quality, coach aggression")
     print("  and the short-leash effect.")
 
-    tag = f"{int(100 * W_VENUE)}_{int(100 * W_KICKER)}"
+    tag = (f"{int(100 * W_VENUE)}_{int(100 * W_KICKER)}"
+           f"_k{K_SHRINK:.0f}_{SHRINK_MODE}")
     r.to_csv(os.path.join(HERE, f"week{WEEK}_{SEASON}_kickers_{tag}.csv"),
              index=False)
     print(f"\n  wrote week{WEEK}_{SEASON}_kickers_{tag}.csv")
