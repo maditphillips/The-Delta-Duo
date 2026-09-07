@@ -103,6 +103,33 @@ on "new DC" narratives.
 A first-time play-caller with no history gets shrunk to the league mean rather
 than assigned a guess, and carries an explicit low-confidence flag.
 
+### Does the scheme layer actually improve rankings? Mostly no.
+
+The coefficients above measure how well a play-caller's tendencies predict his
+next team's tendencies. That is a fact about **scheme**, and it does not
+automatically mean the layer improves **player rankings**. Tested by ablation —
+same backtest, same seasons, scheme projection and regime features removed:
+
+| Position | Δ Spearman from keeping the play-caller layer | seasons it helped |
+|---|---|---|
+| TE | **+0.090** | 5 of 7 |
+| QB | +0.000 | 3 of 7 |
+| RB | −0.001 | 5 of 7 |
+| WR | −0.014 | 2 of 7 |
+| **All** | **+0.019** | **15 of 28** |
+
+Paired across 28 position-seasons: t = 1.44, p = 0.16; Wilcoxon p = 0.55. That
+is indistinguishable from noise. Only tight end shows a consistent gain, and
+that is one position on seven observations.
+
+**So the honest position is:** play-caller tendencies demonstrably travel, but
+in this build that knowledge does not translate into better weekly rankings
+except possibly at TE. Two readings are both live — either team-level scheme is
+largely already priced into a player's own prior-season usage, or the
+head-coach proxy is too blunt to carry the signal. Filling
+`config/playcallers.csv` with real coordinators is the experiment that
+separates them.
+
 ### The one curated input
 
 **No public dataset lists NFL play-callers.** What *is* verified data is the
@@ -215,7 +242,28 @@ comparison flatters whoever ranks fewer players.
 regret@12 (points per starter left on the bench by trusting the order); MAE and
 RMSE; CRPS via the quantile ladder; Brier score on `P(top-12)`.
 
-### Results
+### Results against actual finishes
+
+Everything is graded against **real week-1 stat lines** from nflverse, scored in
+the relevant format. Consensus is not the target — it is a second contestant
+graded against the same reality, and it is never a model feature.
+
+Model alone, on its own published depth, mean over 2019–2025:
+
+| Position | Spearman vs actual | of my top 12, finished top 12 | mean rank error | MAE (pts) |
+|---|---|---|---|---|
+| QB | 0.428 | 4.8 / 12 | 8.6 places | 6.3 |
+| RB | 0.514 | 5.1 / 12 | 13.0 places | 5.6 |
+| WR | 0.355 | 3.7 / 12 | 20.5 places | 6.4 |
+| TE | 0.436 | 6.4 / 12 | 8.6 places | 4.4 |
+
+That is what week 1 looks like honestly. Note the pool matters enormously: on
+the full rankable population — starters plus deep backups — Spearman reads
+0.69–0.77, but most of that is the trivial skill of ranking starters above men
+who never take a snap. Every number published here is on the narrower pool of
+players actually worth ranking.
+
+### Results against consensus
 
 Mean across 2019–2025 (`outputs/backtest/summary.csv`; MAE is omitted because consensus publishes a rank, not a points projection):
 
@@ -269,7 +317,10 @@ plus who is on the depth chart.
   least informed of the four. It is also the position where consensus beats the
   model by the widest margin on top-12 overlap.
 - **`config/playcallers.csv` is empty** (see §2). Every carryover number is
-  currently measured on head-coach changes.
+  currently measured on head-coach changes, which misses standalone coordinator
+  moves. This is also the open question behind the ablation result: the scheme
+  layer may be failing because the proxy is blunt, not because scheme is
+  irrelevant.
 - **n = 37** for the change-regime carryover fit. The coefficients are
   directionally useful, not precise. Bootstrap intervals are not yet computed.
 - **Independent player sampling** overstates the sharpness of `P(top-12)`.
