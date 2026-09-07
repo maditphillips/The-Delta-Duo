@@ -33,7 +33,7 @@ function RankList({
   return (
     <ChalkCard kicker={who} title={title} source={`${ordered.length} players ranked`}>
       <div className="scroll-x" style={{ maxHeight: 620, overflowY: "auto" }}>
-        <table className="chalk-table">
+        <table className="chalk-table cards-on-mobile">
           <thead>
             <tr>
               <th className="num">#</th>
@@ -50,15 +50,15 @@ function RankList({
               const shown = orderBy === "rankData" ? d : -d;
               return (
                 <tr key={r.player}>
-                  <td className="num font-retro text-lg" style={{ color }}>
+                  <td className="num font-retro text-lg" data-label="Rank" style={{ color }}>
                     {r[orderBy]}
                   </td>
-                  <td style={{ whiteSpace: "nowrap" }}>{r.player}</td>
-                  <td style={{ color: "var(--ink-dim)" }}>{r.team ?? ""}</td>
-                  <td className="num" style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400 }}>
+                  <td data-primary="">{r.player}</td>
+                  <td data-label="Team" style={{ color: "var(--ink-dim)" }}>{r.team ?? ""}</td>
+                  <td className="num" data-label="Delta" style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400 }}>
                     {shown === 0 ? "—" : shown > 0 ? `+${shown}` : shown}
                   </td>
-                  <td className="text-sm" style={{ color: "var(--ink-dim)", minWidth: 200 }}>
+                  <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)", minWidth: 200 }}>
                     {r[noteKey] ?? ""}
                   </td>
                 </tr>

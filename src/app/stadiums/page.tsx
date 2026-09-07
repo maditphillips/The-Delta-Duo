@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 export default function StadiumsPage() {
   return (
     <div>
-      <div className="mb-8 pt-4">
-        <h1 className="neon-title text-3xl sm:text-4xl">
+      <div className="mb-6 pt-2 sm:mb-8 sm:pt-4">
+        <h1 className="neon-title text-2xl sm:text-4xl">
           The Kicking Ladder
         </h1>
-        <p className="mt-2 max-w-3xl text-xl" style={{ color: "var(--ink-dim)" }}>
+        <p className="mt-2 max-w-3xl text-base sm:text-xl" style={{ color: "var(--ink-dim)" }}>
           Which stadiums are actually hard to kick in — and which ones just have the reputation.
         </p>
         <p className="mt-2 max-w-3xl text-sm" style={{ color: "var(--ink-faint)" }}>

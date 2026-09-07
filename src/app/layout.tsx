@@ -25,9 +25,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Nav />
-        <main className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6">{children}</main>
+        <main className="mx-auto max-w-6xl px-3 pb-16 pt-4 sm:px-6 sm:pb-24 sm:pt-6">{children}</main>
         <footer
-          className="mx-auto flex max-w-6xl flex-wrap items-baseline justify-between gap-2 px-6 pb-10 text-xs"
+          className="mx-auto flex max-w-6xl flex-wrap items-baseline justify-between gap-2 px-4 pb-10 text-xs sm:px-6"
           style={{ color: "var(--ink-faint)" }}
         >
           <span>

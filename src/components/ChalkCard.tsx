@@ -16,11 +16,11 @@ export default function ChalkCard({
   alt?: boolean;
 }) {
   return (
-    <section className={`${alt ? "chalk-card-alt" : "chalk-card"} px-5 py-5 sm:px-7 sm:py-6`}>
+    <section className={`${alt ? "chalk-card-alt" : "chalk-card"} px-3 py-4 sm:px-7 sm:py-6`}>
       <div className="relative">
         {kicker && <div className="chalk-kicker mb-1.5">{kicker}</div>}
         {title && (
-          <h2 className="font-sketch mb-5 text-2xl sm:text-[1.7rem]" style={{ color: "var(--ink)" }}>
+          <h2 className="font-sketch mb-4 text-xl sm:mb-5 sm:text-[1.7rem]" style={{ color: "var(--ink)" }}>
             {title}
           </h2>
         )}

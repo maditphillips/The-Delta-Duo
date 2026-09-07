@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default function DataVsVibesPage() {
   return (
     <div>
-      <div className="mb-8 pt-4">
-        <h1 className="neon-title text-3xl sm:text-4xl">Weekly Data vs. Vibe Rankings</h1>
-        <p className="mt-2 max-w-3xl text-xl" style={{ color: "var(--ink-dim)" }}>
+      <div className="mb-6 pt-2 sm:mb-8 sm:pt-4">
+        <h1 className="neon-title text-2xl sm:text-4xl">Weekly Data vs. Vibe Rankings</h1>
+        <p className="mt-2 max-w-3xl text-base sm:text-xl" style={{ color: "var(--ink-dim)" }}>
           Two rankings, same players, every week. Wilson ranks on the data alone. MC ranks on the vibes alone. The gap between
           them is the delta.
         </p>

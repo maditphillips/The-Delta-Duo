@@ -131,7 +131,7 @@ export default function RankingsBoard() {
           </div>
 
           <div className="scroll-x" style={{ maxHeight: 640, overflowY: "auto" }}>
-            <table className="chalk-table">
+            <table className="chalk-table cards-on-mobile">
               <thead>
                 <tr>
                   <th className="num">{position === "All" ? "Rank" : "Pos rank"}</th>
@@ -147,17 +147,21 @@ export default function RankingsBoard() {
               <tbody>
                 {rows.map((r) => (
                   <tr key={`${r.rank}-${r.player}`}>
-                    <td className="num font-sketch text-lg" style={{ color: r.rank <= 24 ? "var(--chalk-gold)" : "var(--ink)" }}>
+                    <td
+                      className="num font-sketch text-lg"
+                      data-label={position === "All" ? "Rank" : "Pos rank"}
+                      style={{ color: r.rank <= 24 ? "var(--chalk-gold)" : "var(--ink)" }}
+                    >
                       {position === "All" ? r.rank : (r.posRank ?? r.rank)}
                     </td>
                     {position === "All" && (
-                      <td style={{ color: "var(--ink-dim)" }}>{r.posRank ?? r.pos ?? ""}</td>
+                      <td data-label="Pos" style={{ color: "var(--ink-dim)" }}>{r.posRank ?? r.pos ?? ""}</td>
                     )}
-                    <td style={{ whiteSpace: "nowrap" }}>{r.player}</td>
-                    <td>{r.team ?? ""}</td>
-                    <td className="num">{r.bye ?? ""}</td>
-                    <td style={{ whiteSpace: "nowrap", color: tierColors[r.tier ?? ""] ?? "var(--ink-dim)" }}>{r.tier ?? ""}</td>
-                    <td style={{ whiteSpace: "nowrap" }}>
+                    <td data-primary="" style={{ whiteSpace: "nowrap" }}>{r.player}</td>
+                    <td data-label="Team">{r.team ?? ""}</td>
+                    <td className="num" data-label="Bye">{r.bye ?? ""}</td>
+                    <td data-label="Tier" style={{ whiteSpace: "nowrap", color: tierColors[r.tier ?? ""] ?? "var(--ink-dim)" }}>{r.tier ?? ""}</td>
+                    <td data-label="Flag" style={{ whiteSpace: "nowrap" }}>
                       {r.flag ? (
                         <span
                           className="rounded px-1.5 py-0.5 text-xs"
@@ -170,7 +174,7 @@ export default function RankingsBoard() {
                         </span>
                       ) : null}
                     </td>
-                    <td className="text-sm" style={{ color: "var(--ink-dim)", minWidth: 260 }}>
+                    <td className="text-sm" data-label="Note" data-block="" style={{ color: "var(--ink-dim)", minWidth: 260 }}>
                       {r.note ?? ""}
                     </td>
                   </tr>

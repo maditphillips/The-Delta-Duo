@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 export default function ExplorerPage() {
   return (
     <div>
-      <div className="mb-8 pt-4">
-        <h1 className="neon-title text-3xl sm:text-4xl">
+      <div className="mb-6 pt-2 sm:mb-8 sm:pt-4">
+        <h1 className="neon-title text-2xl sm:text-4xl">
           Player Explorer
         </h1>
-        <p className="mt-2 max-w-3xl text-xl" style={{ color: "var(--ink-dim)" }}>
+        <p className="mt-2 max-w-3xl text-base sm:text-xl" style={{ color: "var(--ink-dim)" }}>
           Every category in the studies, as a list of names. Stack filters and see exactly who falls in the bucket.
         </p>
         <p className="mt-2 max-w-3xl text-sm" style={{ color: "var(--ink-faint)" }}>

@@ -204,10 +204,6 @@ footer {
   white-space: nowrap;
 }
 .chalk-tab:hover {
-  border-color: var(--ink-ghost);
-  color: var(--ink);
-}
-.chalk-tab:hover {
   border-color: rgba(248, 6, 147, 0.5);
   color: var(--ink);
 }
@@ -298,4 +294,182 @@ footer {
 
 ::selection {
   background: rgba(248, 6, 147, 0.5);
+}
+
+/* ————————————————————————————————————————————————
+   MOBILE
+   The desktop layout is untouched above 640px. Below it the boards
+   shrink their frames, tables become stacked cards where a table would
+   be unusable, and the nav becomes a swipeable strip.
+   ———————————————————————————————————————————————— */
+
+/* horizontal tab strip on phones: swipe instead of an 8-row wrap */
+.nav-strip {
+  display: flex;
+  gap: 0.375rem;
+}
+@media (max-width: 767px) {
+  .nav-strip {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -1rem;
+    padding: 0.125rem 1rem 0.5rem;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 20px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 20px), transparent);
+  }
+  .nav-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .nav-strip .chalk-tab {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+    border-color: rgba(242, 238, 226, 0.18);
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 0.95rem;
+  }
+
+  /* thinner wood frame so the slate keeps the width */
+  .chalk-card,
+  .chalk-card-alt {
+    border-width: 7px;
+    border-radius: 10px;
+  }
+
+  /* tap targets */
+  .chalk-btn {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.85rem;
+  }
+  .chalk-input {
+    font-size: 16px; /* stops iOS Safari zooming on focus */
+  }
+
+  .chalk-table {
+    font-size: 0.85rem;
+  }
+  .chalk-table th,
+  .chalk-table td {
+    padding: 0.32rem 0.5rem;
+  }
+
+  /* a swipe hint for the dense study tables that stay tabular */
+  .scroll-x {
+    scrollbar-width: thin;
+  }
+
+  /* ——— table → cards ———
+     Opt in with .cards-on-mobile; every <td> needs data-label. */
+  .chalk-table.cards-on-mobile,
+  .chalk-table.cards-on-mobile tbody,
+  .chalk-table.cards-on-mobile tr,
+  .chalk-table.cards-on-mobile td {
+    display: block;
+    width: 100%;
+  }
+  .chalk-table.cards-on-mobile thead {
+    display: none;
+  }
+  .chalk-table.cards-on-mobile tr {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(242, 238, 226, 0.18);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.14);
+    padding: 0.5rem 0.7rem;
+    margin-bottom: 0.6rem;
+  }
+  .chalk-table.cards-on-mobile tr:hover {
+    background: rgba(0, 0, 0, 0.14);
+  }
+  .chalk-table.cards-on-mobile td {
+    border: 0;
+    padding: 0.15rem 0;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .chalk-table.cards-on-mobile td::before {
+    content: attr(data-label);
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 0 0 auto;
+  }
+  /* the headline cell of each card: big, no label, first in the stack */
+  .chalk-table.cards-on-mobile td[data-primary] {
+    display: block;
+    order: -2;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    color: var(--ink);
+    padding-bottom: 0.35rem;
+    border-bottom: 1px dashed rgba(242, 238, 226, 0.14);
+    margin-bottom: 0.35rem;
+  }
+  /* rank sits right under the name */
+  .chalk-table.cards-on-mobile td[data-label="Rank"],
+  .chalk-table.cards-on-mobile td[data-label="Pos rank"] {
+    order: -1;
+  }
+  .chalk-table.cards-on-mobile td[data-primary]::before {
+    content: none;
+  }
+  /* long-form cells stack their label above the text */
+  .chalk-table.cards-on-mobile td[data-block] {
+    display: block;
+  }
+  .chalk-table.cards-on-mobile td[data-block]::before {
+    display: block;
+    margin-top: 0.25rem;
+    margin-bottom: 0.1rem;
+  }
+  /* desktop min-widths must not blow out a phone card */
+  .chalk-table.cards-on-mobile td {
+    min-width: 0 !important;
+    white-space: normal !important;
+  }
+
+  /* hide cells that are noise on a phone */
+  .chalk-table.cards-on-mobile td[data-hide-mobile] {
+    display: none;
+  }
+  /* empty cells shouldn't render a lonely label */
+  .chalk-table.cards-on-mobile td:empty {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* recharts renders SVG text: shrink ticks/labels so axes stop colliding */
+  .recharts-cartesian-axis-tick text,
+  .recharts-label,
+  .recharts-legend-item-text {
+    font-size: 10px !important;
+  }
+  .recharts-label-list text {
+    font-size: 10px !important;
+  }
+  /* board footer row wraps rather than squeezing */
+  .chalk-source {
+    font-size: 0.62rem;
+  }
+  .chalk-kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+  }
+  .chalk-annotation {
+    font-size: 1rem;
+  }
 }
