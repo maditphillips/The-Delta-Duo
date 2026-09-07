@@ -30,14 +30,14 @@ const dashboards = [
 const otherTabs = [
   {
     href: "/data-vs-vibes",
-    label: "Weekly Rankings",
+    label: "Weekly Data vs. Vibes",
     blurb:
       "Every week, two rankings per position: Wilson's built purely from the data, MC's built purely from the vibes — plus the delta between them.",
     color: "var(--accent-2-lt)",
   },
   {
     href: "/rankings",
-    label: "Rankings",
+    label: "Season Rankings",
     blurb:
       "The season-long redraft boards — PPR, Half PPR, and Superflex — every player, tier, bye, and the delta note behind each call.",
     color: "var(--accent)",

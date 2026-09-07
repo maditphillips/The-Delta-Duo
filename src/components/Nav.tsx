@@ -10,8 +10,8 @@ const tabs = [
   { href: "/running-back", label: "Running Back" },
   { href: "/explorer", label: "Player Explorer" },
   { href: "/stadiums", label: "Stadiums" },
-  { href: "/data-vs-vibes", label: "Weekly Rankings" },
-  { href: "/rankings", label: "Rankings" },
+  { href: "/data-vs-vibes", label: "Weekly Data vs. Vibes" },
+  { href: "/rankings", label: "Season Rankings" },
 ];
 
 export default function Nav() {

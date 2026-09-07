@@ -332,6 +332,17 @@ footer {
   }
 }
 
+/* narrow laptops: tighten the tabs so all eight hold one row */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .nav-strip .chalk-tab {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.82rem;
+  }
+  .nav-strip {
+    gap: 0.2rem;
+  }
+}
+
 @media (max-width: 640px) {
   body {
     font-size: 0.95rem;
