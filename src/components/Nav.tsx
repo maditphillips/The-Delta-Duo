@@ -10,20 +10,23 @@ const tabs = [
   { href: "/running-back", label: "Running Back" },
   { href: "/explorer", label: "Player Explorer" },
   { href: "/stadiums", label: "Stadiums" },
+  { href: "/data-vs-vibes", label: "Data vs. Vibes" },
   { href: "/rankings", label: "Rankings" },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
   return (
-    <header className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <Link href="/" className="leading-none">
-          <span className="font-sketch block text-4xl" style={{ color: "var(--ink)" }}>
-            The Delta Duo
-          </span>
-          <span className="mt-1 block text-xs tracking-[0.28em] uppercase" style={{ color: "var(--accent)" }}>
-            fantasy football, measured
+    <header className="mx-auto max-w-6xl px-4 pt-6 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Link href="/" className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/delta-duo-badge.png" alt="" aria-hidden className="h-14 w-auto object-contain" />
+          <span className="leading-none">
+            <span className="neon-title block text-3xl">The Delta Duo</span>
+            <span className="mt-1.5 block text-[0.65rem] tracking-[0.28em] uppercase" style={{ color: "var(--accent-3)" }}>
+              Wilson does the data · MC does the vibes
+            </span>
           </span>
         </Link>
         <nav className="flex flex-wrap gap-1.5 text-sm">
@@ -37,7 +40,7 @@ export default function Nav() {
           })}
         </nav>
       </div>
-      <div className="mt-4 h-px w-full" style={{ background: "var(--ink-ghost)" }} />
+      <div className="neon-divider mt-4" />
     </header>
   );
 }

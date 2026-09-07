@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Papa from "papaparse";
 import ChalkCard from "@/components/ChalkCard";
 import { CHALK } from "@/components/charts/theme";
 import {
@@ -10,11 +9,9 @@ import {
   flagColors,
   formatLabels,
   formatSublabels,
-  normalizeCsvRows,
   tierColors,
   type Format,
   type PositionFilter,
-  type RankingRow,
   type RankingSet,
 } from "@/lib/rankings";
 
@@ -50,9 +47,7 @@ export default function RankingsBoard() {
   const [format, setFormat] = useState<Format>("ppr");
   const [position, setPosition] = useState<PositionFilter>("All");
   const [state, setState] = useState<LoadState>({ status: "loading" });
-  const [showUpload, setShowUpload] = useState(false);
   const [filter, setFilter] = useState("");
-  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,7 +57,7 @@ export default function RankingsBoard() {
     return () => {
       cancelled = true;
     };
-  }, [format, refresh]);
+  }, [format]);
 
   const rows = useMemo(() => {
     if (state.status !== "ready") return [];
@@ -96,13 +91,7 @@ export default function RankingsBoard() {
             {formatLabels[f]}
           </button>
         ))}
-        <span className="grow" />
-        <button className="chalk-btn" onClick={() => setShowUpload((v) => !v)}>
-          {showUpload ? "Hide upload" : "✏️ Upload update"}
-        </button>
       </div>
-
-      {showUpload && <UploadPanel format={format} onUploaded={() => setRefresh((r) => r + 1)} />}
 
       {state.status === "loading" && (
         <div className="py-14 text-center text-xl" style={{ color: "var(--ink-dim)" }}>
@@ -197,134 +186,5 @@ export default function RankingsBoard() {
         </ChalkCard>
       )}
     </div>
-  );
-}
-
-function UploadPanel({ format, onUploaded }: { format: Format; onUploaded: () => void }) {
-  const [rows, setRows] = useState<RankingRow[]>([]);
-  const [filename, setFilename] = useState<string>("");
-  const [key, setKey] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
-
-  const onFile = (file: File) => {
-    setMessage(null);
-    setFilename(file.name);
-    Papa.parse<Record<string, unknown>>(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (result) => {
-        const normalized = normalizeCsvRows(result.data);
-        setRows(normalized);
-        if (normalized.length === 0) {
-          setMessage({ ok: false, text: "No usable rows found — the CSV needs at least a player column." });
-        }
-      },
-      error: (err) => setMessage({ ok: false, text: `Couldn't parse that file: ${err.message}` }),
-    });
-  };
-
-  const upload = async () => {
-    setBusy(true);
-    setMessage(null);
-    try {
-      const res = await fetch("/api/rankings", {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-upload-key": key },
-        body: JSON.stringify({ format, filename, rows }),
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        setMessage({ ok: false, text: json.hint ? `${json.error} — ${json.hint}` : (json.error ?? `HTTP ${res.status}`) });
-      } else {
-        setMessage({ ok: true, text: `Board updated — ${json.rows} players on the ${formatLabels[format]} board.` });
-        setRows([]);
-        setFilename("");
-        onUploaded();
-      }
-    } catch (e) {
-      setMessage({ ok: false, text: e instanceof Error ? e.message : "network error" });
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <ChalkCard title={`Upload a ${formatLabels[format]} update`} alt>
-      <p className="mb-4 text-sm" style={{ color: "var(--ink-dim)" }}>
-        CSV in the board format — <code>overall_rank, player, pos, pos_rank, team, bye, tier, delta_note</code> (headers matched
-        loosely; only <code>player</code> is required). The upload replaces the live {formatLabels[format]} board instantly, no
-        redeploy; the committed CSVs in <code>data/rankings/</code> remain the fallback. Requires Supabase +{" "}
-        <code>RANKINGS_UPLOAD_KEY</code> to be configured.
-      </p>
-      <div className="flex flex-wrap items-center gap-3">
-        <label className="chalk-btn cursor-pointer">
-          Choose CSV
-          <input
-            type="file"
-            accept=".csv,text/csv"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
-          />
-        </label>
-        {filename && (
-          <span style={{ color: "var(--ink-dim)" }}>
-            {filename} · {rows.length} players parsed
-          </span>
-        )}
-      </div>
-      {rows.length > 0 && (
-        <>
-          <div className="scroll-x mt-4" style={{ maxHeight: 220, overflowY: "auto" }}>
-            <table className="chalk-table">
-              <thead>
-                <tr>
-                  <th className="num">Rank</th>
-                  <th>Player</th>
-                  <th>Pos</th>
-                  <th>Team</th>
-                  <th className="num">Bye</th>
-                  <th>Tier</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.slice(0, 12).map((r) => (
-                  <tr key={`${r.rank}-${r.player}`}>
-                    <td className="num">{r.rank}</td>
-                    <td>{r.player}</td>
-                    <td>{r.posRank ?? r.pos ?? ""}</td>
-                    <td>{r.team ?? ""}</td>
-                    <td className="num">{r.bye ?? ""}</td>
-                    <td>{r.tier ?? ""}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {rows.length > 12 && (
-              <div className="py-2 text-sm" style={{ color: "var(--ink-faint)" }}>
-                …and {rows.length - 12} more
-              </div>
-            )}
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <input
-              className="chalk-input"
-              type="password"
-              placeholder="Upload key"
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-            />
-            <button className="chalk-btn" disabled={busy || !key || rows.length === 0} onClick={upload}>
-              {busy ? "Chalking it up…" : `Publish ${rows.length} players`}
-            </button>
-          </div>
-        </>
-      )}
-      {message && (
-        <p className="mt-3" style={{ color: message.ok ? CHALK.green : CHALK.pink }}>
-          {message.text}
-        </p>
-      )}
-    </ChalkCard>
   );
 }

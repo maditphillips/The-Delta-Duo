@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 110" width="120" height="110">
+  <defs>
+    <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff9331"/>
+      <stop offset="55%" stop-color="#ff6a3d"/>
+      <stop offset="100%" stop-color="#ff2fa6"/>
+    </linearGradient>
+    <clipPath id="tri">
+      <path d="M60 14 L106 92 L14 92 Z"/>
+    </clipPath>
+  </defs>
+  <!-- cyan outer glow triangle -->
+  <path d="M60 6 L112 96 L8 96 Z" fill="none" stroke="#45e3ff" stroke-width="3" stroke-linejoin="round" opacity="0.95"/>
+  <!-- pink inner triangle -->
+  <path d="M60 12 L107.5 94 L12.5 94 Z" fill="none" stroke="#ff2fa6" stroke-width="4" stroke-linejoin="round"/>
+  <!-- sunset fill with horizon bars -->
+  <g clip-path="url(#tri)">
+    <path d="M60 14 L106 92 L14 92 Z" fill="url(#sunset)"/>
+    <circle cx="60" cy="58" r="16" fill="#ffe9a8" opacity="0.9"/>
+    <g stroke="#0c0e0d" stroke-width="3">
+      <line x1="10" y1="34" x2="110" y2="34"/>
+      <line x1="10" y1="44" x2="110" y2="44"/>
+      <line x1="10" y1="54" x2="110" y2="54"/>
+      <line x1="10" y1="64" x2="110" y2="64"/>
+      <line x1="10" y1="74" x2="110" y2="74"/>
+      <line x1="10" y1="84" x2="110" y2="84"/>
+    </g>
+  </g>
+  <!-- football at the base -->
+  <ellipse cx="60" cy="92" rx="17" ry="10" fill="#0c0e0d" stroke="#ff9331" stroke-width="2.5"/>
+  <line x1="52" y1="92" x2="68" y2="92" stroke="#f2eee2" stroke-width="2"/>
+  <g stroke="#f2eee2" stroke-width="1.6">
+    <line x1="55" y1="89.5" x2="55" y2="94.5"/>
+    <line x1="60" y1="89.5" x2="60" y2="94.5"/>
+    <line x1="65" y1="89.5" x2="65" y2="94.5"/>
+  </g>
+</svg>

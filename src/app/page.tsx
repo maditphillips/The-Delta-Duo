@@ -31,14 +31,45 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10">
       <div className="pt-6 text-center">
-        <h1 className="font-sketch mx-auto max-w-3xl text-4xl leading-tight sm:text-5xl" style={{ color: "var(--ink)" }}>
-          The draft decides who plays.
-          <br />
-          <span style={{ color: "var(--accent)" }}>It does not decide who is good.</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/delta-duo-logo.png" alt="The Delta Duo" className="mx-auto mb-8 w-full max-w-sm object-contain" />
+        <h1 className="neon-title mx-auto max-w-3xl text-3xl leading-tight sm:text-4xl">
+          We don&apos;t draft players. We draft deltas.
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-xl leading-relaxed" style={{ color: "var(--ink-dim)" }}>
+        <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed" style={{ color: "var(--ink-dim)" }}>
+          A delta is a measurable distance between two values. We find the ones that matter: the gap between where consensus
+          has a player and where he actually belongs.
+        </p>
+        <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed" style={{ color: "var(--ink-faint)" }}>
           {anchorClaim}
         </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="chalk-inset px-6 py-5" style={{ borderColor: "rgba(69,227,255,0.35)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-3)" }}>
+            Wilson
+          </div>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-3)" }}>
+            the data
+          </div>
+          <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
+            Data scientist. Makes every call with the numbers — the studies, the models, the base rates. If it isn&apos;t
+            measurable, it isn&apos;t an argument.
+          </p>
+        </div>
+        <div className="chalk-inset px-6 py-5" style={{ borderColor: "rgba(255,47,166,0.4)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-2)" }}>
+            MC
+          </div>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-2)" }}>
+            the vibes
+          </div>
+          <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
+            Makes every call with the vibes — the film feel, the locker-room reads, the gut. Some things the numbers
+            can&apos;t see yet.
+          </p>
+        </div>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">

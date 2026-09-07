@@ -11,7 +11,7 @@ export default function ExplorerPage() {
   return (
     <div>
       <div className="mb-8 pt-4">
-        <h1 className="font-sketch text-3xl sm:text-4xl" style={{ color: "var(--ink)" }}>
+        <h1 className="neon-title text-3xl sm:text-4xl">
           Player Explorer
         </h1>
         <p className="mt-2 max-w-3xl text-xl" style={{ color: "var(--ink-dim)" }}>
