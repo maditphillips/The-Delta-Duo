@@ -1,0 +1,5 @@
+# Downloaded nflverse/DynastyProcess data and fitted intermediates.
+# Everything here is reproducible with `python -m dd.cli ingest`.
+.cache/
+__pycache__/
+*.pyc
