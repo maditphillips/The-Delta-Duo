@@ -1,0 +1,165 @@
+
+====================================================================================================
+WEEK 1, 2026 - KICKER RANKING
+====================================================================================================
+model            : score = 0.50 x venue rate + 0.50 x kicker rate
+league average   : 0.8517 (all regular-season attempts, 2023-2025)
+venue rate       : visPct from stadiums.ts for a visitor, visPct + gap for the home kicker
+kicker rate      : career REGULAR-SEASON field goal percentage, blocks included
+games            : 16
+
+-- gaps in the inputs, and how they are filled
+  MEL00 (Melbourne Cricket Ground) has no entry in stadiums.ts - SF visitor
+  MEL00 (Melbourne Cricket Ground) has no entry in stadiums.ts - LA home
+  VEG00 (Allegiant Stadium) has no entry in stadiums.ts - MIA visitor
+  VEG00 (Allegiant Stadium) has no entry in stadiums.ts - LV home
+    -> venue rate set to the league average, 0.8517
+  Trey Smack (GB) has no regular-season NFL attempts
+  Drew Stevens (WAS) has no regular-season NFL attempts
+  Dominic Zvada (NYG) has no regular-season NFL attempts
+    -> kicker rate set to the league average, 0.8517
+
+====================================================================================================
+THE RANKING, AS SPECIFIED
+====================================================================================================
+  #  kicker             tm   role     venue                        venue    kick  att                         calculation   score
+  1  Spencer Shrader    IND  home     Lucas Oil Stadium           0.8790  0.9474   19           0.8790x0.50 + 0.9474x0.50  0.9132
+  2  Cameron Dicker     LAC  home     SoFi Stadium                0.8750  0.9348  138           0.8750x0.50 + 0.9348x0.50  0.9049
+  3  Harrison Mevis     LA   home     Melbourne Cricket Ground    0.8517  0.9231   13           0.8517x0.50 + 0.9231x0.50  0.8874
+  4  Cam Little         JAX  home     EverBank Stadium            0.8490  0.9048   63           0.8490x0.50 + 0.9048x0.50  0.8769
+  5  Andre Szmyt        CLE  visitor  EverBank Stadium            0.8630  0.8889   27           0.8630x0.50 + 0.8889x0.50  0.8759
+  6  Eddy Pineiro       SF   visitor  Melbourne Cricket Ground    0.8517  0.8968  155           0.8517x0.50 + 0.8968x0.50  0.8742
+  7  Brandon Aubrey     DAL  visitor  MetLife Stadium             0.8650  0.8819  127           0.8650x0.50 + 0.8819x0.50  0.8734
+  8  Chris Boswell      PIT  home     Acrisure Stadium            0.8610  0.8768  341           0.8610x0.50 + 0.8768x0.50  0.8689
+  9  Will Reichard      MIN  home     U.S. Bank Stadium           0.8530  0.8769   65           0.8530x0.50 + 0.8769x0.50  0.8650
+ 10  Jake Bates         DET  home     Ford Field                  0.8880  0.8413   63           0.8880x0.50 + 0.8413x0.50  0.8646
+ 11  Tyler Loop         BAL  visitor  Lucas Oil Stadium           0.8460  0.8824   34           0.8460x0.50 + 0.8824x0.50  0.8642
+ 12  Riley Patterson    MIA  visitor  Allegiant Stadium           0.8517  0.8738  103           0.8517x0.50 + 0.8738x0.50  0.8627
+ 13  Jason Myers        SEA  home     Lumen Field                 0.8690  0.8559  347           0.8690x0.50 + 0.8559x0.50  0.8625
+ 14  Trey Smack         GB   visitor  U.S. Bank Stadium           0.8730  0.8517    0           0.8730x0.50 + 0.8517x0.50  0.8623
+ 15  Chase McLaughlin   TB   visitor  Paycor Stadium              0.8710  0.8495  186           0.8710x0.50 + 0.8495x0.50  0.8602
+ 16  Harrison Butker    KC   home     GEHA Field at Arrowhead St  0.8330  0.8838  284           0.8330x0.50 + 0.8838x0.50  0.8584
+ 17  Drew Stevens       WAS  visitor  Lincoln Financial Field     0.8650  0.8517    0           0.8650x0.50 + 0.8517x0.50  0.8583
+ 18  Ryan Fitzgerald    CAR  home     Bank of America Stadium     0.8840  0.8276   29           0.8840x0.50 + 0.8276x0.50  0.8558
+ 19  Ka'imi Fairbairn   HOU  home     NRG Stadium                 0.8330  0.8763  291           0.8330x0.50 + 0.8763x0.50  0.8546
+ 20  Wil Lutz           DEN  visitor  GEHA Field at Arrowhead St  0.8470  0.8610  295           0.8470x0.50 + 0.8610x0.50  0.8540
+ 21  Cairo Santos       CHI  visitor  Bank of America Stadium     0.8530  0.8526  312           0.8530x0.50 + 0.8526x0.50  0.8528
+ 22  Tyler Bass         BUF  visitor  NRG Stadium                 0.8600  0.8452  155           0.8600x0.50 + 0.8452x0.50  0.8526
+ 23  Daniel Carlson     NO   visitor  Ford Field                  0.8320  0.8687  259           0.8320x0.50 + 0.8687x0.50  0.8504
+ 24  Joey Slye          TEN  home     Nissan Stadium              0.8850  0.8140  215           0.8850x0.50 + 0.8140x0.50  0.8495
+ 25  Dominic Zvada      NYG  home     MetLife Stadium             0.8460  0.8517    0           0.8460x0.50 + 0.8517x0.50  0.8488
+ 26  Evan McPherson     CIN  home     Paycor Stadium              0.8630  0.8322  143           0.8630x0.50 + 0.8322x0.50  0.8476
+ 27  Matt Gay           LV   home     Allegiant Stadium           0.8517  0.8426  216           0.8517x0.50 + 0.8426x0.50  0.8471
+ 28  Jake Elliott       PHI  home     Lincoln Financial Field     0.8530  0.8372  258           0.8530x0.50 + 0.8372x0.50  0.8451
+ 29  Nick Folk          ATL  visitor  Acrisure Stadium            0.8370  0.8501  507           0.8370x0.50 + 0.8501x0.50  0.8435
+ 30  Blake Grupe        NYJ  visitor  Nissan Stadium              0.8660  0.8190  105           0.8660x0.50 + 0.8190x0.50  0.8425
+ 31  Andy Borregales    NE   visitor  Lumen Field                 0.8300  0.8438   32           0.8300x0.50 + 0.8438x0.50  0.8369
+ 32  Chad Ryland        ARI  visitor  SoFi Stadium                0.8990  0.7667   90           0.8990x0.50 + 0.7667x0.50  0.8328
+
+====================================================================================================
+HOW RELIABLE IS A KICKER'S OWN FIELD GOAL PERCENTAGE?
+====================================================================================================
+  Year-to-year correlation of a kicker's FG%, 335 consecutive
+  kicker-season pairs with 20+ attempts each, 2010-2025:
+    raw FG%                            r = +0.044
+    FG% over expected (distance-adj)   r = +0.102
+
+  Both are near zero. True kicking skill has a spread of roughly 1.8
+  percentage points, while a 28-attempt season carries 6.8 points of
+  pure binomial noise. Almost all the visible spread between kickers
+  is sampling, not ability.
+
+  So a kicker's own rate earns half weight only at ~250 career
+  attempts. What that does to this slate:
+
+kicker              att     raw  reliab  shrunk  as-spec  shrunk
+Trey Smack            0  0.8517   0.000  0.8517       14       8
+Drew Stevens          0  0.8517   0.000  0.8517       17      14
+Dominic Zvada         0  0.8517   0.000  0.8517       25      28
+Harrison Mevis       13  0.9231   0.049  0.8552        3      21
+Spencer Shrader      19  0.9474   0.071  0.8584        1       3
+Andre Szmyt          27  0.8889   0.097  0.8553        5      13
+Ryan Fitzgerald      29  0.8276   0.104  0.8492       18       4
+Andy Borregales      32  0.8438   0.113  0.8508       31      32
+Tyler Loop           34  0.8824   0.120  0.8553       11      25
+Jake Bates           63  0.8413   0.201  0.8496       10       2
+Cam Little           63  0.9048   0.201  0.8624        4      15
+Will Reichard        65  0.8769   0.206  0.8569        9      16
+Chad Ryland          90  0.7667   0.265  0.8292       32       5
+Riley Patterson     103  0.8738   0.292  0.8581       12      17
+Blake Grupe         105  0.8190   0.296  0.8420       30      19
+Brandon Aubrey      127  0.8819   0.337  0.8619        7       7
+Cameron Dicker      138  0.9348   0.356  0.8812        2       1
+Evan McPherson      143  0.8322   0.364  0.8446       26      20
+Eddy Pineiro        155  0.8968   0.383  0.8689        6      11
+Tyler Bass          155  0.8452   0.383  0.8492       22      18
+Chase McLaughlin    186  0.8495   0.427  0.8507       15      10
+Joey Slye           215  0.8140   0.462  0.8342       24      12
+Matt Gay            216  0.8426   0.464  0.8475       27      26
+Jake Elliott        258  0.8372   0.508  0.8443       28      29
+Daniel Carlson      259  0.8687   0.509  0.8603       23      30
+Harrison Butker     284  0.8838   0.532  0.8688       16      24
+Ka'imi Fairbairn    291  0.8763   0.538  0.8649       19      27
+Wil Lutz            295  0.8610   0.541  0.8567       20      23
+Cairo Santos        312  0.8526   0.555  0.8522       21      22
+Chris Boswell       341  0.8768   0.577  0.8662        8       6
+Jason Myers         347  0.8559   0.581  0.8541       13       9
+Nick Folk           507  0.8501   0.670  0.8506       29      31
+
+====================================================================================================
+RANKING WITH THE KICKER TERM SHRUNK BY SAMPLE SIZE
+====================================================================================================
+  score = 0.50 x venue + 0.50 x [league + n/(n+250) x (kicker - league)]
+  Weights still sum to 1, so the score stays on the make-rate scale.
+
+  #  kicker             tm   role     venue                        venue  shrunk   score   as-spec
+  1  Cameron Dicker     LAC  home     SoFi Stadium                0.8750  0.8812  0.8781         2
+  2  Jake Bates         DET  home     Ford Field                  0.8880  0.8496  0.8688        10
+  3  Spencer Shrader    IND  home     Lucas Oil Stadium           0.8790  0.8584  0.8687         1
+  4  Ryan Fitzgerald    CAR  home     Bank of America Stadium     0.8840  0.8492  0.8666        18
+  5  Chad Ryland        ARI  visitor  SoFi Stadium                0.8990  0.8292  0.8641        32
+  6  Chris Boswell      PIT  home     Acrisure Stadium            0.8610  0.8662  0.8636         8
+  7  Brandon Aubrey     DAL  visitor  MetLife Stadium             0.8650  0.8619  0.8634         7
+  8  Trey Smack         GB   visitor  U.S. Bank Stadium           0.8730  0.8517  0.8623        14
+  9  Jason Myers        SEA  home     Lumen Field                 0.8690  0.8541  0.8616        13
+ 10  Chase McLaughlin   TB   visitor  Paycor Stadium              0.8710  0.8507  0.8609        15
+ 11  Eddy Pineiro       SF   visitor  Melbourne Cricket Ground    0.8517  0.8689  0.8603         6
+ 12  Joey Slye          TEN  home     Nissan Stadium              0.8850  0.8342  0.8596        24
+ 13  Andre Szmyt        CLE  visitor  EverBank Stadium            0.8630  0.8553  0.8591         5
+ 14  Drew Stevens       WAS  visitor  Lincoln Financial Field     0.8650  0.8517  0.8583        17
+ 15  Cam Little         JAX  home     EverBank Stadium            0.8490  0.8624  0.8557         4
+ 16  Will Reichard      MIN  home     U.S. Bank Stadium           0.8530  0.8569  0.8549         9
+ 17  Riley Patterson    MIA  visitor  Allegiant Stadium           0.8517  0.8581  0.8549        12
+ 18  Tyler Bass         BUF  visitor  NRG Stadium                 0.8600  0.8492  0.8546        22
+ 19  Blake Grupe        NYJ  visitor  Nissan Stadium              0.8660  0.8420  0.8540        30
+ 20  Evan McPherson     CIN  home     Paycor Stadium              0.8630  0.8446  0.8538        26
+ 21  Harrison Mevis     LA   home     Melbourne Cricket Ground    0.8517  0.8552  0.8534         3
+ 22  Cairo Santos       CHI  visitor  Bank of America Stadium     0.8530  0.8522  0.8526        21
+ 23  Wil Lutz           DEN  visitor  GEHA Field at Arrowhead St  0.8470  0.8567  0.8519        20
+ 24  Harrison Butker    KC   home     GEHA Field at Arrowhead St  0.8330  0.8688  0.8509        16
+ 25  Tyler Loop         BAL  visitor  Lucas Oil Stadium           0.8460  0.8553  0.8507        11
+ 26  Matt Gay           LV   home     Allegiant Stadium           0.8517  0.8475  0.8496        27
+ 27  Ka'imi Fairbairn   HOU  home     NRG Stadium                 0.8330  0.8649  0.8490        19
+ 28  Dominic Zvada      NYG  home     MetLife Stadium             0.8460  0.8517  0.8488        25
+ 29  Jake Elliott       PHI  home     Lincoln Financial Field     0.8530  0.8443  0.8487        28
+ 30  Daniel Carlson     NO   visitor  Ford Field                  0.8320  0.8603  0.8462        23
+ 31  Nick Folk          ATL  visitor  Acrisure Stadium            0.8370  0.8506  0.8438        29
+ 32  Andy Borregales    NE   visitor  Lumen Field                 0.8300  0.8508  0.8404        31
+
+  rank correlation with the as-specified version: 0.559
+
+====================================================================================================
+WHAT THIS MODEL RANKS, AND WHAT IT DOES NOT
+====================================================================================================
+  It ranks EXPECTED MAKE RATE on one kick. It says nothing about how
+  many kicks a man gets, and that is where the rest of the
+  disagreement with intuition lives.
+
+  Note which way shrinkage cuts: it moves a POOR kicker UP, because
+  his badness was mostly noise and shrinking pulls him toward average.
+  If the ranking should punish a kicker his coach does not trust, that
+  belongs in a volume term - expected attempts - not in the accuracy
+  term. Volume is the honest home for team quality, coach aggression
+  and the short-leash effect.
+
+  wrote week1_2026_kickers_50_50.csv

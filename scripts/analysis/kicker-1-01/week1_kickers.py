@@ -43,7 +43,9 @@ STADIUMS = os.path.join(HERE, "..", "..", "..", "src", "data", "stadiums.ts")
 TMP = os.environ.get("NFLVERSE_TMP", "/tmp/nflverse")
 
 SEASON, WEEK = 2026, 1
-W_VENUE, W_KICKER = 0.75, 0.25
+# venue / kicker split, overridable: W_VENUE=0.5 python3 week1_kickers.py
+W_VENUE = float(os.environ.get("W_VENUE", 0.75))
+W_KICKER = 1.0 - W_VENUE
 # Attempts at which a kicker's own rate earns half weight. From the
 # year-to-year correlation of distance-adjusted FG% (r = 0.102 on 335
 # consecutive kicker-season pairs, both 20+ attempts): k = n(1-r)/r with a
@@ -199,8 +201,10 @@ def main():
     print("  term. Volume is the honest home for team quality, coach aggression")
     print("  and the short-leash effect.")
 
-    r.to_csv(os.path.join(HERE, f"week{WEEK}_{SEASON}_kickers.csv"), index=False)
-    print(f"\n  wrote week{WEEK}_{SEASON}_kickers.csv")
+    tag = f"{int(100 * W_VENUE)}_{int(100 * W_KICKER)}"
+    r.to_csv(os.path.join(HERE, f"week{WEEK}_{SEASON}_kickers_{tag}.csv"),
+             index=False)
+    print(f"\n  wrote week{WEEK}_{SEASON}_kickers_{tag}.csv")
     return r
 
 
