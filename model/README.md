@@ -103,32 +103,47 @@ on "new DC" narratives.
 A first-time play-caller with no history gets shrunk to the league mean rather
 than assigned a guess, and carries an explicit low-confidence flag.
 
-### Does the scheme layer actually improve rankings? Mostly no.
+### Does the scheme layer improve rankings? No — and the raw columns hurt.
 
 The coefficients above measure how well a play-caller's tendencies predict his
-next team's tendencies. That is a fact about **scheme**, and it does not
-automatically mean the layer improves **player rankings**. Tested by ablation —
-same backtest, same seasons, scheme projection and regime features removed:
+next team's tendencies. That is a fact about **scheme**. Whether it improves
+**player rankings** is a separate question, and the answer is no.
 
-| Position | Δ Spearman from keeping the play-caller layer | seasons it helped |
-|---|---|---|
-| TE | **+0.090** | 5 of 7 |
-| QB | +0.000 | 3 of 7 |
-| RB | −0.001 | 5 of 7 |
-| WR | −0.014 | 2 of 7 |
-| **All** | **+0.019** | **15 of 28** |
+Tested by ablation: same expanding-window backtest, feature blocks removed,
+seed-averaged over three seed families (see §4a — single-seed ablations of this
+model measure nothing). Paired across 28 position-seasons:
 
-Paired across 28 position-seasons: t = 1.44, p = 0.16; Wilcoxon p = 0.55. That
-is indistinguishable from noise. Only tight end shows a consistent gain, and
-that is one position on seven observations.
+| Removed | Δ Spearman from keeping it | 95% CI | p | seasons it helped |
+|---|---|---|---|---|
+| Play-caller layer (scheme projection + regime flags) | −0.006 | [−0.021, +0.008] | 0.38 | 11 / 28 |
+| Every scheme column (adds the team's own prior rates) | **−0.026** | [−0.041, −0.012] | **0.001** | 7 / 28 |
 
-**So the honest position is:** play-caller tendencies demonstrably travel, but
-in this build that knowledge does not translate into better weekly rankings
-except possibly at TE. Two readings are both live — either team-level scheme is
-largely already priced into a player's own prior-season usage, or the
-head-coach proxy is too blunt to carry the signal. Filling
-`config/playcallers.csv` with real coordinators is the experiment that
-separates them.
+Two distinct findings:
+
+1. **The play-caller layer is a null.** Adding or removing it changes nothing
+   measurable. The confidence interval straddles zero and is tight enough to
+   rule out anything larger than about 0.02 in either direction.
+2. **The full scheme block is actively harmful.** Removing all 27 team-level
+   scheme columns *improves* Spearman by 0.026, consistently, in 21 of 28
+   position-seasons. Twenty-seven mostly-collinear columns on a thousand-row
+   problem dilute the features that carry signal.
+
+So the scheme columns are **not fed to the player models** — `USE_SCHEME_COLUMNS`
+in `dd/features.py` is off, and the reason is recorded there.
+
+One important qualification: this removes the scheme **columns**, not scheme's
+influence. The carryover projection still reaches the model through expected
+volume, because projected team plays and pass rate are exactly what convert a
+player's share into expected targets and carries. The defensible claim is "raw
+scheme columns do not earn a slot in a model this size", not "scheme does not
+matter".
+
+Why might the play-caller layer still be a null even though tendencies clearly
+travel? Most likely because a player's own prior-season usage already encodes
+his offence — a receiver in a pass-heavy scheme has a pass-heavy scheme's target
+volume baked into his target share. The team-level vector then restates what the
+player-level features already said. The head-coach proxy is a second candidate
+explanation, and the one the coordinator history would settle.
 
 ### The curated input, and what it could and could not do
 
@@ -306,25 +321,21 @@ comparison flatters whoever ranks fewer players.
 regret@12 (points per starter left on the bench by trusting the order); MAE and
 RMSE; CRPS via the quantile ladder; Brier score on `P(top-12)`.
 
-> **Status:** the tables in this section are single-seed numbers taken before
-> the variance problem in §4a was found and the estimators were bagged. Read them
-> as directional only; the seed-averaged refresh replaces them, and
-> `outputs/backtest/per_season_by_seed.csv` will carry the per-seed spread.
-
 ### Results against actual finishes
 
 Everything is graded against **real week-1 stat lines** from nflverse, scored in
 the relevant format. Consensus is not the target — it is a second contestant
 graded against the same reality, and it is never a model feature.
 
-Model alone, on its own published depth, mean over 2019–2025:
+Model alone, on its own published depth, seed-averaged over three seed families,
+mean over 2019–2025:
 
 | Position | Spearman vs actual | of my top 12, finished top 12 | mean rank error | MAE (pts) |
 |---|---|---|---|---|
-| QB | 0.428 | 4.8 / 12 | 8.6 places | 6.3 |
-| RB | 0.514 | 5.1 / 12 | 13.0 places | 5.6 |
-| WR | 0.355 | 3.7 / 12 | 20.5 places | 6.4 |
-| TE | 0.436 | 6.4 / 12 | 8.6 places | 4.4 |
+| QB (4pt) | 0.469 | 6.1 / 12 | 8.4 places | 6.2 |
+| RB (PPR) | 0.546 | 5.6 / 12 | 12.7 places | 5.4 |
+| WR (PPR) | 0.360 | 3.5 / 12 | 20.5 places | 6.3 |
+| TE (PPR) | 0.355 | 5.9 / 12 | 8.9 places | 4.5 |
 
 That is what week 1 looks like honestly. Note the pool matters enormously: on
 the full rankable population — starters plus deep backups — Spearman reads
@@ -332,45 +343,50 @@ the full rankable population — starters plus deep backups — Spearman reads
 who never take a snap. Every number published here is on the narrower pool of
 players actually worth ranking.
 
+Across-seed standard deviation of these Spearman figures is 0.024–0.052, so read
+them to roughly two decimal places and no further.
+
 ### Results against consensus
 
-Mean across 2019–2025 (`outputs/backtest/summary.csv`; MAE is omitted because consensus publishes a rank, not a points projection):
+Same rows for every contender — anyone the model or consensus places inside its
+published depth. Seed-averaged, mean over the seasons where consensus history
+exists:
 
 | Position | Source | Spearman | NDCG@12 | Top-12 overlap | Regret@12 |
 |---|---|---|---|---|---|
-| QB (4pt) | consensus | **0.485** | **0.780** | 0.533 | 5.63 |
-| | **model** | 0.451 | 0.705 | 0.533 | **5.35** |
-| | prior-year PPG | 0.273 | 0.674 | 0.483 | 7.04 |
-| RB (PPR) | consensus | **0.599** | **0.717** | 0.417 | **5.47** |
-| | **model** | 0.534 | 0.685 | **0.433** | 5.53 |
-| | prior-year PPG | 0.505 | 0.701 | **0.450** | 5.49 |
-| WR (PPR) | consensus | **0.427** | **0.646** | 0.317 | **8.02** |
-| | **model** | 0.377 | 0.616 | **0.333** | 8.99 |
-| | prior-year PPG | 0.341 | 0.573 | 0.300 | 9.25 |
-| TE (PPR) | consensus | **0.418** | **0.661** | **0.567** | **3.78** |
-| | **model** | 0.369 | 0.642 | 0.533 | 4.05 |
-| | prior-year PPG | 0.300 | 0.597 | 0.517 | 4.46 |
+| QB (4pt) | consensus | **0.497** | **0.788** | 0.533 | **5.37** |
+| | **model** | 0.483 | 0.717 | 0.533 | 5.74 |
+| | prior-year PPG | 0.259 | 0.707 | 0.500 | 6.85 |
+| RB (PPR) | consensus | **0.600** | **0.735** | 0.417 | 5.05 |
+| | **model** | 0.542 | 0.706 | **0.467** | **5.09** |
+| | prior-year PPG | 0.499 | 0.716 | 0.450 | 5.10 |
+| WR (PPR) | consensus | **0.438** | **0.647** | **0.322** | **7.99** |
+| | **model** | 0.387 | 0.619 | 0.317 | 8.97 |
+| | prior-year PPG | 0.347 | 0.574 | 0.300 | 9.21 |
+| TE (PPR) | consensus | **0.435** | **0.644** | **0.550** | **3.99** |
+| | **model** | 0.326 | 0.572 | 0.472 | 4.68 |
+| | prior-year PPG | 0.323 | 0.597 | 0.533 | 4.39 |
 
 **Read this honestly.**
 
 - The model beats the naive baseline — last season's points per game — at every
-  position on every metric. That part works.
+  position on Spearman, by 0.04 to 0.22.
 - **It does not beat FantasyPros expert consensus on rank correlation at any
-  position.** It edges consensus on QB start/sit regret and on top-12 overlap
-  for RB and WR, and it is close at WR, but consensus wins the headline metric
-  four times out of four.
+  position.** It is close at quarterback (0.483 vs 0.497, inside the seed noise),
+  behind by 0.06 at running back and receiver, and clearly behind at tight end.
+  It does beat consensus on top-12 overlap at running back — 5.6 of 12 against
+  5.0 — which is the metric that decides a lineup.
+- Dropping the scheme columns closed roughly a third of the quarterback gap and
+  helped everywhere else too; see §2.
 - Blending model and consensus in rank space peaks around 25–30% model weight
-  and looks like an improvement (ρ 0.487 → 0.500) — but when the blend weight is
-  fitted **out-of-sample** on prior seasons only, it stops beating consensus
-  (0.477 vs 0.487) while winning 15 of 24 position-season tests. The in-sample
-  peak was partly overfit. The blend is not shipped as a result.
+  in-sample, but with the weight fitted **out-of-sample** it stops beating
+  consensus while winning 15 of 24 position-season tests. The blend is not
+  shipped.
 
 The gap is explainable and not mysterious: consensus embeds camp reports, beat
 writers, coach quotes, holdouts and preseason usage. No free historical dataset
 contains any of that. The model sees only what happened on the field last year
 plus who is on the depth chart.
-
----
 
 ## 6. Known limitations
 

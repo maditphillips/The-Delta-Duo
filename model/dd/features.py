@@ -58,6 +58,29 @@ OPPORTUNITY_QB = ["proj_team_plays", "proj_team_pass_att", "expected_pass_att",
 
 BASE = MARKET + SCHEME_PROJ + SCHEME_PREV + REGIME + CHURN + PLAYER + HISTORY + OPPONENT
 
+# ---------------------------------------------------------------------------
+# Whether the raw scheme columns are fed to the player models
+# ---------------------------------------------------------------------------
+# Decided by ablation (outputs/ablation/), seed-averaged over three seed
+# families, 28 position-seasons:
+#
+#   dropping the play-caller layer alone  ->  -0.006 Spearman, 95% CI
+#                                             [-0.021, +0.008], p = 0.38 (null)
+#   dropping every scheme column          ->  +0.026 Spearman, 95% CI
+#                                             [+0.012, +0.041], p = 0.001
+#
+# Twenty-seven mostly-collinear team columns on a thousand-row problem dilute
+# the features that carry the signal, so they stay out. Note this removes the
+# scheme *columns* only: the carryover projection still reaches the model
+# through expected volume in dataset.py, because projected team plays and pass
+# rate are what turn a player's share into expected targets and carries. The
+# claim is "raw scheme columns do not earn a slot", not "scheme is irrelevant".
+USE_SCHEME_COLUMNS = False
+
+_SCHEME_BLOCK = SCHEME_PROJ + SCHEME_PREV + REGIME
+if not USE_SCHEME_COLUMNS:
+    BASE = [c for c in BASE if c not in set(_SCHEME_BLOCK)]
+
 FEATURES = {
     "QB": BASE + OPPORTUNITY_QB + USAGE_PASSING + EFF_PASSING + ["gl_qb_rushes_share", "rush_share_eb"],
     "RB": BASE + OPPORTUNITY + USAGE_RUSHING + USAGE_RECEIVING + EFF_RUSHING + EFF_RECEIVING,

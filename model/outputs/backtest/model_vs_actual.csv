@@ -1,0 +1,9 @@
+position,scoring,spearman,top12_overlap,mean_abs_rank_err,mae
+QB,qb_4pt,0.469,0.508,8.357,6.23
+QB,qb_6pt,0.452,0.48,8.556,7.627
+RB,half_ppr,0.53,0.44,13.013,5.017
+RB,ppr,0.546,0.464,12.716,5.406
+TE,half_ppr,0.315,0.48,9.315,3.812
+TE,ppr,0.355,0.488,8.947,4.471
+WR,half_ppr,0.337,0.278,20.929,5.569
+WR,ppr,0.36,0.29,20.498,6.34
