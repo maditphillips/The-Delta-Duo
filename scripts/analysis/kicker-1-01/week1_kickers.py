@@ -44,6 +44,12 @@ TMP = os.environ.get("NFLVERSE_TMP", "/tmp/nflverse")
 
 SEASON, WEEK = 2026, 1
 W_VENUE, W_KICKER = 0.75, 0.25
+# Attempts at which a kicker's own rate earns half weight. From the
+# year-to-year correlation of distance-adjusted FG% (r = 0.102 on 335
+# consecutive kicker-season pairs, both 20+ attempts): k = n(1-r)/r with a
+# typical n of 28. Raw FG% is even less reliable, r = 0.044, implying k = 600.
+# 250 is the generous end of the range.
+K_SHRINK = 250
 SCHED = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 ROSTER = ("https://github.com/nflverse/nflverse-data/releases/download/"
           f"rosters/roster_{SEASON}.parquet")
@@ -135,11 +141,12 @@ def main():
 
     # ------------------------------------------------------------ scoring
     r["score"] = W_VENUE * r.venue_rate + W_KICKER * r.kicker_rate
-    r["score_dev"] = (league + (r.venue_rate - league)
-                      + W_KICKER * (r.kicker_rate - league))
+    r["rel"] = r.k_att / (r.k_att + K_SHRINK)
+    r["kicker_shrunk"] = league + r.rel * (r.kicker_rate - league)
+    r["score_shrunk"] = W_VENUE * r.venue_rate + W_KICKER * r.kicker_shrunk
     r = r.sort_values("score", ascending=False).reset_index(drop=True)
     r["rank"] = r.index + 1
-    r["rank_dev"] = r.score_dev.rank(ascending=False).astype(int)
+    r["rank_shrunk"] = r.score_shrunk.rank(ascending=False).astype(int)
 
     hdr("THE RANKING, AS SPECIFIED")
     print(f"{'#':>3}  {'kicker':18} {'tm':4} {'role':8} {'venue':26} "
@@ -151,34 +158,47 @@ def main():
               f"{x.venue_rate:7.4f} {x.kicker_rate:7.4f} {x.k_att:4d}  "
               f"{calc:>34} {x.score:7.4f}")
 
-    hdr("THE SAME THING ON DEVIATIONS, WHICH IS THE VERSION I WOULD USE")
-    print("  score = league + (venue - league) + 0.25 x (kicker - league)")
-    print(f"{'#':>3}  {'kicker':18} {'tm':4} {'venue eff':>10} "
-          f"{'kicker eff':>11} {'shrunk':>8} {'score':>8}  {'as-spec rank':>12}")
-    for _, x in r.sort_values("score_dev", ascending=False).iterrows():
-        ve, ke = x.venue_rate - league, x.kicker_rate - league
-        print(f"{x.rank_dev:3d}  {x.kicker:18} {x.team:4} {ve:+10.4f} "
-              f"{ke:+11.4f} {W_KICKER * ke:+8.4f} {x.score_dev:8.4f}  "
-              f"{x['rank']:12d}")
-    print(f"\n  rank correlation between the two: "
-          f"{r['rank'].corr(r.rank_dev, method='spearman'):.3f}")
-    biggest = (r.rank_dev - r["rank"]).abs().idxmax()
-    b = r.loc[biggest]
-    print(f"  biggest disagreement: {b.kicker} - {b['rank']} as specified, "
-          f"{b.rank_dev} on deviations")
+    hdr("HOW RELIABLE IS A KICKER'S OWN FIELD GOAL PERCENTAGE?")
+    print("  Year-to-year correlation of a kicker's FG%, 335 consecutive")
+    print("  kicker-season pairs with 20+ attempts each, 2010-2025:")
+    print("    raw FG%                            r = +0.044")
+    print("    FG% over expected (distance-adj)   r = +0.102")
+    print("\n  Both are near zero. True kicking skill has a spread of roughly 1.8")
+    print("  percentage points, while a 28-attempt season carries 6.8 points of")
+    print("  pure binomial noise. Almost all the visible spread between kickers")
+    print("  is sampling, not ability.")
+    print(f"\n  So a kicker's own rate earns half weight only at ~{K_SHRINK} career")
+    print("  attempts. What that does to this slate:")
+    print(f"\n{'kicker':18} {'att':>4} {'raw':>7} {'reliab':>7} {'shrunk':>7} "
+          f"{'as-spec':>8} {'shrunk':>7}")
+    for _, x in r.sort_values("k_att").iterrows():
+        print(f"{x.kicker:18} {x.k_att:4d} {x.kicker_rate:7.4f} {x.rel:7.3f} "
+              f"{x.kicker_shrunk:7.4f} {x['rank']:8d} {x.rank_shrunk:7d}")
 
-    hdr("WHY THE TWO DIFFER")
-    print("  Both inputs are anchored on the same league average, so averaging")
-    print("  them averages two copies of it. Take a kicker 3 points below")
-    print("  average at a venue 2 points below average:")
-    print(f"    as specified : 0.75 x (L-0.02) + 0.25 x (L-0.03) = "
-          f"L - 0.0225")
-    print(f"    on deviations: L + (-0.02) + 0.25 x (-0.03)      = L - 0.0275")
-    print("  The first understates it, because averaging pulls the venue")
-    print("  penalty toward the kicker's number instead of adding to it. The")
-    print("  75/25 split was expressing confidence in each estimate, and")
-    print("  confidence belongs on the kicker's DEVIATION - shrink the noisy")
-    print("  term toward zero - not on the level.")
+    hdr("RANKING WITH THE KICKER TERM SHRUNK BY SAMPLE SIZE")
+    print(f"  score = {W_VENUE:.2f} x venue + {W_KICKER:.2f} x [league + "
+          f"n/(n+{K_SHRINK}) x (kicker - league)]")
+    print("  Weights still sum to 1, so the score stays on the make-rate scale.")
+    print(f"\n{'#':>3}  {'kicker':18} {'tm':4} {'role':8} {'venue':26} "
+          f"{'venue':>7} {'shrunk':>7} {'score':>7}  {'as-spec':>8}")
+    for _, x in r.sort_values("score_shrunk", ascending=False).iterrows():
+        print(f"{x.rank_shrunk:3d}  {x.kicker:18} {x.team:4} {x.role:8} "
+              f"{x.venue:26} {x.venue_rate:7.4f} {x.kicker_shrunk:7.4f} "
+              f"{x.score_shrunk:7.4f}  {x['rank']:8d}")
+    print(f"\n  rank correlation with the as-specified version: "
+          f"{r['rank'].corr(r.rank_shrunk, method='spearman'):.3f}")
+
+    hdr("WHAT THIS MODEL RANKS, AND WHAT IT DOES NOT")
+    print("  It ranks EXPECTED MAKE RATE on one kick. It says nothing about how")
+    print("  many kicks a man gets, and that is where the rest of the")
+    print("  disagreement with intuition lives.")
+    print("\n  Note which way shrinkage cuts: it moves a POOR kicker UP, because")
+    print("  his badness was mostly noise and shrinking pulls him toward average.")
+    print("  If the ranking should punish a kicker his coach does not trust, that")
+    print("  belongs in a volume term - expected attempts - not in the accuracy")
+    print("  term. Volume is the honest home for team quality, coach aggression")
+    print("  and the short-leash effect.")
+
     r.to_csv(os.path.join(HERE, f"week{WEEK}_{SEASON}_kickers.csv"), index=False)
     print(f"\n  wrote week{WEEK}_{SEASON}_kickers.csv")
     return r
