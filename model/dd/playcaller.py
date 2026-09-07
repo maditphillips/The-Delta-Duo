@@ -78,11 +78,24 @@ def regimes(first_season: int, last_season: int = TARGET_SEASON) -> pd.DataFrame
     df["def_playcaller"] = df["def_playcaller"].fillna(df["week1_head_coach"]).fillna(df["head_coach"])
 
     df = df.sort_values(["team", "season"])
+    prev_hc = df.groupby("team")["head_coach"].shift(1)
+    df["hc_continuity"] = (df["head_coach"] == prev_hc).astype(float)
+    df.loc[prev_hc.isna(), "hc_continuity"] = np.nan
+
     for side in ("off", "def"):
         prev = df.groupby("team")[f"{side}_playcaller"].shift(1)
-        df[f"{side}_continuity"] = (df[f"{side}_playcaller"] == prev).astype(float)
+        prev_conf = df.groupby("team")[f"{side}_confidence"].shift(1)
+        # Compare like with like. Curating one season and not the one before it
+        # would otherwise read as "every team changed play-caller", because a
+        # coordinator's name never equals last season's head coach's name. Where
+        # both seasons are curated, compare the play-callers; anywhere else, fall
+        # back to head-coach continuity, which is verified for every season.
+        both_curated = (df[f"{side}_confidence"] == "curated") & (prev_conf == "curated")
+        df[f"{side}_continuity"] = np.where(
+            both_curated,
+            (df[f"{side}_playcaller"] == prev).astype(float),
+            df["hc_continuity"])
         df.loc[prev.isna(), f"{side}_continuity"] = np.nan
-    df["hc_continuity"] = (df["head_coach"] == df.groupby("team")["head_coach"].shift(1)).astype(float)
     return df.reset_index(drop=True)
 
 
@@ -101,10 +114,20 @@ def _zscore_by_season(df: pd.DataFrame, dims) -> pd.DataFrame:
 
 
 def caller_history(fingerprints: pd.DataFrame, regime: pd.DataFrame, side: str,
-                   dims, half_life: float = 2.0) -> pd.DataFrame:
+                   dims, half_life: float = 2.0, min_weight: float = 0.15) -> pd.DataFrame:
     """For each (season, caller), the recency-weighted average of every prior
     season that caller ran, at any team. Strictly prior: no leakage from the
-    season being predicted."""
+    season being predicted.
+
+    `min_weight` guards against stale matches. Names are matched across the
+    whole table, so a coordinator hired in 2026 can collide with his own head
+    coaching stint fifteen years earlier -- Steve Spagnuolo's 2009-11 Rams, say,
+    which say nothing about the defence he calls now. Recency weights decay by
+    `half_life`, but averaging renormalises them, so an ancient-only history
+    would still be used at full strength. Rows whose total *unnormalised* weight
+    falls below this floor are dropped instead, and the caller is treated as
+    having no history at all -- which sends him to the league mean, the honest
+    answer."""
     key = f"{side}_playcaller"
     fp = fingerprints.merge(regime[["season", "team", key]], on=["season", "team"], how="inner")
     rows = []
@@ -115,6 +138,8 @@ def caller_history(fingerprints: pd.DataFrame, regime: pd.DataFrame, side: str,
             if prior.empty:
                 continue
             w = 0.5 ** ((s - prior["season"] - 1) / half_life)
+            if float(w.sum()) < min_weight:
+                continue
             vals = {d: np.average(prior[d], weights=w) if prior[d].notna().all()
                     else (np.average(prior.loc[prior[d].notna(), d],
                                      weights=w[prior[d].notna()]) if prior[d].notna().any() else np.nan)

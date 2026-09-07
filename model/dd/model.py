@@ -32,6 +32,38 @@ from sklearn.preprocessing import StandardScaler
 from .features import FEATURES
 
 QUANTILES = (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)
+
+# Boosting here is stochastic: early stopping carves a random validation split
+# out of a few hundred rows, so the fitted model depends on the seed. Measured
+# on this data, a seed change alone moved single-run Spearman by up to 0.14 --
+# several times larger than any feature effect worth testing. Nothing about an
+# ablation is readable at that noise level, so the ranking models are bagged
+# across seeds and every reported metric is a seed-averaged one.
+SEED = 17
+N_SEEDS = 5
+
+
+def _seeds(n: int | None = None):
+    return [SEED + 1000 * i for i in range(n or N_SEEDS)]
+
+
+class _Bag:
+    """Average of the same estimator fitted under several seeds."""
+
+    def __init__(self, factory, seeds):
+        self.factory = factory
+        self.seeds = list(seeds)
+        self.members_ = []
+
+    def fit(self, X, y):
+        self.members_ = [self.factory(s).fit(X, y) for s in self.seeds]
+        return self
+
+    def predict(self, X):
+        return np.mean([m.predict(X) for m in self.members_], axis=0)
+
+    def predict_proba(self, X):
+        return np.mean([m.predict_proba(X) for m in self.members_], axis=0)
 PLAY_THRESHOLD = 0.5  # fantasy points; below this he did not have a week
 
 
@@ -43,22 +75,22 @@ def _ridge() -> Pipeline:
     ])
 
 
-def _gbm(loss="squared_error", quantile=None) -> HistGradientBoostingRegressor:
+def _gbm(loss="squared_error", quantile=None, seed=None) -> HistGradientBoostingRegressor:
     return HistGradientBoostingRegressor(
         loss=loss, quantile=quantile,
         max_depth=3, max_iter=300, learning_rate=0.04,
         min_samples_leaf=20, l2_regularization=1.0,
         early_stopping=True, validation_fraction=0.2, n_iter_no_change=25,
-        random_state=17,
+        random_state=SEED if seed is None else seed,
     )
 
 
-def _clf() -> HistGradientBoostingClassifier:
+def _clf(seed=None) -> HistGradientBoostingClassifier:
     return HistGradientBoostingClassifier(
         max_depth=3, max_iter=300, learning_rate=0.05,
         min_samples_leaf=25, l2_regularization=1.0,
         early_stopping=True, validation_fraction=0.2, n_iter_no_change=25,
-        random_state=17,
+        random_state=SEED if seed is None else seed,
     )
 
 
@@ -93,10 +125,11 @@ class PositionModel:
         self.features_ = list(X.columns)
         Xn = X.to_numpy()
 
-        self.play_ = _clf().fit(Xn, played.astype(int))
+        self.play_ = _Bag(lambda s: _clf(seed=s), _seeds()).fit(Xn, played.astype(int))
 
         Xp, yp = Xn[played], y[played]
-        candidates = {"ridge": _ridge(), "gbm": _gbm()}
+        candidates = {"ridge": _ridge(),
+                      "gbm": _Bag(lambda s: _gbm(seed=s), _seeds())}
         if self.kind in candidates:
             self.chosen_ = self.kind
         elif select_on is not None and len(select_on) >= 40:
@@ -105,8 +138,7 @@ class PositionModel:
             for name, est in candidates.items():
                 est.fit(Xp, yp)
                 probe = self._matrix(select_on).to_numpy()
-                pred = (est.predict(probe)
-                        * self.play_.predict_proba(probe)[:, 1])
+                pred = est.predict(probe) * self.play_.predict_proba(probe)[:, 1]
                 sc = spearmanr(pred, select_on[f"actual_{self.scoring}"]).statistic
                 if np.isfinite(sc) and sc > best_score:
                     best, best_score = name, sc

@@ -130,7 +130,7 @@ head-coach proxy is too blunt to carry the signal. Filling
 `config/playcallers.csv` with real coordinators is the experiment that
 separates them.
 
-### The one curated input
+### The curated input, and what it could and could not do
 
 **No public dataset lists NFL play-callers.** What *is* verified data is the
 head coach of every team-season, which nflverse carries in `schedules`. So the
@@ -145,7 +145,39 @@ module keeps the two apart:
   wins; when it is blank the head coach stands in and the row is flagged
   `head_coach_proxy`.
 
-The overlay ships **empty**, and that is deliberate. This sandbox can only reach
+`config/coordinators_2026.csv` now holds a user-supplied 2026 coordinator list
+for all 32 teams, written into the overlay as the 2026 play-callers. Two things
+it does not fix, both structural:
+
+1. **It is one season.** The backtest runs 2019–2025 and needs *historical*
+   play-caller assignments to change anything. A 2026-only list cannot move a
+   single backtest number, so it cannot be used to test whether the layer helps.
+2. **The fingerprint table only knows head coaches**, so a 2026 coordinator has
+   prior history only if he was previously a head coach. After a recency guard
+   (below), that is **2 of 32** on offence — Mike McDaniel at LAC and Brian
+   Daboll at TEN — and **3 of 32** on defence: Jonathan Gannon at GB, Raheem
+   Morris at SF, Todd Bowles at TB. Everyone else falls back to the league mean.
+
+Two bugs the list exposed, both fixed:
+
+- **Stale name collisions.** Matching a coordinator by name across the whole
+  table pulled in ancient head-coaching stints — Steve Spagnuolo's 2009–11 Rams
+  were about to become the prior for Kansas City's 2026 defence. Recency weights
+  decayed those seasons but the averaging renormalised them back to full
+  strength. Histories whose total unnormalised weight falls below a floor are
+  now dropped entirely.
+- **False play-caller turnover.** With only 2026 curated and 2025 still on
+  head-coach names, every team read as a play-caller change, because a
+  coordinator's name never equals last year's head coach's name. Continuity is
+  now compared like with like: play-caller against play-caller where both
+  seasons are curated, head coach against head coach everywhere else.
+
+The consequence of that second fix is worth stating plainly: **a team that kept
+its head coach but changed coordinator is currently not flagged as a change at
+all.** Only the seven head-coaching changes are. Fixing that needs the 2025
+coordinator list, and testing the layer at all needs 2016–2025.
+
+The overlay previously shipped empty, and that was deliberate. This sandbox can only reach
 GitHub, so coordinator names could not be checked against a primary source, and
 half-verified names in a data file are worse than an honest blank. Filling that
 CSV is the single highest-leverage manual input to the whole model, and it needs
@@ -227,6 +259,38 @@ lifts everyone in it — so treat those probabilities as approximate.
 
 ---
 
+## 4a. Run-to-run variance — read this before any other number
+
+Boosting here is stochastic: early stopping carves a random validation split out
+of a few hundred rows, so the fitted model depends on the random seed. That was
+not a rounding concern. Refitting the **identical model on identical data** with
+only the seed changed produced:
+
+| Position | seed 17 | seed 101 | seed 2024 |
+|---|---|---|---|
+| QB | 0.362 | 0.502 | 0.477 |
+| RB | 0.503 | 0.514 | 0.526 |
+| TE | 0.292 | 0.360 | 0.353 |
+| WR | 0.349 | 0.370 | 0.372 |
+
+Mean spread across seeds, per position-season: **0.124 Spearman**. Every feature
+effect worth testing in this model is 0.02–0.09. The noise was three to five
+times the signal, which means single-run ablation results here were not
+measuring anything.
+
+Two consequences, both now baked in:
+
+1. **The ranking estimators are bagged across five seeds.** `P(plays)` and
+   `E[points | plays]` are each an average of five fits. That halves the spread
+   to 0.061.
+2. **Every reported comparison is seed-averaged over three seed families**, and
+   any feature-block decision is a paired test on those averages. Single-seed
+   numbers are not quoted.
+
+Residual spread of 0.061 is still not small next to a 0.03 feature effect, so
+differences below roughly 0.05 Spearman in this model should be read as "not
+established", regardless of what a p-value says.
+
 ## 5. Validation
 
 **Expanding window.** To project season S, the model trains only on seasons
@@ -241,6 +305,11 @@ comparison flatters whoever ranks fewer players.
 **Metrics.** Spearman ρ and Kendall τ; NDCG@12; top-12 overlap; start/sit
 regret@12 (points per starter left on the bench by trusting the order); MAE and
 RMSE; CRPS via the quantile ladder; Brier score on `P(top-12)`.
+
+> **Status:** the tables in this section are single-seed numbers taken before
+> the variance problem in §4a was found and the estimators were bagged. Read them
+> as directional only; the seed-averaged refresh replaces them, and
+> `outputs/backtest/per_season_by_seed.csv` will carry the per-seed spread.
 
 ### Results against actual finishes
 

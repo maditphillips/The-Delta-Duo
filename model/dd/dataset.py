@@ -170,11 +170,51 @@ RATE_COLS = ["yards_per_target", "catch_rate", "adot", "yac_per_rec", "yards_per
 VOL_COLS = ["targets_per_game", "carries_per_game", "attempts_per_game", "ppg_ppr", "games"]
 
 
+def _collapse_stints(u: pd.DataFrame) -> pd.DataFrame:
+    """One row per player-season.
+
+    A player traded mid-season has a row per team, and joining on player_id
+    alone then duplicates him in the output -- Jakobi Meyers appeared twice in
+    the same WR list before this. Counting stats are summed across stints;
+    shares and rates, which are team-relative, are averaged weighted by games;
+    the team recorded is the stint he played most.
+    """
+    if u.empty:
+        return u
+    u = u.sort_values(["player_id", "games"])
+    counting = ["targets", "receptions", "receiving_yards", "receiving_tds",
+                "receiving_air_yards", "receiving_yards_after_catch", "carries",
+                "rushing_yards", "rushing_tds", "attempts", "completions",
+                "passing_yards", "passing_tds", "passing_interceptions",
+                "sacks_suffered", "passing_air_yards", "fantasy_points_ppr", "games",
+                "rz_targets", "gl_carries", "third_down_targets", "rz_carries",
+                "gl_qb_rushes", "offense_snaps"]
+    counting = [c for c in counting if c in u.columns]
+    keys = ["player_id"]
+    grouped = u.groupby(keys, sort=False)
+    out = grouped[counting].sum()
+
+    weight_cols = [c for c in u.columns
+                   if c not in counting + keys + ["season", "team", "player_key"]
+                   and pd.api.types.is_numeric_dtype(u[c])]
+    w = u["games"].clip(lower=0.5)
+    for c in weight_cols:
+        num = (u[c].fillna(0) * w).groupby(u["player_id"]).sum()
+        den = (u[c].notna() * w).groupby(u["player_id"]).sum().replace(0, np.nan)
+        out[c] = num / den
+    last = grouped.tail(1).set_index("player_id")
+    for c in ["team", "position", "player_display_name", "season"]:
+        if c in last.columns:
+            out[c] = last[c]
+    out["n_stints"] = grouped.size()
+    return out.reset_index()
+
+
 def _prior_usage(season: int) -> pd.DataFrame:
     """Player usage from S-1 and S-2, with S-1 shares empirically shrunk."""
     u = all_usage()
-    p1 = u[u["season"] == season - 1].copy()
-    p2 = u[u["season"] == season - 2].copy()
+    p1 = _collapse_stints(u[u["season"] == season - 1].copy())
+    p2 = _collapse_stints(u[u["season"] == season - 2].copy())
 
     for c in SHARE_COLS:
         if c in ("targets_per_snap_share",):
@@ -207,9 +247,11 @@ def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
     df = roster.merge(depth[["team", "player_id", "depth_rank"]], on=["team", "player_id"],
                       how="outer")
     df["season"] = season
+    prior = prior.drop_duplicates("player_id")
     df = df.merge(prior, on="player_id", how="left", suffixes=("", "_prev"))
     df["position"] = df["position"].fillna(df["position_prev"]) if "position_prev" in df else df["position"]
     df = df.dropna(subset=["position", "team"])
+    df = df.drop_duplicates(["season", "player_id", "team"])
     df = df[df["position"].isin(POSITIONS)]
 
     df["changed_team"] = (df["prev_team"].notna() & (df["prev_team"] != df["team"])).astype(float)
