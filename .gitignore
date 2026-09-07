@@ -49,3 +49,4 @@ cloudflare-env.d.ts
 # analysis working files
 /.venv-*
 scripts/analysis/**/*.parquet
+scripts/analysis/**/*.csv

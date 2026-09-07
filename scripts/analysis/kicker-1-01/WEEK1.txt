@@ -1,0 +1,114 @@
+
+====================================================================================================
+WEEK 1, 2026 - KICKER RANKING
+====================================================================================================
+model            : score = 0.75 x venue rate + 0.25 x kicker rate
+league average   : 0.8517 (all regular-season attempts, 2023-2025)
+venue rate       : visPct from stadiums.ts for a visitor, visPct + gap for the home kicker
+kicker rate      : career REGULAR-SEASON field goal percentage, blocks included
+games            : 16
+
+-- gaps in the inputs, and how they are filled
+  MEL00 (Melbourne Cricket Ground) has no entry in stadiums.ts - SF visitor
+  MEL00 (Melbourne Cricket Ground) has no entry in stadiums.ts - LA home
+  VEG00 (Allegiant Stadium) has no entry in stadiums.ts - MIA visitor
+  VEG00 (Allegiant Stadium) has no entry in stadiums.ts - LV home
+    -> venue rate set to the league average, 0.8517
+  Trey Smack (GB) has no regular-season NFL attempts
+  Drew Stevens (WAS) has no regular-season NFL attempts
+  Dominic Zvada (NYG) has no regular-season NFL attempts
+    -> kicker rate set to the league average, 0.8517
+
+====================================================================================================
+THE RANKING, AS SPECIFIED
+====================================================================================================
+  #  kicker             tm   role     venue                        venue    kick  att                         calculation   score
+  1  Spencer Shrader    IND  home     Lucas Oil Stadium           0.8790  0.9474   19           0.8790x0.75 + 0.9474x0.25  0.8961
+  2  Cameron Dicker     LAC  home     SoFi Stadium                0.8750  0.9348  138           0.8750x0.75 + 0.9348x0.25  0.8899
+  3  Jake Bates         DET  home     Ford Field                  0.8880  0.8413   63           0.8880x0.75 + 0.8413x0.25  0.8763
+  4  Ryan Fitzgerald    CAR  home     Bank of America Stadium     0.8840  0.8276   29           0.8840x0.75 + 0.8276x0.25  0.8699
+  5  Harrison Mevis     LA   home     Melbourne Cricket Ground    0.8517  0.9231   13           0.8517x0.75 + 0.9231x0.25  0.8695
+  6  Andre Szmyt        CLE  visitor  EverBank Stadium            0.8630  0.8889   27           0.8630x0.75 + 0.8889x0.25  0.8695
+  7  Brandon Aubrey     DAL  visitor  MetLife Stadium             0.8650  0.8819  127           0.8650x0.75 + 0.8819x0.25  0.8692
+  8  Trey Smack         GB   visitor  U.S. Bank Stadium           0.8730  0.8517    0           0.8730x0.75 + 0.8517x0.25  0.8677
+  9  Joey Slye          TEN  home     Nissan Stadium              0.8850  0.8140  215           0.8850x0.75 + 0.8140x0.25  0.8672
+ 10  Chad Ryland        ARI  visitor  SoFi Stadium                0.8990  0.7667   90           0.8990x0.75 + 0.7667x0.25  0.8659
+ 11  Jason Myers        SEA  home     Lumen Field                 0.8690  0.8559  347           0.8690x0.75 + 0.8559x0.25  0.8657
+ 12  Chase McLaughlin   TB   visitor  Paycor Stadium              0.8710  0.8495  186           0.8710x0.75 + 0.8495x0.25  0.8656
+ 13  Chris Boswell      PIT  home     Acrisure Stadium            0.8610  0.8768  341           0.8610x0.75 + 0.8768x0.25  0.8650
+ 14  Eddy Pineiro       SF   visitor  Melbourne Cricket Ground    0.8517  0.8968  155           0.8517x0.75 + 0.8968x0.25  0.8629
+ 15  Cam Little         JAX  home     EverBank Stadium            0.8490  0.9048   63           0.8490x0.75 + 0.9048x0.25  0.8629
+ 16  Drew Stevens       WAS  visitor  Lincoln Financial Field     0.8650  0.8517    0           0.8650x0.75 + 0.8517x0.25  0.8617
+ 17  Will Reichard      MIN  home     U.S. Bank Stadium           0.8530  0.8769   65           0.8530x0.75 + 0.8769x0.25  0.8590
+ 18  Riley Patterson    MIA  visitor  Allegiant Stadium           0.8517  0.8738  103           0.8517x0.75 + 0.8738x0.25  0.8572
+ 19  Tyler Bass         BUF  visitor  NRG Stadium                 0.8600  0.8452  155           0.8600x0.75 + 0.8452x0.25  0.8563
+ 20  Evan McPherson     CIN  home     Paycor Stadium              0.8630  0.8322  143           0.8630x0.75 + 0.8322x0.25  0.8553
+ 21  Tyler Loop         BAL  visitor  Lucas Oil Stadium           0.8460  0.8824   34           0.8460x0.75 + 0.8824x0.25  0.8551
+ 22  Blake Grupe        NYJ  visitor  Nissan Stadium              0.8660  0.8190  105           0.8660x0.75 + 0.8190x0.25  0.8543
+ 23  Cairo Santos       CHI  visitor  Bank of America Stadium     0.8530  0.8526  312           0.8530x0.75 + 0.8526x0.25  0.8529
+ 24  Wil Lutz           DEN  visitor  GEHA Field at Arrowhead St  0.8470  0.8610  295           0.8470x0.75 + 0.8610x0.25  0.8505
+ 25  Matt Gay           LV   home     Allegiant Stadium           0.8517  0.8426  216           0.8517x0.75 + 0.8426x0.25  0.8494
+ 26  Jake Elliott       PHI  home     Lincoln Financial Field     0.8530  0.8372  258           0.8530x0.75 + 0.8372x0.25  0.8491
+ 27  Dominic Zvada      NYG  home     MetLife Stadium             0.8460  0.8517    0           0.8460x0.75 + 0.8517x0.25  0.8474
+ 28  Harrison Butker    KC   home     GEHA Field at Arrowhead St  0.8330  0.8838  284           0.8330x0.75 + 0.8838x0.25  0.8457
+ 29  Ka'imi Fairbairn   HOU  home     NRG Stadium                 0.8330  0.8763  291           0.8330x0.75 + 0.8763x0.25  0.8438
+ 30  Daniel Carlson     NO   visitor  Ford Field                  0.8320  0.8687  259           0.8320x0.75 + 0.8687x0.25  0.8412
+ 31  Nick Folk          ATL  visitor  Acrisure Stadium            0.8370  0.8501  507           0.8370x0.75 + 0.8501x0.25  0.8403
+ 32  Andy Borregales    NE   visitor  Lumen Field                 0.8300  0.8438   32           0.8300x0.75 + 0.8438x0.25  0.8334
+
+====================================================================================================
+THE SAME THING ON DEVIATIONS, WHICH IS THE VERSION I WOULD USE
+====================================================================================================
+  score = league + (venue - league) + 0.25 x (kicker - league)
+  #  kicker             tm    venue eff  kicker eff   shrunk    score  as-spec rank
+  1  Spencer Shrader    IND     +0.0273     +0.0957  +0.0239   0.9029             1
+  2  Cameron Dicker     LAC     +0.0233     +0.0831  +0.0208   0.8958             2
+  3  Jake Bates         DET     +0.0363     -0.0104  -0.0026   0.8854             3
+  4  Ryan Fitzgerald    CAR     +0.0323     -0.0241  -0.0060   0.8780             4
+  5  Chad Ryland        ARI     +0.0473     -0.0850  -0.0213   0.8777            10
+  6  Joey Slye          TEN     +0.0333     -0.0377  -0.0094   0.8756             9
+  7  Trey Smack         GB      +0.0213     +0.0000  +0.0000   0.8730             8
+  8  Brandon Aubrey     DAL     +0.0133     +0.0302  +0.0076   0.8726             7
+  9  Andre Szmyt        CLE     +0.0113     +0.0372  +0.0093   0.8723             6
+ 10  Chase McLaughlin   TB      +0.0193     -0.0022  -0.0006   0.8704            12
+ 11  Jason Myers        SEA     +0.0173     +0.0042  +0.0011   0.8701            11
+ 12  Harrison Mevis     LA      +0.0000     +0.0714  +0.0179   0.8695             5
+ 13  Chris Boswell      PIT     +0.0093     +0.0252  +0.0063   0.8673            13
+ 14  Drew Stevens       WAS     +0.0133     +0.0000  +0.0000   0.8650            16
+ 15  Eddy Pineiro       SF      +0.0000     +0.0451  +0.0113   0.8629            14
+ 16  Cam Little         JAX     -0.0027     +0.0531  +0.0133   0.8623            15
+ 17  Will Reichard      MIN     +0.0013     +0.0253  +0.0063   0.8593            17
+ 18  Tyler Bass         BUF     +0.0083     -0.0065  -0.0016   0.8584            19
+ 19  Evan McPherson     CIN     +0.0113     -0.0195  -0.0049   0.8581            20
+ 20  Blake Grupe        NYJ     +0.0143     -0.0326  -0.0082   0.8578            22
+ 21  Riley Patterson    MIA     +0.0000     +0.0221  +0.0055   0.8572            18
+ 22  Tyler Loop         BAL     -0.0057     +0.0307  +0.0077   0.8537            21
+ 23  Cairo Santos       CHI     +0.0013     +0.0009  +0.0002   0.8532            23
+ 24  Matt Gay           LV      +0.0000     -0.0091  -0.0023   0.8494            25
+ 25  Jake Elliott       PHI     +0.0013     -0.0145  -0.0036   0.8494            26
+ 26  Wil Lutz           DEN     -0.0047     +0.0093  +0.0023   0.8493            24
+ 27  Dominic Zvada      NYG     -0.0057     +0.0000  +0.0000   0.8460            27
+ 28  Harrison Butker    KC      -0.0187     +0.0321  +0.0080   0.8410            28
+ 29  Ka'imi Fairbairn   HOU     -0.0187     +0.0246  +0.0062   0.8392            29
+ 30  Nick Folk          ATL     -0.0147     -0.0016  -0.0004   0.8366            31
+ 31  Daniel Carlson     NO      -0.0197     +0.0171  +0.0043   0.8363            30
+ 32  Andy Borregales    NE      -0.0217     -0.0079  -0.0020   0.8280            32
+
+  rank correlation between the two: 0.977
+  biggest disagreement: Harrison Mevis - 5 as specified, 12 on deviations
+
+====================================================================================================
+WHY THE TWO DIFFER
+====================================================================================================
+  Both inputs are anchored on the same league average, so averaging
+  them averages two copies of it. Take a kicker 3 points below
+  average at a venue 2 points below average:
+    as specified : 0.75 x (L-0.02) + 0.25 x (L-0.03) = L - 0.0225
+    on deviations: L + (-0.02) + 0.25 x (-0.03)      = L - 0.0275
+  The first understates it, because averaging pulls the venue
+  penalty toward the kicker's number instead of adding to it. The
+  75/25 split was expressing confidence in each estimate, and
+  confidence belongs on the kicker's DEVIATION - shrink the noisy
+  term toward zero - not on the level.
+
+  wrote week1_2026_kickers.csv
