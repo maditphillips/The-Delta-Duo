@@ -17,7 +17,12 @@ from pathlib import Path
 import pandas as pd
 
 SRC = Path("/tmp")
-OUT = Path("data/weekly/2026/week-01")
+SEASON, WEEK = 2026, 1
+OUT = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}")
+# Players ruled out after the model last ran. nflverse publishes the official
+# report on its own schedule, and a Sunday-morning ruling lands hours after it;
+# this file is the manual override so a ruled-out player never ships in a list.
+RULED_OUT = Path("data/weekly/ruled-out.csv")
 FILES = {
     ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
     ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
@@ -192,10 +197,42 @@ def build_note(r, pos: str) -> str:
     return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), outlook(r), flags(r)) if x)
 
 
+def ruled_out(pos: str) -> pd.DataFrame:
+    """This week's manual scratches for one position."""
+    if not RULED_OUT.exists():
+        return pd.DataFrame(columns=["player", "team", "pos", "reason"])
+    r = pd.read_csv(RULED_OUT)
+    return r[(r.season == SEASON) & (r.week == WEEK) & (r.pos.str.lower() == pos)]
+
+
+def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
+    """Drop the scratches, close the gap in the ranks, and tell whoever is left
+    in that backfield or receiver room that the touches are up for grabs.
+
+    The vacated work is deliberately *not* redistributed: the model priced the
+    survivors with the scratch still on the field, so quietly promoting them
+    would invent volume nobody has measured. Saying so is the honest version."""
+    out = ruled_out(pos)
+    if out.empty:
+        return df
+    gone = df[df.player_name.isin(out.player)]
+    if gone.empty:
+        return df
+    df = df[~df.player_name.isin(out.player)].copy()
+    df["_vacated"] = ""
+    for _, g in gone.iterrows():
+        mates = df.team == g["team"]
+        df.loc[mates, "_vacated"] += (
+            f"{g['player_name']} is out; his work is not yet priced in here. ")
+    df["rank_data"] = df["proj"].rank(ascending=False, method="first").astype(int)
+    return df.sort_values("rank_data").reset_index(drop=True)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for (pos, variant), fname in FILES.items():
         df = pd.read_csv(SRC / fname)
+        df = scratch(df, pos)
         # Consensus is re-ranked inside our published list, so both columns
         # order the same players and the delta is a like-for-like comparison.
         df["_c"] = df["consensus_rank"].fillna(9999)
@@ -212,7 +249,9 @@ def main() -> None:
                 "opponent": r.get("opponent", ""),
                 "is_home": int(num(r.get("is_home"), 0)),
                 "proj": round(float(r["proj"]), 1),
-                "note_data": build_note(r, pos),
+                "note_data": (str(r.get("_vacated") or "").strip()
+                              + (" " if str(r.get("_vacated") or "").strip() else "")
+                              + build_note(r, pos)).strip(),
                 "note_vibes": "",
             })
         path = OUT / f"{pos}-{variant}.csv"

@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 
 const tabs = [
   { href: "/", label: "The Deltas" },
+  { href: "/data-vs-vibes", label: "Weekly Rankings" },
   { href: "/wide-receiver", label: "Wide Receiver" },
   { href: "/quarterback", label: "Quarterback" },
   { href: "/running-back", label: "Running Back" },
   { href: "/explorer", label: "Player Explorer" },
   { href: "/stadiums", label: "Stadiums" },
-  { href: "/data-vs-vibes", label: "Weekly Data vs. Vibes" },
   { href: "/rankings", label: "Season Rankings" },
 ];
 

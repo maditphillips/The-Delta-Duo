@@ -31,7 +31,7 @@ const dashboards = [
 const otherTabs = [
   {
     href: "/data-vs-vibes",
-    label: "Weekly Data vs. Vibes",
+    label: "Weekly Rankings",
     blurb:
       "Every week, two rankings per position: Wilson's built purely from the data, MC's built purely from the vibes — plus the delta between them.",
     color: "var(--accent-2-lt)",
@@ -77,11 +77,11 @@ export default function Home() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(69,227,255,0.35)" }}>
-          <div className="font-retro text-2xl" style={{ color: "var(--accent-3)" }}>
+        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(255,47,166,0.4)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-2)" }}>
             Wilson
           </div>
-          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-3)" }}>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-2)" }}>
             the data
           </div>
           <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
@@ -89,11 +89,11 @@ export default function Home() {
             you&apos;ve never even thought of.
           </p>
         </div>
-        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(255,47,166,0.4)" }}>
-          <div className="font-retro text-2xl" style={{ color: "var(--accent-2)" }}>
+        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(69,227,255,0.35)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-3)" }}>
             MC
           </div>
-          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-2)" }}>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-3)" }}>
             the vibes
           </div>
           <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
