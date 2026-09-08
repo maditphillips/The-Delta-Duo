@@ -97,6 +97,8 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
           ? {
               player,
               team: pick(r, ["team", "tm"]),
+              opponent: pick(r, ["opponent", "opp"]),
+              isHome: pick(r, ["is_home", "home"]) === "1",
               rankData: rd,
               rankVibes: rv,
               noteData: pick(r, ["note_data", "note_wilson", "wilson_note"]),

@@ -27,8 +27,6 @@ FILES = {
 
 
 def upper_first(text: str) -> str:
-    """Capitalise the first letter only. `str.capitalize` lower-cases the rest,
-    which turns TB into Tb and EPA into epa."""
     return text[:1].upper() + text[1:] if text else text
 
 
@@ -48,136 +46,110 @@ def num(v, default=None):
         return default
 
 
-def defence_clause(r, side: str) -> str:
-    """How the opponent's defence graded last season, in league-relative terms."""
-    rk = num(r.get("rk_def_pass" if side == "pass" else "rk_def_rush"))
-    if rk is None:
-        return ""
-    opp, unit = r["opponent"], "pass defence" if side == "pass" else "run defence"
-    if rk >= 27:
-        return f"{opp} carried one of the league's softest {unit}s last year, {ordinal(33 - rk)}-most EPA allowed"
-    if rk >= 20:
-        return f"{opp}'s {unit} graded {ordinal(33 - rk)}-worst by EPA last season"
-    if rk <= 6:
-        return f"{opp} brings a top-{int(rk)} {unit} by EPA allowed"
-    if rk <= 12:
-        return f"{opp}'s {unit} ranked {ordinal(rk)} in EPA allowed"
-    return f"{opp}'s {unit} sat mid-pack last season"
-
-
-def total_clause(r) -> str:
-    """Vegas' view of how many points this offence scores. Rank is over the 32
-    teams, 1 = highest implied total on the slate."""
-    itt, rk = num(r.get("implied_team_total")), num(r.get("rk_team_total"))
-    if itt is None:
-        return ""
-    if rk is not None and rk <= 6:
-        return f"a {itt:.1f}-point implied total, {ordinal(rk)}-highest on the slate"
-    if rk is not None and rk >= 27:
-        return f"a thin {itt:.1f}-point implied total, {ordinal(33 - rk)}-lowest this week"
-    return f"a {itt:.1f}-point implied total"
-
-
 SLOT = {"qb": "QB", "rb": "RB", "wr": "WR", "te": "TE"}
 
 
-def plural(n: float, singular: str, plural_form: str | None = None) -> str:
-    """1.0 red-zone look, 2.4 red-zone looks, 0.5 goal-line rushes."""
-    if 0.5 <= n < 1.5:
-        return f"{n:.1f} {singular}"
-    return f"{n:.1f} {plural_form or singular + 's'}"
+def matchup_phrase(r, pos: str) -> str:
+    """Vegas' view of the offence, then the defence it runs into. Leads with
+    whichever is the sharper fact -- a league-extreme total, or an extreme
+    defence -- because that is the reason the week moved him."""
+    itt, rk = num(r.get("implied_team_total")), num(r.get("rk_team_total"))
+    side = "rush" if pos == "rb" else "pass"
+    unit = "run defense" if side == "rush" else "pass defense"
+    drk = num(r.get("rk_def_pass" if side == "pass" else "rk_def_rush"))
+
+    if itt is None:
+        total = ""
+    elif rk == 1:
+        total = f"Highest implied total ({itt:.1f})"
+    elif rk is not None and rk <= 6:
+        total = f"{ordinal(rk)}-highest implied total ({itt:.1f})"
+    elif rk is not None and rk >= 28:
+        total = f"{ordinal(33 - rk)}-lowest implied total ({itt:.1f})"
+    else:
+        total = f"{itt:.1f}-point implied total"
+
+    if drk is None:
+        defense = ""
+    elif drk >= 21:
+        defense = f"{ordinal(33 - drk)}-worst {unit} by EPA last year"
+    elif drk <= 5:
+        defense = f"a top-{int(drk)} {unit} by EPA last year"
+    elif drk <= 12:
+        defense = f"the {ordinal(drk)}-best {unit} by EPA last year"
+    else:
+        defense = f"a mid-pack {unit} last year"
+
+    if total and defense:
+        return f"{total} against {defense}."
+    return f"{total or upper_first(defense)}."
 
 
-def no_history_clause(r, pos: str) -> str:
-    """A player the model has no NFL usage for -- almost always a rookie or
-    someone who never saw the field. Quoting '0.0 projected targets' is true but
-    useless, so say what he is actually being ranked on."""
-    depth = num(r.get("depth_rank"))
-    slot = f"{SLOT[pos]}{int(depth)}" if depth and depth <= 6 else "a depth role"
-    if num(r.get("is_rookie"), 0) == 1:
-        return f"no NFL usage to price yet, so he is ranked off draft capital and a {slot} slot"
-    return f"no meaningful usage last season, ranked off a {slot} slot"
-
-
-def role_clause(r, pos: str) -> str:
+def blurb(r, pos: str) -> str:
+    """One short clause on why the role supports that projection."""
     et, ec = num(r.get("expected_targets"), 0), num(r.get("expected_carries"), 0)
     gl, rz = num(r.get("expected_gl_carries"), 0), num(r.get("expected_rz_targets"), 0)
     ts, ss = num(r.get("target_share_eb")), num(r.get("snap_share_eb"))
+    att = num(r.get("expected_pass_att"), 0)
     depth = num(r.get("depth_rank"), 9)
+    rookie = num(r.get("is_rookie"), 0) == 1
 
     if pos == "qb":
-        att, pyd = num(r.get("expected_pass_att"), 0), num(r.get("expected_pass_yards"), 0)
-        bits = []
-        if att >= 5:
-            bits.append(f"{att:.0f} projected attempts for {pyd:.0f} yards")
-        elif att > 0:
-            bits.append("a thin projected workload")
-        else:
-            return no_history_clause(r, pos)
-        if ec >= 4:
-            bits.append(f"plus {ec:.1f} carries of his own")
-        elif ec >= 2:
-            bits.append(f"a little rushing on top ({ec:.1f} carries)")
-        if gl >= 0.3:
-            bits.append(plural(gl, "goal-line rush", "goal-line rushes"))
-        return ", ".join(bits)
+        if att < 5:
+            return "No starting workload priced in."
+        if ec >= 5:
+            return "Rushing floor carries the projection."
+        if att >= 31:
+            return "Situation and skillset point to a high pass volume."
+        if att >= 28:
+            return "Steady attempt volume, no rushing floor."
+        return "Modest attempt projection."
 
     if pos == "rb":
         if ec < 1 and et < 1:
-            return no_history_clause(r, pos)
-        bits = [f"{ec:.1f} projected carries"]
-        if gl >= 0.5:
-            bits.append(f"{gl:.1f} of them at the goal line")
-        if et >= 3:
-            bits.append(f"plus {et:.1f} targets out of the backfield")
-        return ", ".join(bits)
+            return ("No NFL usage; priced on draft capital and the depth chart." if rookie
+                    else "No real usage last year.")
+        if ec >= 14 and gl >= 0.8:
+            return "Bell-cow carries with the goal-line work."
+        if ec >= 14:
+            return "Bell-cow carries, little goal-line equity."
+        if et >= 4:
+            return "Value sits in the passing-down role."
+        if ec >= 8:
+            return "Committee lead with real volume."
+        return "Backup volume."
 
     if et < 1:
-        return no_history_clause(r, pos)
-    bits = [f"{et:.1f} projected targets"]
+        return ("No NFL usage; priced on draft capital and the depth chart." if rookie
+                else "No real usage last year.")
+    if ts is not None and ts >= 0.25:
+        return "Alpha target share." if rz < 1 else "Alpha target share with red-zone work."
     if ts is not None and ts >= 0.18:
-        article = "an" if f"{ts:.0%}".startswith(("8", "11", "18")) else "a"
-        bits.append(f"{article} {ts:.0%} target share")
-    if rz >= 0.6:
-        bits.append(plural(rz, "red-zone look"))
-    if ss is not None and ss >= 0.8:
-        bits.append(f"{ss:.0%} of the snaps")
-    elif depth and depth >= 3 and (ss is None or ss < 0.6):
-        bits.append("a rotational snap count")
-    return ", ".join(bits)
+        return "Clear starter's target share." if rz < 1 else "Starter's share plus red-zone looks."
+    if ss is not None and ss < 0.6 and depth >= 3:
+        return "Rotational snaps cap the ceiling."
+    return "Secondary role in the passing game."
 
 
-def modifier_clause(r, skip_rookie: bool = False) -> str:
+def flags(r) -> str:
+    """Only what changes a start/sit call, in as few words as possible."""
     out = []
     if num(r.get("is_out"), 0) == 1:
-        return "RULED OUT — take him off your board."
+        return "RULED OUT."
     if num(r.get("is_questionable"), 0) == 1:
         prac = str(r.get("practice_status") or "").lower()
-        how = ("did not practise" if "did not" in prac else
-               "practised in a limited role" if "limited" in prac else
-               "took a full practice" if "full" in prac else "status unclear")
-        out.append(f"Questionable — {how}; drop him if he's downgraded.")
-    if num(r.get("is_rookie"), 0) == 1 and not skip_rookie:
-        out.append("Rookie, so the role is projected from draft capital and the depth chart, not observed.")
-    elif num(r.get("changed_team"), 0) == 1:
-        out.append("New team — his share is carried over, not measured here.")
+        how = ("DNP" if "did not" in prac else "limited" if "limited" in prac
+               else "full" if "full" in prac else "no practice detail")
+        out.append(f"Questionable ({how}).")
     if num(r.get("hc_change"), 0) == 1:
-        out.append("New head coach, so last season's team tendencies are discounted.")
+        out.append("New HC.")
+    if num(r.get("changed_team"), 0) == 1:
+        out.append("New team.")
     return " ".join(out)
 
 
 def build_note(r, pos: str) -> str:
-    side = "rush" if pos == "rb" else "pass"
-    role, matchup, total = role_clause(r, pos), defence_clause(r, side), total_clause(r)
-    lead = upper_first(role)
-    if total:
-        lead += f", on {total}"
-    lead += "."
-    second = f"{upper_first(matchup)}." if matchup else ""
-    # The no-usage clause already says he is priced off draft capital, so the
-    # rookie sentence would only repeat it.
-    mod = modifier_clause(r, skip_rookie="usage" in role.lower())
-    return " ".join(x for x in (lead, second, mod) if x).replace("  ", " ")
+    return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), flags(r)) if x)
 
 
 def main() -> None:
@@ -197,13 +169,15 @@ def main() -> None:
                 "rank_vibes": int(r["rank_vibes"]),
                 "player": r["player_name"],
                 "team": r["team"],
+                "opponent": r.get("opponent", ""),
+                "is_home": int(num(r.get("is_home"), 0)),
                 "note_data": build_note(r, pos),
                 "note_vibes": "",
             })
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:
-            w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player",
-                                               "team", "note_data", "note_vibes"])
+            w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
+                                               "opponent", "is_home", "note_data", "note_vibes"])
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")

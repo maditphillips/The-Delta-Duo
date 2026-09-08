@@ -38,7 +38,7 @@ function RankList({
             <tr>
               <th className="num">#</th>
               <th>Player</th>
-              <th>Tm</th>
+              <th>Matchup</th>
               <th className="num">Δ</th>
               <th>Take</th>
             </tr>
@@ -54,11 +54,14 @@ function RankList({
                     {r[orderBy]}
                   </td>
                   <td data-primary="">{r.player}</td>
-                  <td data-label="Team" style={{ color: "var(--ink-dim)" }}>{r.team ?? ""}</td>
+                  <td data-label="Matchup" style={{ color: "var(--ink-dim)", whiteSpace: "nowrap" }}>
+                    {r.team ? <strong style={{ color: "var(--ink)", fontWeight: 600 }}>{r.team}</strong> : null}
+                    {r.opponent ? ` ${r.isHome ? "vs." : "@"} ${r.opponent}` : ""}
+                  </td>
                   <td className="num" data-label="Delta" style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400 }}>
                     {shown === 0 ? "—" : shown > 0 ? `+${shown}` : shown}
                   </td>
-                  <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)", minWidth: 200 }}>
+                  <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)", width: "44%", minWidth: 140 }}>
                     {r[noteKey] ?? ""}
                   </td>
                 </tr>

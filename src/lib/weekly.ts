@@ -1,6 +1,10 @@
 export type WeeklyRow = {
   player: string;
   team?: string | null;
+  /** Week-1 opponent and side, so the board can show the matchup rather than
+   *  just the team. Absent on lists that do not carry it (kickers). */
+  opponent?: string | null;
+  isHome?: boolean;
   rankData: number;
   rankVibes: number;
   noteData?: string | null;
