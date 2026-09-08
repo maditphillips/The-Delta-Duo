@@ -431,14 +431,14 @@ seed-averaged, seasons with consensus history):
 
 | Position | Source | Captured top-12 | Points from its top 12 | Regret / starter | Spearman (shared rows) |
 |---|---|---|---|---|---|
-| QB | consensus | **6.3 / 12** | **240.6** | **6.14** | **0.700** |
-| | model | 6.0 | 232.5 | 6.82 | 0.651 |
-| RB | consensus | 4.1 | 177.3 | 5.83 | **0.508** |
-| | **model** | **5.0** | **180.6** | **5.55** | 0.500 |
-| TE | consensus | **5.8** | **93.6** | **4.27** | **0.489** |
-| | model | 5.0 | 87.2 | 4.81 | 0.399 |
-| WR | consensus | 3.5 | **178.5** | **8.65** | **0.319** |
-| | **model** | **3.8** | 174.9 | 8.95 | 0.285 |
+| QB | consensus | 6.6 / 12 | 224.5 | 5.26 | 0.688 |
+| | **model** | **6.6** | **228.1** | **4.96** | **0.718** |
+| RB | consensus | 4.2 | 187.1 | 5.90 | **0.486** |
+| | **model** | **4.9** | **187.6** | **5.86** | 0.475 |
+| TE | consensus | **5.8** | **104.2** | **4.53** | **0.451** |
+| | model | 5.0 | 99.2 | 4.95 | 0.427 |
+| WR | consensus | 3.6 | **196.3** | **8.92** | **0.307** |
+| | model | 3.6 | 189.2 | 9.51 | 0.292 |
 
 "Captured top-12" is how many of that source's top 12 actually finished top 12
 in the position. Spearman is computed on the union of both top-36 lists, so the
@@ -538,6 +538,68 @@ failing to beat a matchup-aware one, and it raises a question worth testing:
 whether the market and opponent features are contributing anything at week 1, or
 whether week-1 outcomes are dominated by player quality that the crowd simply
 estimates better. That ablation has not been run.
+
+## 5b. Training window and the target variable
+
+Two changes were tested after the first build, both graded the same way:
+expanding window, seed-averaged, week 1 at top-36.
+
+### Training on more than week 1
+
+Every point-in-time function now takes a week, so the panel carries all 18
+weeks of every season -- 129,000 rows against 8,600. Each week is posed as the
+*week-1* problem: prior-season features only, nothing from weeks 1..W-1. The
+rows are extra examples of what we predict rather than a different problem, and
+`week`, `is_week1` and explicit `is_week1 x prior-feature` interactions let the
+model hold a separate week-1 slope.
+
+| Position | weeks 1-6 vs week 1 | all weeks vs week 1 |
+|---|---|---|
+| QB | **+0.40 captured** (p = 0.18, never worse in 5 seasons, 3 seeds) | -0.07 |
+| TE | +0.30 | +0.50 (p = 0.089) |
+| RB | +0.10 | +0.20 |
+| WR | -0.40 | -0.20 |
+
+Overall, across 20 position-seasons, both wider windows gain +0.125 captured
+top-12 with p around 0.48. **Seventeen times the data moved almost nothing.**
+
+Only quarterback ships with a wider window. Rationale and caveat sit beside
+`TRAIN_WEEKS` in `dd/config.py`: never worse on a single season across three
+seeds, regret from 5.43 to 4.92, and a mechanism -- a quarterback's role is the
+steadiest of the four week to week, so mid-season rows resemble week 1 more
+closely than at receiver, where the wider window did the most damage.
+
+### Within-week z-scored targets
+
+The conditional stage trains on how far a player beat his positional peers
+*that week*, not on raw points. Week-level scoring environment is noise the
+model cannot predict, and raw-point training blames it for it.
+
+Applied only among players who played -- z-scoring a distribution that is half
+zeros is meaningless -- and converted back to points before multiplying by
+P(plays), because a negative z-score times a small probability sorts *higher*
+than the same score times a large one, which would invert the ranking silently.
+
+Result: +0.13 / +0.10 / 0.00 / +0.10 captured top-12 for QB/RB/WR/TE, never
+worse in 19 of 20 tests, every p-value between 0.37 and 0.78. Not a measured
+gain. It ships as the better-motivated target, not because the backtest proved
+anything.
+
+### What both results actually say
+
+Ridge beat the gradient booster by more than 0.10 Spearman in **all 56**
+comparisons -- the blend rule never fired once -- and seventeen times the data
+changed nothing. Together those say the model is **not row-limited; it is
+feature-limited.** The signal available is close to linear and already
+saturated by the inputs we have. More rows and more capacity are both dead ends
+here; better inputs are the remaining lever.
+
+### One number that got worse to be honest about
+
+At running back the naive baseline -- last season's points per game -- now
+captures 5.0 top-12 backs to the model's 4.9, with lower regret (5.48 vs 5.86).
+The model still beats consensus at RB (4.9 vs 4.2), but it no longer clearly
+beats doing nothing clever at all.
 
 ## 6. Known limitations
 
