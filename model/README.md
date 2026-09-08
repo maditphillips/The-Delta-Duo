@@ -430,6 +430,38 @@ writers, coach quotes, holdouts and preseason usage. No free historical dataset
 contains any of that. The model sees only what happened on the field last year
 plus who is on the depth chart.
 
+### Why the benchmark is preseason consensus, and why weekly is not an option
+
+FantasyPros publishes two different products, and they answer different
+questions:
+
+- **Preseason redraft rankings** (`redraft-qb`, `redraft-rb`, …) — "who is the
+  best running back for the season". Essentially ADP. Matchup-blind: it does not
+  know who plays whom in week 1.
+- **Weekly start/sit rankings** (`weekly-rb`, …) — "who should you start this
+  week", published days before kickoff, accounting for matchup, injury news and
+  camp reports.
+
+A weekly model should ideally be graded against the weekly list. It is not,
+because that list effectively does not exist in the public mirror for week 1.
+Filtering the DynastyProcess ECR archive to early September returns exactly two
+scrape dates across all seasons — 2021-09-10 and 2025-09-12 — and checking them
+against the schedule disqualifies both:
+
+| Scrape | Week 1 window | Verdict |
+|---|---|---|
+| 2021-09-10 | Sep 9–13 (opener Sep 9) | after the Thursday game, before the other 15 — usable but contaminated |
+| 2025-09-12 | Sep 4–8, week 2 opens Sep 11 | **this is a week 2 list.** Using it would leak week 1 results |
+
+So the benchmark is the preseason list, and that cuts **against** this model,
+not for it. The preseason list does not know week 1's matchups; this model does
+— implied team totals, opponent defensive priors, game script. Failing to beat a
+matchup-blind opponent with matchup-aware features is a worse result than
+failing to beat a matchup-aware one, and it raises a question worth testing:
+whether the market and opponent features are contributing anything at week 1, or
+whether week-1 outcomes are dominated by player quality that the crowd simply
+estimates better. That ablation has not been run.
+
 ## 6. Known limitations
 
 - **Routes run do not exist in free data.** The *Two Doors* second gate is
@@ -451,6 +483,8 @@ plus who is on the depth chart.
 - **n = 37** for the change-regime carryover fit. The coefficients are
   directionally useful, not precise. Bootstrap intervals are not yet computed.
 - **Independent player sampling** overstates the sharpness of `P(top-12)`.
+- **The benchmark is a season-long list, not a weekly one** (see above). No
+  usable week-1 weekly consensus exists in public data.
 - **Rookies** get draft capital, depth-chart position and team vacancy, and
   nothing else. College production is not wired in — the RB study's finding that
   college receiving predicts NFL role is a clear addition.
