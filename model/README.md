@@ -631,6 +631,66 @@ Fixing either properly means reworking the exposure weights and would change
 every share feature at every position, so both are recorded here rather than
 patched mid-week.
 
+### The ranking and the probability came from different estimators
+
+On the published PPR board Derrick Henry sat 13th with a 46% shot at a top-12
+week while D'Andre Swift sat 12th with 25%. A list cannot rank one man above
+another and simultaneously say he is less likely to finish above him.
+
+It was not a display bug. The projection came from the mean model and the
+distribution from the ladder of nine quantile GBMs, and nothing tied the two
+together: the ridge put Swift's conditional week at 15.1 points while his own
+quantile median said 11.2.
+
+The obvious repair -- shift the ladder onto the mean model -- assumes the mean
+model is the better estimate of level. It is not, and it is not worse either.
+Across 56 position-scoring-seasons of backtest, ranking by the ladder's implied
+mean instead of the mean model gains 0.005 Spearman (40-16, p = 0.003) and
+nothing at all anywhere it would matter:
+
+| metric | ladder − mean model | W/T/L | p |
+|---|---|---|---|
+| Spearman | +0.005 | 40/0/16 | 0.003 |
+| top-12 overlap | +0.07 | 14/31/11 | 0.53 |
+| points captured @12 | +0.005 | 22/4/30 | 0.67 |
+| top-24 overlap | +0.05 | 18/21/17 | 0.76 |
+
+Two estimators of equal accuracy making partly independent errors is the
+textbook case for averaging them, and the average beats both parents:
+
+| ranked by | Spearman | top-12 hits | captured |
+|---|---|---|---|
+| mean model | 0.7330 | 4.68 | 0.6596 |
+| quantile ladder | 0.7384 | 4.75 | 0.6641 |
+| **50/50 blend** | **0.7390** | **4.80** | **0.6662** |
+
+The blend beats the mean model on Spearman 45-11 (p < 0.001) and loses to it on
+nothing. `cond_points` is now that blend, and the ladder is recentred on it, so
+the rank and the probability are two readings of one number. The weight is a
+flat half deliberately: any other weight would have been chosen on the same
+seasons it was then scored against.
+
+### The simulator was clipping its own tails
+
+`simulate()` interpolates the ladder, which runs only from the 10th to the 90th
+percentile, and `np.interp` clamps outside its range. A fifth of every simulated
+season therefore landed exactly on the q10 or q90 value -- two point masses
+sitting where the tails belong, in precisely the region that decides a top-12
+week. The outer deciles are now extended one decile further at the slope the
+ladder was already running, floored at zero. Measured against how often a top-12
+week actually happened, over 28 position-seasons: log loss 0.2257 against 0.2334,
+Brier 0.0682 against 0.0684.
+
+### What the crossings that remain actually mean
+
+Rank and probability still do not move in lockstep, and should not. Henry now
+projects 11th at 41% while Saquon Barkley projects 7th at 36%, because Henry's
+median week is 16.2 and Barkley's is 14.8: Henry clears the bar more often,
+while Barkley's higher projection rests on a ceiling four points taller. Top-12
+is a threshold, and points past it do not count twice. `median_q50` is published
+alongside the range so the weekly note can say this out loud instead of leaving
+it looking like the old bug.
+
 ## 6. Known limitations
 
 - **Routes run do not exist in free data.** The *Two Doors* second gate is

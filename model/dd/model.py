@@ -265,20 +265,28 @@ class PositionModel:
                               for q in QUANTILES])
         cq = np.sort(cq, axis=1)  # independently fitted quantiles can cross
 
-        # Recentre the ladder on the mean model.
+        # Agree on one number, then let both models vote on what it is.
         #
-        # The projection comes from the mean model and the distribution from a
-        # separate ladder of quantile GBMs, and nothing tied the two together:
-        # for PPR running backs the mean model put D'Andre Swift at 15.1 while
-        # his own quantile median said 11.2, so he ranked ahead of Derrick Henry
-        # on points while showing a far worse shot at a top-12 week. Ranking and
-        # probability disagreeing about the same player is indefensible.
+        # The projection used to come from the mean model and the distribution
+        # from a separate ladder of quantile GBMs, with nothing tying the two
+        # together: for PPR running backs the mean model put D'Andre Swift at
+        # 15.1 while his own quantile median said 11.2, so he ranked ahead of
+        # Derrick Henry on points while showing a far worse shot at a top-12
+        # week. A list cannot rank one man above another and simultaneously say
+        # he is less likely to finish above him.
         #
-        # The ladder is good at shape and the mean model is the better estimate
-        # of level -- ridge beats the booster by more than 0.10 Spearman at this
-        # sample size -- so the shape is shifted onto the level rather than the
-        # other way round. Rank order is untouched; only the spread moves.
+        # Which of the two to trust turns out to be the wrong question. Across
+        # 56 position-scoring-seasons of backtest they are a tie: ranking by the
+        # ladder gains 0.005 Spearman (40-16, p=0.003) and nothing at all on
+        # top-12 overlap (p=0.53), points captured (p=0.67) or top-24 overlap
+        # (p=0.76). Equally accurate and making partly independent errors is the
+        # textbook case for averaging them, and the average does beat both
+        # parents: 0.7390 Spearman to 0.7330 and 0.7384, 4.80 top-12 hits to
+        # 4.68 and 4.75, winning 45-11 against the mean model. The weight is a
+        # flat half because any other weight would have been chosen on the same
+        # seasons it was then scored against.
         ladder_mean = _trapezoid_mean(cq)
+        cond = 0.5 * cond + 0.5 * ladder_mean
         cq = np.clip(cq + (cond - ladder_mean)[:, None], 0, None)
 
         out = pd.DataFrame(index=df.index)
@@ -311,11 +319,23 @@ def _trapezoid_mean(cq: np.ndarray) -> np.ndarray:
 
 
 def simulate(preds: pd.DataFrame, n: int = 4000, seed: int = 7) -> np.ndarray:
-    """Draw weeks: first whether he plays, then how it went if he did."""
+    """Draw weeks: first whether he plays, then how it went if he did.
+
+    The ladder only runs from the 10th to the 90th percentile, and np.interp
+    clamps outside its range, so a fifth of every simulated season used to land
+    exactly on the q10 or q90 value -- two point masses where the tails belong.
+    That is where a top-12 week actually gets decided, so the outer deciles are
+    extended one decile further at the slope the ladder was already running,
+    floored at zero. Worth 0.008 of log loss against how often a top-12 week
+    really happened, over 28 position-seasons of backtest."""
     rng = np.random.default_rng(seed)
     ccols = sorted([c for c in preds.columns if c.startswith("cq")], key=lambda c: int(c[2:]))
     levels = np.array([int(c[2:]) / 100 for c in ccols])
     vals = preds[ccols].to_numpy()
+    lo = np.clip(vals[:, [0]] - (vals[:, [1]] - vals[:, [0]]), 0, None)
+    hi = vals[:, [-1]] + (vals[:, [-1]] - vals[:, [-2]])
+    levels = np.concatenate([[0.0], levels, [1.0]])
+    vals = np.hstack([lo, vals, hi])
     p = preds["p_play"].to_numpy()
     u = rng.random((len(preds), n))
     plays = rng.random((len(preds), n)) < p[:, None]
@@ -333,6 +353,7 @@ def rank_frame(rows: pd.DataFrame, preds: pd.DataFrame, depth: int) -> pd.DataFr
     out["p_top12"] = (order <= 12).mean(axis=1)
     out["p_top24"] = (order <= 24).mean(axis=1)
     out["floor_q20"] = preds["q20"].to_numpy()
+    out["median_q50"] = preds["q50"].to_numpy()
     out["ceiling_q90"] = preds["q90"].to_numpy()
     out["bust_rate"] = (sims < 5).mean(axis=1)
     out = out.sort_values("proj", ascending=False)

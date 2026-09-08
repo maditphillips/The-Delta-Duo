@@ -104,7 +104,7 @@ def cmd_predict():
     outdir.mkdir(parents=True, exist_ok=True)
     for (pos, scoring), df in lists.items():
         keep = ["rank_data", "player_name", "team", "opponent", "proj", "floor_q20",
-                "ceiling_q90", "p_top12", "consensus_rank", "depth_rank",
+                "median_q50", "ceiling_q90", "p_top12", "consensus_rank", "depth_rank",
                 "expected_targets", "expected_carries", "implied_team_total",
                 "off_continuity", "hc_continuity", "changed_team", "is_rookie", "learner"]
         keep = [c for c in keep if c in df.columns]
