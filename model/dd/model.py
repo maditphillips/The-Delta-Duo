@@ -265,6 +265,22 @@ class PositionModel:
                               for q in QUANTILES])
         cq = np.sort(cq, axis=1)  # independently fitted quantiles can cross
 
+        # Recentre the ladder on the mean model.
+        #
+        # The projection comes from the mean model and the distribution from a
+        # separate ladder of quantile GBMs, and nothing tied the two together:
+        # for PPR running backs the mean model put D'Andre Swift at 15.1 while
+        # his own quantile median said 11.2, so he ranked ahead of Derrick Henry
+        # on points while showing a far worse shot at a top-12 week. Ranking and
+        # probability disagreeing about the same player is indefensible.
+        #
+        # The ladder is good at shape and the mean model is the better estimate
+        # of level -- ridge beats the booster by more than 0.10 Spearman at this
+        # sample size -- so the shape is shifted onto the level rather than the
+        # other way round. Rank order is untouched; only the spread moves.
+        ladder_mean = _trapezoid_mean(cq)
+        cq = np.clip(cq + (cond - ladder_mean)[:, None], 0, None)
+
         out = pd.DataFrame(index=df.index)
         out["p_play"] = p_play
         out["cond_points"] = cond
@@ -281,6 +297,17 @@ class PositionModel:
         for j, q in enumerate(QUANTILES):
             out[f"cq{int(q*100)}"] = cq[:, j]
         return out
+
+
+def _trapezoid_mean(cq: np.ndarray) -> np.ndarray:
+    """Mean implied by a quantile ladder, integrating across the levels it
+    covers and holding the tails flat beyond the outermost ones."""
+    levels = np.array(QUANTILES)
+    widths = np.empty_like(levels)
+    widths[0] = (levels[0] + levels[1]) / 2
+    widths[-1] = 1 - (levels[-2] + levels[-1]) / 2
+    widths[1:-1] = (levels[2:] - levels[:-2]) / 2
+    return cq @ widths
 
 
 def simulate(preds: pd.DataFrame, n: int = 4000, seed: int = 7) -> np.ndarray:
