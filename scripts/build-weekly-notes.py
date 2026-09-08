@@ -195,14 +195,16 @@ def outlook(r) -> str:
     # the wider one, yet Henry is the safer start: his median sits 67% of the
     # way up his band against Barkley's 40%. Henry has more weeks near his top
     # than his bottom; Barkley's projection is carried by his best ones. The
-    # cut-offs are the upper and lower quartile of the tilt across all four
-    # positions, which run about 0.27 to 0.40.
-    if None not in (lo, mid, hi) and hi > lo:
-        tilt = (mid - lo) / (hi - lo)
-        if tilt >= 0.55:
+    # Tilt is bunched -- its quartiles run 0.27 to 0.40 across all four
+    # positions -- so an absolute cut-off would either fire on a quarter of the
+    # board or on nobody. The clause is ranked within its own list instead and
+    # goes to the top and bottom tenth, which is rare enough to mean something.
+    tilt = r.get("_tilt")
+    if tilt is not None and not pd.isna(tilt):
+        if tilt >= 0.9:
             text += (" Safer than his projection reads: more of his weeks land"
                      " near the top of that range than the bottom.")
-        elif tilt <= 0.27:
+        elif tilt <= 0.1:
             text += (" Ceiling-dependent: his median sits at the low end of that"
                      " range, so the projection leans on his best weeks.")
     return text
@@ -265,6 +267,9 @@ def main() -> None:
     for (pos, variant), fname in FILES.items():
         df = pd.read_csv(SRC / fname)
         df = scratch(df, pos)
+        band = df["ceiling_q90"] - df["floor_q20"]
+        df["_tilt"] = ((df["median_q50"] - df["floor_q20"]) / band.where(band > 0)
+                       ).rank(pct=True)
         # Consensus is re-ranked inside our published list, so both columns
         # order the same players and the delta is a like-for-like comparison.
         df["_c"] = df["consensus_rank"].fillna(9999)
