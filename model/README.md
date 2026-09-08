@@ -346,6 +346,48 @@ players actually worth ranking.
 Across-seed standard deviation of these Spearman figures is 0.024–0.052, so read
 them to roughly two decimal places and no further.
 
+### Results at the top 36 — the comparison that decides lineups
+
+The full board flatters everyone: ranking a starter above a third-string tight
+end is not a skill anyone pays for. Restricting both sources to their own top 36
+and asking what those players actually did (`outputs/backtest/top36_head_to_head.csv`,
+seed-averaged, seasons with consensus history):
+
+| Position | Source | Captured top-12 | Points from its top 12 | Regret / starter | Spearman (shared rows) |
+|---|---|---|---|---|---|
+| QB | consensus | **6.3 / 12** | **240.6** | **6.14** | **0.695** |
+| | model | 5.7 | 231.6 | 6.89 | 0.653 |
+| RB | consensus | 4.1 | 177.3 | 5.83 | **0.500** |
+| | **model** | **5.0** | **182.1** | **5.43** | 0.493 |
+| TE | consensus | **5.8** | **93.6** | **4.27** | **0.504** |
+| | model | 4.8 | 85.3 | 4.97 | 0.388 |
+| WR | consensus | 3.5 | **178.5** | **8.65** | **0.329** |
+| | **model** | **3.8** | 173.3 | 9.08 | 0.297 |
+
+"Captured top-12" is how many of that source's top 12 actually finished top 12
+in the position. Spearman is computed on the union of both top-36 lists, so the
+row set is identical and the numbers are comparable; the outcome columns use
+each source's own 36, which needs no matching.
+
+**The picture changes at this depth.** On the full board the model trailed
+consensus by 0.05–0.11 Spearman everywhere. Inside the top 36:
+
+- **Running back — the model is better**, and on the metrics that matter most.
+  It captures a full extra top-12 back (5.0 vs 4.1), delivers five more points
+  from its top 12, and gives up less regret. Spearman is a dead heat. Per season
+  it won 2021, 2024 and 2025, with 2025 the widest (7.2 captured against 5.0).
+- **Receiver is a coin flip.** The model captures marginally more top-12
+  receivers; consensus squeezes slightly more points out of its twelve.
+- **Quarterback and tight end still belong to consensus**, and tight end by the
+  most — 5.8 captured against 4.8, and the widest Spearman gap on the board.
+
+Paired across seasons the honest verdict is that **none of this is statistically
+significant** — five seasons of consensus history is a small sample, and every
+p-value lands between 0.07 and 0.73 (RB captured top-12: +0.93, p = 0.13; TE
+points: −8.4, p = 0.07; QB captured: −0.60, p = 0.09). Directionally the model
+is at parity or better at RB and WR and behind at QB and TE; that is as strong a
+claim as five seasons supports.
+
 ### Results against consensus
 
 Same rows for every contender — anyone the model or consensus places inside its
