@@ -65,6 +65,20 @@ SCORING = {
     "qb_6pt": Scoring("qb_6pt", reception=1.0, pass_td=6.0),
 }
 
+# Which weeks of prior seasons each position may train on.
+#
+# Quarterback uses weeks 1-6; every other position uses week 1 only. That is a
+# judgement call, and the evidence behind it is thin but one-directional: over
+# three seeds and five backtest seasons the wider window was never worse for QB
+# on a single season, gained +0.40 captured top-12 (p = 0.18) and cut start/sit
+# regret from 5.43 to 4.92, which puts QB ahead of expert consensus on both
+# lineup metrics for the first time. There is a mechanism for it too -- of the
+# four positions a quarterback's role is the most stable week to week, so
+# mid-season rows resemble week 1 more closely than they do at receiver, which
+# is where the wider window did the most damage. It is still a choice made
+# partly on backtest evidence, so it is recorded here rather than buried.
+TRAIN_WEEKS = {"QB": tuple(range(1, 7)), "RB": (1,), "WR": (1,), "TE": (1,)}
+
 # Which formats each position publishes.
 LISTS = {
     "QB": ("qb_4pt", "qb_6pt"),

@@ -1,0 +1,13 @@
+position,source,captured_top12,pts_top12,regret_per_starter,spearman_shared
+QB,consensus,6.6,224.488,5.257,0.688
+QB,model,6.6,228.112,4.955,0.718
+QB,prior_ppg,5.4,191.076,8.042,0.283
+RB,consensus,4.2,187.06,5.9,0.486
+RB,model,4.9,187.55,5.859,0.475
+RB,prior_ppg,5.0,192.14,5.477,0.364
+TE,consensus,5.8,104.24,4.527,0.451
+TE,model,5.0,99.21,4.946,0.427
+TE,prior_ppg,5.2,98.94,4.968,0.284
+WR,consensus,3.6,196.328,8.918,0.307
+WR,model,3.6,189.17,9.514,0.292
+WR,prior_ppg,3.4,186.568,9.731,0.144

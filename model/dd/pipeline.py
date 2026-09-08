@@ -5,7 +5,8 @@ import numpy as np
 import pandas as pd
 
 from . import benchmark, dataset, evaluate
-from .config import BACKTEST_SEASONS, CACHE, LIST_DEPTH, LISTS, OUTPUTS, POSITIONS, TARGET_SEASON
+from .config import (BACKTEST_SEASONS, CACHE, LIST_DEPTH, LISTS, OUTPUTS, POSITIONS,
+                     TARGET_SEASON, TRAIN_WEEKS)
 from .features import rankable
 from .model import PositionModel, QUANTILES, rank_frame
 
@@ -141,10 +142,10 @@ def backtest(panel: pd.DataFrame, positions=POSITIONS, verbose: bool = True,
 
 def fit_final(panel: pd.DataFrame, pos: str, scoring: str, target_season: int) -> PositionModel:
     train_seasons = [s for s in range(FIRST_TRAIN_SEASON, target_season)]
-    tr = pd.concat([rankable(panel[panel["season"] == s], pos) for s in train_seasons])
-    holdout = rankable(panel[panel["season"] == train_seasons[-1]], pos)
-    fit_on = pd.concat([rankable(panel[panel["season"] == s], pos)
-                        for s in train_seasons[:-1]])
+    weeks = TRAIN_WEEKS.get(pos, (1,))
+    tr = _slice(panel, train_seasons, pos, weeks)
+    holdout = [_slice(panel, [s], pos, [1]) for s in train_seasons[-2:]]
+    fit_on = _slice(panel, train_seasons[:-2], pos, weeks)
     probe = PositionModel(pos, scoring).fit(fit_on, select_on=holdout)
     return PositionModel(pos, scoring, kind=probe.chosen_).fit(tr)
 

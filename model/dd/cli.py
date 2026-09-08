@@ -38,7 +38,7 @@ def cmd_panel():
 
 
 def _panel():
-    p = CACHE / "panel.parquet"
+    p = CACHE / "panel_allweeks.parquet"
     if not p.exists():
         cmd_panel()
     return pd.read_parquet(p)

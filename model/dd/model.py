@@ -66,6 +66,23 @@ class _Bag:
         return np.mean([m.predict_proba(X) for m in self.members_], axis=0)
 PLAY_THRESHOLD = 0.5  # fantasy points; below this he did not have a week
 
+# Train the conditional stage on within-week z-scores rather than raw points.
+#
+# Every week has its own scoring environment: in a high-scoring week everyone's
+# total is up, in a cold low-total week everyone's is down. The model cannot
+# predict that league-wide swing, but training on raw points blames it for it.
+# Since the product is an ordering *within* a week, the target that matters is
+# how far a player beat his peers that week, not how many points the week
+# happened to produce.
+#
+# Two details keep this honest. It is applied only to the conditional stage,
+# among players who actually played -- z-scoring a distribution that is half
+# zeros is meaningless. And predictions are converted back to points before
+# being multiplied by P(plays), because a negative z-score times a small
+# probability sorts *higher* than the same z-score times a large one, which
+# would silently invert the ranking.
+USE_Z_TARGET = True
+
 
 def _ridge() -> Pipeline:
     return Pipeline([
@@ -124,10 +141,13 @@ NOISE_BAND = 0.10
 
 
 class PositionModel:
-    def __init__(self, position: str, scoring: str, kind: str = "auto"):
+    def __init__(self, position: str, scoring: str, kind: str = "auto",
+                 use_z: bool | None = None):
         self.position = position
         self.scoring = scoring
         self.kind = kind
+        self.use_z = USE_Z_TARGET if use_z is None else use_z
+        self.z_ref_: tuple = (0.0, 1.0)
         self.features_: list[str] = []
         self.play_ = None
         self.mean_ = None
@@ -148,9 +168,42 @@ class PositionModel:
         return X[keep]
 
     # -- fit -------------------------------------------------------------
+    def _z_transform(self, train: pd.DataFrame, y: np.ndarray, played: np.ndarray):
+        """Return the target to fit, plus the (mean, sd) used to convert back.
+
+        Groups are (season, week). The reference used for conversion is the
+        average week-1 environment in the training data, since week 1 is what
+        we publish.
+        """
+        if not self.use_z or "week" not in train.columns:
+            return y, (0.0, 1.0)
+        df = train.assign(_y=y, _played=played)
+        stats = (df[df["_played"]].groupby(["season", "week"])["_y"]
+                 .agg(["mean", "std", "size"]))
+        stats = stats[(stats["size"] >= 10) & (stats["std"] > 0)]
+        if stats.empty:
+            return y, (0.0, 1.0)
+        key = pd.MultiIndex.from_frame(df[["season", "week"]])
+        mu = pd.Series(stats["mean"].reindex(key).to_numpy(), index=df.index)
+        sd = pd.Series(stats["std"].reindex(key).to_numpy(), index=df.index)
+        fallback_mu, fallback_sd = float(stats["mean"].mean()), float(stats["std"].mean())
+        mu = mu.fillna(fallback_mu).to_numpy()
+        sd = sd.fillna(fallback_sd).to_numpy()
+        wk1 = stats[stats.index.get_level_values("week") == 1]
+        ref = ((float(wk1["mean"].mean()), float(wk1["std"].mean())) if len(wk1)
+               else (fallback_mu, fallback_sd))
+        return (y - mu) / sd, ref
+
+    def _to_points(self, pred: np.ndarray) -> np.ndarray:
+        if not self.use_z:
+            return pred
+        mu, sd = self.z_ref_
+        return pred * sd + mu
+
     def fit(self, train: pd.DataFrame, select_on: pd.DataFrame | None = None):
-        y = train[f"actual_{self.scoring}"].to_numpy(dtype=float)
-        played = y > PLAY_THRESHOLD
+        y_raw = train[f"actual_{self.scoring}"].to_numpy(dtype=float)
+        played = y_raw > PLAY_THRESHOLD
+        y, self.z_ref_ = self._z_transform(train, y_raw, played)
         X = self._matrix(train)
         self.features_ = list(X.columns)
         Xn = X.to_numpy()
@@ -176,7 +229,8 @@ class PositionModel:
                 p_play = self.play_.predict_proba(Xq)[:, 1]
                 sc = {}
                 for name, est in candidates.items():
-                    r = spearmanr(est.predict(Xq) * p_play, truth).statistic
+                    r = spearmanr(np.clip(self._to_points(est.predict(Xq)), 0, None)
+                                  * p_play, truth).statistic
                     sc[name] = r if np.isfinite(r) else np.nan
                     per_season[name].append(sc[name])
                 gaps.append(sc["ridge"] - sc["gbm"])
@@ -205,9 +259,9 @@ class PositionModel:
     def predict(self, df: pd.DataFrame) -> pd.DataFrame:
         X = self._matrix(df).to_numpy()
         p_play = self.play_.predict_proba(X)[:, 1]
-        cond = np.clip(self.mean_.predict(X), 0, None)
+        cond = np.clip(self._to_points(self.mean_.predict(X)), 0, None)
 
-        cq = np.column_stack([np.clip(self.quantiles_[q].predict(X), 0, None)
+        cq = np.column_stack([np.clip(self._to_points(self.quantiles_[q].predict(X)), 0, None)
                               for q in QUANTILES])
         cq = np.sort(cq, axis=1)  # independently fitted quantiles can cross
 
