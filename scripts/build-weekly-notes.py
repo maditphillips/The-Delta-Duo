@@ -186,14 +186,25 @@ def outlook(r) -> str:
     if p12 is not None:
         bits.append(f"{p12:.0%} shot at a top-12 week")
     text = (", ".join(bits) + ".") if bits else ""
-    # Say which way the distribution leans, but only when it leans far enough
-    # to change how you would use him.
-    if mid is not None and proj and abs(mid - proj) / proj >= 0.12:
-        text += (" Hits that number more often than the projection reads — one"
-                 " bad week in the tail is what drags his average down."
-                 if mid > proj else
-                 " Ceiling-dependent: the projection leans on his big weeks"
-                 " rather than his typical one.")
+    # Which way the range leans, and only when it leans far enough to change
+    # how you would use him.
+    #
+    # The measure is where the median sits between floor and ceiling, not how
+    # wide the range is -- width alone says the wrong thing. Derrick Henry
+    # spans 7.7 to 20.4 and Saquon Barkley 9.6 to 22.8, so Barkley's range is
+    # the wider one, yet Henry is the safer start: his median sits 67% of the
+    # way up his band against Barkley's 40%. Henry has more weeks near his top
+    # than his bottom; Barkley's projection is carried by his best ones. The
+    # cut-offs are the upper and lower quartile of the tilt across all four
+    # positions, which run about 0.27 to 0.40.
+    if None not in (lo, mid, hi) and hi > lo:
+        tilt = (mid - lo) / (hi - lo)
+        if tilt >= 0.55:
+            text += (" Safer than his projection reads: more of his weeks land"
+                     " near the top of that range than the bottom.")
+        elif tilt <= 0.27:
+            text += (" Ceiling-dependent: his median sits at the low end of that"
+                     " range, so the projection leans on his best weeks.")
     return text
 
 
