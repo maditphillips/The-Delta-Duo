@@ -33,7 +33,19 @@ function RankList({
   return (
     <ChalkCard kicker={who} title={title} source={`${ordered.length} players ranked`}>
       <div className="scroll-x" style={{ maxHeight: 620, overflowY: "auto" }}>
-        <table className="chalk-table cards-on-mobile">
+        {/* Fixed layout so the take column gets the room rather than whatever
+            the short columns leave over -- by default the browser sized
+            Matchup and Player to their content and left the prose 140px of
+            464. On mobile .cards-on-mobile makes these blocks, so the colgroup
+            stops applying. */}
+        <table className="chalk-table cards-on-mobile" style={{ tableLayout: "fixed", width: "100%" }}>
+          <colgroup>
+            <col style={{ width: "7%" }} />
+            <col style={{ width: "18%" }} />
+            <col style={{ width: "23%" }} />
+            <col style={{ width: "10%" }} />
+            <col style={{ width: "42%" }} />
+          </colgroup>
           <thead>
             <tr>
               <th className="num">#</th>
@@ -61,7 +73,7 @@ function RankList({
                   <td className="num" data-label="Delta" style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400 }}>
                     {shown === 0 ? "—" : shown > 0 ? `+${shown}` : shown}
                   </td>
-                  <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)", width: "44%", minWidth: 140 }}>
+                  <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)" }}>
                     {r[noteKey] ?? ""}
                   </td>
                 </tr>
