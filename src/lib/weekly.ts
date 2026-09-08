@@ -33,9 +33,13 @@ export const WEEKLY_POSITIONS = ["QB", "RB", "WR", "TE", "K"] as const;
 /** Signed delta: positive means the vibes list is HIGHER on him than the data. */
 export const deltaOf = (r: WeeklyRow) => r.rankData - r.rankVibes;
 
+/** Wilson is pink, MC is blue -- the colour follows the person, everywhere. */
+export const WILSON_COLOR = "var(--accent-2-lt)";
+export const MC_COLOR = "var(--accent-3)";
+
 export function deltaColor(d: number) {
-  if (d >= 4) return "var(--accent-2-lt)"; // vibes much higher
-  if (d <= -4) return "var(--accent-3)"; // data much higher
+  if (d >= 4) return MC_COLOR; // MC much higher
+  if (d <= -4) return WILSON_COLOR; // Wilson much higher
   return "var(--ink-faint)";
 }
 

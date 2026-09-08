@@ -4,6 +4,8 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import ChalkCard from "@/components/ChalkCard";
 import {
   WEEKLY_POSITIONS,
+  MC_COLOR,
+  WILSON_COLOR,
   deltaColor,
   deltaOf,
   type WeeklyBoard as Board,
@@ -248,49 +250,88 @@ export default function WeeklyBoard() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center gap-2">
-        {(index?.weeks ?? []).map((w) => (
-          <button key={w.key} className={`chalk-btn ${weekKey === w.key ? "selected" : ""}`} onClick={() => setWeekKey(w.key)}>
-            {w.label}
-          </button>
-        ))}
-        <span className="grow" />
-        {(Object.keys(board?.positions ?? {}) as Pos[]).map((p) => (
-          <button key={p} className={`chalk-btn ${pos === p ? "selected" : ""}`} onClick={() => setPos(p)}>
-            {p}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        <input
-          className="chalk-input"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a player, team or opponent…"
-          aria-label="Search players"
-          style={{ maxWidth: 320 }}
-        />
-        {query && (
-          <span className="text-sm" style={{ color: "var(--ink-faint)" }}>
-            {rows.length} of {allRows.length}
+      {/* One control row: week, scoring, position, search -- in the order you
+          work through them. The week becomes a dropdown once there is more
+          than one to pick from. */}
+      <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs uppercase tracking-wider" style={{ color: "var(--ink-faint)" }}>
+            Week
           </span>
-        )}
-      </div>
-
-      {scorings.length > 1 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm" style={{ color: "var(--ink-faint)" }}>
-            Scoring
-          </span>
-          {scorings.map((s) => (
-            <button key={s} className={`chalk-btn ${activeScoring === s ? "selected" : ""}`} onClick={() => setScoring(s)}>
-              {s}
-            </button>
-          ))}
+          {(index?.weeks ?? []).length > 1 ? (
+            <select
+              className="chalk-input"
+              value={weekKey ?? ""}
+              onChange={(e) => setWeekKey(e.target.value)}
+              aria-label="Week"
+            >
+              {(index?.weeks ?? []).map((w) => (
+                <option key={w.key} value={w.key}>
+                  {w.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className="chalk-btn selected" style={{ cursor: "default" }}>
+              {index?.weeks?.[0]?.label ?? "—"}
+            </span>
+          )}
         </div>
-      )}
+
+        {scorings.length > 1 && (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs uppercase tracking-wider" style={{ color: "var(--ink-faint)" }}>
+              Scoring
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {scorings.map((s) => (
+                <button
+                  key={s}
+                  className={`chalk-btn ${activeScoring === s ? "selected" : ""}`}
+                  onClick={() => setScoring(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1">
+          <span className="text-xs uppercase tracking-wider" style={{ color: "var(--ink-faint)" }}>
+            Position
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(board?.positions ?? {}) as Pos[]).map((p) => (
+              <button key={p} className={`chalk-btn ${pos === p ? "selected" : ""}`} onClick={() => setPos(p)}>
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <span className="text-xs uppercase tracking-wider" style={{ color: "var(--ink-faint)" }}>
+            Search
+          </span>
+          <div className="flex items-center gap-2">
+            <input
+              className="chalk-input"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Player, team or opponent…"
+              aria-label="Search players"
+              style={{ maxWidth: 240 }}
+            />
+            {query && (
+              <span className="text-sm" style={{ color: "var(--ink-faint)" }}>
+                {rows.length}/{allRows.length}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
 
       {error && (
         <ChalkCard title="Couldn't load the week" alt>
@@ -331,7 +372,7 @@ export default function WeeklyBoard() {
             <RankList
               who="Wilson · the data"
               title={`${pos} — by the numbers`}
-              color="var(--accent-3)"
+              color={WILSON_COLOR}
               rows={rows}
               orderBy="rankData"
               noteKey="noteData"
@@ -341,7 +382,7 @@ export default function WeeklyBoard() {
             <RankList
               who="MC · the vibes"
               title={`${pos} — by the vibes`}
-              color="var(--accent-2-lt)"
+              color={MC_COLOR}
               rows={rows}
               orderBy="rankVibes"
               noteKey="noteVibes"

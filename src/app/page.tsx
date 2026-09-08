@@ -151,6 +151,8 @@ export default function Home() {
         </div>
       </div>
 
+      <WeeklyDeltas />
+
       <ChalkCard
         kicker="The connective tissue"
         title="One question, three positions"
@@ -180,7 +182,6 @@ export default function Home() {
         </div>
       </ChalkCard>
 
-      <WeeklyDeltas />
     </div>
   );
 }

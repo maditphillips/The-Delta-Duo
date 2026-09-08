@@ -49,6 +49,23 @@ def num(v, default=None):
 SLOT = {"qb": "QB", "rb": "RB", "wr": "WR", "te": "TE"}
 
 
+def plural(n: float, singular: str, plural_form: str | None = None) -> str:
+    """1.0 red-zone look, 2.4 red-zone looks, 0.5 goal-line rushes."""
+    if 0.5 <= n < 1.5:
+        return f"{n:.1f} {singular}"
+    return f"{n:.1f} {plural_form or singular + 's'}"
+
+
+def no_history_clause(r, pos: str) -> str:
+    """Someone the model has no NFL usage for. Quoting "0.0 targets" is true but
+    useless, so say what he is actually being ranked on."""
+    depth = num(r.get("depth_rank"))
+    slot = f"{SLOT[pos]}{int(depth)}" if depth and depth <= 6 else "a depth role"
+    if num(r.get("is_rookie"), 0) == 1:
+        return f"No NFL usage to price yet, so he is ranked off draft capital and a {slot} slot"
+    return f"No meaningful usage last season, ranked off a {slot} slot"
+
+
 def matchup_phrase(r, pos: str) -> str:
     """Vegas' view of the offence, then the defence it runs into. Leads with
     whichever is the sharper fact -- a league-extreme total, or an extreme
@@ -71,8 +88,12 @@ def matchup_phrase(r, pos: str) -> str:
 
     if drk is None:
         defense = ""
+    elif drk == 32:
+        defense = f"the worst {unit} in the league by EPA last year"
     elif drk >= 21:
         defense = f"{ordinal(33 - drk)}-worst {unit} by EPA last year"
+    elif drk == 1:
+        defense = f"the best {unit} in the league by EPA last year"
     elif drk <= 5:
         defense = f"a top-{int(drk)} {unit} by EPA last year"
     elif drk <= 12:
@@ -86,49 +107,68 @@ def matchup_phrase(r, pos: str) -> str:
 
 
 def blurb(r, pos: str) -> str:
-    """One short clause on why the role supports that projection."""
+    """The volume behind the projection, in the model's own numbers.
+
+    Never asserts the absence of something the model cannot see -- an earlier
+    version told readers Josh Allen had "no rushing floor", which was a
+    threshold artefact rather than a finding.
+    """
     et, ec = num(r.get("expected_targets"), 0), num(r.get("expected_carries"), 0)
     gl, rz = num(r.get("expected_gl_carries"), 0), num(r.get("expected_rz_targets"), 0)
     ts, ss = num(r.get("target_share_eb")), num(r.get("snap_share_eb"))
-    att = num(r.get("expected_pass_att"), 0)
+    att, pyd = num(r.get("expected_pass_att"), 0), num(r.get("expected_pass_yards"), 0)
     depth = num(r.get("depth_rank"), 9)
     rookie = num(r.get("is_rookie"), 0) == 1
 
     if pos == "qb":
         if att < 5:
-            return "No starting workload priced in."
-        if ec >= 5:
-            return "Rushing floor carries the projection."
-        if att >= 31:
-            return "Situation and skillset point to a high pass volume."
-        if att >= 28:
-            return "Steady attempt volume, no rushing floor."
-        return "Modest attempt projection."
+            return no_history_clause(r, pos)
+        bits = [f"{att:.0f} attempts for {pyd:.0f} yards"]
+        if ec >= 4:
+            bits.append(f"plus {ec:.1f} carries of his own")
+        elif ec >= 2:
+            bits.append(f"{ec:.1f} carries of his own")
+        if gl >= 0.3:
+            bits.append(plural(gl, "goal-line rush", "goal-line rushes"))
+        return ", ".join(bits) + "."
 
     if pos == "rb":
         if ec < 1 and et < 1:
-            return ("No NFL usage; priced on draft capital and the depth chart." if rookie
-                    else "No real usage last year.")
-        if ec >= 14 and gl >= 0.8:
-            return "Bell-cow carries with the goal-line work."
-        if ec >= 14:
-            return "Bell-cow carries, little goal-line equity."
-        if et >= 4:
-            return "Value sits in the passing-down role."
-        if ec >= 8:
-            return "Committee lead with real volume."
-        return "Backup volume."
+            return no_history_clause(r, pos) + "."
+        bits = [f"{ec:.1f} carries"]
+        if gl >= 0.5:
+            bits.append(f"{gl:.1f} of them at the goal line")
+        if et >= 2:
+            bits.append(f"{et:.1f} targets out of the backfield")
+        if ss is not None and ss >= 0.6:
+            bits.append(f"{ss:.0%} of the snaps")
+        return ", ".join(bits) + "."
 
     if et < 1:
-        return ("No NFL usage; priced on draft capital and the depth chart." if rookie
-                else "No real usage last year.")
-    if ts is not None and ts >= 0.25:
-        return "Alpha target share." if rz < 1 else "Alpha target share with red-zone work."
-    if ts is not None and ts >= 0.18:
-        return "Clear starter's target share." if rz < 1 else "Starter's share plus red-zone looks."
-    if ss is not None and ss < 0.6 and depth >= 3:
-        return "Rotational snaps cap the ceiling."
-    return "Secondary role in the passing game."
+        return no_history_clause(r, pos) + "."
+    bits = [f"{et:.1f} targets"]
+    if ts is not None:
+        article = "an" if f"{ts:.0%}".startswith(("8", "11", "18")) else "a"
+        bits.append(f"{article} {ts:.0%} target share")
+    if rz >= 0.6:
+        bits.append(plural(rz, "red-zone look"))
+    if ss is not None and ss >= 0.5:
+        bits.append(f"{ss:.0%} of the snaps")
+    elif depth and depth >= 3:
+        bits.append("a rotational snap count")
+    return ", ".join(bits) + "."
+
+
+def outlook(r) -> str:
+    """The spread the quantile models give him, and his shot at a top-12 week."""
+    lo, hi = num(r.get("floor_q20")), num(r.get("ceiling_q90"))
+    p12 = num(r.get("p_top12"))
+    bits = []
+    if lo is not None and hi is not None:
+        bits.append(f"Range {lo:.0f}-{hi:.0f}")
+    if p12 is not None:
+        bits.append(f"{p12:.0%} shot at a top-12 week")
+    return (", ".join(bits) + ".") if bits else ""
 
 
 def flags(r) -> str:
@@ -149,7 +189,7 @@ def flags(r) -> str:
 
 
 def build_note(r, pos: str) -> str:
-    return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), flags(r)) if x)
+    return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), outlook(r), flags(r)) if x)
 
 
 def main() -> None:

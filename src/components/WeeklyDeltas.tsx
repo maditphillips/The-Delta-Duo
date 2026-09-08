@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ChalkCard from "@/components/ChalkCard";
-import { deltaColor, deltaOf, type WeeklyBoard as Board, type WeeklyIndex, type WeeklyRow } from "@/lib/weekly";
+import {
+  MC_COLOR,
+  WILSON_COLOR,
+  deltaColor,
+  deltaOf,
+  type WeeklyBoard as Board,
+  type WeeklyIndex,
+  type WeeklyRow,
+} from "@/lib/weekly";
 
 type Pick = WeeklyRow & { pos: string };
 
@@ -80,11 +88,11 @@ export default function WeeklyDeltas({ limit = 6 }: { limit?: number }) {
                 </span>
               </div>
               <div className="mt-1 flex flex-wrap items-baseline gap-3 text-xs" style={{ color: "var(--ink-dim)" }}>
-                <span style={{ color: "var(--accent-3)" }}>
+                <span style={{ color: WILSON_COLOR }}>
                   Wilson {r.pos}
                   {r.rankData}
                 </span>
-                <span style={{ color: "var(--accent-2-lt)" }}>
+                <span style={{ color: MC_COLOR }}>
                   MC {r.pos}
                   {r.rankVibes}
                 </span>
@@ -97,7 +105,7 @@ export default function WeeklyDeltas({ limit = 6 }: { limit?: number }) {
               </div>
               {r.noteData && (
                 <p className="mt-2 text-xs leading-snug" style={{ color: "var(--ink-dim)" }}>
-                  <span style={{ color: "var(--accent-3)" }}>Data: </span>
+                  <span style={{ color: WILSON_COLOR }}>Data: </span>
                   {r.noteData}
                 </p>
               )}
