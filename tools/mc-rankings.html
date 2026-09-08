@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MC's Week 1 Rankings</title>
+<style>
+  :root {
+    --bg:#0c0c0e; --card:#15151a; --line:#2a2a33; --ink:#ece9e4;
+    --dim:#9a968f; --faint:#6a675f; --mc:#01def3; --warn:#f6a02c;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  header { padding:20px 20px 0; max-width:900px; margin:0 auto; }
+  h1 { margin:0 0 4px; font-size:22px; letter-spacing:.02em; }
+  .sub { color:var(--dim); font-size:13px; margin:0 0 16px; }
+  main { max-width:900px; margin:0 auto; padding:0 20px 80px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+         padding:12px 0; position:sticky; top:0; background:var(--bg); z-index:5;
+         border-bottom:1px solid var(--line); }
+  button { font:inherit; color:var(--ink); background:var(--card);
+           border:1px solid var(--line); border-radius:6px; padding:6px 12px;
+           cursor:pointer; }
+  button:hover { border-color:var(--mc); }
+  button.on { border-color:var(--mc); color:var(--mc); }
+  button.primary { background:var(--mc); color:#06232a; border-color:var(--mc);
+                   font-weight:600; }
+  .spacer { flex:1; }
+  .count { color:var(--faint); font-size:12px; }
+  ol { list-style:none; margin:14px 0 0; padding:0; }
+  li { display:block; border:1px solid var(--line); border-radius:7px;
+       margin-bottom:5px; background:var(--card); }
+  li.drag { opacity:.35; }
+  li.over { border-color:var(--mc); }
+  li.moved { border-left:3px solid var(--warn); }
+  .row { display:flex; align-items:center; gap:10px; padding:8px 10px;
+         cursor:grab; }
+  .grip { color:var(--faint); font-size:15px; letter-spacing:-2px; width:12px; }
+  .rank { width:30px; text-align:right; color:var(--mc); font-variant-numeric:tabular-nums;
+          font-weight:600; }
+  .name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis;
+          white-space:nowrap; }
+  .match { color:var(--dim); font-size:12px; width:120px; }
+  .delta { width:52px; text-align:right; font-size:12px; color:var(--faint);
+           font-variant-numeric:tabular-nums; }
+  li.moved .delta { color:var(--warn); }
+  .jump { width:52px; background:#0c0c0e; color:var(--ink); border:1px solid var(--line);
+          border-radius:4px; padding:3px 5px; font:inherit; font-size:12px;
+          text-align:center; }
+  .notebtn { background:none; border:none; color:var(--faint); padding:2px 6px;
+             font-size:12px; }
+  .notebtn.has { color:var(--mc); }
+  .note { display:none; padding:0 10px 10px 62px; }
+  li.open .note { display:block; }
+  textarea { width:100%; min-height:56px; resize:vertical; background:#0c0c0e;
+             color:var(--ink); border:1px solid var(--line); border-radius:5px;
+             padding:7px 9px; font:inherit; font-size:13px; }
+  .hint { color:var(--faint); font-size:12px; margin:10px 0 0; }
+  .saved { color:var(--faint); font-size:12px; }
+  dialog { background:var(--card); color:var(--ink); border:1px solid var(--line);
+           border-radius:8px; max-width:640px; width:92%; padding:16px; }
+  dialog textarea { min-height:280px; font-family:ui-monospace,Menlo,Consolas,monospace;
+                    font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>MC&rsquo;s Week 1 Rankings</h1>
+  <p class="sub">Everyone starts in consensus order. Move only the players you
+  disagree with &mdash; anyone you leave alone stays at consensus. Wilson&rsquo;s
+  list is deliberately not shown here.</p>
+</header>
+<main>
+  <div class="bar">
+    <span id="tabs"></span>
+    <span class="spacer"></span>
+    <span class="count" id="count"></span>
+    <button id="reset">Reset position</button>
+    <button id="copy">Copy for Claude</button>
+    <button id="dl" class="primary">Download CSV</button>
+  </div>
+  <ol id="list"></ol>
+  <p class="hint">Drag a row, or type a number in its box and press Enter to send
+  him straight there. Click <b>note</b> to write his take. Work saves in this
+  browser automatically. <span class="saved" id="saved"></span></p>
+</main>
+
+<dialog id="fallback">
+  <p style="margin:0 0 8px">Copy this and paste it back to Claude.</p>
+  <textarea id="fbtext" readonly></textarea>
+  <p style="margin:10px 0 0;text-align:right"><button onclick="fallback.close()">Close</button></p>
+</dialog>
+
+<script>
+const WEEK = "1", SEASON = "2026";
+const SEED = {"QB":[{"player":"Josh Allen","team":"BUF","opp":"HOU","home":0,"consensus":1,"note":""},{"player":"Lamar Jackson","team":"BAL","opp":"IND","home":0,"consensus":2,"note":""},{"player":"Drake Maye","team":"NE","opp":"SEA","home":0,"consensus":3,"note":""},{"player":"Joe Burrow","team":"CIN","opp":"TB","home":0,"consensus":4,"note":""},{"player":"Jalen Hurts","team":"PHI","opp":"WAS","home":0,"consensus":5,"note":""},{"player":"Jayden Daniels","team":"WAS","opp":"PHI","home":0,"consensus":6,"note":""},{"player":"Caleb Williams","team":"CHI","opp":"CAR","home":0,"consensus":7,"note":""},{"player":"Justin Herbert","team":"LAC","opp":"ARI","home":0,"consensus":8,"note":""},{"player":"Trevor Lawrence","team":"JAX","opp":"CLE","home":0,"consensus":9,"note":""},{"player":"Dak Prescott","team":"DAL","opp":"NYG","home":0,"consensus":10,"note":""},{"player":"Brock Purdy","team":"SF","opp":"LA","home":0,"consensus":11,"note":""},{"player":"Bo Nix","team":"DEN","opp":"KC","home":0,"consensus":12,"note":""},{"player":"Jaxson Dart","team":"NYG","opp":"DAL","home":0,"consensus":13,"note":""},{"player":"Patrick Mahomes","team":"KC","opp":"DEN","home":0,"consensus":14,"note":""},{"player":"Jared Goff","team":"DET","opp":"NO","home":0,"consensus":15,"note":""},{"player":"Matthew Stafford","team":"LA","opp":"SF","home":0,"consensus":16,"note":""},{"player":"Kyler Murray","team":"MIN","opp":"GB","home":0,"consensus":17,"note":""},{"player":"Jordan Love","team":"GB","opp":"MIN","home":0,"consensus":18,"note":""},{"player":"Baker Mayfield","team":"TB","opp":"CIN","home":0,"consensus":19,"note":""},{"player":"Tyler Shough","team":"NO","opp":"DET","home":0,"consensus":20,"note":""},{"player":"Malik Willis","team":"MIA","opp":"LV","home":0,"consensus":21,"note":""},{"player":"Sam Darnold","team":"SEA","opp":"NE","home":0,"consensus":22,"note":""},{"player":"C.J. Stroud","team":"HOU","opp":"BUF","home":0,"consensus":23,"note":""},{"player":"Daniel Jones","team":"IND","opp":"BAL","home":0,"consensus":24,"note":""},{"player":"Cam Ward","team":"TEN","opp":"NYJ","home":0,"consensus":25,"note":""},{"player":"Bryce Young","team":"CAR","opp":"CHI","home":0,"consensus":26,"note":""},{"player":"Jacoby Brissett","team":"ARI","opp":"LAC","home":0,"consensus":27,"note":""},{"player":"Aaron Rodgers","team":"PIT","opp":"ATL","home":0,"consensus":28,"note":""},{"player":"Geno Smith","team":"NYJ","opp":"TEN","home":0,"consensus":29,"note":""},{"player":"Fernando Mendoza","team":"LV","opp":"MIA","home":0,"consensus":30,"note":""},{"player":"Tua Tagovailoa","team":"ATL","opp":"PIT","home":0,"consensus":31,"note":""},{"player":"Kirk Cousins","team":"LV","opp":"MIA","home":0,"consensus":32,"note":""},{"player":"Deshaun Watson","team":"CLE","opp":"JAX","home":0,"consensus":33,"note":""},{"player":"Mac Jones","team":"SF","opp":"LA","home":0,"consensus":34,"note":""},{"player":"Anthony Richardson","team":"IND","opp":"BAL","home":0,"consensus":35,"note":""},{"player":"Mitchell Trubisky","team":"TEN","opp":"NYJ","home":0,"consensus":36,"note":""}],"RB":[{"player":"Jahmyr Gibbs","team":"DET","opp":"NO","home":0,"consensus":1,"note":""},{"player":"Bijan Robinson","team":"ATL","opp":"PIT","home":0,"consensus":2,"note":""},{"player":"Christian McCaffrey","team":"SF","opp":"LA","home":0,"consensus":3,"note":""},{"player":"Jonathan Taylor","team":"IND","opp":"BAL","home":0,"consensus":4,"note":""},{"player":"James Cook","team":"BUF","opp":"HOU","home":0,"consensus":5,"note":""},{"player":"Chase Brown","team":"CIN","opp":"TB","home":0,"consensus":6,"note":""},{"player":"De'Von Achane","team":"MIA","opp":"LV","home":0,"consensus":7,"note":""},{"player":"Saquon Barkley","team":"PHI","opp":"WAS","home":0,"consensus":8,"note":""},{"player":"Omarion Hampton","team":"LAC","opp":"ARI","home":0,"consensus":9,"note":""},{"player":"Kenneth Walker III","team":"KC","opp":"DEN","home":0,"consensus":10,"note":""},{"player":"Ashton Jeanty","team":"LV","opp":"MIA","home":0,"consensus":11,"note":""},{"player":"Derrick Henry","team":"BAL","opp":"IND","home":0,"consensus":12,"note":""},{"player":"Breece Hall","team":"NYJ","opp":"TEN","home":0,"consensus":13,"note":""},{"player":"Jeremiyah Love","team":"ARI","opp":"LAC","home":0,"consensus":14,"note":""},{"player":"Kyren Williams","team":"LA","opp":"SF","home":0,"consensus":15,"note":""},{"player":"Javonte Williams","team":"DAL","opp":"NYG","home":0,"consensus":16,"note":""},{"player":"Travis Etienne","team":"NO","opp":"DET","home":0,"consensus":17,"note":""},{"player":"D'Andre Swift","team":"CHI","opp":"CAR","home":0,"consensus":18,"note":""},{"player":"Bucky Irving","team":"TB","opp":"CIN","home":0,"consensus":19,"note":""},{"player":"Cam Skattebo","team":"NYG","opp":"DAL","home":0,"consensus":20,"note":""},{"player":"David Montgomery","team":"HOU","opp":"BUF","home":0,"consensus":21,"note":""},{"player":"Quinshon Judkins","team":"CLE","opp":"JAX","home":0,"consensus":22,"note":""},{"player":"Bhayshul Tuten","team":"JAX","opp":"CLE","home":0,"consensus":23,"note":""},{"player":"Jadarian Price","team":"SEA","opp":"NE","home":0,"consensus":24,"note":""},{"player":"Rhamondre Stevenson","team":"NE","opp":"SEA","home":0,"consensus":25,"note":""},{"player":"Jaylen Warren","team":"PIT","opp":"ATL","home":0,"consensus":26,"note":""},{"player":"Tony Pollard","team":"TEN","opp":"NYJ","home":0,"consensus":27,"note":""},{"player":"Rico Dowdle","team":"PIT","opp":"ATL","home":0,"consensus":28,"note":""},{"player":"Jonathon Brooks","team":"CAR","opp":"CHI","home":0,"consensus":29,"note":""},{"player":"RJ Harvey","team":"DEN","opp":"KC","home":0,"consensus":30,"note":""},{"player":"Kenny Gainwell","team":"TB","opp":"CIN","home":0,"consensus":31,"note":""},{"player":"Chuba Hubbard","team":"CAR","opp":"CHI","home":0,"consensus":32,"note":""},{"player":"J.K. Dobbins","team":"DEN","opp":"KC","home":0,"consensus":33,"note":""},{"player":"MarShawn Lloyd","team":"GB","opp":"MIN","home":0,"consensus":34,"note":""},{"player":"Blake Corum","team":"LA","opp":"SF","home":0,"consensus":35,"note":""},{"player":"Rachaad White","team":"WAS","opp":"PHI","home":0,"consensus":36,"note":""},{"player":"Jordan Mason","team":"MIN","opp":"GB","home":0,"consensus":37,"note":""},{"player":"Jacory Croskey-Merritt","team":"WAS","opp":"PHI","home":0,"consensus":38,"note":""},{"player":"Aaron Jones","team":"MIN","opp":"GB","home":0,"consensus":39,"note":""},{"player":"Kyle Monangai","team":"CHI","opp":"CAR","home":0,"consensus":40,"note":""},{"player":"Woody Marks","team":"HOU","opp":"BUF","home":0,"consensus":41,"note":""},{"player":"Tyler Allgeier","team":"ARI","opp":"LAC","home":0,"consensus":42,"note":""},{"player":"Tyjae Spears","team":"TEN","opp":"NYJ","home":0,"consensus":43,"note":""},{"player":"Chris Rodriguez Jr.","team":"JAX","opp":"CLE","home":0,"consensus":44,"note":""},{"player":"Dylan Sampson","team":"CLE","opp":"JAX","home":0,"consensus":45,"note":""},{"player":"Josh Jacobs","team":"GB","opp":"MIN","home":0,"consensus":46,"note":""},{"player":"Alvin Kamara","team":"NO","opp":"DET","home":0,"consensus":47,"note":""},{"player":"Tank Bigsby","team":"PHI","opp":"WAS","home":0,"consensus":48,"note":""},{"player":"Tyrone Tracy Jr.","team":"NYG","opp":"DAL","home":0,"consensus":49,"note":""},{"player":"Emmett Johnson","team":"KC","opp":"DEN","home":0,"consensus":50,"note":""},{"player":"Ray Davis","team":"BUF","opp":"HOU","home":0,"consensus":51,"note":""},{"player":"Kimani Vidal","team":"LAC","opp":"ARI","home":0,"consensus":52,"note":""},{"player":"Kaelon Black","team":"SF","opp":"LA","home":0,"consensus":53,"note":""},{"player":"Justice Hill","team":"BAL","opp":"IND","home":0,"consensus":54,"note":""},{"player":"Jaylen Wright","team":"MIA","opp":"LV","home":0,"consensus":55,"note":""},{"player":"Samaje Perine","team":"CIN","opp":"TB","home":0,"consensus":56,"note":""},{"player":"Bam Knight","team":"ARI","opp":"LAC","home":0,"consensus":57,"note":""},{"player":"Max Bredeson","team":"MIN","opp":"GB","home":0,"consensus":58,"note":""},{"player":"Robbie Ouzts","team":"SEA","opp":"NE","home":0,"consensus":59,"note":""}],"WR":[{"player":"Ja'Marr Chase","team":"CIN","opp":"TB","home":0,"consensus":1,"note":""},{"player":"Puka Nacua","team":"LA","opp":"SF","home":0,"consensus":2,"note":""},{"player":"Jaxon Smith-Njigba","team":"SEA","opp":"NE","home":0,"consensus":3,"note":""},{"player":"Amon-Ra St. Brown","team":"DET","opp":"NO","home":0,"consensus":4,"note":""},{"player":"Justin Jefferson","team":"MIN","opp":"GB","home":0,"consensus":5,"note":""},{"player":"CeeDee Lamb","team":"DAL","opp":"NYG","home":0,"consensus":6,"note":""},{"player":"Drake London","team":"ATL","opp":"PIT","home":0,"consensus":7,"note":""},{"player":"A.J. Brown","team":"NE","opp":"SEA","home":0,"consensus":8,"note":""},{"player":"Nico Collins","team":"HOU","opp":"BUF","home":0,"consensus":9,"note":""},{"player":"Chris Olave","team":"NO","opp":"DET","home":0,"consensus":10,"note":""},{"player":"George Pickens","team":"DAL","opp":"NYG","home":0,"consensus":11,"note":""},{"player":"DeVonta Smith","team":"PHI","opp":"WAS","home":0,"consensus":12,"note":""},{"player":"Malik Nabers","team":"NYG","opp":"DAL","home":0,"consensus":13,"note":""},{"player":"Rashee Rice","team":"KC","opp":"DEN","home":0,"consensus":14,"note":""},{"player":"Zay Flowers","team":"BAL","opp":"IND","home":0,"consensus":15,"note":""},{"player":"Garrett Wilson","team":"NYJ","opp":"TEN","home":0,"consensus":16,"note":""},{"player":"Jaylen Waddle","team":"DEN","opp":"KC","home":0,"consensus":17,"note":""},{"player":"Ladd McConkey","team":"LAC","opp":"ARI","home":0,"consensus":18,"note":""},{"player":"Tetairoa McMillan","team":"CAR","opp":"CHI","home":0,"consensus":19,"note":""},{"player":"Tee Higgins","team":"CIN","opp":"TB","home":0,"consensus":20,"note":""},{"player":"Emeka Egbuka","team":"TB","opp":"CIN","home":0,"consensus":21,"note":""},{"player":"Luther Burden III","team":"CHI","opp":"CAR","home":0,"consensus":22,"note":""},{"player":"Terry McLaurin","team":"WAS","opp":"PHI","home":0,"consensus":23,"note":""},{"player":"Davante Adams","team":"LA","opp":"SF","home":0,"consensus":24,"note":""},{"player":"DJ Moore","team":"BUF","opp":"HOU","home":0,"consensus":25,"note":""},{"player":"Jameson Williams","team":"DET","opp":"NO","home":0,"consensus":26,"note":""},{"player":"Christian Watson","team":"GB","opp":"MIN","home":0,"consensus":27,"note":""},{"player":"Parker Washington","team":"JAX","opp":"CLE","home":0,"consensus":28,"note":""},{"player":"Rome Odunze","team":"CHI","opp":"CAR","home":0,"consensus":29,"note":""},{"player":"Mike Evans","team":"SF","opp":"LA","home":0,"consensus":30,"note":""},{"player":"Carnell Tate","team":"TEN","opp":"NYJ","home":0,"consensus":31,"note":""},{"player":"Marvin Harrison Jr.","team":"ARI","opp":"LAC","home":0,"consensus":32,"note":""},{"player":"Chris Godwin Jr.","team":"TB","opp":"CIN","home":0,"consensus":33,"note":""},{"player":"DK Metcalf","team":"PIT","opp":"ATL","home":0,"consensus":34,"note":""},{"player":"Brian Thomas Jr.","team":"JAX","opp":"CLE","home":0,"consensus":35,"note":""},{"player":"Michael Pittman","team":"PIT","opp":"ATL","home":0,"consensus":36,"note":""},{"player":"Wan'Dale Robinson","team":"TEN","opp":"NYJ","home":0,"consensus":37,"note":""},{"player":"Courtland Sutton","team":"DEN","opp":"KC","home":0,"consensus":38,"note":""},{"player":"Josh Downs","team":"IND","opp":"BAL","home":0,"consensus":39,"note":""},{"player":"Michael Wilson","team":"ARI","opp":"LAC","home":0,"consensus":40,"note":""},{"player":"Stefon Diggs","team":"WAS","opp":"PHI","home":0,"consensus":41,"note":""},{"player":"Quentin Johnston","team":"LAC","opp":"ARI","home":0,"consensus":42,"note":""},{"player":"Alec Pierce","team":"IND","opp":"BAL","home":0,"consensus":43,"note":""},{"player":"Jayden Reed","team":"GB","opp":"MIN","home":0,"consensus":44,"note":""},{"player":"KC Concepcion","team":"CLE","opp":"JAX","home":0,"consensus":45,"note":""},{"player":"Makai Lemon","team":"PHI","opp":"WAS","home":0,"consensus":46,"note":""},{"player":"Jordan Addison","team":"MIN","opp":"GB","home":0,"consensus":47,"note":""},{"player":"Jakobi Meyers","team":"JAX","opp":"CLE","home":0,"consensus":48,"note":""},{"player":"De'Zhaun Stribling","team":"SF","opp":"LA","home":0,"consensus":49,"note":""},{"player":"Khalil Shakir","team":"BUF","opp":"HOU","home":0,"consensus":50,"note":""},{"player":"Matthew Golden","team":"GB","opp":"MIN","home":0,"consensus":51,"note":""},{"player":"Jalen Coker","team":"CAR","opp":"CHI","home":0,"consensus":52,"note":""},{"player":"Romeo Doubs","team":"NE","opp":"SEA","home":0,"consensus":53,"note":""},{"player":"Xavier Worthy","team":"KC","opp":"DEN","home":0,"consensus":54,"note":""},{"player":"Deebo Samuel Sr.","team":"SF","opp":"LA","home":0,"consensus":55,"note":""},{"player":"Rashid Shaheed","team":"SEA","opp":"NE","home":0,"consensus":56,"note":""},{"player":"Tre Tucker","team":"LV","opp":"MIA","home":0,"consensus":57,"note":""},{"player":"Adonai Mitchell","team":"NYJ","opp":"TEN","home":0,"consensus":58,"note":""},{"player":"Jerry Jeudy","team":"CLE","opp":"JAX","home":0,"consensus":59,"note":""},{"player":"Jauan Jennings","team":"MIN","opp":"GB","home":0,"consensus":60,"note":""},{"player":"Dontayvion Wicks","team":"PHI","opp":"WAS","home":0,"consensus":61,"note":""},{"player":"Omar Cooper Jr.","team":"NYJ","opp":"TEN","home":0,"consensus":62,"note":""},{"player":"Tre Harris","team":"LAC","opp":"ARI","home":0,"consensus":63,"note":""},{"player":"Malik Washington","team":"MIA","opp":"LV","home":0,"consensus":64,"note":""},{"player":"Keenan Allen","team":"IND","opp":"BAL","home":0,"consensus":65,"note":""},{"player":"Jalen Nailor","team":"LV","opp":"MIA","home":0,"consensus":66,"note":""},{"player":"Caleb Douglas","team":"MIA","opp":"LV","home":0,"consensus":67,"note":""},{"player":"Ja'Kobi Lane","team":"BAL","opp":"IND","home":0,"consensus":68,"note":""},{"player":"Calvin Ridley","team":"TEN","opp":"NYJ","home":0,"consensus":69,"note":""},{"player":"Troy Franklin","team":"DEN","opp":"KC","home":0,"consensus":70,"note":""},{"player":"Cooper Kupp","team":"SEA","opp":"NE","home":0,"consensus":71,"note":""},{"player":"Darnell Mooney","team":"NYG","opp":"DAL","home":0,"consensus":72,"note":""},{"player":"Rashod Bateman","team":"BAL","opp":"IND","home":0,"consensus":73,"note":""},{"player":"Devaughn Vele","team":"NO","opp":"DET","home":0,"consensus":74,"note":""},{"player":"Keon Coleman","team":"BUF","opp":"HOU","home":0,"consensus":75,"note":""},{"player":"Tyquan Thornton","team":"KC","opp":"DEN","home":0,"consensus":76,"note":""},{"player":"Xavier Legette","team":"CAR","opp":"CHI","home":0,"consensus":77,"note":""},{"player":"Darius Slayton","team":"NYG","opp":"DAL","home":0,"consensus":78,"note":""},{"player":"DeMario Douglas","team":"NE","opp":"SEA","home":0,"consensus":79,"note":""},{"player":"Marquise Brown","team":"PHI","opp":"WAS","home":0,"consensus":80,"note":""}],"TE":[{"player":"Trey McBride","team":"ARI","opp":"LAC","home":0,"consensus":1,"note":""},{"player":"Brock Bowers","team":"LV","opp":"MIA","home":0,"consensus":2,"note":""},{"player":"Colston Loveland","team":"CHI","opp":"CAR","home":0,"consensus":3,"note":""},{"player":"Tyler Warren","team":"IND","opp":"BAL","home":0,"consensus":4,"note":""},{"player":"Harold Fannin Jr.","team":"CLE","opp":"JAX","home":0,"consensus":5,"note":""},{"player":"Tucker Kraft","team":"GB","opp":"MIN","home":0,"consensus":6,"note":""},{"player":"Kyle Pitts","team":"ATL","opp":"PIT","home":0,"consensus":7,"note":""},{"player":"Sam LaPorta","team":"DET","opp":"NO","home":0,"consensus":8,"note":""},{"player":"Travis Kelce","team":"KC","opp":"DEN","home":0,"consensus":9,"note":""},{"player":"George Kittle","team":"SF","opp":"LA","home":0,"consensus":10,"note":""},{"player":"Dalton Kincaid","team":"BUF","opp":"HOU","home":0,"consensus":11,"note":""},{"player":"Isaiah Likely","team":"NYG","opp":"DAL","home":0,"consensus":12,"note":""},{"player":"Dallas Goedert","team":"PHI","opp":"WAS","home":0,"consensus":13,"note":""},{"player":"Jake Ferguson","team":"DAL","opp":"NYG","home":0,"consensus":14,"note":""},{"player":"Juwan Johnson","team":"NO","opp":"DET","home":0,"consensus":15,"note":""},{"player":"Mark Andrews","team":"BAL","opp":"IND","home":0,"consensus":16,"note":""},{"player":"Dalton Schultz","team":"HOU","opp":"BUF","home":0,"consensus":17,"note":""},{"player":"Brenton Strange","team":"JAX","opp":"CLE","home":0,"consensus":18,"note":""},{"player":"Chig Okonkwo","team":"WAS","opp":"PHI","home":0,"consensus":19,"note":""},{"player":"Hunter Henry","team":"NE","opp":"SEA","home":0,"consensus":20,"note":""},{"player":"T.J. Hockenson","team":"MIN","opp":"GB","home":0,"consensus":21,"note":""},{"player":"AJ Barner","team":"SEA","opp":"NE","home":0,"consensus":22,"note":""},{"player":"Greg Dulcich","team":"MIA","opp":"LV","home":0,"consensus":23,"note":""},{"player":"Gunnar Helm","team":"TEN","opp":"NYJ","home":0,"consensus":24,"note":""},{"player":"Pat Freiermuth","team":"PIT","opp":"ATL","home":0,"consensus":25,"note":""},{"player":"Cade Otton","team":"TB","opp":"CIN","home":0,"consensus":26,"note":""},{"player":"Evan Engram","team":"DEN","opp":"KC","home":0,"consensus":27,"note":""},{"player":"David Njoku","team":"LAC","opp":"ARI","home":0,"consensus":28,"note":""},{"player":"Colby Parkinson","team":"LA","opp":"SF","home":0,"consensus":29,"note":""},{"player":"Mason Taylor","team":"NYJ","opp":"TEN","home":0,"consensus":30,"note":""},{"player":"Mike Gesicki","team":"CIN","opp":"TB","home":0,"consensus":31,"note":""},{"player":"Theo Johnson","team":"NYG","opp":"DAL","home":0,"consensus":32,"note":""},{"player":"Cole Kmet","team":"CHI","opp":"CAR","home":0,"consensus":33,"note":""},{"player":"Noah Fant","team":"NO","opp":"DET","home":0,"consensus":34,"note":""},{"player":"Tommy Tremble","team":"CAR","opp":"CHI","home":0,"consensus":35,"note":""},{"player":"Jonnu Smith","team":"GB","opp":"MIN","home":0,"consensus":36,"note":""}]};
+const KEY = "mc-rankings-" + SEASON + "-w" + WEEK;
+const POS = Object.keys(SEED);
+let active = POS[0];
+let board = load();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Seed order is authoritative for who is on the board; a player dropped
+      // from this week's list must not survive in a stale save.
+      const out = {};
+      for (const p of POS) {
+        const by = new Map((saved[p] || []).map(
+          (r, i) => [r.player, {i, note: r.note || "", touched: !!r.touched}]));
+        out[p] = SEED[p].map(r => ({...r, note: (by.get(r.player) || {}).note || "",
+                                    touched: !!(by.get(r.player) || {}).touched}))
+          .sort((a, b) => {
+            const ai = by.has(a.player) ? by.get(a.player).i : a.consensus + 1000;
+            const bi = by.has(b.player) ? by.get(b.player).i : b.consensus + 1000;
+            return ai - bi;
+          });
+      }
+      return out;
+    }
+  } catch (e) { /* a corrupt save should not brick the tool */ }
+  return JSON.parse(JSON.stringify(SEED));
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(board));
+    document.getElementById("saved").textContent =
+      "Saved " + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById("saved").textContent = "Could not save in this browser";
+  }
+}
+
+function tabs() {
+  const el = document.getElementById("tabs");
+  el.innerHTML = "";
+  for (const p of POS) {
+    const b = document.createElement("button");
+    b.textContent = p + " (" + board[p].length + ")";
+    if (p === active) b.className = "on";
+    b.onclick = () => { active = p; render(); };
+    el.appendChild(b);
+  }
+}
+
+function render() {
+  tabs();
+  const rows = board[active];
+  // Only what he actually dragged. Sending one man from 11 to 2 shifts nine
+  // others by a place, and marking those as changes buries the edit that
+  // mattered under the displacement it caused.
+  const moved = rows.filter(r => r.touched).length;
+  const noted = rows.filter(r => r.note.trim()).length;
+  document.getElementById("count").textContent =
+    moved + " moved \u00b7 " + noted + " with takes";
+  const ol = document.getElementById("list");
+  ol.innerHTML = "";
+  rows.forEach((r, i) => {
+    const rank = i + 1, d = r.consensus - rank;
+    const li = document.createElement("li");
+    li.draggable = true;
+    li.dataset.i = i;
+    if (r.touched) li.classList.add("moved");
+    li.innerHTML =
+      '<div class="row">' +
+        '<span class="grip">&#9776;</span>' +
+        '<span class="rank">' + rank + '</span>' +
+        '<span class="name"></span>' +
+        '<span class="match"></span>' +
+        '<span class="delta">' + (d === 0 ? "" : (d > 0 ? "+" + d : d)) + '</span>' +
+        '<input class="jump" type="number" min="1" max="' + rows.length +
+          '" placeholder="' + rank + '">' +
+        '<button class="notebtn' + (r.note.trim() ? " has" : "") + '">note</button>' +
+      '</div>' +
+      '<div class="note"><textarea placeholder="Why MC has him here"></textarea></div>';
+    li.querySelector(".name").textContent = r.player;
+    li.querySelector(".match").textContent =
+      r.team + (r.opp ? (r.home ? " vs " : " @ ") + r.opp : "");
+    const ta = li.querySelector("textarea");
+    ta.value = r.note;
+    ta.oninput = () => { r.note = ta.value; save(); };
+    ta.onblur = render;
+    li.querySelector(".notebtn").onclick = e => {
+      e.stopPropagation();
+      li.classList.toggle("open");
+      if (li.classList.contains("open")) ta.focus();
+    };
+    const jump = li.querySelector(".jump");
+    jump.onkeydown = e => {
+      if (e.key !== "Enter") return;
+      const to = Math.min(Math.max(parseInt(jump.value, 10), 1), rows.length);
+      if (!isNaN(to)) move(i, to - 1);
+    };
+    jump.onclick = e => e.stopPropagation();
+    li.ondragstart = e => {
+      e.dataTransfer.setData("text/plain", String(i));
+      e.dataTransfer.effectAllowed = "move";
+      li.classList.add("drag");
+    };
+    li.ondragend = () => li.classList.remove("drag");
+    li.ondragover = e => { e.preventDefault(); li.classList.add("over"); };
+    li.ondragleave = () => li.classList.remove("over");
+    li.ondrop = e => {
+      e.preventDefault();
+      li.classList.remove("over");
+      move(parseInt(e.dataTransfer.getData("text/plain"), 10), i);
+    };
+    ol.appendChild(li);
+  });
+}
+
+function move(from, to) {
+  if (isNaN(from) || isNaN(to) || from === to) return;
+  const rows = board[active];
+  const [r] = rows.splice(from, 1);
+  r.touched = true;
+  rows.splice(to, 0, r);
+  save();
+  render();
+}
+
+function csv() {
+  const q = v => {
+    v = String(v == null ? "" : v);
+    return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  };
+  const out = ["position,rank,player,team,consensus_rank,moved,note"];
+  for (const p of POS)
+    board[p].forEach((r, i) =>
+      out.push([p, i + 1, r.player, r.team, r.consensus,
+                r.touched ? 1 : 0, r.note.trim()].map(q).join(",")));
+  return out.join("\n") + "\n";
+}
+
+document.getElementById("dl").onclick = () => {
+  const name = "mc-rankings-" + SEASON + "-week-" + WEEK + ".csv";
+  try {
+    const url = URL.createObjectURL(new Blob([csv()], {type: "text/csv"}));
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {
+    // Some browsers refuse a blob download from a file:// page. Show the text
+    // instead rather than failing silently.
+    showText();
+  }
+};
+
+function showText() {
+  document.getElementById("fbtext").value = csv();
+  document.getElementById("fallback").showModal();
+  document.getElementById("fbtext").select();
+}
+
+document.getElementById("copy").onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(csv());
+    const b = document.getElementById("copy");
+    b.textContent = "Copied";
+    setTimeout(() => (b.textContent = "Copy for Claude"), 1500);
+  } catch (e) { showText(); }
+};
+
+document.getElementById("reset").onclick = () => {
+  if (!confirm("Put " + active + " back in consensus order? Takes are kept."))
+    return;
+  const notes = new Map(board[active].map(r => [r.player, r.note]));
+  board[active] = SEED[active].map(
+    r => ({...r, note: notes.get(r.player) || "", touched: false}));
+  save();
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
