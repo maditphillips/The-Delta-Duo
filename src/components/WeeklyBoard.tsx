@@ -41,10 +41,10 @@ function RankList({
         <table className="chalk-table cards-on-mobile" style={{ tableLayout: "fixed", width: "100%" }}>
           <colgroup>
             <col style={{ width: "7%" }} />
-            <col style={{ width: "18%" }} />
-            <col style={{ width: "23%" }} />
-            <col style={{ width: "10%" }} />
-            <col style={{ width: "42%" }} />
+            <col style={{ width: "19%" }} />
+            <col style={{ width: "22%" }} />
+            <col style={{ width: "9%" }} />
+            <col style={{ width: "43%" }} />
           </colgroup>
           <thead>
             <tr>
@@ -65,12 +65,24 @@ function RankList({
                   <td className="num font-retro text-lg" data-label="Rank" style={{ color }}>
                     {r[orderBy]}
                   </td>
-                  <td data-primary="">{r.player}</td>
-                  <td data-label="Matchup" style={{ color: "var(--ink-dim)", whiteSpace: "nowrap" }}>
+                  <td data-primary="" style={{ overflowWrap: "anywhere" }}>{r.player}</td>
+                  {/* Tight padding and a slightly smaller opponent: the column
+                      has to fit its widest value ("HOU vs. BUF"), so every
+                      pixel here comes straight off the take column. */}
+                  <td
+                    data-label="Matchup"
+                    style={{ color: "var(--ink-dim)", whiteSpace: "nowrap", paddingLeft: 6, paddingRight: 6 }}
+                  >
                     {r.team ? <strong style={{ color: "var(--ink)", fontWeight: 600 }}>{r.team}</strong> : null}
-                    {r.opponent ? ` ${r.isHome ? "vs." : "@"} ${r.opponent}` : ""}
+                    {r.opponent ? (
+                      <span style={{ fontSize: "0.88em" }}>{` ${r.isHome ? "vs." : "@"} ${r.opponent}`}</span>
+                    ) : ""}
                   </td>
-                  <td className="num" data-label="Delta" style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400 }}>
+                  <td
+                    className="num"
+                    data-label="Delta"
+                    style={{ color: deltaColor(d), fontWeight: Math.abs(d) >= 4 ? 600 : 400, paddingLeft: 4, paddingRight: 6 }}
+                  >
                     {shown === 0 ? "—" : shown > 0 ? `+${shown}` : shown}
                   </td>
                   <td className="text-sm" data-label="Take" data-block="" style={{ color: "var(--ink-dim)" }}>
