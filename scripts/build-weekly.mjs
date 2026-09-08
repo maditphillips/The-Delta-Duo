@@ -2,7 +2,7 @@
 //
 //   node scripts/build-weekly.mjs
 //
-// Reads data/weekly/<season>/week-<NN>/{qb,rb,wr,te}.csv — one CSV per
+// Reads data/weekly/<season>/week-<NN>/{qb,rb,wr,te,k}.csv — one CSV per
 // position per week, with both lists in one file:
 //
 //   rank_data,rank_vibes,player,team,note_data,note_vibes
@@ -19,7 +19,7 @@ import path from "node:path";
 
 const SRC = path.join(process.cwd(), "data", "weekly");
 const OUT = path.join(process.cwd(), "public", "data");
-const POSITIONS = ["qb", "rb", "wr", "te"];
+const POSITIONS = ["qb", "rb", "wr", "te", "k"];
 
 function parseCsv(text) {
   const rows = [];

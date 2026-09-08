@@ -18,7 +18,7 @@ export type WeeklyIndex = {
   weeks: { key: string; season: number; week: number; label: string; positions: string[] }[];
 };
 
-export const WEEKLY_POSITIONS = ["QB", "RB", "WR", "TE"] as const;
+export const WEEKLY_POSITIONS = ["QB", "RB", "WR", "TE", "K"] as const;
 
 /** Signed delta: positive means the vibes list is HIGHER on him than the data. */
 export const deltaOf = (r: WeeklyRow) => r.rankData - r.rankVibes;

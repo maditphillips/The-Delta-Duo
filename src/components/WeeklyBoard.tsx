@@ -125,7 +125,7 @@ export default function WeeklyBoard() {
       <ChalkCard kicker="Weekly" title="No weeks posted yet" alt>
         <p style={{ color: "var(--ink-dim)" }}>
           Drop a CSV per position into <code>data/weekly/&lt;season&gt;/week-&lt;NN&gt;/</code> —{" "}
-          <code>qb.csv</code>, <code>rb.csv</code>, <code>wr.csv</code>, <code>te.csv</code> — with columns{" "}
+          <code>qb.csv</code>, <code>rb.csv</code>, <code>wr.csv</code>, <code>te.csv</code>, <code>k.csv</code> — with columns{" "}
           <code>rank_data, rank_vibes, player, team, note_data, note_vibes</code>, then run{" "}
           <code>node scripts/build-weekly.mjs</code>. Every past week stays in the picker.
         </p>
