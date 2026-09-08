@@ -52,7 +52,83 @@ Concretely, that shows up in three design choices:
 
 ---
 
-## 2. Does a play-caller's style travel? (measured, not assumed)
+## 2. Team environment: last season, discounted by a head-coaching change
+
+The first build projected a 22-dimension scheme vector for every team by
+attaching fingerprints to play-callers and carrying them between jobs. It
+failed its ablation twice (§2b), and it depended on coordinator data that does
+not exist in public sources. It has been replaced by a much smaller model that
+answers the question week 1 actually poses.
+
+**The reasoning.** For week 1 the useful fact about a team is how its offence
+and defence actually performed last season — measured, not projected. The one
+change worth modelling is a **head-coaching change**, because that is the case
+where last season is least trustworthy: a new head coach almost always brings a
+new coordinator, a new play-caller and a new scheme on both sides of the ball.
+It is also the only regime signal that exists in verified public data — nflverse
+carries the head coach of every team-season, so nothing has to be curated.
+
+So instead of projecting a scheme vector, two coefficients per dimension:
+
+```
+same head coach   y_t ~ a0 + a1 * y_{t-1}
+new head coach    y_t ~ b0 + b1 * y_{t-1}
+```
+
+The gap `b1 − a1` is the head-coach effect, fitted on twenty seasons and **141
+head-coaching changes** — versus 37 for the old play-caller approach, because
+this needs no prior history for the incoming coach.
+
+| Dimension | same HC | new HC | head-coach effect |
+|---|---|---|---|
+| seconds per play | 0.685 | 0.312 | **−0.373** |
+| goal-line rush rate | 0.367 | 0.015 | **−0.352** |
+| red-zone pass rate | 0.445 | 0.144 | **−0.301** |
+| PROE | 0.487 | 0.218 | **−0.269** |
+| plays per game | 0.417 | 0.202 | −0.215 |
+| neutral pass rate | 0.444 | 0.312 | −0.132 |
+| RB target share | 0.228 | 0.098 | −0.131 |
+| WR target share | 0.282 | 0.206 | −0.076 |
+| TE target share | 0.193 | 0.243 | +0.051 |
+
+**Read it as:** a head-coaching change roughly halves how much last season's
+offence tells you, and for goal-line and red-zone tendency it wipes it out
+almost entirely (slope 0.015 — last year's goal-line behaviour under a new head
+coach is worth nothing). Tempo is the most disrupted of the volume dimensions.
+Tight end target share is the one non-result, and at that slope it is noise.
+
+These projected rates feed expected volume directly — projected plays times
+projected pass rate is what turns a player's share into expected targets — and
+eleven compact columns go to the models: nine projected rates plus `hc_change`
+for the player's own team and `opp_hc_change` for his opponent.
+
+### Did the reduction cost anything?
+
+Tested head to head against the old carryover-driven build, seed-averaged,
+top-36 (§5):
+
+| Metric | New model minus old | p |
+|---|---|---|
+| Captured top-12 | +0.125 | 0.11 |
+| Points from top 12 | +0.72 | 0.53 |
+| Regret per starter | −0.06 | 0.53 |
+| Spearman (shared rows) | +0.001 | 0.88 |
+
+Statistically a wash, marginally positive, better at QB (+0.27 captured) and TE
+(+0.20), fractionally worse at RB (−0.03). **It is not a measured improvement**
+and the model card does not claim one. It ships because it reaches the same
+place with eleven columns instead of twenty-seven, using only measured and
+verified inputs, and with no dependency on a coordinator list anybody has to
+maintain.
+
+The carryover machinery is still in the repo — `dd/playcaller.py`, and
+`python -m dd.cli carryover` still produces the report — because it answers a
+genuine research question about which tendencies follow a coach. It just no
+longer feeds the ranking models.
+
+## 2b. What the carryover experiment found, and why it was dropped
+
+### The original question (measured, not assumed)
 
 This was the core question behind the request, so it is answered empirically
 rather than by labelling offences "Shanahan tree" or "Air Raid". Labels do not
@@ -332,10 +408,10 @@ mean over 2019–2025:
 
 | Position | Spearman vs actual | of my top 12, finished top 12 | mean rank error | MAE (pts) |
 |---|---|---|---|---|
-| QB (4pt) | 0.469 | 6.1 / 12 | 8.4 places | 6.2 |
-| RB (PPR) | 0.546 | 5.6 / 12 | 12.7 places | 5.4 |
-| WR (PPR) | 0.360 | 3.5 / 12 | 20.5 places | 6.3 |
-| TE (PPR) | 0.355 | 5.9 / 12 | 8.9 places | 4.5 |
+| QB (4pt) | 0.438 | 6.1 / 12 | 8.6 places | 6.3 |
+| RB (PPR) | 0.517 | 5.4 / 12 | 13.1 places | 5.4 |
+| WR (PPR) | 0.361 | 3.6 / 12 | 20.6 places | 6.3 |
+| TE (PPR) | 0.368 | 6.2 / 12 | 8.9 places | 4.4 |
 
 That is what week 1 looks like honestly. Note the pool matters enormously: on
 the full rankable population — starters plus deep backups — Spearman reads
@@ -355,14 +431,14 @@ seed-averaged, seasons with consensus history):
 
 | Position | Source | Captured top-12 | Points from its top 12 | Regret / starter | Spearman (shared rows) |
 |---|---|---|---|---|---|
-| QB | consensus | **6.3 / 12** | **240.6** | **6.14** | **0.695** |
-| | model | 5.7 | 231.6 | 6.89 | 0.653 |
-| RB | consensus | 4.1 | 177.3 | 5.83 | **0.500** |
-| | **model** | **5.0** | **182.1** | **5.43** | 0.493 |
-| TE | consensus | **5.8** | **93.6** | **4.27** | **0.504** |
-| | model | 4.8 | 85.3 | 4.97 | 0.388 |
-| WR | consensus | 3.5 | **178.5** | **8.65** | **0.329** |
-| | **model** | **3.8** | 173.3 | 9.08 | 0.297 |
+| QB | consensus | **6.3 / 12** | **240.6** | **6.14** | **0.700** |
+| | model | 6.0 | 232.5 | 6.82 | 0.651 |
+| RB | consensus | 4.1 | 177.3 | 5.83 | **0.508** |
+| | **model** | **5.0** | **180.6** | **5.55** | 0.500 |
+| TE | consensus | **5.8** | **93.6** | **4.27** | **0.489** |
+| | model | 5.0 | 87.2 | 4.81 | 0.399 |
+| WR | consensus | 3.5 | **178.5** | **8.65** | **0.319** |
+| | **model** | **3.8** | 174.9 | 8.95 | 0.285 |
 
 "Captured top-12" is how many of that source's top 12 actually finished top 12
 in the position. Spearman is computed on the union of both top-36 lists, so the
@@ -373,13 +449,14 @@ each source's own 36, which needs no matching.
 consensus by 0.05–0.11 Spearman everywhere. Inside the top 36:
 
 - **Running back — the model is better**, and on the metrics that matter most.
-  It captures a full extra top-12 back (5.0 vs 4.1), delivers five more points
-  from its top 12, and gives up less regret. Spearman is a dead heat. Per season
-  it won 2021, 2024 and 2025, with 2025 the widest (7.2 captured against 5.0).
+  It captures a full extra top-12 back (5.0 vs 4.1), delivers three more points
+  from its top 12, and gives up less regret. Spearman is a dead heat.
 - **Receiver is a coin flip.** The model captures marginally more top-12
   receivers; consensus squeezes slightly more points out of its twelve.
-- **Quarterback and tight end still belong to consensus**, and tight end by the
-  most — 5.8 captured against 4.8, and the widest Spearman gap on the board.
+- **Quarterback and tight end still belong to consensus**, though both narrowed
+  under the reduced team-environment model: QB 6.0 captured against 6.3, TE 5.0
+  against 5.8. Tight end keeps the widest Spearman gap on the board, which is
+  consistent with it being the one position with no study behind it.
 
 Paired across seasons the honest verdict is that **none of this is statistically
 significant** — five seasons of consensus history is a small sample, and every

@@ -52,6 +52,17 @@ def regime_table() -> pd.DataFrame:
 
 
 @functools.lru_cache(maxsize=8)
+def team_environment(season: int) -> pd.DataFrame:
+    """Projected team rates for `season`, from last season plus whether the head
+    coach changed. Fitted only on seasons before it."""
+    from .team_env import TeamEnvironment
+    off, _ = fingerprints()
+    reg = regime_table()
+    m = TeamEnvironment().fit(off, reg, season)
+    return m.project(off, reg, season)
+
+
+@functools.lru_cache(maxsize=8)
 def scheme_projection(season: int, side: str) -> pd.DataFrame:
     """Projected scheme vector for every team in `season`, fitted only on
     seasons strictly before it."""
@@ -267,6 +278,7 @@ def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
     off_proj = scheme_projection(season, "off")
     def_proj = scheme_projection(season, "def")
     df = df.merge(off_proj, on="team", how="left")
+    df = df.merge(team_environment(season), on="team", how="left")
 
     off_fp, def_fp = fingerprints()
     lag_off = off_fp[off_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("team_prev_")
@@ -292,6 +304,12 @@ def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
     df = df.merge(dp, on="opponent", how="left")
     lag_def = def_fp[def_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("opp_prev_")
     df = df.merge(lag_def.rename(columns={"opp_prev_team": "opponent"}), on="opponent", how="left")
+
+    opp_hc = regime_table()
+    opp_hc = opp_hc[opp_hc["season"] == season][["team", "hc_continuity"]].rename(
+        columns={"team": "opponent", "hc_continuity": "opp_hc_continuity"})
+    df = df.merge(opp_hc, on="opponent", how="left")
+    df["opp_hc_change"] = (df["opp_hc_continuity"] == 0).astype(float)
 
     inj = injuries_week1(season)
     df = df.merge(inj[["player_id", "report_status"]], on="player_id", how="left")
@@ -330,6 +348,15 @@ def _expected_opportunity(df: pd.DataFrame, season: int) -> pd.DataFrame:
     scale = _raw_scale(season, "off", OFF_DIMS)
 
     def raw(dim, default):
+        """Projected team rate in real units.
+
+        Prefers the reduced head-coach-aware projection (last season's measured
+        rate, discounted when the head coach changed). Falls back to the
+        z-scored carryover projection only if the reduced one is missing.
+        """
+        env = df.get(f"env_{dim}")
+        if env is not None and env.notna().any():
+            return env.fillna(env.mean() if np.isfinite(env.mean()) else default)
         z = df.get(f"off_proj_{dim}")
         if z is None:
             return pd.Series(default, index=df.index)

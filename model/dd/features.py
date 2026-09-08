@@ -56,6 +56,15 @@ OPPORTUNITY_QB = ["proj_team_plays", "proj_team_pass_att", "expected_pass_att",
                   "expected_pass_yards", "expected_pass_td", "expected_carries",
                   "expected_gl_carries", "expected_rush_yards", "naive_points_ppr"]
 
+# The reduced team-environment block: last season's measured offence, discounted
+# by a head-coach change. Ten columns instead of twenty-seven, and every input
+# is either measured or verified -- no play-caller curation required.
+TEAM_ENV = ["env_plays_per_game", "env_neutral_pass_rate", "env_proe",
+            "env_sec_per_play", "env_rb_target_share", "env_te_target_share",
+            "env_wr_target_share", "env_rz_pass_rate", "env_gl_rush_rate",
+            "hc_change", "opp_hc_change"]
+USE_TEAM_ENV_COLUMNS = True
+
 BASE = MARKET + SCHEME_PROJ + SCHEME_PREV + REGIME + CHURN + PLAYER + HISTORY + OPPONENT
 
 # ---------------------------------------------------------------------------
@@ -80,6 +89,8 @@ USE_SCHEME_COLUMNS = False
 _SCHEME_BLOCK = SCHEME_PROJ + SCHEME_PREV + REGIME
 if not USE_SCHEME_COLUMNS:
     BASE = [c for c in BASE if c not in set(_SCHEME_BLOCK)]
+if USE_TEAM_ENV_COLUMNS:
+    BASE = BASE + TEAM_ENV
 
 FEATURES = {
     "QB": BASE + OPPORTUNITY_QB + USAGE_PASSING + EFF_PASSING + ["gl_qb_rushes_share", "rush_share_eb"],
