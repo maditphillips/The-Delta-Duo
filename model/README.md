@@ -601,6 +601,36 @@ captures 5.0 top-12 backs to the model's 4.9, with lower regret (5.48 vs 5.86).
 The model still beats consensus at RB (4.9 vs 4.2), but it no longer clearly
 beats doing nothing clever at all.
 
+### A shrinkage bug the notes surfaced, and what it did not touch
+
+Asked what "no rushing floor" meant for Josh Allen, the answer turned out to be
+a bug rather than a wording choice. Method-of-moments picks the empirical-Bayes
+prior strength from the gap between observed spread and assumed sampling noise;
+for 2026 quarterback rush share that gap closed (obs_var 0.003740 against
+samp_var 0.003666), k came out at 1393, and every quarterback was shrunk onto
+the group mean -- projected carries between 3.0 and 3.4 for the whole position,
+Josh Allen and Lamar Jackson priced like pocket passers.
+
+k is now capped at three times the group's median sample. Quarterback rush share
+reopens to 0.094-0.185 for 2026 and the rushers separate properly.
+
+**The backtest is unaffected, and that was checked rather than assumed.** The
+guard only binds when the estimator degenerates, which never happened on a
+historical season -- week-1 quarterback rush share spreads 0.16 to 0.23 in every
+year from 2019 to 2025, against 0.008 for the broken 2026 build. Re-running the
+quarterback backtest across three seeds after the fix returns identical numbers
+to three decimal places.
+
+The root error is still there and is larger than the symptom: these are shares
+of *team* volume, but the sampling term uses the player's own count as the
+binomial denominator, which overstates the noise by an order of magnitude. A
+second, separate problem sits alongside it -- shares divide by the team's
+**full-season** volume, so a player who missed games has every share feature
+deflated (Jayden Daniels reads a 0.120 rush share on 8.3 carries a game).
+Fixing either properly means reworking the exposure weights and would change
+every share feature at every position, so both are recorded here rather than
+patched mid-week.
+
 ## 6. Known limitations
 
 - **Routes run do not exist in free data.** The *Two Doors* second gate is
