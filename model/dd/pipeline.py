@@ -13,17 +13,32 @@ SCORINGS = ("ppr", "half_ppr", "qb_4pt", "qb_6pt")
 FIRST_TRAIN_SEASON = 2017  # needs a 2016 prior season underneath it
 
 
-def build_panel(seasons, refresh: bool = False) -> pd.DataFrame:
-    """Feature rows plus outcomes for week 1 of every season requested."""
-    path = CACHE / "panel.parquet"
+def build_panel(seasons, refresh: bool = False, weeks=(1,),
+                path: str | None = None) -> pd.DataFrame:
+    """Feature rows plus outcomes for the requested weeks of each season.
+
+    `weeks=(1,)` reproduces the original week-1-only panel. Passing the full
+    range builds the all-weeks training set: every week posed as the week-1
+    problem, using prior-season features only, so the rows are extra examples
+    of the thing we predict rather than a different problem.
+    """
+    path = CACHE / (path or "panel.parquet")
     if path.exists() and not refresh:
         cached = pd.read_parquet(path)
         if set(seasons).issubset(set(cached["season"].unique())):
             return cached[cached["season"].isin(list(seasons))].copy()
     frames = []
     for s in seasons:
-        rows = dataset.build_rows(s)
-        frames.append(dataset.attach_targets(rows, SCORINGS))
+        per_season = []
+        for w in weeks:
+            rows = dataset.build_rows(s, w)
+            if len(rows):
+                per_season.append(rows)
+        if not per_season:
+            continue
+        frames.append(dataset.attach_targets(pd.concat(per_season, ignore_index=True), SCORINGS))
+        print(f"  {s}: {sum(len(x) for x in per_season)} rows across {len(per_season)} weeks",
+              flush=True)
     panel = pd.concat(frames, ignore_index=True)
     panel.to_parquet(path)
     return panel
@@ -42,7 +57,21 @@ def attach_consensus(panel: pd.DataFrame) -> pd.DataFrame:
                        on=["season", "player_id"], how="left")
 
 
-def backtest(panel: pd.DataFrame, positions=POSITIONS, verbose: bool = True) -> pd.DataFrame:
+def _slice(panel, seasons, pos, weeks=None):
+    d = panel[panel["season"].isin(list(seasons))]
+    if weeks is not None and "week" in d.columns:
+        d = d[d["week"].isin(list(weeks))]
+    return rankable(d, pos)
+
+
+def backtest(panel: pd.DataFrame, positions=POSITIONS, verbose: bool = True,
+             train_weeks=None) -> pd.DataFrame:
+    """Expanding-window backtest.
+
+    `train_weeks` selects which weeks of prior seasons the model may learn
+    from. Testing is always week 1 of the held-out season, whatever the
+    training window -- train on what helps, grade on what ships.
+    """
     """Expanding window: to project season S, train only on seasons before S.
 
     No leave-one-season-out, no shuffled folds. A model that has seen 2024 while
@@ -55,15 +84,17 @@ def backtest(panel: pd.DataFrame, positions=POSITIONS, verbose: bool = True) -> 
                 train_seasons = [s for s in range(FIRST_TRAIN_SEASON, season)]
                 if len(train_seasons) < 2:
                     continue
-                tr = pd.concat([rankable(panel[panel["season"] == s], pos) for s in train_seasons])
-                te = rankable(panel[panel["season"] == season], pos)
+                tr = _slice(panel, train_seasons, pos, train_weeks)
+                te = _slice(panel, [season], pos, [1])
                 if len(tr) < 100 or len(te) < 20:
                     continue
                 # Model choice is made on the most recent training season only,
                 # so the test season never influences which learner is used.
-                holdout = rankable(panel[panel["season"] == train_seasons[-1]], pos)
-                fit_on = pd.concat([rankable(panel[panel["season"] == s], pos)
-                                    for s in train_seasons[:-1]]) if len(train_seasons) > 2 else tr
+                # Model choice is judged on week 1 of the most recent training
+                # season -- the regime we ship into -- never on the test season.
+                holdout = [_slice(panel, [s], pos, [1]) for s in train_seasons[-2:]]
+                fit_on = (_slice(panel, train_seasons[:-2], pos, train_weeks)
+                          if len(train_seasons) > 3 else tr)
                 m = PositionModel(pos, scoring).fit(fit_on, select_on=holdout)
                 m = PositionModel(pos, scoring, kind=m.chosen_).fit(tr)
 

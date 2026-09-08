@@ -94,6 +94,35 @@ def _clf(seed=None) -> HistGradientBoostingClassifier:
     )
 
 
+class _Avg:
+    """Average of two fitted estimators' predictions."""
+
+    def __init__(self, members):
+        self.members = list(members)
+
+    def fit(self, X, y):
+        for m in self.members:
+            m.fit(X, y)
+        return self
+
+    def predict(self, X):
+        return np.mean([m.predict(X) for m in self.members], axis=0)
+
+
+# When is a ridge-vs-GBM gap real?
+#
+# The across-seed standard deviation of week-1 Spearman on this data is
+# 0.024-0.052 -- but that is the noise for a *fixed* model re-fitted. A gap
+# measured on a single held-out season also carries season-sampling noise,
+# which is larger: season-to-season Spearman on this problem ranges from 0.12
+# to 0.82. Using the seed-only figure as the threshold crowned a winner almost
+# every time, which is precisely the coin-flip the blend rule exists to avoid.
+# So the band is set to roughly twice the largest seed-only SD, and the gap must
+# also agree in sign across two holdout seasons before either model is picked
+# outright. Otherwise the two are averaged.
+NOISE_BAND = 0.10
+
+
 class PositionModel:
     def __init__(self, position: str, scoring: str, kind: str = "auto"):
         self.position = position
@@ -104,6 +133,7 @@ class PositionModel:
         self.mean_ = None
         self.quantiles_: dict = {}
         self.chosen_: str | None = None
+        self.selection_: dict = {}
 
     # -- data ------------------------------------------------------------
     def _cols(self, df: pd.DataFrame) -> list[str]:
@@ -134,19 +164,38 @@ class PositionModel:
             self.chosen_ = self.kind
         elif select_on is not None and len(select_on) >= 40:
             from scipy.stats import spearmanr
-            best, best_score = None, -np.inf
-            for name, est in candidates.items():
+            for est in candidates.values():
                 est.fit(Xp, yp)
-                probe = self._matrix(select_on).to_numpy()
-                pred = est.predict(probe) * self.play_.predict_proba(probe)[:, 1]
-                sc = spearmanr(pred, select_on[f"actual_{self.scoring}"]).statistic
-                if np.isfinite(sc) and sc > best_score:
-                    best, best_score = name, sc
-            self.chosen_ = best or "ridge"
+            probes = select_on if isinstance(select_on, (list, tuple)) else [select_on]
+            gaps, per_season = [], {"ridge": [], "gbm": []}
+            for probe_df in probes:
+                if len(probe_df) < 40:
+                    continue
+                Xq = self._matrix(probe_df).to_numpy()
+                truth = probe_df[f"actual_{self.scoring}"]
+                p_play = self.play_.predict_proba(Xq)[:, 1]
+                sc = {}
+                for name, est in candidates.items():
+                    r = spearmanr(est.predict(Xq) * p_play, truth).statistic
+                    sc[name] = r if np.isfinite(r) else np.nan
+                    per_season[name].append(sc[name])
+                gaps.append(sc["ridge"] - sc["gbm"])
+            gaps = [g for g in gaps if np.isfinite(g)]
+            mean_gap = float(np.mean(gaps)) if gaps else 0.0
+            consistent = len(gaps) > 0 and all(np.sign(g) == np.sign(mean_gap) for g in gaps)
+            if abs(mean_gap) > NOISE_BAND and consistent:
+                self.chosen_ = "ridge" if mean_gap > 0 else "gbm"
+            else:
+                self.chosen_ = "blend"
+            self.selection_ = {"mean_gap": mean_gap, "gaps": gaps,
+                               "band": NOISE_BAND, "consistent": consistent}
         else:
             self.chosen_ = "ridge"
 
-        self.mean_ = candidates[self.chosen_]
+        if self.chosen_ == "blend":
+            self.mean_ = _Avg([_ridge(), _Bag(lambda s: _gbm(seed=s), _seeds())])
+        else:
+            self.mean_ = candidates[self.chosen_]
         self.mean_.fit(Xp, yp)
         for q in QUANTILES:
             self.quantiles_[q] = _gbm(loss="quantile", quantile=q).fit(Xp, yp)

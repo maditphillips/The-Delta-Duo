@@ -65,6 +65,26 @@ TEAM_ENV = ["env_plays_per_game", "env_neutral_pass_rate", "env_proe",
             "hc_change", "opp_hc_change"]
 USE_TEAM_ENV_COLUMNS = True
 
+# Freshness. When the model trains on every week, prior-season usage means less
+# in week 12 than in week 1, and a model that pools them learns the average
+# weight -- which is the wrong weight for the week we actually ship. `week`
+# lets a tree condition on that; ridge cannot use it without being handed the
+# interaction outright, hence WEEK1_INTERACTIONS below.
+STALENESS = ["week", "is_week1"]
+
+# Practice participation, free in the nflverse injury file and previously
+# unused. A Questionable who practised fully is close to a lock; a Questionable
+# who did not practise is a coin flip.
+PRACTICE = ["practice_dnp", "practice_limited", "practice_full", "on_injury_report"]
+
+# The prior-season features whose weight staleness would erode. Each is also
+# supplied multiplied by is_week1 so a linear model can hold a separate week-1
+# coefficient instead of one compromise value.
+STALENESS_SENSITIVE = ["target_share_eb", "rush_share_eb", "snap_share_eb",
+                       "expected_targets", "expected_carries", "naive_points_ppr",
+                       "ppg_ppr"]
+WEEK1_INTERACTIONS = [f"w1x_{c}" for c in STALENESS_SENSITIVE]
+
 BASE = MARKET + SCHEME_PROJ + SCHEME_PREV + REGIME + CHURN + PLAYER + HISTORY + OPPONENT
 
 # ---------------------------------------------------------------------------
@@ -91,6 +111,7 @@ if not USE_SCHEME_COLUMNS:
     BASE = [c for c in BASE if c not in set(_SCHEME_BLOCK)]
 if USE_TEAM_ENV_COLUMNS:
     BASE = BASE + TEAM_ENV
+BASE = BASE + PRACTICE
 
 FEATURES = {
     "QB": BASE + OPPORTUNITY_QB + USAGE_PASSING + EFF_PASSING + ["gl_qb_rushes_share", "rush_share_eb"],

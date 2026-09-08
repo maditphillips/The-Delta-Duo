@@ -82,8 +82,8 @@ def scheme_projection(season: int, side: str) -> pd.DataFrame:
 # Point-in-time roster inputs
 # ---------------------------------------------------------------------------
 
-def depth_chart_week1(season: int, as_of: str | None = None) -> pd.DataFrame:
-    """Offensive depth chart as it stood going into week 1.
+def depth_chart(season: int, week: int = 1, as_of: str | None = None) -> pd.DataFrame:
+    """Offensive depth chart as it stood going into `week`.
 
     nflverse changed schema in 2025: pre-2025 rows are weekly with a 1/2/3
     depth_team; 2025+ rows are timestamped ESPN snapshots with an explicit
@@ -93,7 +93,9 @@ def depth_chart_week1(season: int, as_of: str | None = None) -> pd.DataFrame:
     if "dt" in d.columns:
         d = d.copy()
         d["dt"] = pd.to_datetime(d["dt"], utc=True)
-        cutoff = pd.Timestamp(as_of, tz="UTC") if as_of else d["dt"].max()
+        cutoff = pd.Timestamp(as_of, tz="UTC") if as_of else _kickoff(season, week)
+        if cutoff is None:
+            cutoff = d["dt"].max()
         d = d[d["dt"] <= cutoff]
         if d.empty:
             return pd.DataFrame(columns=["season", "team", "player_id", "position", "depth_rank"])
@@ -103,7 +105,7 @@ def depth_chart_week1(season: int, as_of: str | None = None) -> pd.DataFrame:
                                 "pos_rank": "depth_rank"})[
             ["team", "player_id", "position", "depth_rank"]].copy()
     else:
-        d = d[(d["week"] == 1) & (d["game_type"] == "REG") & (d["formation"] == "Offense")]
+        d = d[(d["week"] == week) & (d["game_type"] == "REG") & (d["formation"] == "Offense")]
         d = d[d["position"].isin(["QB", "RB", "WR", "TE", "FB"])].copy()
         d["depth_team"] = pd.to_numeric(d["depth_team"], errors="coerce")
         d = d.sort_values(["club_code", "position", "depth_team"])
@@ -116,9 +118,11 @@ def depth_chart_week1(season: int, as_of: str | None = None) -> pd.DataFrame:
     return out.dropna(subset=["player_id"]).drop_duplicates(["season", "team", "player_id"])
 
 
-def roster_week1(season: int) -> pd.DataFrame:
+def roster_at(season: int, week: int = 1) -> pd.DataFrame:
     r = pd.read_parquet(ingest.fetch("rosters", season))
-    r = r[r["week"] == 1] if "week" in r.columns else r
+    if "week" in r.columns:
+        wk = week if (r["week"] == week).any() else int(r["week"].min())
+        r = r[r["week"] == wk]
     r = r[r["position"].isin(["QB", "RB", "WR", "TE", "FB"])].copy()
     r["position"] = r["position"].replace({"FB": "RB"})
     r["team"] = _team_fix(r["team"])
@@ -134,18 +138,46 @@ def roster_week1(season: int) -> pd.DataFrame:
     return out.dropna(subset=["player_id"]).drop_duplicates(["season", "player_id"])
 
 
-def injuries_week1(season: int) -> pd.DataFrame:
+INJURY_COLS = ["season", "player_id", "report_status", "practice_status"]
+
+
+def injuries_at(season: int, week: int = 1) -> pd.DataFrame:
+    """Week's injury report, including practice participation.
+
+    The game-status field (Out / Doubtful / Questionable) is what most models
+    use, but `practice_status` is the more informative half and is free: a
+    Questionable who took a full practice is close to a lock, and a Questionable
+    who did not practice at all is a coin flip. Treating those two identically
+    throws away exactly the kind of information the expert consensus has and a
+    box-score model normally does not.
+    """
     try:
         inj = pd.read_parquet(ingest.fetch("injuries", season))
     except Exception:
-        return pd.DataFrame(columns=["season", "player_id", "report_status"])
+        return pd.DataFrame(columns=INJURY_COLS)
     if inj.empty:
-        return pd.DataFrame(columns=["season", "player_id", "report_status"])
-    inj = inj[(inj["week"] == 1) & (inj["season"] == season)]
+        return pd.DataFrame(columns=INJURY_COLS)
+    inj = inj[(inj["week"] == week) & (inj["season"] == season)].copy()
+    if inj.empty:
+        return pd.DataFrame(columns=INJURY_COLS)
     col = "gsis_id" if "gsis_id" in inj.columns else "player_id"
-    out = inj[[col, "report_status"]].rename(columns={col: "player_id"})
+    if "date_modified" in inj.columns:  # keep the last report of the week
+        inj = inj.sort_values("date_modified")
+    keep = [col, "report_status"] + (["practice_status"] if "practice_status" in inj.columns else [])
+    out = inj[keep].rename(columns={col: "player_id"})
+    if "practice_status" not in out.columns:
+        out["practice_status"] = np.nan
     out["season"] = season
-    return out.dropna(subset=["player_id"]).drop_duplicates(["season", "player_id"])
+    return out.dropna(subset=["player_id"]).drop_duplicates(["season", "player_id"], keep="last")
+
+
+def _kickoff(season: int, week: int):
+    """UTC timestamp of the first game of that week, for depth-chart cutoffs."""
+    g = ingest.load("schedules")
+    g = g[(g["season"] == season) & (g["week"] == week) & (g["game_type"] == "REG")]
+    if g.empty:
+        return None
+    return pd.Timestamp(pd.to_datetime(g["gameday"]).min(), tz="UTC")
 
 
 # ---------------------------------------------------------------------------
@@ -247,13 +279,47 @@ def _prior_usage(season: int) -> pd.DataFrame:
     return p1.merge(p2, on="player_id", how="left")
 
 
-def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
-    """One row per (player, week 1 of `season`) with features only."""
-    roster = roster_week1(season)
-    depth = depth_chart_week1(season, as_of=as_of)
+@functools.lru_cache(maxsize=12)
+def season_context(season: int) -> dict:
+    """Everything about a season that does not change week to week.
+
+    Split out so an 18-week panel does not recompute prior-season usage,
+    vacated opportunity and the team-environment fit eighteen times over.
+    """
     prior = _prior_usage(season)
     u_prev = all_usage()
     u_prev = u_prev[u_prev["season"] == season - 1]
+    roster_w1 = roster_at(season, 1)
+    off_fp, def_fp = fingerprints()
+    reg = regime_table()
+    return {
+        "prior": prior,
+        "vacated": vacated_opportunity(season, roster_w1, u_prev),
+        "off_proj": scheme_projection(season, "off"),
+        "def_proj": scheme_projection(season, "def"),
+        "team_env": team_environment(season),
+        "lag_off": off_fp[off_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("team_prev_"),
+        "lag_def": def_fp[def_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("opp_prev_"),
+        "regime": reg[reg["season"] == season][["team", "off_continuity", "def_continuity",
+                                                "hc_continuity", "off_confidence"]],
+        "opp_hc": reg[reg["season"] == season][["team", "hc_continuity"]].rename(
+            columns={"team": "opponent", "hc_continuity": "opp_hc_continuity"}),
+    }
+
+
+def build_rows(season: int, week: int = 1, as_of: str | None = None) -> pd.DataFrame:
+    """One row per (player, `week` of `season`) with features only.
+
+    Point-in-time rule: season S-1 and earlier for anything on the field, plus
+    this week's depth chart, injury report and betting line. Nothing from
+    weeks 1..W-1 of the current season -- every week is posed as the week-1
+    problem, which is what makes these rows extra examples of the thing we
+    actually predict rather than a different problem.
+    """
+    ctx = season_context(season)
+    roster = roster_at(season, week)
+    depth = depth_chart(season, week, as_of=as_of)
+    prior = ctx["prior"]
 
     df = roster.merge(depth[["team", "player_id", "depth_rank"]], on=["team", "player_id"],
                       how="outer")
@@ -275,26 +341,16 @@ def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
     df["depth_rank"] = df["depth_rank"].fillna(9)
 
     # Team environment: projected scheme, last year's raw team rates, churn.
-    off_proj = scheme_projection(season, "off")
-    def_proj = scheme_projection(season, "def")
+    off_proj, def_proj = ctx["off_proj"], ctx["def_proj"]
     df = df.merge(off_proj, on="team", how="left")
-    df = df.merge(team_environment(season), on="team", how="left")
-
-    off_fp, def_fp = fingerprints()
-    lag_off = off_fp[off_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("team_prev_")
-    df = df.merge(lag_off.rename(columns={"team_prev_team": "team"}), on="team", how="left")
-
-    vac = vacated_opportunity(season, roster, u_prev)
-    df = df.merge(vac.drop(columns=["season"]), on="team", how="left")
-
-    reg = regime_table()
-    reg_s = reg[reg["season"] == season][["team", "off_continuity", "def_continuity",
-                                          "hc_continuity", "off_confidence"]]
-    df = df.merge(reg_s, on="team", how="left", suffixes=("", "_reg"))
+    df = df.merge(ctx["team_env"], on="team", how="left")
+    df = df.merge(ctx["lag_off"].rename(columns={"team_prev_team": "team"}), on="team", how="left")
+    df = df.merge(ctx["vacated"].drop(columns=["season"]), on="team", how="left")
+    df = df.merge(ctx["regime"], on="team", how="left", suffixes=("", "_reg"))
 
     # Opponent and market.
     tw = context.team_week([season])
-    tw = tw[tw["week"] == 1]
+    tw = tw[tw["week"] == week]
     df = df.merge(tw[["team", "opponent", "is_home", "team_spread", "total_line",
                       "implied_team_total", "implied_opp_total", "abs_spread",
                       "is_dome", "is_favourite", "rest", "div_game", "game_id"]],
@@ -302,22 +358,43 @@ def build_rows(season: int, as_of: str | None = None) -> pd.DataFrame:
     dp = def_proj.rename(columns={"team": "opponent"})
     dp = dp.rename(columns={c: f"opp_{c}" for c in dp.columns if c != "opponent"})
     df = df.merge(dp, on="opponent", how="left")
-    lag_def = def_fp[def_fp["season"] == season - 1].drop(columns=["season"]).add_prefix("opp_prev_")
-    df = df.merge(lag_def.rename(columns={"opp_prev_team": "opponent"}), on="opponent", how="left")
+    df = df.merge(ctx["lag_def"].rename(columns={"opp_prev_team": "opponent"}),
+                  on="opponent", how="left")
 
-    opp_hc = regime_table()
-    opp_hc = opp_hc[opp_hc["season"] == season][["team", "hc_continuity"]].rename(
-        columns={"team": "opponent", "hc_continuity": "opp_hc_continuity"})
-    df = df.merge(opp_hc, on="opponent", how="left")
+    df = df.merge(ctx["opp_hc"], on="opponent", how="left")
     df["opp_hc_change"] = (df["opp_hc_continuity"] == 0).astype(float)
 
-    inj = injuries_week1(season)
-    df = df.merge(inj[["player_id", "report_status"]], on="player_id", how="left")
+    inj = injuries_at(season, week)
+    df = df.merge(inj[["player_id", "report_status", "practice_status"]],
+                  on="player_id", how="left")
     df["is_out"] = df["report_status"].isin(["Out", "Doubtful"]).astype(float)
     df["is_questionable"] = (df["report_status"] == "Questionable").astype(float)
+    ps = df["practice_status"].fillna("")
+    df["practice_dnp"] = ps.str.contains("Did Not", case=False).astype(float)
+    df["practice_limited"] = ps.str.contains("Limited", case=False).astype(float)
+    df["practice_full"] = ps.str.contains("Full", case=False).astype(float)
+    df["on_injury_report"] = (df["report_status"].notna() | (ps != "")).astype(float)
+
+    df["week"] = week
+    df["is_week1"] = float(week == 1)
+    # Teams on bye have no game this week; those players are not predictions.
+    df = df[df["game_id"].notna()]
 
     df["player_name"] = df["player_name"].fillna(df.get("player_display_name"))
     df = _expected_opportunity(df, season)
+    df = _week1_interactions(df)
+    return df
+
+
+def _week1_interactions(df: pd.DataFrame) -> pd.DataFrame:
+    """Hand the model an explicit week-1 slope for the staleness-sensitive
+    features. A tree could in principle discover this by splitting on `week`;
+    a linear model cannot discover it at all."""
+    from .features import STALENESS_SENSITIVE
+    w1 = df["is_week1"].fillna(0)
+    for c in STALENESS_SENSITIVE:
+        if c in df.columns:
+            df[f"w1x_{c}"] = pd.to_numeric(df[c], errors="coerce").fillna(0) * w1
     return df
 
 
@@ -412,16 +489,20 @@ def attach_targets(rows: pd.DataFrame, scoring_names) -> pd.DataFrame:
         # The season has not kicked off yet: no outcomes to attach.
         for n in scoring_names:
             rows[f"actual_{n}"] = np.nan
-        rows["played_week1"] = np.nan
+        rows["played"] = np.nan
         return rows
-    s = s[(s["season_type"] == "REG") & (s["week"] == 1)].copy()
+    weeks = sorted(rows["week"].unique()) if "week" in rows.columns else [1]
+    s = s[(s["season_type"] == "REG") & (s["week"].isin(weeks))].copy()
     for name in scoring_names:
         s[f"actual_{name}"] = fantasy_points(s, name)
-    cols = ["season", "player_id"] + [f"actual_{n}" for n in scoring_names]
-    out = rows.merge(s[cols], on=["season", "player_id"], how="left")
+    key = ["season", "week", "player_id"] if "week" in rows.columns else ["season", "player_id"]
+    cols = key + [f"actual_{n}" for n in scoring_names]
+    out = rows.merge(s[cols].drop_duplicates(key), on=key, how="left")
     for n in scoring_names:
         # A rostered player who did not record a stat line scored zero, and a
         # ranking model should be punished for ranking him highly.
         out[f"actual_{n}"] = out[f"actual_{n}"].fillna(0.0)
-    out["played_week1"] = out["player_id"].isin(set(s["player_id"])).astype(float)
+    played = set(map(tuple, s[key].dropna().to_numpy()))
+    out["played"] = [tuple(t) in played for t in out[key].to_numpy()]
+    out["played"] = out["played"].astype(float)
     return out
