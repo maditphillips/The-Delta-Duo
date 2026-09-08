@@ -194,5 +194,24 @@ def eb_shrink(values: pd.Series, weights: pd.Series, group: pd.Series | None = N
             k = max(mu * (1 - mu) / true_var - 1, 1.0)
         else:
             k = float(np.nanmedian(nn[ok])) if ok.any() else 1.0
+
+        # Guard against the method-of-moments blow-up.
+        #
+        # When the observed spread barely exceeds the assumed sampling noise,
+        # true_var goes to zero and k goes to infinity, which shrinks every
+        # player onto the group mean and destroys the feature. That is not
+        # hypothetical: for 2025 quarterback rush share, obs_var 0.00374 against
+        # samp_var 0.00367 gave k = 1393, so Jalen Hurts at 105 carries kept
+        # 6.7% of his own rate and every quarterback came out at ~0.12 -- the
+        # position's single biggest differentiator, flattened.
+        #
+        # The root error is the sampling term: these are shares of *team*
+        # volume, but samp_var uses the player's own count as the binomial
+        # denominator, which overstates the noise by an order of magnitude.
+        # Fixing that properly means reworking the exposure weights, so this
+        # caps k instead: no player is shrunk harder than a prior worth three
+        # times the group's median sample.
+        k_max = 3.0 * float(np.nanmedian(nn[ok])) if ok.any() else np.inf
+        k = min(k, max(k_max, 1.0))
         out.loc[idx] = (vv.fillna(mu) * nn + mu * k) / (nn + k)
     return out
