@@ -76,6 +76,7 @@ export default function WeeklyBoard() {
   const [weekKey, setWeekKey] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<{ key: string; data: Board } | null>(null);
   const [pos, setPos] = useState<Pos>("QB");
+  const [scoring, setScoring] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -114,7 +115,22 @@ export default function WeeklyBoard() {
 
   // only show a board once the fetch for the selected week has landed
   const board = loaded && loaded.key === weekKey ? loaded.data : null;
-  const rows = useMemo(() => board?.positions[pos] ?? [], [board, pos]);
+
+  // Scoring variants for this position, when it ships more than one list.
+  const scorings = useMemo(
+    () => Object.keys(board?.variants?.[pos] ?? {}),
+    [board, pos]
+  );
+  // Derived rather than synced in an effect: switching position can leave the
+  // stored choice pointing at a scoring that position does not offer, so fall
+  // back to its first one instead of writing state during render.
+  const activeScoring = scorings.includes(scoring) ? scoring : scorings[0] ?? "";
+
+  const rows = useMemo(() => {
+    const byScoring = board?.variants?.[pos];
+    if (byScoring && byScoring[activeScoring]) return byScoring[activeScoring];
+    return board?.positions[pos] ?? [];
+  }, [board, pos, activeScoring]);
   const biggest = useMemo(
     () => [...rows].sort((a, b) => Math.abs(deltaOf(b)) - Math.abs(deltaOf(a))).filter((r) => Math.abs(deltaOf(r)) >= 2).slice(0, 6),
     [rows]
@@ -148,6 +164,19 @@ export default function WeeklyBoard() {
           </button>
         ))}
       </div>
+
+      {scorings.length > 1 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm" style={{ color: "var(--ink-faint)" }}>
+            Scoring
+          </span>
+          {scorings.map((s) => (
+            <button key={s} className={`chalk-btn ${activeScoring === s ? "selected" : ""}`} onClick={() => setScoring(s)}>
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
 
       {error && (
         <ChalkCard title="Couldn't load the week" alt>

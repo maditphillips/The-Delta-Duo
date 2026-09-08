@@ -21,6 +21,25 @@ const SRC = path.join(process.cwd(), "data", "weekly");
 const OUT = path.join(process.cwd(), "public", "data");
 const POSITIONS = ["qb", "rb", "wr", "te", "k"];
 
+// A position may ship one list (k.csv) or several scoring variants
+// (qb-4pt.csv, qb-6pt.csv, rb-ppr.csv, rb-half.csv...). Variants are keyed by
+// the filename suffix and shown as a second row of buttons; a position with a
+// single file behaves exactly as before.
+const VARIANT_LABELS = { "4pt": "4-PT TD", "6pt": "6-PT TD", ppr: "PPR", half: "HALF-PPR" };
+const VARIANT_ORDER = ["ppr", "half", "4pt", "6pt"];
+
+function variantFiles(dir, pos) {
+  const plain = path.join(dir, `${pos}.csv`);
+  if (fs.existsSync(plain)) return [[null, plain]];
+  const found = fs
+    .readdirSync(dir)
+    .map((f) => f.match(new RegExp(`^${pos}-(.+)\\.csv$`)))
+    .filter(Boolean)
+    .map((m) => [m[1], path.join(dir, m[0])]);
+  found.sort((a, b) => VARIANT_ORDER.indexOf(a[0]) - VARIANT_ORDER.indexOf(b[0]));
+  return found;
+}
+
 function parseCsv(text) {
   const rows = [];
   let row = [], field = "", inQuotes = false;
@@ -64,9 +83,12 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
       ? fs.readFileSync(path.join(SRC, season, weekDir, "LABEL.txt"), "utf8").trim()
       : `Week ${week}`;
     const positions = {};
+    const variants = {};
     for (const pos of POSITIONS) {
-      const file = path.join(SRC, season, weekDir, `${pos}.csv`);
-      if (!fs.existsSync(file)) continue;
+      const files = variantFiles(path.join(SRC, season, weekDir), pos);
+      if (!files.length) continue;
+      const byVariant = {};
+      for (const [variant, file] of files) {
       const rows = parseCsv(fs.readFileSync(file, "utf8")).map((r) => {
         const player = pick(r, ["player", "name"]);
         const rd = Number(pick(r, ["rank_data", "rank_wilson", "wilson", "data"]));
@@ -82,11 +104,19 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
             }
           : null;
       }).filter(Boolean);
-      if (rows.length) positions[pos.toUpperCase()] = rows.sort((a, b) => a.rankData - b.rankData);
+      if (!rows.length) continue;
+      rows.sort((a, b) => a.rankData - b.rankData);
+      const label = variant ? VARIANT_LABELS[variant] ?? variant.toUpperCase() : null;
+      if (label) byVariant[label] = rows;
+      if (!positions[pos.toUpperCase()]) positions[pos.toUpperCase()] = rows;
+      }
+      if (Object.keys(byVariant).length > 1) variants[pos.toUpperCase()] = byVariant;
     }
     if (Object.keys(positions).length === 0) continue;
     const key = `${season}-w${String(week).padStart(2, "0")}`;
-    fs.writeFileSync(path.join(OUT, `weekly-${key}.json`), JSON.stringify({ season: Number(season), week, label, positions }));
+    const payload = { season: Number(season), week, label, positions };
+    if (Object.keys(variants).length) payload.variants = variants;
+    fs.writeFileSync(path.join(OUT, `weekly-${key}.json`), JSON.stringify(payload));
     index.push({ key, season: Number(season), week, label, positions: Object.keys(positions) });
     console.log(`${key} (${label}): ${Object.keys(positions).join(", ")}`);
   }

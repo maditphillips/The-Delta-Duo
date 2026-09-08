@@ -12,6 +12,10 @@ export type WeeklyBoard = {
   week: number;
   label: string;
   positions: Record<string, WeeklyRow[]>;
+  /** Scoring variants, present only where a position ships more than one list
+   *  (QB at 4-pt and 6-pt passing TDs; RB/WR/TE in PPR and half-PPR). Keyed by
+   *  position, then by the label shown on the button. */
+  variants?: Record<string, Record<string, WeeklyRow[]>>;
 };
 
 export type WeeklyIndex = {
