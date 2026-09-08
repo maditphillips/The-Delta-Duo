@@ -99,6 +99,12 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
               team: pick(r, ["team", "tm"]),
               opponent: pick(r, ["opponent", "opp"]),
               isHome: pick(r, ["is_home", "home"]) === "1",
+              // pick() returns null when the column is absent, and Number(null)
+              // is 0 -- which would give every kicker a 0.0 projection.
+              proj: (() => {
+                const raw = pick(r, ["proj", "points", "projection"]);
+                return raw != null && Number.isFinite(Number(raw)) ? Number(raw) : null;
+              })(),
               rankData: rd,
               rankVibes: rv,
               noteData: pick(r, ["note_data", "note_wilson", "wilson_note"]),

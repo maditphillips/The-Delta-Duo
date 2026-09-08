@@ -171,13 +171,15 @@ def main() -> None:
                 "team": r["team"],
                 "opponent": r.get("opponent", ""),
                 "is_home": int(num(r.get("is_home"), 0)),
+                "proj": round(float(r["proj"]), 1),
                 "note_data": build_note(r, pos),
                 "note_vibes": "",
             })
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
-                                               "opponent", "is_home", "note_data", "note_vibes"])
+                                               "opponent", "is_home", "proj",
+                                               "note_data", "note_vibes"])
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")

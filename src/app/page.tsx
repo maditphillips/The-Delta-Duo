@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChalkCard from "@/components/ChalkCard";
+import WeeklyDeltas from "@/components/WeeklyDeltas";
 import { anchorClaim, crossStudy } from "@/data/crossStudy";
 import { CHALK } from "@/components/charts/theme";
 
@@ -178,6 +179,8 @@ export default function Home() {
           </table>
         </div>
       </ChalkCard>
+
+      <WeeklyDeltas />
     </div>
   );
 }

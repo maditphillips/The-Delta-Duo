@@ -5,6 +5,8 @@ export type WeeklyRow = {
    *  just the team. Absent on lists that do not carry it (kickers). */
   opponent?: string | null;
   isHome?: boolean;
+  /** The model's projected fantasy points in this list's scoring format. */
+  proj?: number | null;
   rankData: number;
   rankVibes: number;
   noteData?: string | null;
