@@ -45,3 +45,9 @@ next-env.d.ts
 /.open-next/
 cloudflare-env.d.ts
 .wrangler/
+
+# analysis working files (nflverse downloads and generated rankings)
+/.venv-*
+scripts/analysis/**/*.parquet
+scripts/analysis/**/*.csv
+scripts/analysis/**/__pycache__/
