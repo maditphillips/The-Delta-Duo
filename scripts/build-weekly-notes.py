@@ -165,15 +165,36 @@ def blurb(r, pos: str) -> str:
 
 
 def outlook(r) -> str:
-    """The spread the quantile models give him, and his shot at a top-12 week."""
-    lo, hi = num(r.get("floor_q20")), num(r.get("ceiling_q90"))
-    p12 = num(r.get("p_top12"))
+    """The spread the quantile models give him, and his shot at a top-12 week.
+
+    The median is here because it, not the projection, is what drives the
+    top-12 number, and without it the two look like they contradict each other.
+    Derrick Henry projects below Saquon Barkley and still shows the better shot
+    at a top-12 week: Henry's median week is 16 and Barkley's is 15, so Henry
+    clears the bar more often, while Barkley's higher projection rests on a
+    ceiling four points taller. Top-12 is a threshold -- points past it do not
+    count twice."""
+    lo, mid, hi = (num(r.get("floor_q20")), num(r.get("median_q50")),
+                   num(r.get("ceiling_q90")))
+    proj, p12 = num(r.get("proj")), num(r.get("p_top12"))
     bits = []
     if lo is not None and hi is not None:
-        bits.append(f"Range {lo:.0f}-{hi:.0f}")
+        span = f"Range {lo:.0f}-{hi:.0f}"
+        if mid is not None:
+            span += f" around a median of {mid:.0f}"
+        bits.append(span)
     if p12 is not None:
         bits.append(f"{p12:.0%} shot at a top-12 week")
-    return (", ".join(bits) + ".") if bits else ""
+    text = (", ".join(bits) + ".") if bits else ""
+    # Say which way the distribution leans, but only when it leans far enough
+    # to change how you would use him.
+    if mid is not None and proj and abs(mid - proj) / proj >= 0.12:
+        text += (" Hits that number more often than the projection reads — one"
+                 " bad week in the tail is what drags his average down."
+                 if mid > proj else
+                 " Ceiling-dependent: the projection leans on his big weeks"
+                 " rather than his typical one.")
+    return text
 
 
 def flags(r) -> str:
