@@ -28,6 +28,11 @@ RULED_OUT = Path("data/weekly/ruled-out.csv")
 # half-PPR for two backs and nobody else, and his opinion of a player does not
 # change with a league's reception setting.
 MC = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}/mc-rankings.csv")
+# Hand placements on Wilson's board. The model is not touched; a player is
+# lifted out and reinserted, and everyone he passes moves down one. Each row
+# carries the reason, because an override with no argument behind it is just
+# the vibes list wearing the data list's colours.
+MANUAL = Path("data/weekly/manual-ranks.csv")
 FILES = {
     ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
     ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
@@ -293,6 +298,31 @@ def league_ranks(frames: list[pd.DataFrame]) -> tuple[dict, dict, dict]:
     return total, ranks[0], ranks[1]
 
 
+def override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
+    """Move a player to a hand-picked slot and close the list up behind him."""
+    if not MANUAL.exists():
+        return df
+    m = pd.read_csv(MANUAL)
+    m = m[(m.season == SEASON) & (m.week == WEEK)
+          & (m.position.str.lower() == pos) & (m.variant.str.lower() == variant)]
+    if m.empty:
+        return df
+    df = df.sort_values("rank_data").reset_index(drop=True)
+    for _, row in m.iterrows():
+        hit = df.index[df.player_name == row.player]
+        if not len(hit):
+            print(f"    {pos}-{variant}: override skipped, not on the list: {row.player}")
+            continue
+        moved = df.loc[hit[0]]
+        rest = df.drop(hit[0]).reset_index(drop=True)
+        to = min(max(int(row["rank"]), 1), len(rest) + 1) - 1
+        df = pd.concat([rest.iloc[:to], moved.to_frame().T, rest.iloc[to:]],
+                       ignore_index=True)
+        print(f"    {pos}-{variant}: {row.player} moved to {int(row['rank'])}")
+    df["rank_data"] = range(1, len(df) + 1)
+    return df
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     mc = pd.read_csv(MC) if MC.exists() else None
@@ -303,6 +333,7 @@ def main() -> None:
         df["rk_team_total"] = df.team.map(rk_total)
         df["rk_def_pass"] = df.opponent.map(rk_pass)
         df["rk_def_rush"] = df.opponent.map(rk_rush)
+        df = override(df, pos, variant)
         band = df["ceiling_q90"] - df["floor_q20"]
         df["_tilt"] = ((df["median_q50"] - df["floor_q20"]) / band.where(band > 0)
                        ).rank(pct=True)
@@ -322,7 +353,12 @@ def main() -> None:
                 print(f"    {pos}-{variant}: not on MC's board, dropped: "
                       + ", ".join(df.loc[unranked, "player_name"]))
                 df = df[~unranked]
-            df["rank_vibes"] = df.rank_vibes.astype(int)
+            # Both columns close up behind anyone dropped. Leave them as they
+            # were and a published list of 58 men counts to 59, skipping a
+            # number, which reads as a missing player rather than a shorter
+            # list. MC's order is preserved, only compacted.
+            df["rank_data"] = df.rank_data.rank(method="first").astype(int)
+            df["rank_vibes"] = df.rank_vibes.rank(method="first").astype(int)
         else:
             # No board from MC yet, so consensus stands in. It is re-ranked
             # inside our published list so both columns order the same players

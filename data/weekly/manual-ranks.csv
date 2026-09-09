@@ -1,0 +1,3 @@
+season,week,position,variant,player,rank,reason
+2026,1,rb,ppr,Jadarian Price,17,"Editorial override. The model prices him at 34 because his floor is 0.0, a rookie with no NFL usage the play model will not commit to, and a zero floor drags a mean down hard. His ceiling is 21.6 and his top-12 odds are 19%, higher than eight of the ten backs ranked above him. Ranked where the upside says rather than where the floor drags him."
+2026,1,rb,half,Jadarian Price,22,"Same override in half-PPR, where he sits 38th on the same reasoning."
