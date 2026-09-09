@@ -80,13 +80,14 @@ export function pointsOn(p: Pick, basis: Basis): number | null {
   return basis === "data" ? p.wilson : basis === "vibes" ? p.mc : p.blend;
 }
 
-const num = (v: number | null | undefined) => (v == null ? -Infinity : v);
-
 export type Verdict = {
   need: Need;
   /** Null only when nobody has the number the question needs. */
   winner: Pick | null;
   runnerUp: Pick | null;
+  /** The two are level on this question once the numbers are rounded to what
+   *  the card actually prints. */
+  tied: boolean;
   /** One sentence a person can act on. */
   line: string;
 };
@@ -96,12 +97,67 @@ const pct = (v: number | null | undefined) =>
   v == null ? "n/a" : `${Math.round(v * 100)}%`;
 
 /**
+ * How each question reads its number and says its answer.
+ *
+ * Only the first line spells out "projected points". The others sit under a
+ * kicker naming the question and beside a card that labels every figure, so
+ * repeating it there just pushed the sentence onto a second line, and a
+ * headline nobody finishes is worse than a short one.
+ */
+const SHAPE: Record<
+  Need,
+  {
+    value: (p: Pick, basis: Basis) => number | null;
+    fmt: (v: number | null | undefined) => string;
+    win: (w: string, a: string, b: string, how: string) => string;
+    solo: (w: string, a: string) => string;
+    tie: (a: string) => string;
+  }
+> = {
+  call: {
+    value: (p, basis) => pointsOn(p, basis),
+    fmt: pts,
+    win: (w, a, b, how) => `${w} ${how}: ${a} projected points to ${b}.`,
+    solo: (w, a) => `${w}: ${a} projected points.`,
+    tie: (a) => `Nothing in it: both on ${a} projected points.`,
+  },
+  ceiling: {
+    value: (p) => p.row.ceiling ?? null,
+    fmt: pts,
+    win: (w, a, b) => `${w} for the big week: ${a} ceiling to ${b}.`,
+    solo: (w, a) => `${w} tops out around ${a}.`,
+    tie: (a) => `Nothing in it: both top out around ${a}.`,
+  },
+  reliable: {
+    value: (p) => p.row.pTop12 ?? null,
+    fmt: pct,
+    win: (w, a, b) => `${w} more often: ${a} top-12 to ${b}.`,
+    solo: (w, a) => `${w} hits a top-12 week ${a} of the time.`,
+    tie: (a) => `Nothing in it: both hit a top-12 week ${a} of the time.`,
+  },
+  floor: {
+    value: (p) => p.row.floor ?? null,
+    fmt: pts,
+    win: (w, a, b) => `${w} is the safer floor: ${a} to ${b}.`,
+    solo: (w, a) => `${w} floors out around ${a}.`,
+    tie: (a) => `Nothing in it: both floor at ${a}.`,
+  },
+};
+
+const num = (v: number | null | undefined) => (v == null ? -Infinity : v);
+
+/**
  * Answer all four questions, every time.
  *
- * Deliberately no "too close to call" branch. When two players are half a point
- * apart the margin is real information, but on its own it is a shrug, and a
- * shrug is the one thing nobody can act on. The four answers are always
- * computed and always shown; when they split, that split is the decision.
+ * Deliberately no "too close to call" branch on a margin. When two players are
+ * half a point apart the margin is real information, and a shrug is the one
+ * thing nobody can act on. The four answers are always computed and always
+ * shown; when they split, that split is the decision.
+ *
+ * A genuine tie is different and does get its own wording. It is judged on the
+ * rounded figures rather than the raw ones, because two backs printing 7.7 and
+ * 7.7 on their cards cannot be described as one beating the other, whatever the
+ * third decimal place says.
  *
  * Only the first question takes the basis. Ceiling, consistency and the floor
  * are read off a distribution, and MC does not have one: he ranks, he does not
@@ -109,40 +165,28 @@ const pct = (v: number | null | undefined) =>
  * setting, and the tool says so rather than inventing a spread for MC.
  */
 export function verdicts(picks: Pick[], basis: Basis): Verdict[] {
-  const metric: Record<Need, (p: Pick) => number> = {
-    call: (p) => num(pointsOn(p, basis)),
-    ceiling: (p) => num(p.row.ceiling),
-    reliable: (p) => num(p.row.pTop12),
-    floor: (p) => num(p.row.floor),
-  };
   return NEEDS.map(({ key }) => {
-    const ranked = [...picks].sort((a, b) => metric[key](b) - metric[key](a));
+    const shape = SHAPE[key];
+    const ranked = [...picks].sort(
+      (a, b) => num(shape.value(b, basis)) - num(shape.value(a, basis))
+    );
     const [winner, runnerUp] = ranked;
-    if (!winner || metric[key](winner) === -Infinity)
-      return { need: key, winner: null, runnerUp: null, line: "Not enough data for this one." };
-    const w = winner.row.player, r = runnerUp?.row.player;
-    const line = {
-      call: () => {
-        const gap = num(pointsOn(winner, basis)) - num(pointsOn(runnerUp, basis));
-        const how = gap < 0.75 ? "barely" : gap < 2 ? "narrowly" : "clearly";
-        return r
-          ? `${w} ${how}: ${pts(pointsOn(winner, basis))} projected points to ${pts(pointsOn(runnerUp, basis))}.`
-          : `${w}: ${pts(pointsOn(winner, basis))} projected points.`;
-      },
-      ceiling: () =>
-        r
-          ? `${w} has the bigger week in him: ${pts(winner.row.ceiling)} projected points at his ceiling to ${pts(runnerUp.row.ceiling)}.`
-          : `${w} tops out around ${pts(winner.row.ceiling)} projected points.`,
-      reliable: () =>
-        r
-          ? `${w} clears a startable week more often: ${pct(winner.row.pTop12)} top-12 to ${pct(runnerUp.row.pTop12)}, on a median of ${pts(winner.row.median)} projected points to ${pts(runnerUp.row.median)}.`
-          : `${w} hits a top-12 week ${pct(winner.row.pTop12)} of the time.`,
-      floor: () =>
-        r
-          ? `${w} is likelier to save you from a zero: ${pts(winner.row.floor)} projected points at his floor to ${pts(runnerUp.row.floor)}.`
-          : `${w} floors out around ${pts(winner.row.floor)} projected points.`,
-    }[key]();
-    return { need: key, winner, runnerUp: runnerUp ?? null, line };
+    if (!winner || shape.value(winner, basis) == null)
+      return { need: key, winner: null, runnerUp: null, tied: false,
+               line: "Not enough data for this one." };
+
+    const a = shape.fmt(shape.value(winner, basis));
+    if (!runnerUp) return { need: key, winner, runnerUp: null, tied: false,
+                            line: shape.solo(winner.row.player, a) };
+
+    const b = shape.fmt(shape.value(runnerUp, basis));
+    if (a === b)
+      return { need: key, winner, runnerUp, tied: true, line: shape.tie(a) };
+
+    const gap = num(shape.value(winner, basis)) - num(shape.value(runnerUp, basis));
+    const how = gap < 0.75 ? "barely" : gap < 2 ? "narrowly" : "clearly";
+    return { need: key, winner, runnerUp, tied: false,
+             line: shape.win(winner.row.player, a, b, how) };
   });
 }
 

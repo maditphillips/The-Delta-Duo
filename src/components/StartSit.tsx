@@ -329,9 +329,13 @@ export default function StartSit() {
         >
           <div className="grid gap-3 sm:grid-cols-2">
             {picks.map((p) => {
-              const won = headline?.winner === p;
+              const won = !headline?.tied && headline?.winner === p;
+              // The number is boxed on the man it picked, so the box is the
+              // answer rather than a pair of numbers to compare. A tie has no
+              // winner, so both are boxed: that is the point being made.
+              const shows = won || !!headline?.tied;
               const box = (on: boolean) =>
-                on
+                on && shows
                   ? { outline: `2px solid ${CHOSEN}`, outlineOffset: 2, borderRadius: 4 }
                   : undefined;
               return (
