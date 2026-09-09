@@ -385,7 +385,7 @@ def main() -> None:
         # order, which is the only thing MC actually claims.
         scale = sorted(df["proj"].dropna(), reverse=True)
         df["proj_vibes"] = [
-            round(scale[min(int(v), len(scale)) - 1], 1) if scale else None
+            round(scale[min(int(v), len(scale)) - 1], 3) if scale else None
             for v in df["rank_vibes"]
         ]
         rows = []
@@ -397,14 +397,22 @@ def main() -> None:
                 "team": r["team"],
                 "opponent": r.get("opponent", ""),
                 "is_home": int(num(r.get("is_home"), 0)),
-                "proj": round(float(r["proj"]), 1),
+                # Published to three places and shown to one.
+                #
+                # Rounding here is destructive: two backs whose floors are
+                # 7.694 and 7.698 both became 7.7, and the start/sit tool, with
+                # nothing left to sort on, named whichever had been picked
+                # first. It called the wrong man the safer floor. The extra
+                # places cost nothing and let the tool break a tie the cards
+                # cannot show.
+                "proj": round(float(r["proj"]), 3),
                 "proj_vibes": r.get("proj_vibes"),
                 # The shape of his week, for the start/sit tool: what he does
                 # when it goes badly, on a normal Sunday, and when it goes right.
-                "floor": round(num(r.get("floor_q20"), 0.0), 1),
-                "median": round(num(r.get("median_q50"), 0.0), 1),
-                "ceiling": round(num(r.get("ceiling_q90"), 0.0), 1),
-                "p_top12": round(num(r.get("p_top12"), 0.0), 3),
+                "floor": round(num(r.get("floor_q20"), 0.0), 3),
+                "median": round(num(r.get("median_q50"), 0.0), 3),
+                "ceiling": round(num(r.get("ceiling_q90"), 0.0), 3),
+                "p_top12": round(num(r.get("p_top12"), 0.0), 4),
                 "note_data": (str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),

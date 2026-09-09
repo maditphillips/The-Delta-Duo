@@ -97,6 +97,33 @@ const pct = (v: number | null | undefined) =>
   v == null ? "n/a" : `${Math.round(v * 100)}%`;
 
 /**
+ * Print two numbers at the fewest decimals that tell them apart.
+ *
+ * The cards round to one place, so two floors of 7.694 and 7.698 both read
+ * 7.7 and a sentence saying one beats the other looks like a bug. Opening the
+ * numbers up shows the reader the actual margin instead, and the sentence can
+ * then admit how thin it is. `level` is true only when they are identical all
+ * the way down, which is the one case where there is genuinely nothing to
+ * choose between them.
+ */
+function separate(
+  a: number,
+  b: number,
+  fmt: (v: number, dp: number) => string,
+  from = 1,
+  to = 3
+): { a: string; b: string; level: boolean; opened: boolean } {
+  for (let dp = from; dp <= to; dp++) {
+    const [fa, fb] = [fmt(a, dp), fmt(b, dp)];
+    if (fa !== fb) return { a: fa, b: fb, level: false, opened: dp > from };
+  }
+  return { a: fmt(a, from), b: fmt(b, from), level: true, opened: false };
+}
+
+const asPts = (v: number, dp: number) => v.toFixed(dp);
+const asPct = (v: number, dp: number) => `${(v * 100).toFixed(dp - 1)}%`;
+
+/**
  * How each question reads its number and says its answer.
  *
  * Only the first line spells out "projected points". The others sit under a
@@ -108,8 +135,13 @@ const SHAPE: Record<
   Need,
   {
     value: (p: Pick, basis: Basis) => number | null;
+    /** One decimal, the way the card prints it. */
     fmt: (v: number | null | undefined) => string;
+    /** The same number at a chosen precision, for opening up a near miss. */
+    raw: (v: number, dp: number) => string;
     win: (w: string, a: string, b: string, how: string) => string;
+    /** Separated only after opening the decimals up. */
+    hair: (w: string, a: string, b: string) => string;
     solo: (w: string, a: string) => string;
     tie: (a: string) => string;
   }
@@ -117,30 +149,38 @@ const SHAPE: Record<
   call: {
     value: (p, basis) => pointsOn(p, basis),
     fmt: pts,
+    raw: asPts,
     win: (w, a, b, how) => `${w} ${how}: ${a} projected points to ${b}.`,
+    hair: (w, a, b) => `${w} by a hair: ${a} projected points to ${b}. A genuine toss-up.`,
     solo: (w, a) => `${w}: ${a} projected points.`,
-    tie: (a) => `Nothing in it: both on ${a} projected points.`,
+    tie: (a) => `Dead level on ${a} projected points. Take the tiebreak from the reads below.`,
   },
   ceiling: {
     value: (p) => p.row.ceiling ?? null,
     fmt: pts,
+    raw: asPts,
     win: (w, a, b) => `${w} for the big week: ${a} ceiling to ${b}.`,
+    hair: (w, a, b) => `${w} by a hair: ${a} ceiling to ${b}. A genuine toss-up.`,
     solo: (w, a) => `${w} tops out around ${a}.`,
-    tie: (a) => `Nothing in it: both top out around ${a}.`,
+    tie: (a) => `Dead level: both top out around ${a}. Take the tiebreak from the reads below.`,
   },
   reliable: {
     value: (p) => p.row.pTop12 ?? null,
     fmt: pct,
+    raw: asPct,
     win: (w, a, b) => `${w} more often: ${a} top-12 to ${b}.`,
+    hair: (w, a, b) => `${w} by a hair: ${a} top-12 to ${b}. A genuine toss-up.`,
     solo: (w, a) => `${w} hits a top-12 week ${a} of the time.`,
-    tie: (a) => `Nothing in it: both hit a top-12 week ${a} of the time.`,
+    tie: (a) => `Dead level: both hit a top-12 week ${a} of the time. Take the tiebreak from the reads below.`,
   },
   floor: {
     value: (p) => p.row.floor ?? null,
     fmt: pts,
+    raw: asPts,
     win: (w, a, b) => `${w} is the safer floor: ${a} to ${b}.`,
+    hair: (w, a, b) => `${w} by a hair: ${a} floor to ${b}. A genuine toss-up.`,
     solo: (w, a) => `${w} floors out around ${a}.`,
-    tie: (a) => `Nothing in it: both floor at ${a}.`,
+    tie: (a) => `Dead level: both floor at ${a}. Take the tiebreak from the reads below.`,
   },
 };
 
@@ -175,18 +215,29 @@ export function verdicts(picks: Pick[], basis: Basis): Verdict[] {
       return { need: key, winner: null, runnerUp: null, tied: false,
                line: "Not enough data for this one." };
 
-    const a = shape.fmt(shape.value(winner, basis));
-    if (!runnerUp) return { need: key, winner, runnerUp: null, tied: false,
-                            line: shape.solo(winner.row.player, a) };
+    const wv = shape.value(winner, basis) as number;
+    if (!runnerUp)
+      return { need: key, winner, runnerUp: null, tied: false,
+               line: shape.solo(winner.row.player, shape.fmt(wv)) };
 
-    const b = shape.fmt(shape.value(runnerUp, basis));
-    if (a === b)
-      return { need: key, winner, runnerUp, tied: true, line: shape.tie(a) };
+    const rv = shape.value(runnerUp, basis);
+    if (rv == null)
+      return { need: key, winner, runnerUp, tied: false,
+               line: shape.solo(winner.row.player, shape.fmt(wv)) };
 
-    const gap = num(shape.value(winner, basis)) - num(shape.value(runnerUp, basis));
+    const sep = separate(wv, rv, shape.raw);
+    // Identical all the way down. Nobody wins and the other three reads decide.
+    if (sep.level)
+      return { need: key, winner, runnerUp, tied: true, line: shape.tie(sep.a) };
+    // Separated only by opening the decimals: name him, and say how thin it is.
+    if (sep.opened)
+      return { need: key, winner, runnerUp, tied: false,
+               line: shape.hair(winner.row.player, sep.a, sep.b) };
+
+    const gap = wv - rv;
     const how = gap < 0.75 ? "barely" : gap < 2 ? "narrowly" : "clearly";
     return { need: key, winner, runnerUp, tied: false,
-             line: shape.win(winner.row.player, a, b, how) };
+             line: shape.win(winner.row.player, sep.a, sep.b, how) };
   });
 }
 
