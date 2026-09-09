@@ -23,6 +23,11 @@ OUT = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}")
 # report on its own schedule, and a Sunday-morning ruling lands hours after it;
 # this file is the manual override so a ruled-out player never ships in a list.
 RULED_OUT = Path("data/weekly/ruled-out.csv")
+# MC's board and his takes, from tools/mc-rankings.html. He ranks once per
+# position, not once per scoring format: consensus differs between PPR and
+# half-PPR for two backs and nobody else, and his opinion of a player does not
+# change with a league's reception setting.
+MC = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}/mc-rankings.csv")
 FILES = {
     ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
     ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
@@ -262,19 +267,70 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     return df.sort_values("rank_data").reset_index(drop=True)
 
 
+def league_ranks(frames: list[pd.DataFrame]) -> tuple[dict, dict, dict]:
+    """Rank the 32 offences and the 32 defences, once, across the whole slate.
+
+    These have to be league-wide. Ranking inside one position's list would
+    measure a team against whoever else happens to be ranked at that position,
+    which is how a team total once came out as the "-747rd-lowest" in football.
+    Deduplicating by team first is the other half of it: rank the player rows
+    and a team with six ranked receivers is counted six times."""
+    all_rows = pd.concat(frames, ignore_index=True)
+
+    off = all_rows.drop_duplicates("team").dropna(subset=["implied_team_total"])
+    # 1 is the highest implied total.
+    total = dict(zip(off.team, off.implied_team_total.rank(ascending=False,
+                                                           method="min").astype(int)))
+    ranks = []
+    for col in ("opp_prev_def_epa_pass", "opp_prev_def_epa_rush"):
+        if col not in all_rows.columns:
+            ranks.append({})
+            continue
+        d = all_rows.drop_duplicates("opponent").dropna(subset=[col])
+        # EPA allowed, so 1 is the fewest given up and the best defence.
+        ranks.append(dict(zip(d.opponent,
+                              d[col].rank(ascending=True, method="min").astype(int))))
+    return total, ranks[0], ranks[1]
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    mc = pd.read_csv(MC) if MC.exists() else None
+    loaded = {k: scratch(pd.read_csv(SRC / v), k[0]) for k, v in FILES.items()}
+    rk_total, rk_pass, rk_rush = league_ranks(list(loaded.values()))
     for (pos, variant), fname in FILES.items():
-        df = pd.read_csv(SRC / fname)
-        df = scratch(df, pos)
+        df = loaded[(pos, variant)].copy()
+        df["rk_team_total"] = df.team.map(rk_total)
+        df["rk_def_pass"] = df.opponent.map(rk_pass)
+        df["rk_def_rush"] = df.opponent.map(rk_rush)
         band = df["ceiling_q90"] - df["floor_q20"]
         df["_tilt"] = ((df["median_q50"] - df["floor_q20"]) / band.where(band > 0)
                        ).rank(pct=True)
-        # Consensus is re-ranked inside our published list, so both columns
-        # order the same players and the delta is a like-for-like comparison.
-        df["_c"] = df["consensus_rank"].fillna(9999)
-        df = df.sort_values(["_c", "rank_data"]).reset_index(drop=True)
-        df["rank_vibes"] = range(1, len(df) + 1)
+        if mc is not None:
+            g = mc[mc.position.str.lower() == pos]
+            df["rank_vibes"] = df.player_name.map(dict(zip(g.player, g["rank"])))
+            df["note_vibes"] = df.player_name.map(dict(zip(g.player, g.note))).fillna("")
+            # A player can make one scoring format's depth cut and not the
+            # other -- half-PPR reaches a few names PPR does not -- so MC's
+            # board, built from one list per position, can come up short by a
+            # man or two at the very bottom. Publish only what he ranked
+            # rather than inventing an opinion for him or ranking him against
+            # a list he is not on. tools/mc-rankings.html now seeds from every
+            # variant, so this should stay empty.
+            unranked = df.rank_vibes.isna()
+            if unranked.any():
+                print(f"    {pos}-{variant}: not on MC's board, dropped: "
+                      + ", ".join(df.loc[unranked, "player_name"]))
+                df = df[~unranked]
+            df["rank_vibes"] = df.rank_vibes.astype(int)
+        else:
+            # No board from MC yet, so consensus stands in. It is re-ranked
+            # inside our published list so both columns order the same players
+            # and the delta stays a like-for-like comparison.
+            df["_c"] = df["consensus_rank"].fillna(9999)
+            df = df.sort_values(["_c", "rank_data"]).reset_index(drop=True)
+            df["rank_vibes"] = range(1, len(df) + 1)
+            df["note_vibes"] = ""
         df = df.sort_values("rank_data")
         rows = []
         for _, r in df.iterrows():
@@ -295,7 +351,7 @@ def main() -> None:
                 "note_data": (str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),
-                "note_vibes": "",
+                "note_vibes": r.get("note_vibes") or "",
             })
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:

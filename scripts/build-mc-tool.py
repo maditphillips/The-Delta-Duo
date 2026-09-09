@@ -23,14 +23,22 @@ SRC = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}")
 OUT = Path("tools/mc-rankings.html")
 # Consensus is the same list in both scoring formats -- nought differing ranks
 # at WR and QB, two at RB -- so he ranks once per position, not once per list.
-POSITIONS = [("QB", "qb-4pt.csv"), ("RB", "rb-ppr.csv"),
-             ("WR", "wr-ppr.csv"), ("TE", "te-ppr.csv")]
+# The membership is not identical though: the depth cut lands in a different
+# place, so half-PPR reaches a few names PPR does not. Seed from every variant
+# or those men arrive on the published board with no rank from MC at all.
+POSITIONS = {"QB": ["qb-4pt.csv", "qb-6pt.csv"], "RB": ["rb-ppr.csv", "rb-half.csv"],
+             "WR": ["wr-ppr.csv", "wr-half.csv"], "TE": ["te-ppr.csv", "te-half.csv"]}
 
 
 def load() -> dict:
     board = {}
-    for pos, fname in POSITIONS:
-        rows = list(csv.DictReader((SRC / fname).open()))
+    for pos, fnames in POSITIONS.items():
+        seen, rows = set(), []
+        for fname in fnames:
+            for r in csv.DictReader((SRC / fname).open()):
+                if r["player"] not in seen:
+                    seen.add(r["player"])
+                    rows.append(r)
         rows.sort(key=lambda r: int(r["rank_vibes"]))
         board[pos] = [{
             "player": r["player"],
