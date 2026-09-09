@@ -286,6 +286,12 @@ def main() -> None:
                 "opponent": r.get("opponent", ""),
                 "is_home": int(num(r.get("is_home"), 0)),
                 "proj": round(float(r["proj"]), 1),
+                # The shape of his week, for the start/sit tool: what he does
+                # when it goes badly, on a normal Sunday, and when it goes right.
+                "floor": round(num(r.get("floor_q20"), 0.0), 1),
+                "median": round(num(r.get("median_q50"), 0.0), 1),
+                "ceiling": round(num(r.get("ceiling_q90"), 0.0), 1),
+                "p_top12": round(num(r.get("p_top12"), 0.0), 3),
                 "note_data": (str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),
@@ -295,6 +301,7 @@ def main() -> None:
         with path.open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
                                                "opponent", "is_home", "proj",
+                                               "floor", "median", "ceiling", "p_top12",
                                                "note_data", "note_vibes"])
             w.writeheader()
             w.writerows(rows)

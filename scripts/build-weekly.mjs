@@ -20,6 +20,10 @@ import path from "node:path";
 const SRC = path.join(process.cwd(), "data", "weekly");
 const OUT = path.join(process.cwd(), "public", "data");
 const POSITIONS = ["qb", "rb", "wr", "te", "k"];
+// Sleeper ids, resolved offline by scripts/build-sleeper-ids.py. Their endpoint
+// is 14.6 MB for the whole league, so it is never touched from a browser; the
+// page just renders <img> tags against the CDN.
+const IDS = path.join(process.cwd(), "data", "sleeper-ids.csv");
 
 // A position may ship one list (k.csv) or several scoring variants
 // (qb-4pt.csv, qb-6pt.csv, rb-ppr.csv, rb-half.csv...). Variants are keyed by
@@ -69,6 +73,17 @@ const pick = (rec, keys) => {
   return null;
 };
 
+// Number(null) is 0, which would hand every kicker a 0.0 projection and a
+// 0.0 floor rather than saying the column is not there.
+const numOrNull = (raw) =>
+  raw != null && Number.isFinite(Number(raw)) ? Number(raw) : null;
+
+const photos = new Map();
+if (fs.existsSync(IDS)) {
+  for (const r of parseCsv(fs.readFileSync(IDS, "utf8")))
+    photos.set(`${r.player}|${r.team}`, r.sleeper_id);
+}
+
 if (!fs.existsSync(SRC)) {
   console.log("no data/weekly directory — nothing to build");
   process.exit(0);
@@ -99,12 +114,12 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
               team: pick(r, ["team", "tm"]),
               opponent: pick(r, ["opponent", "opp"]),
               isHome: pick(r, ["is_home", "home"]) === "1",
-              // pick() returns null when the column is absent, and Number(null)
-              // is 0 -- which would give every kicker a 0.0 projection.
-              proj: (() => {
-                const raw = pick(r, ["proj", "points", "projection"]);
-                return raw != null && Number.isFinite(Number(raw)) ? Number(raw) : null;
-              })(),
+              proj: numOrNull(pick(r, ["proj", "points", "projection"])),
+              floor: numOrNull(pick(r, ["floor"])),
+              median: numOrNull(pick(r, ["median"])),
+              ceiling: numOrNull(pick(r, ["ceiling"])),
+              pTop12: numOrNull(pick(r, ["p_top12"])),
+              photo: photos.get(`${player}|${pick(r, ["team", "tm"])}`) ?? null,
               rankData: rd,
               rankVibes: rv,
               noteData: pick(r, ["note_data", "note_wilson", "wilson_note"]),

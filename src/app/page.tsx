@@ -37,6 +37,13 @@ const otherTabs = [
     color: "var(--accent-2-lt)",
   },
   {
+    href: "/start-sit",
+    label: "Start / Sit",
+    blurb:
+      "Two players in, one decision out — plus who wins you the week, who keeps you out of trouble, and why those aren't the same man.",
+    color: CHALK.green,
+  },
+  {
     href: "/rankings",
     label: "Season Rankings",
     blurb:

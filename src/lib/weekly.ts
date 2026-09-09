@@ -7,6 +7,14 @@ export type WeeklyRow = {
   isHome?: boolean;
   /** The model's projected fantasy points in this list's scoring format. */
   proj?: number | null;
+  /** The shape of his week, for the start/sit tool: the 20th percentile, the
+   *  median, the 90th, and his odds of a top-12 finish at his own position. */
+  floor?: number | null;
+  median?: number | null;
+  ceiling?: number | null;
+  pTop12?: number | null;
+  /** Sleeper's id for him, resolved offline; see scripts/build-sleeper-ids.py. */
+  photo?: string | null;
   rankData: number;
   rankVibes: number;
   noteData?: string | null;
