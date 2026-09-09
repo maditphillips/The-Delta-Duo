@@ -1,13 +1,28 @@
 import type { WeeklyBoard, WeeklyRow } from "@/lib/weekly";
 
-/** The four questions a start/sit decision is actually asking. */
+/** The four questions a start/sit decision is actually asking. `stat` names the
+ *  number on the player card the answer is read off, so the card can outline it. */
 export type Need = "call" | "ceiling" | "reliable" | "floor";
 
-export const NEEDS: { key: Need; label: string; hint: string }[] = [
-  { key: "call", label: "Just tell me who's better", hint: "the blended projection" },
-  { key: "ceiling", label: "I need a blowup week", hint: "highest ceiling" },
-  { key: "reliable", label: "I just need a solid start", hint: "most often startable" },
-  { key: "floor", label: "I can't afford a zero", hint: "highest floor" },
+export const NEEDS: {
+  key: Need;
+  tag: string;
+  label: string;
+  stat: "points" | "ceiling" | "pTop12" | "floor";
+}[] = [
+  { key: "call", tag: "Simple", label: "Just Tell Me Who is Better", stat: "points" },
+  { key: "ceiling", tag: "High Ceiling", label: "I Need a HUGE Week From Him", stat: "ceiling" },
+  { key: "reliable", tag: "Consistency", label: "Who Has A Top-12 Week More Often", stat: "pTop12" },
+  { key: "floor", tag: "Dud Avoider", label: "Who Is Less Likely To Get Zero", stat: "floor" },
+];
+
+/** Whose opinion settles it. */
+export type Basis = "blend" | "data" | "vibes";
+
+export const BASES: { key: Basis; tag: string; label: string }[] = [
+  { key: "blend", tag: "Blended", label: "Combine Wilson and MC's Ranks" },
+  { key: "data", tag: "Data", label: "Decide With Wilson's Data" },
+  { key: "vibes", tag: "Vibes", label: "Roll with MC's Vibes" },
 ];
 
 export type Pick = {
@@ -15,9 +30,9 @@ export type Pick = {
   row: WeeklyRow;
   /** Wilson's projection, straight from the model. */
   wilson: number | null;
-  /** MC's rank priced on Wilson's scale -- see mcPoints. */
+  /** MC's rank priced on Wilson's scale, published as projVibes. */
   mc: number | null;
-  /** The half-and-half of the two, and what "call" ranks on. */
+  /** The half-and-half of the two. */
   blend: number | null;
 };
 
@@ -27,9 +42,7 @@ export type Pick = {
  * MC ranks; he does not project. To average the two voices they have to be in
  * the same units, and the honest conversion is to give his RB9 whatever Wilson's
  * RB9 is worth. It uses MC's order and Wilson's scale, which means MC can never
- * produce a number outside the range Wilson already published -- the blend is a
- * little conservative by construction, and two lists that agree on order while
- * disagreeing on the size of the gap will read as agreeing.
+ * produce a number outside the range Wilson already published.
  *
  * The published board carries the same figure as projVibes, computed the same
  * way, so the weekly lists and this tool cannot drift apart. This is the
@@ -62,14 +75,12 @@ export function toPick(pos: string, rows: WeeklyRow[], row: WeeklyRow): Pick {
   };
 }
 
-const num = (v: number | null | undefined) => (v == null ? -Infinity : v);
+/** The points the chosen voice is judging on. */
+export function pointsOn(p: Pick, basis: Basis): number | null {
+  return basis === "data" ? p.wilson : basis === "vibes" ? p.mc : p.blend;
+}
 
-const METRIC: Record<Need, (p: Pick) => number> = {
-  call: (p) => num(p.blend),
-  ceiling: (p) => num(p.row.ceiling),
-  reliable: (p) => num(p.row.pTop12),
-  floor: (p) => num(p.row.floor),
-};
+const num = (v: number | null | undefined) => (v == null ? -Infinity : v);
 
 export type Verdict = {
   need: Need;
@@ -80,45 +91,56 @@ export type Verdict = {
   line: string;
 };
 
-const pts = (v: number | null | undefined) => (v == null ? "—" : v.toFixed(1));
+const pts = (v: number | null | undefined) => (v == null ? "n/a" : v.toFixed(1));
 const pct = (v: number | null | undefined) =>
-  v == null ? "—" : `${Math.round(v * 100)}%`;
+  v == null ? "n/a" : `${Math.round(v * 100)}%`;
 
 /**
  * Answer all four questions, every time.
  *
  * Deliberately no "too close to call" branch. When two players are half a point
- * apart the margin is real information, but on its own it is a shrug -- and a
+ * apart the margin is real information, but on its own it is a shrug, and a
  * shrug is the one thing nobody can act on. The four answers are always
  * computed and always shown; when they split, that split is the decision.
+ *
+ * Only the first question takes the basis. Ceiling, consistency and the floor
+ * are read off a distribution, and MC does not have one: he ranks, he does not
+ * model a range of outcomes. Those three are Wilson's numbers under every
+ * setting, and the tool says so rather than inventing a spread for MC.
  */
-export function verdicts(picks: Pick[]): Verdict[] {
+export function verdicts(picks: Pick[], basis: Basis): Verdict[] {
+  const metric: Record<Need, (p: Pick) => number> = {
+    call: (p) => num(pointsOn(p, basis)),
+    ceiling: (p) => num(p.row.ceiling),
+    reliable: (p) => num(p.row.pTop12),
+    floor: (p) => num(p.row.floor),
+  };
   return NEEDS.map(({ key }) => {
-    const ranked = [...picks].sort((a, b) => METRIC[key](b) - METRIC[key](a));
+    const ranked = [...picks].sort((a, b) => metric[key](b) - metric[key](a));
     const [winner, runnerUp] = ranked;
-    if (!winner || METRIC[key](winner) === -Infinity)
+    if (!winner || metric[key](winner) === -Infinity)
       return { need: key, winner: null, runnerUp: null, line: "Not enough data for this one." };
     const w = winner.row.player, r = runnerUp?.row.player;
     const line = {
       call: () => {
-        const gap = num(winner.blend) - num(runnerUp?.blend);
+        const gap = num(pointsOn(winner, basis)) - num(pointsOn(runnerUp, basis));
         const how = gap < 0.75 ? "barely" : gap < 2 ? "narrowly" : "clearly";
         return r
-          ? `${w} ${how} — ${pts(winner.blend)} projected to ${pts(runnerUp.blend)}.`
-          : `${w} — ${pts(winner.blend)} projected.`;
+          ? `${w} ${how}: ${pts(pointsOn(winner, basis))} projected points to ${pts(pointsOn(runnerUp, basis))}.`
+          : `${w}: ${pts(pointsOn(winner, basis))} projected points.`;
       },
       ceiling: () =>
         r
-          ? `${w} has the bigger week in him: ${pts(winner.row.ceiling)} at his ceiling to ${pts(runnerUp.row.ceiling)}.`
-          : `${w} tops out around ${pts(winner.row.ceiling)}.`,
+          ? `${w} has the bigger week in him: ${pts(winner.row.ceiling)} projected points at his ceiling to ${pts(runnerUp.row.ceiling)}.`
+          : `${w} tops out around ${pts(winner.row.ceiling)} projected points.`,
       reliable: () =>
         r
-          ? `${w} clears a startable week more often: ${pct(winner.row.pTop12)} top-12 to ${pct(runnerUp.row.pTop12)}, on a median of ${pts(winner.row.median)} to ${pts(runnerUp.row.median)}.`
+          ? `${w} clears a startable week more often: ${pct(winner.row.pTop12)} top-12 to ${pct(runnerUp.row.pTop12)}, on a median of ${pts(winner.row.median)} projected points to ${pts(runnerUp.row.median)}.`
           : `${w} hits a top-12 week ${pct(winner.row.pTop12)} of the time.`,
       floor: () =>
         r
-          ? `${w} is likelier to save you from a zero: ${pts(winner.row.floor)} at his floor to ${pts(runnerUp.row.floor)}.`
-          : `${w} floors out around ${pts(winner.row.floor)}.`,
+          ? `${w} is likelier to save you from a zero: ${pts(winner.row.floor)} projected points at his floor to ${pts(runnerUp.row.floor)}.`
+          : `${w} floors out around ${pts(winner.row.floor)} projected points.`,
     }[key]();
     return { need: key, winner, runnerUp: runnerUp ?? null, line };
   });

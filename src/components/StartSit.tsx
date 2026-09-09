@@ -10,20 +10,41 @@ import {
   type WeeklyRow,
 } from "@/lib/weekly";
 import {
+  BASES,
   NEEDS,
   initials,
   photoUrl,
+  pointsOn,
   rowsFor,
   toPick,
   verdicts,
+  type Basis,
   type Need,
   type Pick,
 } from "@/lib/startSit";
+
+/** The pink reads hot against the green board, so the player card takes a
+ *  slightly deeper, slightly less neon version of it. */
+const WILSON_ON_CHALK = "#ef4b9f";
+const CHOSEN = "var(--accent-gold)";
 
 type Entry = { pos: string; row: WeeklyRow; key: string };
 
 const btn = (on: boolean) =>
   `chalk-tab${on ? " active" : ""} whitespace-nowrap text-xs sm:text-sm`;
+
+/** A two-line choice: the short name, then what it actually asks. */
+function Choice({ on, tag, label, onClick }: {
+  on: boolean; tag: string; label: string; onClick: () => void;
+}) {
+  return (
+    <button onClick={onClick} className={`chalk-tab${on ? " active" : ""} text-left`}
+            style={{ padding: "8px 14px", lineHeight: 1.25 }}>
+      <span className="block text-sm font-semibold sm:text-base">{tag}</span>
+      <span className="block text-xs sm:text-sm" style={{ color: "var(--ink-dim)" }}>{label}</span>
+    </button>
+  );
+}
 
 function Face({ row, size = 52 }: { row: WeeklyRow; size?: number }) {
   const [failed, setFailed] = useState(false);
@@ -172,6 +193,7 @@ export default function StartSit() {
   const [ppr, setPpr] = useState(true);
   const [sixPt, setSixPt] = useState(false);
   const [need, setNeed] = useState<Need>("call");
+  const [basis, setBasis] = useState<Basis>("blend");
   const [chosen, setChosen] = useState<(Entry | null)[]>([null, null]);
 
   useEffect(() => {
@@ -222,7 +244,12 @@ export default function StartSit() {
   }, [board, chosen, ppr, sixPt]);
 
   const hasQb = chosen.some((c) => c?.pos === "QB");
-  const answers = useMemo(() => (picks.length === 2 ? verdicts(picks) : []), [picks]);
+  const answers = useMemo(
+    () => (picks.length === 2 ? verdicts(picks, basis) : []),
+    [picks, basis]
+  );
+  const active = NEEDS.find((n) => n.key === need)!;
+  const chosenBasis = BASES.find((b) => b.key === basis)!;
   const headline = answers.find((a) => a.need === need);
   const rest = answers.filter((a) => a.need !== need);
 
@@ -231,21 +258,14 @@ export default function StartSit() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="chalk-kicker">Scoring</span>
-        <span className="flex gap-1">
-          <button className={btn(ppr)} onClick={() => setPpr(true)}>PPR</button>
-          <button className={btn(!ppr)} onClick={() => setPpr(false)}>HALF-PPR</button>
-        </span>
-        {hasQb && (
-          <>
-            <span className="chalk-kicker">QB TDs</span>
-            <span className="flex gap-1">
-              <button className={btn(!sixPt)} onClick={() => setSixPt(false)}>4-PT</button>
-              <button className={btn(sixPt)} onClick={() => setSixPt(true)}>6-PT</button>
-            </span>
-          </>
-        )}
+      <div>
+        <div className="chalk-kicker mb-2 text-sm sm:text-base">What do you need?</div>
+        <div className="flex flex-wrap gap-2">
+          {NEEDS.map((n) => (
+            <Choice key={n.key} on={need === n.key} tag={n.tag} label={n.label}
+                    onClick={() => setNeed(n.key)} />
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -266,79 +286,126 @@ export default function StartSit() {
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="chalk-kicker">What do you need?</span>
-        <span className="flex flex-wrap gap-1">
-          {NEEDS.map((n) => (
-            <button key={n.key} className={btn(need === n.key)} onClick={() => setNeed(n.key)}>
-              {n.label}
-            </button>
-          ))}
+        <span className="chalk-kicker">Scoring</span>
+        <span className="flex gap-1">
+          <button className={btn(ppr)} onClick={() => setPpr(true)}>PPR</button>
+          <button className={btn(!ppr)} onClick={() => setPpr(false)}>HALF-PPR</button>
         </span>
+        {hasQb && (
+          <>
+            <span className="chalk-kicker">QB TDs</span>
+            <span className="flex gap-1">
+              <button className={btn(!sixPt)} onClick={() => setSixPt(false)}>4-PT</button>
+              <button className={btn(sixPt)} onClick={() => setSixPt(true)}>6-PT</button>
+            </span>
+          </>
+        )}
+      </div>
+
+      <div>
+        <div className="chalk-kicker mb-2 text-sm sm:text-base">How should we decide?</div>
+        <div className="flex flex-wrap gap-2">
+          {BASES.map((b) => (
+            <Choice key={b.key} on={basis === b.key} tag={b.tag} label={b.label}
+                    onClick={() => setBasis(b.key)} />
+          ))}
+        </div>
       </div>
 
       {picks.length < 2 ? (
         <ChalkCard kicker="Start / sit" title="Pick two players">
           <p className="text-sm" style={{ color: "var(--ink-dim)" }}>
-            Any two on this week&apos;s boards, at any position — the comparison runs on
+            Any two on this week&apos;s boards, at any position. The comparison runs on
             projected points, so a flex call between a back and a receiver works the same
             as two backs.
           </p>
         </ChalkCard>
       ) : (
         <ChalkCard
-          kicker={NEEDS.find((n) => n.key === need)?.hint}
+          kicker={active.tag}
+          kickerRight={chosenBasis.tag}
           title={headline?.line ?? ""}
-          source="Wilson's projection and MC's rank, priced on the same scale and averaged"
+          source="Wilson's projection and MC's rank, priced on the same scale"
         >
           <div className="grid gap-3 sm:grid-cols-2">
-            {picks.map((p) => (
-              <div key={p.pos + p.row.player} className="chalk-inset px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <Face row={p.row} size={44} />
-                  <div className="min-w-0">
-                    <div className="truncate" style={{ color: "var(--ink)" }}>{p.row.player}</div>
-                    <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
-                      {p.pos} · {p.row.team}
-                      {p.row.opponent ? ` ${p.row.isHome ? "vs." : "@"} ${p.row.opponent}` : ""}
+            {picks.map((p) => {
+              const won = headline?.winner === p;
+              const box = (on: boolean) =>
+                on
+                  ? { outline: `2px solid ${CHOSEN}`, outlineOffset: 2, borderRadius: 4 }
+                  : undefined;
+              return (
+                <div
+                  key={p.pos + p.row.player}
+                  className="chalk-inset px-4 py-3"
+                  style={won ? { outline: `3px solid ${CHOSEN}`, outlineOffset: 2 } : undefined}
+                >
+                  <div className="flex items-center gap-3">
+                    <Face row={p.row} size={44} />
+                    <div className="min-w-0">
+                      <div className="truncate" style={{ color: "var(--ink)" }}>{p.row.player}</div>
+                      <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
+                        {p.pos} ·{" "}
+                        <strong style={{ color: "var(--ink)", fontWeight: 600 }}>{p.row.team}</strong>
+                        {p.row.opponent ? ` ${p.row.isHome ? "vs." : "@"} ${p.row.opponent}` : ""}
+                      </div>
+                    </div>
+                    <div className="ml-auto text-right" style={box(active.stat === "points")}>
+                      <div className="font-retro text-xl" style={{ color: "var(--ink)" }}>
+                        {pointsOn(p, basis)?.toFixed(1) ?? "n/a"}
+                      </div>
+                      {/* Not .chalk-kicker: it prefixes a dash, which reads as
+                          part of the number once the box is outlined. */}
+                      <div className="text-[0.62rem] uppercase tracking-widest"
+                           style={{ color: "var(--chalk-gold)" }}>
+                        Proj. Pts
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-auto text-right">
-                    <div className="font-retro text-xl" style={{ color: "var(--ink)" }}>
-                      {p.blend?.toFixed(1) ?? "—"}
-                    </div>
-                    <div className="chalk-kicker">blended</div>
+                  <div className="mt-2 text-[0.68rem] uppercase tracking-wider"
+                       style={{ color: "var(--ink-faint)" }}>
+                    Projected points, and his odds of a top-12 week
+                  </div>
+                  <dl className="mt-1 grid grid-cols-4 gap-1 text-center text-xs">
+                    {([
+                      ["Floor", p.row.floor?.toFixed(1), "floor"],
+                      ["Median", p.row.median?.toFixed(1), "median"],
+                      ["Ceiling", p.row.ceiling?.toFixed(1), "ceiling"],
+                      ["Top-12", p.row.pTop12 != null ? `${Math.round(p.row.pTop12 * 100)}%` : null, "pTop12"],
+                    ] as const).map(([k, v, stat]) => (
+                      <div key={k} style={box(active.stat === stat)}>
+                        <dt style={{ color: "var(--ink-faint)" }}>{k}</dt>
+                        <dd style={{ color: "var(--ink)" }}>{v ?? "n/a"}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div className="mt-2 flex gap-3 text-xs">
+                    <span style={{ color: WILSON_ON_CHALK }}>
+                      Wilson {p.pos}{p.row.rankData} · {p.wilson?.toFixed(1) ?? "n/a"}
+                    </span>
+                    <span style={{ color: MC_COLOR }}>
+                      MC {p.pos}{p.row.rankVibes} · {p.mc?.toFixed(1) ?? "n/a"}
+                    </span>
                   </div>
                 </div>
-                <dl className="mt-2 grid grid-cols-4 gap-1 text-center text-xs">
-                  {[
-                    ["Floor", p.row.floor?.toFixed(1)],
-                    ["Median", p.row.median?.toFixed(1)],
-                    ["Ceiling", p.row.ceiling?.toFixed(1)],
-                    ["Top-12", p.row.pTop12 != null ? `${Math.round(p.row.pTop12 * 100)}%` : null],
-                  ].map(([k, v]) => (
-                    <div key={k as string}>
-                      <dt style={{ color: "var(--ink-faint)" }}>{k}</dt>
-                      <dd style={{ color: "var(--ink)" }}>{v ?? "—"}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="mt-2 flex gap-3 text-xs">
-                  <span style={{ color: WILSON_COLOR }}>Wilson {p.wilson?.toFixed(1) ?? "—"}</span>
-                  <span style={{ color: MC_COLOR }}>MC {p.mc?.toFixed(1) ?? "—"}</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-4 space-y-2">
             {rest.map((a) => (
               <p key={a.need} className="text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
                 <span className="chalk-kicker mr-2">
-                  {NEEDS.find((n) => n.key === a.need)?.label}
+                  {NEEDS.find((n) => n.key === a.need)?.tag}
                 </span>
                 {a.line}
               </p>
             ))}
+            <p className="pt-1 text-xs" style={{ color: "var(--ink-faint)" }}>
+              Ceiling, consistency and the floor are Wilson&apos;s numbers under every
+              setting. MC ranks players, he does not model a range of outcomes, so only
+              the Simple call changes when you switch to Vibes.
+            </p>
           </div>
         </ChalkCard>
       )}
