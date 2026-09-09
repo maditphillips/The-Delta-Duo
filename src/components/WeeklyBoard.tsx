@@ -65,6 +65,10 @@ function RankList({
               const shown = orderBy === "rankData" ? d : -d;
               const isOpen = open === r.player;
               const note = r[noteKey];
+              // Wilson's list shows Wilson's projection; MC's shows what his
+              // own rank is worth, so the points descend with the list you
+              // are actually reading.
+              const points = orderBy === "rankVibes" ? r.projVibes ?? null : r.proj ?? null;
               return (
                 <Fragment key={r.player}>
                   <tr
@@ -109,10 +113,10 @@ function RankList({
                   {isOpen && (
                     <tr data-detail="">
                       <td colSpan={4} data-label="Take" style={{ background: "rgba(0,0,0,0.14)" }}>
-                        {r.proj != null && (
+                        {points != null && (
                           <div className="mb-1 flex items-baseline gap-2">
                             <span className="font-retro text-lg" style={{ color: "var(--chalk-gold)" }}>
-                              {r.proj.toFixed(1)}
+                              {points.toFixed(1)}
                             </span>
                             <span className="text-xs uppercase tracking-wider" style={{ color: "var(--ink-faint)" }}>
                               projected points

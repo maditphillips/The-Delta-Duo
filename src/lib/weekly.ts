@@ -7,6 +7,10 @@ export type WeeklyRow = {
   isHome?: boolean;
   /** The model's projected fantasy points in this list's scoring format. */
   proj?: number | null;
+  /** MC's rank priced on Wilson's scale: his RB7 is worth whatever Wilson's
+   *  RB7 is worth. MC ranks rather than projects, so this is what his number
+   *  is worth in points -- his order, Wilson's units. */
+  projVibes?: number | null;
   /** The shape of his week, for the start/sit tool: the 20th percentile, the
    *  median, the 90th, and his odds of a top-12 finish at his own position. */
   floor?: number | null;

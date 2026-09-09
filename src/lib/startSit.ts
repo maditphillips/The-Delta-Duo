@@ -30,6 +30,10 @@ export type Pick = {
  * produce a number outside the range Wilson already published -- the blend is a
  * little conservative by construction, and two lists that agree on order while
  * disagreeing on the size of the gap will read as agreeing.
+ *
+ * The published board carries the same figure as projVibes, computed the same
+ * way, so the weekly lists and this tool cannot drift apart. This is the
+ * fallback for a board built before that column existed.
  */
 export function mcPoints(rows: WeeklyRow[], rank: number): number | null {
   const scale = rows
@@ -48,7 +52,7 @@ export function rowsFor(board: WeeklyBoard, pos: string, scoring: string): Weekl
 
 export function toPick(pos: string, rows: WeeklyRow[], row: WeeklyRow): Pick {
   const wilson = row.proj ?? null;
-  const mc = mcPoints(rows, row.rankVibes);
+  const mc = row.projVibes ?? mcPoints(rows, row.rankVibes);
   return {
     pos,
     row,

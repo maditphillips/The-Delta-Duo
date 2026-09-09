@@ -115,6 +115,9 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
               opponent: pick(r, ["opponent", "opp"]),
               isHome: pick(r, ["is_home", "home"]) === "1",
               proj: numOrNull(pick(r, ["proj", "points", "projection"])),
+              // What MC's rank is worth on Wilson's scale, so his board shows
+              // points that descend with his own order rather than Wilson's.
+              projVibes: numOrNull(pick(r, ["proj_vibes"])),
               floor: numOrNull(pick(r, ["floor"])),
               median: numOrNull(pick(r, ["median"])),
               ceiling: numOrNull(pick(r, ["ceiling"])),

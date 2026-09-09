@@ -313,12 +313,19 @@ def override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
         if not len(hit):
             print(f"    {pos}-{variant}: override skipped, not on the list: {row.player}")
             continue
-        moved = df.loc[hit[0]]
+        moved = df.loc[hit[0]].copy()
+        if pd.notna(row.get("proj")):
+            # The projection moves with him. Leave it and the start/sit tool,
+            # which ranks on points rather than on the board, keeps answering
+            # with the number the override was meant to replace.
+            moved["proj"] = float(row["proj"])
         rest = df.drop(hit[0]).reset_index(drop=True)
         to = min(max(int(row["rank"]), 1), len(rest) + 1) - 1
         df = pd.concat([rest.iloc[:to], moved.to_frame().T, rest.iloc[to:]],
                        ignore_index=True)
-        print(f"    {pos}-{variant}: {row.player} moved to {int(row['rank'])}")
+        print(f"    {pos}-{variant}: {row.player} moved to {int(row['rank'])}"
+              + (f", projection set to {float(row['proj']):.1f}"
+                 if pd.notna(row.get("proj")) else ""))
     df["rank_data"] = range(1, len(df) + 1)
     return df
 
@@ -368,6 +375,19 @@ def main() -> None:
             df["rank_vibes"] = range(1, len(df) + 1)
             df["note_vibes"] = ""
         df = df.sort_values("rank_data")
+        # What MC's number is worth in points.
+        #
+        # MC ranks; he does not project. Showing him Wilson's projection for
+        # the same player is what made his own board read as nonsense, with
+        # his RB7 carrying fewer points than his RB9. The honest conversion is
+        # the one the start/sit tool already uses: his RB7 is worth whatever
+        # Wilson's RB7 is worth. It borrows Wilson's scale and keeps MC's
+        # order, which is the only thing MC actually claims.
+        scale = sorted(df["proj"].dropna(), reverse=True)
+        df["proj_vibes"] = [
+            round(scale[min(int(v), len(scale)) - 1], 1) if scale else None
+            for v in df["rank_vibes"]
+        ]
         rows = []
         for _, r in df.iterrows():
             rows.append({
@@ -378,6 +398,7 @@ def main() -> None:
                 "opponent": r.get("opponent", ""),
                 "is_home": int(num(r.get("is_home"), 0)),
                 "proj": round(float(r["proj"]), 1),
+                "proj_vibes": r.get("proj_vibes"),
                 # The shape of his week, for the start/sit tool: what he does
                 # when it goes badly, on a normal Sunday, and when it goes right.
                 "floor": round(num(r.get("floor_q20"), 0.0), 1),
@@ -392,7 +413,7 @@ def main() -> None:
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
-                                               "opponent", "is_home", "proj",
+                                               "opponent", "is_home", "proj", "proj_vibes",
                                                "floor", "median", "ceiling", "p_top12",
                                                "note_data", "note_vibes"])
             w.writeheader()
