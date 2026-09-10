@@ -128,6 +128,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `thresholds.py` | `THRESHOLDS.txt` | the breakout question as a lookup: rates by metric bin with Wilson intervals against the band's own base rate, for Week 1 and for weeks 2-4 |
 | `corrections.py` | `CORRECTIONS.txt` | two corrections to the tables above: Benjamini-Hochberg q-values across each position's family of breakout predictors, and the draft-tier gaps re-expressed as a share of the tier's own mean and in tier-sd units so tiers can actually be compared |
 | `outliers.py` | `OUTLIERS.txt` | two definitions of a bad Week 1 compared head to head, outlier base rates by draft tier, what predicts a breakout with draft slot held fixed, and whether the breakout was earned or vacated |
 | `adp.py` | `ADP.txt` | Week 1's value by draft position -- tier tables and a log-rank interaction, on real preseason expert consensus rank (2020-2025) and on a prior-season-finish stand-in (1999-2025) |
