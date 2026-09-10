@@ -159,7 +159,11 @@ def predict_week1(panel: pd.DataFrame, target_rows: pd.DataFrame,
             m = fit_final(panel, pos, scoring, target_season)
             te = rankable(target_rows, pos)
             preds = m.predict(te)
-            ranked = rank_frame(te, preds, LIST_DEPTH[pos])
+            # Ranked three deep of what gets published. rank_frame numbers
+            # everyone before it truncates, so the pool carries the men just
+            # off the list at their true rank, ready to be promoted when one
+            # of the published names is ruled out.
+            ranked = rank_frame(te, preds, LIST_DEPTH[pos] * 3)
             ranked["learner"] = m.chosen_
             out[(pos, scoring)] = ranked
     return out

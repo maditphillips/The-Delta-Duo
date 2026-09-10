@@ -98,22 +98,43 @@ def cmd_predict():
     rows = dataset.build_rows(TARGET_SEASON)
     cons = benchmark.preseason_consensus(TARGET_SEASON)
     rows = rows.merge(cons[["player_id", "consensus_rank"]], on="player_id", how="left")
+    # Ranked well past the published depth. A tight end promoted on Tuesday is
+    # not in the top 36 on Monday, and without the men just off the list there
+    # is nothing to promote him from but an invented row.
     lists = pipeline.predict_week1(panel, rows, TARGET_SEASON)
 
     outdir = OUTPUTS / str(TARGET_SEASON) / f"week-{TARGET_WEEK:02d}"
     outdir.mkdir(parents=True, exist_ok=True)
     for (pos, scoring), df in lists.items():
-        keep = ["rank_data", "player_name", "team", "opponent", "proj", "floor_q20",
-                "median_q50", "ceiling_q90", "p_top12", "consensus_rank", "depth_rank",
-                "expected_targets", "expected_carries", "implied_team_total",
-                "off_continuity", "hc_continuity", "changed_team", "is_rookie", "learner"]
+        # Everything scripts/build-weekly-notes.py reads, plus what the lists
+        # themselves show. Trimming this quietly guts the takes rather than
+        # failing: the note builder asks for each column with .get(), so a
+        # missing one reads as absent and its whole clause disappears. That is
+        # how the opponent's defence, the goal-line work and every injury flag
+        # went silently missing from a published week.
+        keep = ["rank_data", "player_id", "player_name", "team", "opponent", "is_home",
+                "proj", "floor_q20", "median_q50", "ceiling_q90", "p_top12",
+                "consensus_rank", "depth_rank",
+                "expected_targets", "expected_carries", "expected_rz_targets",
+                "expected_gl_carries", "expected_pass_att", "expected_pass_yards",
+                "target_share_eb", "snap_share_eb",
+                "implied_team_total",
+                # The league-wide ranks the takes quote are derived from these
+                # in scripts/build-weekly-notes.py, where they can be ranked
+                # across all 32 teams rather than across one position's list.
+                "opp_prev_def_epa_pass", "opp_prev_def_epa_rush",
+                "off_continuity", "hc_continuity", "hc_change", "changed_team",
+                "is_rookie", "is_out", "is_questionable", "practice_status", "learner"]
         keep = [c for c in keep if c in df.columns]
         out = df[keep].copy()
         out["delta_vs_consensus"] = out["consensus_rank"] - out["rank_data"]
         out = out.round(3)
         path = outdir / f"{pos.lower()}_{scoring}.csv"
-        out.to_csv(path, index=False)
-        print(f"  wrote {path.relative_to(OUTPUTS.parent)}  ({len(out)} players)")
+        out.head(LIST_DEPTH[pos]).to_csv(path, index=False)
+        pool = outdir / f"{pos.lower()}_{scoring}_pool.csv"
+        out.to_csv(pool, index=False)
+        print(f"  wrote {path.relative_to(OUTPUTS.parent)}  "
+              f"({min(len(out), LIST_DEPTH[pos])} players, {len(out)} in the pool)")
 
 
 def cmd_skeleton():
