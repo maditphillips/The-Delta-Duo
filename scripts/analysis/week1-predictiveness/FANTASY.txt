@@ -1,0 +1,288 @@
+====================================================================================================
+WEEK 1 AS A FANTASY SIGNAL
+====================================================================================================
+
+
+####################################################################################################
+## QB
+####################################################################################################
+
+1. Which Week 1 number best predicts rest-of-season fantasy points per game?
+   week 1 metric         type          n       r     rho
+   fantasy_ppg           volume      766   0.345   0.310
+   passing_yards         volume      766   0.263   0.252
+   completion_pct        rate        766   0.249   0.236
+   pass_tds              volume      766   0.228   0.207
+   epa_per_pass          rate        766   0.221   0.214
+   qb_carries            volume      766   0.218   0.161
+   yards_per_attempt     rate        766   0.204   0.179
+   cpoe                  rate        766   0.191   0.168
+   pass_td_rate          rate        766   0.188   0.155
+   pass_attempts         volume      766   0.128   0.134
+
+   R2 predicting rest-of-season fantasy ppg  [1999+]  (n=693):
+     W1 fantasy pts              0.121
+     W1 usage only               0.073
+     W1 pts + usage              0.147
+     last season only            0.263
+     last season + W1 pts        0.322
+     last season + W1 usage      0.288
+     everything                  0.331
+
+2. Week 1 finish -> rest-of-season finish (share of each Week 1 group), PPR totals
+   week 1                n             top 5  WR2/RB2 (6-12)           13-24           25-36
+   top 5               135               35%             29%             24%             13%
+   WR2/RB2 (6-12)      190               13%             28%             40%             18%
+   13-24               323               15%             20%             46%             19%
+   25-36               165                9%             19%             40%             32%
+
+   P(top-12 rest of season)      base rate 40%   | given top-12 in Week 1 51%   | given top-12 last season 60%
+
+3. The panic table (players with a prior-season line)
+   last season               week 1                  n  top12 ROS  top24 ROS  med rank  med ppg
+   top-12 last yr            top-12 wk1            156        65%        95%         9     17.1
+   top-12 last yr            outside top-12 wk1    156        54%        88%        12     15.8
+   outside top-12 last yr    top-12 wk1            144        35%        71%        17     13.5
+   outside top-12 last yr    outside top-12 wk1    282        23%        70%        20     12.7
+
+4. How much of a Week 1 surprise is real? (weight Week 1 earns vs last season)
+   metric                     n  beta W1  beta prior  W1 share     R2
+   pass_attempts            693    0.163       0.432      27%  0.251
+   passing_yards            693    0.225       0.467      32%  0.334
+   pass_tds                 693    0.216       0.399      35%  0.236
+   qb_carries               693    0.221       0.684      24%  0.702
+   fantasy_ppg              693    0.249       0.459      35%  0.322
+   completion_pct           634    0.124       0.541      19%  0.342
+   yards_per_attempt        634    0.155       0.394      28%  0.199
+   cpoe                     634    0.101       0.419      20%  0.198
+   epa_per_pass             634    0.170       0.383      31%  0.202
+   pass_td_rate             634    0.168       0.292      36%  0.127
+   int_rate                 634    0.060       0.193       --  0.043
+
+5. The waiver spike: a Week 1 role that was not there last season
+    out of nowhere in Week 1           n=  81  kept 30.101 of that role  ( 85.4% of the Week 1 rate)   ROS 12.8 ppg
+    already had the job last year      n= 547  kept 32.781 of that role  ( 92.0% of the Week 1 rate)   ROS 15.3 ppg
+
+
+####################################################################################################
+## RB
+####################################################################################################
+
+1. Which Week 1 number best predicts rest-of-season fantasy points per game?
+   week 1 metric         type          n       r     rho
+   snap_pct              share       578   0.527   0.524
+   fantasy_ppg_ppr       volume     1179   0.489   0.484
+   touches               volume     1179   0.481   0.496
+   fantasy_ppg_half      volume     1179   0.474   0.470
+   rush_share            share      1179   0.471   0.479
+   opportunities         volume     1179   0.459   0.475
+   carries               volume     1179   0.400   0.424
+   rushing_yards         volume     1179   0.394   0.406
+   receptions            volume     1179   0.355   0.361
+   target_share          share      1179   0.256   0.227
+
+   R2 predicting rest-of-season fantasy ppg  [1999+]  (n=1010):
+     W1 fantasy pts              0.238
+     W1 usage only               0.239
+     W1 pts + usage              0.317
+     last season only            0.322
+     last season + W1 pts        0.410
+     last season + W1 usage      0.387
+     everything                  0.432
+
+   R2 predicting rest-of-season fantasy ppg  [snap-share era, 2013+, usage includes snap %]  (n=511):
+     W1 fantasy pts              0.201
+     W1 usage only               0.291
+     W1 pts + usage              0.316
+     last season only            0.307
+     last season + W1 pts        0.374
+     last season + W1 usage      0.388
+     everything                  0.407
+
+2. Week 1 finish -> rest-of-season finish (share of each Week 1 group), PPR totals
+   week 1                n             top 5  WR2/RB2 (6-12)           13-24           25-36             37+
+   top 5               137               28%             28%             21%             18%              5%
+   WR2/RB2 (6-12)      188               21%             22%             31%             17%             10%
+   13-24               331                8%             19%             27%             26%             19%
+   25-36               317                7%              9%             30%             32%             22%
+   37+                 257                3%              7%             19%             32%             39%
+
+   P(top-12 rest of season)      base rate 26%   | given top-12 in Week 1 48%   | given top-12 last season 51%
+
+3. The panic table (players with a prior-season line)
+   last season               week 1                  n  top12 ROS  top24 ROS  med rank  med ppg
+   top-12 last yr            top-12 wk1            134        64%        84%        10     17.8
+   top-12 last yr            outside top-12 wk1    179        42%        68%        16     14.4
+   outside top-12 last yr    top-12 wk1            156        34%        65%        19     13.3
+   outside top-12 last yr    outside top-12 wk1    585        12%        39%        29      9.4
+
+4. How much of a Week 1 surprise is real? (weight Week 1 earns vs last season)
+   metric                     n  beta W1  beta prior  W1 share     R2
+   carries                 1010    0.331       0.481      41%  0.473
+   rushing_yards           1010    0.276       0.499      36%  0.403
+   targets                 1010    0.472       0.399      54%  0.579
+   receptions              1010    0.303       0.470      39%  0.435
+   touches                 1010    0.358       0.456      44%  0.478
+   opportunities           1010    0.362       0.449      45%  0.464
+   rushing_tds             1010    0.193       0.364      35%  0.190
+   fantasy_ppg_ppr         1010    0.320       0.448      42%  0.410
+   fantasy_ppg_half        1010    0.310       0.451      41%  0.396
+   snap_pct                 467    0.497       0.298      63%  0.484
+   rush_share              1010    0.460       0.375      55%  0.530
+   target_share            1010    0.482       0.403      54%  0.608
+   yards_per_carry          890    0.058       0.221      21%  0.054
+   yards_per_touch          928    0.165       0.345      32%  0.170
+   epa_per_carry            890    0.088       0.132       --  0.027
+   rush_fd_rate             890    0.161       0.207      44%  0.072
+
+5. The waiver spike: a Week 1 role that was not there last season
+    out of nowhere in Week 1           n= 144  kept 0.468 of that role  ( 83.8% of the Week 1 rate)   ROS 11.3 ppg
+    already had the job last year      n= 618  kept 0.566 of that role  ( 91.7% of the Week 1 rate)   ROS 13.9 ppg
+
+
+####################################################################################################
+## WR
+####################################################################################################
+
+1. Which Week 1 number best predicts rest-of-season fantasy points per game?
+   week 1 metric         type          n       r     rho
+   target_share          share      1763   0.472   0.479
+   snap_pct              share      1114   0.462   0.467
+   targets               volume     1763   0.456   0.454
+   receptions            volume     1763   0.452   0.442
+   fantasy_ppg_ppr       volume     1763   0.420   0.420
+   receiving_yards       volume     1763   0.415   0.407
+   fantasy_ppg_half      volume     1763   0.398   0.405
+   wopr                  share      1763   0.371   0.389
+   air_yards             volume     1763   0.271   0.251
+   air_yards_share       share      1763   0.252   0.274
+
+   R2 predicting rest-of-season fantasy ppg  [1999+]  (n=1492):
+     W1 fantasy pts              0.176
+     W1 usage only               0.244
+     W1 pts + usage              0.267
+     last season only            0.412
+     last season + W1 pts        0.461
+     last season + W1 usage      0.461
+     everything                  0.475
+
+   R2 predicting rest-of-season fantasy ppg  [snap-share era, 2013+, usage includes snap %]  (n=980):
+     W1 fantasy pts              0.187
+     W1 usage only               0.337
+     W1 pts + usage              0.353
+     last season only            0.442
+     last season + W1 pts        0.484
+     last season + W1 usage      0.505
+     everything                  0.515
+
+2. Week 1 finish -> rest-of-season finish (share of each Week 1 group), PPR totals
+   week 1                n             top 5  WR2/RB2 (6-12)           13-24           25-36             37+
+   top 5               105               20%             17%             21%             12%             30%
+   WR2/RB2 (6-12)      150               14%             11%             20%             15%             40%
+   13-24               253                7%             11%             19%             16%             46%
+   25-36               249                5%             13%             19%             17%             46%
+   37+                1072                3%              5%             10%             12%             70%
+
+   P(top-12 rest of season)      base rate 14%   | given top-12 in Week 1 30%   | given top-12 last season 46%
+
+3. The panic table (players with a prior-season line)
+   last season               week 1                  n  top12 ROS  top24 ROS  med rank  med ppg
+   top-12 last yr            top-12 wk1             73        51%        71%        12     16.7
+   top-12 last yr            outside top-12 wk1    168        44%        68%        16     15.2
+   outside top-12 last yr    top-12 wk1            152        22%        43%        29     12.6
+   outside top-12 last yr    outside top-12 wk1   1149         8%        19%        50      8.8
+
+4. How much of a Week 1 surprise is real? (weight Week 1 earns vs last season)
+   metric                     n  beta W1  beta prior  W1 share     R2
+   targets                 1492    0.335       0.456      42%  0.436
+   receptions              1492    0.262       0.557      32%  0.497
+   receiving_yards         1492    0.235       0.564      29%  0.459
+   air_yards               1492    0.346       0.533      39%  0.609
+   receiving_tds           1492    0.088       0.389      18%  0.168
+   fantasy_ppg_ppr         1492    0.233       0.565      29%  0.461
+   fantasy_ppg_half        1492    0.221       0.561      28%  0.439
+   snap_pct                 904    0.520       0.303      63%  0.529
+   target_share            1492    0.378       0.425      47%  0.458
+   air_yards_share         1492    0.295       0.463      39%  0.396
+   wopr                    1492    0.351       0.440      44%  0.445
+   yards_per_target        1236    0.076       0.280      21%  0.087
+   catch_rate              1236    0.097       0.452      18%  0.229
+   yards_per_catch         1036    0.135       0.439      24%  0.231
+   adot                    1236    0.169       0.780      18%  0.808
+   epa_per_target          1236    0.062       0.252      20%  0.068
+
+5. The waiver spike: a Week 1 role that was not there last season
+    out of nowhere in Week 1           n= 207  kept 0.191 of that role  ( 74.6% of the Week 1 rate)   ROS 10.2 ppg
+    already had the job last year      n= 534  kept 0.237 of that role  ( 86.4% of the Week 1 rate)   ROS 13.8 ppg
+
+
+####################################################################################################
+## TE
+####################################################################################################
+
+1. Which Week 1 number best predicts rest-of-season fantasy points per game?
+   week 1 metric         type          n       r     rho
+   target_share          share       836   0.523   0.540
+   targets               volume      836   0.521   0.539
+   snap_pct              share       555   0.497   0.527
+   receptions            volume      836   0.494   0.496
+   receiving_yards       volume      836   0.445   0.456
+   air_yards             volume      836   0.439   0.431
+   fantasy_ppg_ppr       volume      836   0.431   0.445
+   fantasy_ppg_half      volume      836   0.403   0.426
+   air_yards_share       share       836   0.338   0.423
+   adot                  role        836   0.153   0.188
+
+   R2 predicting rest-of-season fantasy ppg  [1999+]  (n=740):
+     W1 fantasy pts              0.191
+     W1 usage only               0.302
+     W1 pts + usage              0.312
+     last season only            0.443
+     last season + W1 pts        0.487
+     last season + W1 usage      0.508
+     everything                  0.513
+
+   R2 predicting rest-of-season fantasy ppg  [snap-share era, 2013+, usage includes snap %]  (n=503):
+     W1 fantasy pts              0.176
+     W1 usage only               0.355
+     W1 pts + usage              0.361
+     last season only            0.425
+     last season + W1 pts        0.464
+     last season + W1 usage      0.519
+     everything                  0.521
+
+2. Week 1 finish -> rest-of-season finish (share of each Week 1 group), PPR totals
+   week 1                n             top 5  WR2/RB2 (6-12)           13-24           25-36             37+
+   top 5               106               27%             24%             33%             10%              6%
+   WR2/RB2 (6-12)      146               22%             24%             26%             20%              8%
+   13-24               257               12%             18%             34%             25%             11%
+   25-36               224                5%             14%             25%             34%             21%
+   37+                 139                2%              6%             25%             32%             35%
+
+   P(top-12 rest of season)      base rate 29%   | given top-12 in Week 1 48%   | given top-12 last season 54%
+
+3. The panic table (players with a prior-season line)
+   last season               week 1                  n  top12 ROS  top24 ROS  med rank  med ppg
+   top-12 last yr            top-12 wk1            111        63%        86%         9     11.1
+   top-12 last yr            outside top-12 wk1    129        47%        82%        14      8.7
+   outside top-12 last yr    top-12 wk1            117        32%        68%        18      7.5
+   outside top-12 last yr    outside top-12 wk1    412        13%        38%        29      4.8
+
+4. How much of a Week 1 surprise is real? (weight Week 1 earns vs last season)
+   metric                     n  beta W1  beta prior  W1 share     R2
+   targets                  740    0.388       0.447      46%  0.486
+   receptions               740    0.265       0.558      32%  0.507
+   receiving_yards          740    0.212       0.602      26%  0.511
+   air_yards                740    0.372       0.526      41%  0.606
+   fantasy_ppg_ppr          740    0.224       0.584      28%  0.487
+   fantasy_ppg_half         740    0.210       0.585      26%  0.470
+   snap_pct                 473    0.610       0.257      70%  0.590
+   target_share             740    0.426       0.440      49%  0.520
+   air_yards_share          740    0.289       0.499      37%  0.428
+   yards_per_target         540    0.022       0.346       6%  0.122
+   catch_rate               540    0.100       0.369      21%  0.148
+   adot                     540    0.161       0.695      19%  0.636
+
+5. The waiver spike: a Week 1 role that was not there last season
+    out of nowhere in Week 1           n=  84  kept 0.148 of that role  ( 74.3% of the Week 1 rate)   ROS 8.2 ppg
+    already had the job last year      n= 158  kept 0.196 of that role  ( 88.6% of the Week 1 rate)   ROS 11.4 ppg

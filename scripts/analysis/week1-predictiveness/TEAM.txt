@@ -1,0 +1,89 @@
+====================================================================================================
+WEEK 1 AS A TEAM SIGNAL
+regular seasons 1999-2025, 856 team-seasons
+====================================================================================================
+
+1. 1-0 VS 0-1
+   week 1           n  ROS win%  final wins  playoffs  11+ win szn  ROS margin
+   won            425     54.0%         9.7     53.6%        34.4%        1.48
+   lost           425     46.4%         7.4     25.4%        14.8%       -1.35
+   tied             6     34.0%         5.9      0.0%         0.0%       -4.22
+
+   gap in rest-of-season win rate: 7.6 points  (1.2 wins over a 16-game stretch)
+   playoff rate: 54% at 1-0 vs 25% at 0-1
+
+   ... and split by whether last season was already good:
+   prior season          week 1       n  ROS win%  playoffs
+   winning record        won        210     59.2%     65.7%
+   winning record        lost       166     53.1%     34.9%
+   losing record         won        198     48.9%     41.4%
+   losing record         lost       242     41.7%     19.0%
+
+2. WEEK 1 AS A CONTINUOUS PREDICTOR
+
+   target: rest-of-season win rate   (n=765)
+     R2  W1 margin                     0.037
+     R2  W1 EPA/play                   0.034
+     R2  last yr margin                0.113
+     R2  last yr EPA/play              0.100
+     R2  last yr EPA + W1 margin       0.121
+     R2  last yr EPA + W1 EPA          0.117
+     R2  last yr EPA + both W1         0.121
+
+   target: rest-of-season point margin/game   (n=765)
+     R2  W1 margin                     0.055
+     R2  W1 EPA/play                   0.050
+     R2  last yr margin                0.145
+     R2  last yr EPA/play              0.132
+     R2  last yr EPA + W1 margin       0.164
+     R2  last yr EPA + W1 EPA          0.158
+     R2  last yr EPA + both W1         0.164
+
+   target: rest-of-season EPA/play differential   (n=765)
+     R2  W1 margin                     0.055
+     R2  W1 EPA/play                   0.053
+     R2  last yr margin                0.144
+     R2  last yr EPA/play              0.152
+     R2  last yr EPA + W1 margin       0.184
+     R2  last yr EPA + W1 EPA          0.179
+     R2  last yr EPA + both W1         0.184
+
+3. SCORE VS PROCESS
+   r(W1 margin,   ROS margin) = 0.237
+   r(W1 EPA/play, ROS margin) = 0.227
+   both together: beta(EPA)=0.076  beta(margin)=0.169  R2=0.057
+
+   the same race at k weeks of data, target = margin over weeks k+1 onward:
+   k weeks        n   R2 margin  R2 EPA/play  | beta margin   beta EPA
+   1            796       0.056        0.051          0.169      0.076
+   2            803       0.132        0.121          0.269      0.104
+   4            805       0.206        0.183          0.392      0.066
+   8            805       0.240        0.226          0.366      0.132
+   -> point margin matches or beats this EPA/play measure at every sample
+      size tested, and takes most of the weight when both are in the model.
+      Caveat: the EPA measure covers pass and rush plays only, so special
+      teams and penalties count for the scoreboard and not for EPA. The
+      honest read is that over one game they are interchangeable -- there is
+      no Week 1 'process beats results' edge to be had here.
+
+4. BLOWOUTS
+   week 1 result                n  ROS win%  playoffs  ROS margin
+   lost by 21+                 61     40.9%     14.8%       -3.32
+   lost by 9-20               135     45.4%     23.7%       -1.52
+   lost by 1-8                235     48.1%     28.5%       -0.82
+   won by 1-8                 237     52.5%     50.6%        0.83
+   won by 9-20                135     55.4%     54.8%        2.04
+   won by 21+                  61     57.8%     63.9%        3.11
+
+5. THE MARKET TEST  (does Week 1 tell you something the betting market missed?)
+   week 1               n  ROS cover %   ROS margin vs spread
+   won                425        48.0%                   0.06
+   lost               425        49.3%                  -0.03
+   won by 21+          61        46.9%                   0.53
+   lost by 21+         61        49.2%                  -0.22
+   r(W1 margin, ROS margin against the spread) = 0.024   (n=856, seasons with lines only)
+   -> the market absorbs Week 1 almost immediately; the residual edge is ~0.
+
+6. WHERE THE EVENTUAL CHAMPIONS STOOD AFTER WEEK 1
+   Super Bowl winners    n=  27   started 0-1:  33.3%
+   Super Bowl teams      n=  54   started 0-1:  24.1%

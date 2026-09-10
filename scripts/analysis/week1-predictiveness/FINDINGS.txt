@@ -1,0 +1,80 @@
+====================================================================================================
+HOW PREDICTIVE IS NFL WEEK 1?   headline findings
+nflverse, regular seasons 1999-2025 (snap share 2013+). Detail in PREDICTIVENESS.txt,
+STABILITY.txt, FANTASY.txt, TEAM.txt.
+====================================================================================================
+
+1. THE ONE-LINE ANSWER
+   Averaged over every position and metric, a Week 1 opportunity number carries r=0.50
+   to the rest of the season. A Week 1 efficiency number carries r=0.16.
+   Week 1 tells you about ROLE. It tells you almost nothing about SKILL.
+
+2. THE QUESTIONS THAT STARTED THIS, ANSWERED DIRECTLY
+                                                                   r     R2   signal  g->0.5
+   ---------------------------------------------------------------------------------------
+   RB Week 1 carries -> rest-of-season carries/game            0.535  0.286      65%     0.5
+   RB Week 1 share of team carries -> rest-of-season share     0.651  0.424      73%     0.4
+   RB Week 1 snap share -> rest-of-season snap share           0.666  0.443      65%     0.5
+   RB Week 1 yards per carry -> rest-of-season YPC             0.096  0.009       6%    17.2
+   RB Week 1 targets -> rest-of-season targets/game            0.678  0.460      52%     0.9
+   RB Week 1 PPR points -> rest-of-season PPR/game             0.489  0.239      47%     1.1
+   WR Week 1 targets -> rest-of-season targets/game            0.497  0.247      64%     0.6
+   WR Week 1 target share -> rest-of-season target share       0.547  0.299      67%     0.5
+   WR Week 1 snap share -> rest-of-season snap share           0.652  0.425      69%     0.4
+   WR Week 1 air yards -> rest-of-season air yards/game        0.647  0.419      58%     0.7
+   WR Week 1 yards per target -> rest-of-season YPT            0.115  0.013       5%    19.5
+   WR Week 1 PPR points -> rest-of-season PPR/game             0.420  0.177      39%     1.6
+   TE Week 1 target share -> rest-of-season target share       0.593  0.352      58%     0.7
+   TE Week 1 PPR points -> rest-of-season PPR/game             0.431  0.186      34%     1.9
+   QB Week 1 completion % -> rest-of-season completion %       0.272  0.074      16%     5.2
+   QB Week 1 CPOE -> rest-of-season CPOE                       0.160  0.026      10%     8.8
+   QB Week 1 attempts -> rest-of-season attempts/game          0.284  0.081      25%     3.0
+   QB Week 1 fantasy points -> rest-of-season points/game      0.345  0.119      23%     3.4
+   r  = correlation of the Week 1 value with the rest of the season
+   signal = share of a single game's spread in that metric that is real, not noise
+   g->0.5 = games of data needed before the metric is half signal
+
+3. IS WEEK 1 SPECIAL, OR IS IT JUST ONE GAME?
+   Running the identical test on weeks 2-9 instead of Week 1:
+     QB: mean r from Week 1 = 0.284, mean r from a mid-season week = 0.305  (edge to Week 1: -0.022)
+     RB: mean r from Week 1 = 0.445, mean r from a mid-season week = 0.445  (edge to Week 1: -0.000)
+     WR: mean r from Week 1 = 0.399, mean r from a mid-season week = 0.414  (edge to Week 1: -0.015)
+     TE: mean r from Week 1 = 0.455, mean r from a mid-season week = 0.475  (edge to Week 1: -0.020)
+   Across all 55 position-metric pairs the average edge is -0.013.
+   Week 1 is not a special window into a new season. It is one game, priced as one
+   game. Roster churn and new schemes do not make it more informative than Week 6.
+
+4. HOW LONG BEFORE THE NEW SEASON BEATS THE OLD ONE?
+   Weeks of the current season needed before the running average predicts the back
+   half better than last season's full line does (target = weeks 10 onward):
+     QB
+       Week 1 alone already beats it:  none
+       takes 2-4 weeks:  pass_attempts (k=3), passing_yards (k=3), pass_tds (k=2), fantasy_ppg (k=2), yards_per_attempt (k=4), epa_per_pass (k=3), pass_td_rate (k=2), int_rate (k=4)
+       last season still wins after 4 weeks:  qb_carries (0.62 vs 0.78), completion_pct (0.24 vs 0.49), cpoe (0.17 vs 0.30)
+     RB
+       Week 1 alone already beats it:  targets (0.64 vs 0.60), snap_pct (0.57 vs 0.49), rush_share (0.59 vs 0.55), target_share (0.67 vs 0.61), epa_per_carry (0.11 vs 0.11)
+       takes 2-4 weeks:  carries (k=2), rushing_yards (k=2), receptions (k=2), touches (k=2), opportunities (k=2), rushing_tds (k=3), fantasy_ppg_ppr (k=2), fantasy_ppg_half (k=2), yards_per_carry (k=3), yards_per_touch (k=3), rush_fd_rate (k=2)
+       last season still wins after 4 weeks:  none
+     WR
+       Week 1 alone already beats it:  snap_pct (0.57 vs 0.55)
+       takes 2-4 weeks:  targets (k=2), receptions (k=3), receiving_yards (k=4), air_yards (k=2), fantasy_ppg_ppr (k=4), target_share (k=2), air_yards_share (k=4), wopr (k=2)
+       last season still wins after 4 weeks:  receiving_tds (0.13 vs 0.35), fantasy_ppg_half (0.34 vs 0.56), yards_per_target (0.09 vs 0.23), catch_rate (0.19 vs 0.42), yards_per_catch (0.21 vs 0.37), adot (0.69 vs 0.88), epa_per_target (0.07 vs 0.20)
+     TE
+       Week 1 alone already beats it:  snap_pct (0.64 vs 0.51)
+       takes 2-4 weeks:  targets (k=2), receptions (k=3), air_yards (k=2), target_share (k=2), air_yards_share (k=3)
+       last season still wins after 4 weeks:  receiving_yards (0.39 vs 0.63), fantasy_ppg_ppr (0.38 vs 0.61), fantasy_ppg_half (0.36 vs 0.60), yards_per_target (0.02 vs 0.26), catch_rate (0.11 vs 0.36), adot (0.56 vs 0.79)
+
+5. FANTASY: THE USAGE UNDER THE BOX SCORE BEATS THE BOX SCORE
+   Best single Week 1 predictor of rest-of-season fantasy points per game:
+     QB: fantasy_ppg r=0.345,  passing_yards r=0.255,  pass_tds r=0.241,  epa_per_pass r=0.231
+     RB: snap_pct r=0.500,  fantasy_ppg_ppr r=0.485,  touches r=0.472,  fantasy_ppg_half r=0.471
+     WR: target_share r=0.473,  snap_pct r=0.463,  targets r=0.453,  receptions r=0.452
+     TE: target_share r=0.523,  targets r=0.511,  snap_pct r=0.491,  receptions r=0.488
+
+6. TEAM LEVEL
+   1-0 teams: 54.0% win rate the rest of the way, 54% reach the playoffs
+   0-1 teams: 46.4% win rate the rest of the way, 25% reach the playoffs
+   r(Week 1 point margin, rest-of-season margin per game) = 0.251  (R2 = 0.063)
+   The Week 1 win itself is worth about 1.2 extra wins over the remaining schedule --
+   most of the 1-0 / 0-1 playoff gap is the game already in the bank, not a
+   revealed change in team strength.
