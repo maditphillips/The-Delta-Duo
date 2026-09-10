@@ -1,0 +1,111 @@
+====================================================================================================
+RB WEEK 1 SNAP SHARE 45%-60%, SPLIT BY WEEK 1 YARDS PER CARRY
+nflverse 2013-2025; rest-of-season target excludes Week 1
+====================================================================================================
+
+Whole band, before any YPC condition: n = 152
+     ROS snap share                 n=152   mean 48.6%   95% CI [46.4, 50.8]%   sd 13.7
+     ROS PPR points/game            n=152   mean 11.60   95% CI [10.84, 12.36]   sd 4.76
+
+
+####################################################################################################
+## Week 1 carries >= 6   band n = 152   (38 over 5.0 YPC, 114 at or under)
+####################################################################################################
+
+   are the two groups matched on the thing we are holding fixed?
+     > 5.0 YPC    Week 1 snap share 51.7%   Week 1 carries 12.2   Week 1 YPC 6.42   Week 1 PPR 16.1
+     <= 5.0 YPC   Week 1 snap share 51.7%   Week 1 carries 12.4   Week 1 YPC 3.27   Week 1 PPR 11.0
+
+   REST-OF-SEASON SNAP SHARE
+     Week 1 YPC > 5.0               n= 38   mean 50.3%   95% CI [45.8, 54.7]%   sd 13.5
+     Week 1 YPC <= 5.0              n=114   mean 48.1%   95% CI [45.5, 50.6]%   sd 13.7
+     difference +2.2 pts   95% CI [-2.9, +7.3]   t 0.86   p 0.392
+     > 5.0 YPC group percentiles  p10 0.31  p25 0.42  p50 0.53  p75 0.58  p90 0.65   (median 95% CI [0.48, 0.56])
+
+   REST-OF-SEASON PPR POINTS PER GAME
+     Week 1 YPC > 5.0               n= 38   mean 11.40   95% CI [10.08, 12.72]   sd 4.02
+     Week 1 YPC <= 5.0              n=114   mean 11.67   95% CI [10.74, 12.59]   sd 5.00
+     difference -0.27 ppg   95% CI [-1.86, +1.33]   t -0.33   p 0.742
+     > 5.0 YPC group percentiles  p10 6.0  p25 8.2  p50 12.3  p75 13.9  p90 16.1   (median 95% CI [10.7, 13.1])
+
+   REST-OF-SEASON YARDS PER CARRY   (needs 40+ carries after Week 1)
+     dropped for too few carries: 2 of 38 in the > 5.0 group (5%), 6 of 114 in the <= 5.0 group (5%)
+     Week 1 YPC > 5.0               n= 36   mean 4.20   95% CI [3.99, 4.42]   sd 0.63
+     Week 1 YPC <= 5.0              n=108   mean 4.30   95% CI [4.16, 4.44]   sd 0.74
+     difference -0.10 y/c   95% CI [-0.35, +0.15]   t -0.78   p 0.437
+     > 5.0 YPC group percentiles  p10 3.46  p25 3.72  p50 4.19  p75 4.58  p90 4.94   (median 95% CI [4.03, 4.35])
+     for reference, every qualifying RB 2013-2025: mean 4.25, sd 0.69 (n=539)
+
+   REGRESSION INSIDE THE BAND (does Week 1 YPC add anything to Week 1 snap share?)
+     ROS snap share     beta(snap %) +0.274 (p 0.001)   beta(YPC) +0.118 (p 0.132)   n=152
+     ROS PPR ppg        beta(snap %) +0.138 (p 0.091)   beta(YPC) +0.072 (p 0.378)   n=152
+
+
+####################################################################################################
+## Week 1 carries >= 8   band n = 131   (32 over 5.0 YPC, 99 at or under)
+####################################################################################################
+
+   are the two groups matched on the thing we are holding fixed?
+     > 5.0 YPC    Week 1 snap share 52.3%   Week 1 carries 13.2   Week 1 YPC 6.46   Week 1 PPR 17.1
+     <= 5.0 YPC   Week 1 snap share 51.8%   Week 1 carries 13.3   Week 1 YPC 3.33   Week 1 PPR 11.3
+
+   REST-OF-SEASON SNAP SHARE
+     Week 1 YPC > 5.0               n= 32   mean 51.5%   95% CI [46.6, 56.4]%   sd 13.6
+     Week 1 YPC <= 5.0              n= 99   mean 48.7%   95% CI [46.0, 51.5]%   sd 13.8
+     difference +2.7 pts   95% CI [-2.8, +8.3]   t 0.99   p 0.326
+     > 5.0 YPC group percentiles  p10 0.33  p25 0.42  p50 0.54  p75 0.63  p90 0.66   (median 95% CI [0.49, 0.57])
+
+   REST-OF-SEASON PPR POINTS PER GAME
+     Week 1 YPC > 5.0               n= 32   mean 11.66   95% CI [10.18, 13.14]   sd 4.10
+     Week 1 YPC <= 5.0              n= 99   mean 11.71   95% CI [10.72, 12.71]   sd 4.99
+     difference -0.05 ppg   95% CI [-1.82, +1.71]   t -0.06   p 0.951
+     > 5.0 YPC group percentiles  p10 6.4  p25 8.7  p50 12.4  p75 14.2  p90 16.5   (median 95% CI [11.3, 13.3])
+
+   REST-OF-SEASON YARDS PER CARRY   (needs 40+ carries after Week 1)
+     dropped for too few carries: 1 of 32 in the > 5.0 group (3%), 3 of 99 in the <= 5.0 group (3%)
+     Week 1 YPC > 5.0               n= 31   mean 4.22   95% CI [3.98, 4.45]   sd 0.65
+     Week 1 YPC <= 5.0              n= 96   mean 4.24   95% CI [4.10, 4.38]   sd 0.70
+     difference -0.03 y/c   95% CI [-0.30, +0.25]   t -0.20   p 0.844
+     > 5.0 YPC group percentiles  p10 3.45  p25 3.71  p50 4.19  p75 4.59  p90 4.94   (median 95% CI [4.07, 4.38])
+     for reference, every qualifying RB 2013-2025: mean 4.25, sd 0.69 (n=539)
+
+   REGRESSION INSIDE THE BAND (does Week 1 YPC add anything to Week 1 snap share?)
+     ROS snap share     beta(snap %) +0.283 (p 0.001)   beta(YPC) +0.108 (p 0.207)   n=131
+     ROS PPR ppg        beta(snap %) +0.158 (p 0.075)   beta(YPC) +0.070 (p 0.429)   n=131
+
+
+####################################################################################################
+## Week 1 carries >= 10   band n = 107   (27 over 5.0 YPC, 80 at or under)
+####################################################################################################
+
+   are the two groups matched on the thing we are holding fixed?
+     > 5.0 YPC    Week 1 snap share 52.6%   Week 1 carries 14.1   Week 1 YPC 6.57   Week 1 PPR 17.9
+     <= 5.0 YPC   Week 1 snap share 52.2%   Week 1 carries 14.4   Week 1 YPC 3.50   Week 1 PPR 11.4
+
+   REST-OF-SEASON SNAP SHARE
+     Week 1 YPC > 5.0               n= 27   mean 53.6%   95% CI [48.8, 58.4]%   sd 12.1
+     Week 1 YPC <= 5.0              n= 80   mean 49.3%   95% CI [46.1, 52.4]%   sd 14.3
+     difference +4.3 pts   95% CI [-1.3, +10.0]   t 1.53   p 0.132
+     > 5.0 YPC group percentiles  p10 0.36  p25 0.48  p50 0.55  p75 0.63  p90 0.66   (median 95% CI [0.51, 0.58])
+
+   REST-OF-SEASON PPR POINTS PER GAME
+     Week 1 YPC > 5.0               n= 27   mean 12.36   95% CI [10.80, 13.92]   sd 3.94
+     Week 1 YPC <= 5.0              n= 80   mean 12.07   95% CI [10.92, 13.21]   sd 5.16
+     difference +0.29 ppg   95% CI [-1.62, +2.20]   t 0.31   p 0.760
+     > 5.0 YPC group percentiles  p10 6.7  p25 11.7  p50 12.6  p75 14.8  p90 16.6   (median 95% CI [11.9, 14.1])
+
+   REST-OF-SEASON YARDS PER CARRY   (needs 40+ carries after Week 1)
+     dropped for too few carries: 0 of 27 in the > 5.0 group (0%), 2 of 80 in the <= 5.0 group (2%)
+     Week 1 YPC > 5.0               n= 27   mean 4.21   95% CI [3.95, 4.48]   sd 0.68
+     Week 1 YPC <= 5.0              n= 78   mean 4.21   95% CI [4.04, 4.38]   sd 0.75
+     difference +0.00 y/c   95% CI [-0.31, +0.31]   t 0.02   p 0.986
+     > 5.0 YPC group percentiles  p10 3.51  p25 3.71  p50 4.19  p75 4.70  p90 5.00   (median 95% CI [3.92, 4.33])
+     for reference, every qualifying RB 2013-2025: mean 4.25, sd 0.69 (n=539)
+
+   REGRESSION INSIDE THE BAND (does Week 1 YPC add anything to Week 1 snap share?)
+     ROS snap share     beta(snap %) +0.240 (p 0.013)   beta(YPC) +0.146 (p 0.127)   n=107
+     ROS PPR ppg        beta(snap %) +0.160 (p 0.104)   beta(YPC) +0.062 (p 0.525)   n=107
+
+
+All intervals are 95%. Group differences use Welch's t (unequal variance).
+Median intervals are 10000-resample bootstrap percentile intervals.
