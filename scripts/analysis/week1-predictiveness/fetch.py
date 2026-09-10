@@ -15,6 +15,13 @@ import pyarrow.parquet as pq
 HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = "https://github.com/nflverse/nflverse-data/releases/download"
 GAMES = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
+# FantasyPros expert consensus rank history and the id map that joins it to nflverse.
+# Preseason redraft ECR is the closest public stand-in for where a player was drafted;
+# real ADP feeds (Fantasy Football Calculator, MFL) are not reachable from here.
+ECR = "https://raw.githubusercontent.com/dynastyprocess/data/master/files/db_fpecr.parquet"
+PLAYER_IDS = "https://raw.githubusercontent.com/dynastyprocess/data/master/files/db_playerids.csv"
+ECR_COLS = ['player', 'id', 'pos', 'team', 'ecr', 'sd', 'best', 'worst', 'ecr_type',
+            'scrape_date']
 TMP = os.environ.get("NFLVERSE_TMP", "/tmp/nflverse")
 
 FIRST, LAST = 1999, 2026
@@ -116,6 +123,25 @@ def main():
                 if c in cw.columns]
         cw[keep].to_parquet(ppath, index=False)
     print("wrote", ppath)
+
+    print("preseason expert consensus rankings")
+    epath = os.path.join(HERE, "ecr_preseason.parquet")
+    if not os.path.exists(epath):
+        tmpe = f"{TMP}/db_fpecr.parquet"
+        if not grab(ECR, tmpe):
+            sys.exit("ecr download failed")
+        e = pq.ParquetFile(tmpe).read(columns=ECR_COLS).to_pandas()
+        e = e[e.ecr_type == "rp"]                      # redraft, positional
+        e["scrape_date"] = pd.to_datetime(e.scrape_date)
+        md = e.scrape_date.dt.strftime("%m-%d")
+        e[(md >= "07-15") & (md <= "09-15")].to_parquet(epath, index=False)
+    print("wrote", epath)
+
+    print("player id map")
+    ipath = os.path.join(HERE, "player_ids.csv")
+    if not grab(PLAYER_IDS, ipath):
+        sys.exit("player id map download failed")
+    print("wrote", ipath)
 
     print("games")
     gpath = os.path.join(HERE, "games.csv")

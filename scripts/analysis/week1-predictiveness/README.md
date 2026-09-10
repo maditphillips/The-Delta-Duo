@@ -31,6 +31,8 @@ From nflverse (`fetch.py`, all files gitignored):
 | `team_week.parquet` | `stats_team` release | 1999– |
 | `snaps.parquet` | `snap_counts` release | 2013– |
 | `ngs_rushing.parquet` | `nextgen_stats` release | 2016– |
+| `ecr_preseason.parquet` | FantasyPros via `dynastyprocess/data` | 2020– |
+| `player_ids.csv` | `dynastyprocess/data` id map | — |
 | `games.csv` | `nflverse/nfldata` | 1999– |
 | `players.parquet` | `players` release: gsis↔pfr crosswalk, rookie season, draft slot | — |
 
@@ -91,6 +93,14 @@ Two sample conventions worth knowing, because they pull in opposite directions:
   actually feels. Reported alongside in `PREDICTIVENESS.txt`; it lowers every
   volume correlation by roughly 0.03–0.11.
 
+Draft position enters via FantasyPros preseason redraft positional ECR, from the
+last scrape strictly before that season's first kickoff. It is a consensus ranking,
+not a draft-board average — real ADP feeds are unreachable from this environment —
+and it covers 2020 onward only, so every ADP result is cross-checked against a
+prior-season-finish stand-in over 1999–2025. The two correlate at r ≈ 0.90 (RB, WR)
+but diverge in the top tier, where prior-season finish carries uncertainty a real
+draft board had already priced out; the ECR rows win those disagreements.
+
 Anything that looked like a clean story but was not supported by the numbers was
 cut. In particular: EPA per play does **not** beat the Week 1 scoreboard at
 predicting the rest of the season, at any sample size tested here.
@@ -103,6 +113,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `adp.py` | `ADP.txt` | Week 1's value by draft position -- tier tables and a log-rank interaction, on real preseason expert consensus rank (2020-2025) and on a prior-season-finish stand-in (1999-2025) |
 | `week1_verdict.py` | `VERDICT.txt` | the broad-strokes answer: Week 1 points against both full-season and rest-of-season scoring, the tier table, and the bust rate of Week 1 stars measured against the field's |
 | `rookies.py` | `ROOKIES.txt` | rookie vs veteran Week 1 predictiveness, backfield-relative role metrics (share of the RB room, the lead over RB2), whether Week 1 efficiency buys a bigger role later, and prediction intervals for one named Week 1 line |
 | `band_cells.py` | `BAND_CELLS.txt` | one conditional cell in detail -- RBs who opened at 45-60% of snaps, split by whether their Week 1 YPC cleared 5.0 -- with confidence intervals on each group and on the difference |

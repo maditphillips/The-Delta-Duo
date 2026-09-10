@@ -1,0 +1,156 @@
+========================================================================================================
+WEEK 1 THROUGH THE LENS OF DRAFT POSITION
+========================================================================================================
+
+Preseason positional ECR: 2020-2025, 7727 player-seasons, taken from the last scrape before kickoff.
+Prior-season positional finish is the 1999-2025 stand-in, validated below.
+
+
+## 0. IS THE LONG-HISTORY STAND-IN ANY GOOD?
+   preseason ECR rank vs prior-season positional finish, in the overlap years
+     RB: r 0.901, rho 0.917 (n=448)   | ECR matched to 97% of RB week-1 players since 2020
+     WR: r 0.901, rho 0.920 (n=650)   | ECR matched to 97% of WR week-1 players since 2020
+     TE: r 0.864, rho 0.882 (n=334)   | ECR matched to 96% of TE week-1 players since 2020
+     QB: r 0.780, rho 0.812 (n=171)   | ECR matched to 99% of QB week-1 players since 2020
+
+
+========================================================================================================
+## PRESEASON ECR (2020-2025)
+========================================================================================================
+
+   Within each draft tier, players are split at that tier's own median
+   Week 1 score. 'gap' is how much further ahead the good-Week-1 half
+   finished, with a 95% interval. 'dR2' is what Week 1 adds on top of the
+   exact rank inside the tier.
+
+   RB   (535 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5          27       17.80 [14.6,21.0]       18.92 [16.8,21.0]    -1.12 +/-3.47      -0.103  0.008
+   6-12           40       15.80 [14.1,17.6]       15.89 [14.3,17.4]    -0.09 +/-2.19       0.108  0.012
+   13-24          67       13.86 [12.7,15.0]       12.09 [10.7,13.4]    +1.77 +/-1.68       0.310  0.045
+   25-40          87       10.25 [9.2,11.3]        9.54 [8.2,10.9]    +0.71 +/-1.69       0.138  0.015
+   41+           314        6.26 [5.6,6.9]        3.79 [3.3,4.3]    +2.47 +/-0.80       0.395  0.046
+     interaction on log(rank): log rank -0.732 (p 0.000)   week 1 +0.188 (p 0.000)   log rank x week 1 +0.121 (p 0.000)   n=535  R2 0.647
+       week 1 slope at rank 3: -0.126,  12: +0.040,  30: +0.149,  80: +0.267
+
+   WR   (804 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5          28       18.25 [16.2,20.3]       18.19 [16.1,20.3]    +0.06 +/-2.63       0.172  0.030
+   6-12           41       16.12 [14.6,17.6]       15.43 [13.7,17.2]    +0.69 +/-2.16       0.166  0.050
+   13-24          69       14.61 [13.5,15.8]       13.38 [12.4,14.4]    +1.23 +/-1.46       0.221  0.041
+   25-40          84       12.57 [11.4,13.7]       11.63 [10.7,12.5]    +0.94 +/-1.42       0.277  0.078
+   41+           582        7.86 [7.4,8.3]        4.11 [3.7,4.5]    +3.75 +/-0.56       0.508  0.070
+     interaction on log(rank): log rank -0.703 (p 0.000)   week 1 +0.270 (p 0.000)   log rank x week 1 +0.109 (p 0.000)   n=804  R2 0.681
+       week 1 slope at rank 3: -0.045,  12: +0.101,  30: +0.197,  80: +0.299
+
+   TE   (381 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5          27       14.44 [12.4,16.5]       12.16 [9.9,14.4]    +2.27 +/-2.77       0.246  0.004
+   6-12           42       11.33 [10.1,12.6]        9.39 [8.6,10.1]    +1.94 +/-1.36       0.214  0.049
+   13-24          68        8.48 [7.4,9.5]        7.73 [6.9,8.6]    +0.76 +/-1.31       0.235  0.046
+   25-40          74        6.79 [5.8,7.8]        5.44 [4.6,6.3]    +1.35 +/-1.25       0.221  0.033
+   41+           170        4.09 [3.7,4.5]        2.72 [2.3,3.2]    +1.37 +/-0.62       0.326  0.044
+     interaction on log(rank): log rank -0.743 (p 0.000)   week 1 +0.160 (p 0.000)   log rank x week 1 +0.049 (p 0.042)   n=381  R2 0.658
+       week 1 slope at rank 3: +0.048,  12: +0.116,  30: +0.161,  80: +0.209
+
+   QB   (206 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5          30       20.66 [18.8,22.6]       20.67 [18.5,22.8]    -0.00 +/-2.60       0.120  0.001
+   6-12           41       18.50 [16.7,20.3]       17.69 [16.3,19.1]    +0.81 +/-2.14       0.141  0.015
+   13-24          68       16.39 [15.2,17.6]       14.94 [14.0,15.9]    +1.45 +/-1.48       0.371  0.143
+   25-40          52       13.77 [12.5,15.1]       12.11 [10.6,13.6]    +1.66 +/-1.91       0.159  0.010
+     interaction on log(rank): log rank -0.633 (p 0.000)   week 1 +0.188 (p 0.001)   log rank x week 1 +0.161 (p 0.000)   n=206  R2 0.532
+       week 1 slope at rank 3: -0.089,  12: +0.153,  30: +0.313,  80: +0.485
+
+
+========================================================================================================
+## PRIOR-SEASON FINISH (1999-2025)
+========================================================================================================
+
+   Within each draft tier, players are split at that tier's own median
+   Week 1 score. 'gap' is how much further ahead the good-Week-1 half
+   finished, with a 95% interval. 'dR2' is what Week 1 adds on top of the
+   exact rank inside the tier.
+
+   RB   (1957 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5         117       19.70 [18.3,21.1]       16.23 [15.0,17.4]    +3.46 +/-1.79       0.417  0.128
+   6-12          160       16.50 [15.5,17.5]       14.24 [13.3,15.2]    +2.25 +/-1.37       0.296  0.095
+   13-24         263       13.59 [12.8,14.4]       10.35 [9.6,11.1]    +3.25 +/-1.07       0.380  0.140
+   25-40         303       10.98 [10.3,11.6]        7.92 [7.3,8.5]    +3.06 +/-0.90       0.436  0.174
+   41+          1114        6.65 [6.3,7.0]        3.32 [3.1,3.6]    +3.34 +/-0.46       0.506  0.136
+     interaction on log(rank): log rank -0.543 (p 0.000)   week 1 +0.372 (p 0.000)   log rank x week 1 +0.070 (p 0.000)   n=1957  R2 0.615
+       week 1 slope at rank 3: +0.198,  12: +0.293,  30: +0.356,  80: +0.423
+
+   WR   (2543 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5         119       17.58 [16.6,18.6]       16.55 [15.5,17.6]    +1.03 +/-1.42       0.194  0.038
+   6-12          166       16.37 [15.7,17.1]       14.36 [13.6,15.1]    +2.01 +/-1.02       0.340  0.112
+   13-24         284       13.78 [13.2,14.4]       12.31 [11.7,12.9]    +1.47 +/-0.84       0.259  0.063
+   25-40         343       12.51 [11.9,13.1]       10.33 [9.7,10.9]    +2.18 +/-0.84       0.309  0.093
+   41+          1631        8.44 [8.2,8.7]        4.69 [4.4,4.9]    +3.74 +/-0.36       0.514  0.112
+     interaction on log(rank): log rank -0.605 (p 0.000)   week 1 +0.326 (p 0.000)   log rank x week 1 +0.131 (p 0.000)   n=2543  R2 0.593
+       week 1 slope at rank 3: -0.025,  12: +0.153,  30: +0.271,  80: +0.397
+
+   TE   (1218 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5         116       13.03 [12.1,14.0]       11.40 [10.5,12.3]    +1.63 +/-1.29       0.219  0.002
+   6-12          158       10.19 [9.5,10.9]        8.15 [7.5,8.8]    +2.04 +/-0.99       0.292  0.070
+   13-24         245        8.47 [7.9,9.1]        6.71 [6.2,7.3]    +1.76 +/-0.82       0.422  0.164
+   25-40         251        6.80 [6.3,7.3]        4.67 [4.3,5.1]    +2.13 +/-0.67       0.355  0.108
+   41+           448        4.70 [4.4,5.0]        2.73 [2.5,3.0]    +1.98 +/-0.43       0.445  0.173
+     interaction on log(rank): log rank -0.596 (p 0.000)   week 1 +0.298 (p 0.000)   log rank x week 1 +0.085 (p 0.000)   n=1218  R2 0.548
+       week 1 slope at rank 3: +0.121,  12: +0.240,  30: +0.318,  80: +0.402
+
+   QB   (688 player-seasons)
+
+   draft tier      n     good wk1 -> ROS ppg     bad wk1 -> ROS ppg               gap   r(w1,ROS)    dR2
+   -----------------------------------------------------------------------------------------------------
+   top 5         118       19.03 [18.0,20.0]       16.59 [15.6,17.6]    +2.44 +/-1.40       0.399  0.144
+   6-12          161       17.73 [17.0,18.5]       14.68 [13.8,15.5]    +3.05 +/-1.10       0.473  0.231
+   13-24         229       14.43 [13.8,15.1]       13.83 [13.1,14.6]    +0.60 +/-1.01       0.242  0.052
+   25-40         165       13.70 [12.8,14.6]       11.05 [10.1,12.0]    +2.66 +/-1.30       0.366  0.134
+     interaction on log(rank): log rank -0.365 (p 0.000)   week 1 +0.330 (p 0.000)   log rank x week 1 +0.032 (p 0.287)   n=688  R2 0.296
+       week 1 slope at rank 3: +0.280,  12: +0.329,  30: +0.361,  80: +0.396
+
+
+## 2. READING THE INTERACTION
+   Rank is coded so a HIGHER number is a LATER pick. A POSITIVE log rank x
+   week 1 term means Week 1 carries MORE weight for later picks; negative means
+   more for early picks; near zero with a large p means the data cannot
+   separate them. The marginal-slope line is the same thing in readable form.
+
+
+## 3. IS THE TOP-TIER RESULT REAL, OR JUST THIN?
+   The two rank measures disagree most in the top-5 tier, so both the effect
+   and the sample behind it are shown side by side.
+   pos  measure             n   gap ppg      95% interval     dR2
+   --------------------------------------------------------------
+   RB   preseason ECR      27     -1.12    [-4.59, +2.35]   0.008
+   RB   prior finish      117     +3.46    [+1.68, +5.25]   0.128
+   WR   preseason ECR      28     +0.06    [-2.57, +2.69]   0.030
+   WR   prior finish      119     +1.03    [-0.40, +2.45]   0.038
+   TE   preseason ECR      27     +2.27    [-0.49, +5.04]   0.004
+   TE   prior finish      116     +1.63    [+0.34, +2.91]   0.002
+   QB   preseason ECR      30     -0.00    [-2.61, +2.60]   0.001
+   QB   prior finish      118     +2.44    [+1.04, +3.84]   0.144
+
+   Prior-season finish is not the market's view: a back who finished top-5
+   last year but turns 30 behind a new line is in its top tier and nowhere
+   near the top of a real draft board. That tier therefore holds uncertainty
+   an actual ADP had already priced out, which is why Week 1 looks more useful
+   there. Where the two measures disagree, prefer the ECR rows.
