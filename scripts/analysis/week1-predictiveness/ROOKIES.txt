@@ -1,0 +1,103 @@
+====================================================================================================
+WEEK 1 FOR A ROOKIE BACK, AND THE BACKFIELD-RELATIVE VIEW
+RB-seasons 2013-2025, Week 1 carries >= 5, 4+ games after Week 1
+n = 637  (70 rookie seasons, 567 veteran)
+Rush yards over expected is Next Gen and starts in 2016, so its rows carry a smaller n.
+====================================================================================================
+
+
+## REST-OF-SEASON TEAM SNAP SHARE: r from each Week 1 metric
+   week 1 metric                                rookies              veterans     gap
+                                        r       p     n       r       p     n
+   --------------------------------------------------------------------------------
+   team snap share                  0.687   <1e-9    70   0.669   <1e-9   567  +0.018
+   share of RB-room snaps           0.671   <1e-9    70   0.636   <1e-9   565  +0.035
+   share of RB-room carries         0.588 8.5e-08    70   0.544   <1e-9   567  +0.044
+   share of team carries            0.553 6.7e-07    70   0.513   <1e-9   567  +0.040
+   snap lead over RB2               0.675   <1e-9    70   0.594   <1e-9   565  +0.082
+   carries                          0.447  0.0001    70   0.434   <1e-9   567  +0.013
+   targets                          0.253   0.034    70   0.389   <1e-9   567  -0.135
+   PPR points                       0.373  0.0015    70   0.457   <1e-9   567  -0.084
+   yards per carry                  0.089    0.47    70   0.110  0.0086   567  -0.022
+   rush yds over expected/att         n/a     n/a    22   0.154   0.021   225     n/a
+
+
+## REST-OF-SEASON PPR POINTS PER GAME: r from each Week 1 metric
+   week 1 metric                                rookies              veterans     gap
+                                        r       p     n       r       p     n
+   --------------------------------------------------------------------------------
+   team snap share                  0.580 1.4e-07    70   0.547   <1e-9   567  +0.033
+   share of RB-room snaps           0.576 1.9e-07    70   0.504   <1e-9   565  +0.071
+   share of RB-room carries         0.508   7e-06    70   0.452   <1e-9   567  +0.057
+   share of team carries            0.501 9.8e-06    70   0.445   <1e-9   567  +0.057
+   snap lead over RB2               0.562 4.1e-07    70   0.475   <1e-9   565  +0.087
+   carries                          0.394 0.00075    70   0.394   <1e-9   567  +0.000
+   targets                          0.315  0.0079    70   0.369   <1e-9   567  -0.054
+   PPR points                       0.358  0.0024    70   0.466   <1e-9   567  -0.108
+   yards per carry                  0.106    0.38    70   0.113  0.0071   567  -0.007
+   rush yds over expected/att         n/a     n/a    22   0.101    0.13   225     n/a
+
+
+## DOES WEEK 1 EFFICIENCY BUY A BIGGER ROLE LATER?
+   target: change in team snap share, Week 1 to the rest of the season
+   (standardised; Week 1 snap share held fixed in every model)
+     rookies   RYOE/att  w1 snap share -0.409 (p 0.062)   RYOE/att +0.147 (p 0.483)   n=22  R2 0.202  (small n)
+     rookies   YPC       w1 snap share -0.433 (p 0.000)   YPC +0.138 (p 0.209)   n=70  R2 0.210
+     veterans  RYOE/att  w1 snap share -0.467 (p 0.000)   RYOE/att +0.189 (p 0.001)   n=225  R2 0.256
+     veterans  YPC       w1 snap share -0.537 (p 0.000)   YPC +0.092 (p 0.010)   n=567  R2 0.292
+     all       RYOE/att  w1 snap share -0.463 (p 0.000)   RYOE/att +0.183 (p 0.001)   n=247  R2 0.252
+     all       YPC       w1 snap share -0.535 (p 0.000)   YPC +0.096 (p 0.004)   n=637  R2 0.292
+
+   rookies only, draft round added
+     w1 snap share -0.649 (p 0.043)   RYOE/att +0.277 (p 0.248)   draft round -0.369 (p 0.256)   n=20  R2 0.272  (small n)
+
+   predicting the LEVEL of rest-of-season snap share, rookies only
+     w1 snap share +0.687 (p 0.000)   n=70  R2 0.472
+     draft round -0.579 (p 0.000)   n=67  R2 0.335
+     w1 snap share +0.523 (p 0.000)   draft round -0.311 (p 0.003)   n=67  R2 0.537
+     room snap share +0.506 (p 0.000)   draft round -0.331 (p 0.001)   n=67  R2 0.529
+
+
+## HOW STICKY IS A NARROW WEEK 1 BACKFIELD LEAD?
+   backs who led their room in Week 1 snaps, split by the size of the lead
+   week 1 lead over RB2          n   still room leader in ROS   ROS snap share   ROS ppg
+   under 5 pts of the room      44                        20%            43.4%       9.9
+   5-15 pts                     56                        36%            52.0%      11.9
+   15-30 pts                    95                        47%            55.4%      12.9
+   30+ pts                     170                        74%            63.2%      14.7
+
+
+## THE COMPARABLE COHORT
+   rookie backs, Week 1 team snap share 40-56%, led their RB room
+
+     all such rookies   n = 7
+       ROS team snap share   mean 37.18%  95% CI [24.03, 50.34]%   p25 25.97  p50 42.54  p75 47.54
+       ROS PPR points/game   mean 10.21  95% CI [4.68, 15.75]   p25 5.84  p50 7.90  p75 13.41
+       ROS yards per carry   mean 5.00  95% CI [4.02, 5.97]   p25 4.28  p50 4.72  p75 5.78
+       ROS carries/game      mean 8.84  95% CI [6.01, 11.67]   p25 7.02  p50 9.07  p75 11.51
+       reached 60%+ ROS snap share: 0%   |  fell under 35%: 43%   |  12+ ppg: 43%
+       cases: Alvin Kamara 2017 (50%->44%, 20.8 ppg), Miles Sanders 2019 (49%->53%, 14.3 ppg), Javonte Williams 2021 (50%->51%, 12.5 ppg), Terrance West 2014 (55%->43%, 7.9 ppg), Ameer Abdullah 2015 (45%->33%, 6.5 ppg), Rashaad Penny 2018 (44%->19%, 5.2 ppg), Jordan Wilkins 2018 (56%->18%, 4.2 ppg)
+
+     + positive RYOE/att: n=0 — too few to report
+
+     + drafted round 1-2: n=4 — too few to report
+
+
+## APPLIED TO ONE ACTUAL WEEK 1 LINE
+   Jadarian Price, 2026 week 1: 10 carries for 5.2 a pop, 2 targets, 7.8 PPR
+   snap share 48% of team, 36% of the RB room, lead over RB2 1.5% of the room
+   RYOE/att +0.68, drafted round 1 pick 32
+
+   Fitted values with 95% PREDICTION intervals (the range for one player,
+   not the range for the group average, which is the narrower CI):
+   target           from                          pool           n   fitted   95% prediction interval
+   ROS snap share   wk1 snap%                     rookies       70    47.9%             [20.8, 75.1]%
+   ROS snap share   wk1 snap% + draft rd          rookies       67    53.5%             [27.4, 79.6]%
+   ROS snap share   wk1 snap% + RB2 gap           rookies       70    44.4%             [17.3, 71.5]%
+   ROS snap share   wk1 snap% + draft rd          all backs    546    50.9%             [25.2, 76.7]%
+   ROS PPR ppg      wk1 snap%                     rookies       70    11.5               [2.7, 20.3]
+   ROS PPR ppg      wk1 snap% + draft rd          rookies       67    13.3               [4.9, 21.7]
+   ROS PPR ppg      wk1 snap% + RB2 gap           rookies       70    10.8               [1.8, 19.7]
+   ROS PPR ppg      wk1 snap% + wk1 PPR           all backs    637    10.2               [1.6, 18.8]
+   ROS yards/carry  wk1 YPC                       all backs    637     4.2                [2.7, 5.7]
+   ROS yards/carry  wk1 YPC + RYOE/att            all backs    247     4.3                [2.9, 5.8]

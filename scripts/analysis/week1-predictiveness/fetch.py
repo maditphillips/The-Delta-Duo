@@ -36,6 +36,14 @@ TEAM_COLS = [
 ]
 SNAP_COLS = ['game_id','season','game_type','week','player','pfr_player_id','position','team',
              'offense_snaps','offense_pct']
+# Next Gen rushing carries rush yards over expected, which adjusts a carry for the
+# blocking and box count in front of it. One file, all seasons, 2016 on.
+NGS_URL = f"{BASE}/nextgen_stats/ngs_rushing.parquet"
+NGS_COLS = ['season','season_type','week','player_gsis_id','player_display_name',
+            'player_position','team_abbr','rush_attempts','efficiency','avg_time_to_los',
+            'percent_attempts_gte_eight_defenders','expected_rush_yards',
+            'rush_yards_over_expected','rush_yards_over_expected_per_att',
+            'rush_pct_over_expected']
 
 
 def grab(url, path):
@@ -86,6 +94,16 @@ def main():
     print("snap counts")
     stack("snap_counts", "snap_counts", SNAP_COLS, 2012, LAST, "snaps.parquet")
 
+    print("next gen rushing")
+    npath = os.path.join(HERE, "ngs_rushing.parquet")
+    if not os.path.exists(npath):
+        tmpn = f"{TMP}/ngs_rushing.parquet"
+        if not grab(NGS_URL, tmpn):
+            sys.exit("ngs_rushing download failed")
+        n = pq.ParquetFile(tmpn).read().to_pandas()
+        n[[c for c in NGS_COLS if c in n.columns]].to_parquet(npath, index=False)
+    print("wrote", npath)
+
     print("player id crosswalk")
     ppath = os.path.join(HERE, "players.parquet")
     if not os.path.exists(ppath):
@@ -93,7 +111,9 @@ def main():
         if not grab(f"{BASE}/players/players.parquet", tmpp):
             sys.exit("players.parquet download failed")
         cw = pq.ParquetFile(tmpp).read().to_pandas()
-        keep = [c for c in ['gsis_id','pfr_id','display_name','position'] if c in cw.columns]
+        keep = [c for c in ['gsis_id','pfr_id','display_name','position','rookie_season',
+                            'draft_year','draft_round','draft_pick','draft_team']
+                if c in cw.columns]
         cw[keep].to_parquet(ppath, index=False)
     print("wrote", ppath)
 

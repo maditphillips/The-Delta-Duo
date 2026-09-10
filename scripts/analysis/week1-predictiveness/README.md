@@ -30,8 +30,9 @@ From nflverse (`fetch.py`, all files gitignored):
 | `player_week.parquet` | `stats_player` release | 1999– |
 | `team_week.parquet` | `stats_team` release | 1999– |
 | `snaps.parquet` | `snap_counts` release | 2013– |
+| `ngs_rushing.parquet` | `nextgen_stats` release | 2016– |
 | `games.csv` | `nflverse/nfldata` | 1999– |
-| `players.parquet` | `players` release, gsis↔pfr crosswalk | — |
+| `players.parquet` | `players` release: gsis↔pfr crosswalk, rookie season, draft slot | — |
 
 Analysis runs on complete regular seasons, **1999–2025**. Snap share only exists
 from 2013 (the 2012 nflverse file is empty), so every snap number uses that
@@ -102,6 +103,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `rookies.py` | `ROOKIES.txt` | rookie vs veteran Week 1 predictiveness, backfield-relative role metrics (share of the RB room, the lead over RB2), whether Week 1 efficiency buys a bigger role later, and prediction intervals for one named Week 1 line |
 | `band_cells.py` | `BAND_CELLS.txt` | one conditional cell in detail -- RBs who opened at 45-60% of snaps, split by whether their Week 1 YPC cleared 5.0 -- with confidence intervals on each group and on the difference |
 | `snapshare_targets.py` | `SNAPSHARE.txt` | the three rest-of-season snap-share targets compared, plus fitted line, residual spread and observed outcome bands for a given Week 1 snap share |
 | `significance.py` | `SIGNIFICANCE.txt` | p-values on r, the partial F on the Week 1 term next to a prior-season baseline, BH q-values across all 55 pairs, and each of weeks 1-9 correlated on its own |
