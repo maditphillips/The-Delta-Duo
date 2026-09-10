@@ -42,6 +42,21 @@ is not shipped in nflverse.
 
 The unit is a player-season, with three views of every metric: `w1_` (Week 1),
 `ros_` (weeks 2 onward), `prior_` (the player's previous full regular season).
+
+**The rest-of-season target always excludes Week 1.** For a counting stat `ros_` is
+the per-game mean over weeks 2 onward; for a share metric it is the mean of the
+weekly shares over those weeks. It is *not* the end-of-season cumulative figure —
+Week 1 sits inside that, so part of any correlation with it would be definitional
+overlap rather than prediction. `snapshare_targets.py` quantifies the difference:
+for snap share, the pooled rest-of-season share is interchangeable with the mean of
+weekly shares (r agrees to within 0.001), while the whole-season cumulative version
+runs about 0.04 higher at RB/WR/TE and 0.11 higher at QB purely from that overlap.
+
+Correlations are also sensitive to the Week 1 gate, because gating on production
+restricts the range of the predictor. Snap share at RB correlates 0.664 with the
+rest of the season inside the main sample (Week 1 carries >= 6) and 0.744 across
+every back who played at least 10% of snaps. Neither is wrong; they answer
+different questions, and the gate is stated with every table.
 Volume metrics are per game; rate metrics are pooled (sum ÷ sum) and require a
 minimum rest-of-season denominator, so a 3-carry sample cannot masquerade as a
 yards-per-carry.
@@ -87,6 +102,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `snapshare_targets.py` | `SNAPSHARE.txt` | the three rest-of-season snap-share targets compared, plus fitted line, residual spread and observed outcome bands for a given Week 1 snap share |
 | `significance.py` | `SIGNIFICANCE.txt` | p-values on r, the partial F on the Week 1 term next to a prior-season baseline, BH q-values across all 55 pairs, and each of weeks 1-9 correlated on its own |
 | `analyze.py` | `FINDINGS.txt` | headline numbers, read back out of the `out_*.csv` files |
 | `make_report_data.py` | `report_data.json` | the study's figures collapsed into one JSON |

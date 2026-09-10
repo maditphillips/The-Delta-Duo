@@ -1,0 +1,82 @@
+================================================================================================
+SNAP SHARE: WHICH REST-OF-SEASON TARGET, AND WHAT A WEEK 1 VALUE BUYS
+nflverse snap counts 2013-2025
+================================================================================================
+
+  A  mean of weekly snap %, weeks 2 onward       <- the target the main study used
+  B  pooled snaps / team snaps, weeks 2 onward   (cumulative rest of season)
+  C  pooled snaps / team snaps, ALL weeks        (end-of-season cumulative)
+
+  C has Week 1 inside it. Part of r(Week 1, C) is that overlap, not prediction.
+
+
+## RB   n = 1060 player-seasons
+   target                                   r      R2   slope  intercept         p  resid sd
+   --------------------------------------------------------------------------------------
+   A  mean weekly, weeks 2+             0.744   0.554   0.651      0.138    <1e-16     0.130
+   B  pooled, weeks 2+                  0.745   0.555   0.651      0.137    <1e-16     0.130
+   C  pooled, whole season              0.784   0.615   0.679      0.127    <1e-16     0.119
+   inflation from letting Week 1 sit inside the target: r 0.744 -> 0.784 (+0.040), R2 0.554 -> 0.615
+
+## WR   n = 1622 player-seasons
+   target                                   r      R2   slope  intercept         p  resid sd
+   --------------------------------------------------------------------------------------
+   A  mean weekly, weeks 2+             0.741   0.549   0.623      0.226    <1e-16     0.156
+   B  pooled, weeks 2+                  0.740   0.548   0.622      0.227    <1e-16     0.156
+   C  pooled, whole season              0.783   0.613   0.651      0.210    <1e-16     0.143
+   inflation from letting Week 1 sit inside the target: r 0.741 -> 0.783 (+0.042), R2 0.549 -> 0.613
+
+## TE   n = 1011 player-seasons
+   target                                   r      R2   slope  intercept         p  resid sd
+   --------------------------------------------------------------------------------------
+   A  mean weekly, weeks 2+             0.770   0.593   0.645      0.191    <1e-16     0.140
+   B  pooled, weeks 2+                  0.770   0.592   0.644      0.191    <1e-16     0.140
+   C  pooled, whole season              0.807   0.651   0.672      0.177    <1e-16     0.129
+   inflation from letting Week 1 sit inside the target: r 0.770 -> 0.807 (+0.037), R2 0.593 -> 0.651
+
+## QB   n = 410 player-seasons
+   target                                   r      R2   slope  intercept         p  resid sd
+   --------------------------------------------------------------------------------------
+   A  mean weekly, weeks 2+             0.525   0.276   0.406      0.538    <1e-16     0.106
+   B  pooled, weeks 2+                  0.526   0.277   0.410      0.534    <1e-16     0.106
+   C  pooled, whole season              0.630   0.397   0.472      0.477    <1e-16     0.093
+   inflation from letting Week 1 sit inside the target: r 0.525 -> 0.630 (+0.105), R2 0.276 -> 0.397
+
+
+================================================================================================
+THE CONCRETE QUESTION: A PLAYER OPENS AT X% OF SNAPS. WHAT HAPPENS NEXT?
+Target A (mean weekly snap %, weeks 2 onward). Week 1 is not in the target.
+================================================================================================
+
+## RB   fitted line: ROS snap % = 0.138 + 0.651 x (Week 1 snap %)
+   slope se 0.018, t = 36.3, p <1e-16, residual sd 0.130, R2 0.554
+   week 1 snap %          n   fitted  observed     sd    p10    p25    p50    p75    p90  fell 15+ pts
+   30%-45%              214    0.374     0.373  0.134   0.20   0.28   0.37   0.47   0.55           12%
+   45%-60%              195    0.471     0.469  0.140   0.28   0.37   0.49   0.56   0.65           19%
+   60%-72%              114    0.562     0.580  0.125   0.40   0.49   0.60   0.66   0.72           26%
+   72%-82%               79    0.635     0.645  0.120   0.49   0.55   0.65   0.72   0.82           44%
+   82%-100%              47    0.716     0.676  0.167   0.47   0.58   0.70   0.79   0.87           62%
+   a RB at 78% in Week 1: point estimate 0.645, 95% prediction interval [0.39, 0.90]
+     the 81 RBs who actually opened 73-83%: mean 0.640, median 0.647, 32% held 70%+, 25% fell under 55%
+
+## WR   fitted line: ROS snap % = 0.226 + 0.623 x (Week 1 snap %)
+   slope se 0.014, t = 44.4, p <1e-16, residual sd 0.156, R2 0.549
+   week 1 snap %          n   fitted  observed     sd    p10    p25    p50    p75    p90  fell 15+ pts
+   30%-45%              133    0.459     0.461  0.180   0.23   0.31   0.47   0.59   0.71            9%
+   45%-60%              191    0.555     0.546  0.174   0.31   0.44   0.55   0.68   0.77           18%
+   60%-72%              230    0.636     0.613  0.174   0.37   0.48   0.65   0.76   0.80           26%
+   72%-82%              217    0.707     0.697  0.152   0.49   0.63   0.73   0.80   0.86           26%
+   82%-100%             526    0.793     0.804  0.127   0.66   0.76   0.83   0.89   0.93           25%
+   a WR at 78% in Week 1: point estimate 0.712, 95% prediction interval [0.41, 1.00]
+     the 241 WRs who actually opened 73-83%: mean 0.708, median 0.737, 59% held 70%+, 14% fell under 55%
+
+## TE   fitted line: ROS snap % = 0.191 + 0.645 x (Week 1 snap %)
+   slope se 0.017, t = 38.3, p <1e-16, residual sd 0.140, R2 0.593
+   week 1 snap %          n   fitted  observed     sd    p10    p25    p50    p75    p90  fell 15+ pts
+   30%-45%              204    0.427     0.437  0.151   0.25   0.34   0.43   0.52   0.63            5%
+   45%-60%              161    0.527     0.507  0.137   0.34   0.41   0.51   0.61   0.68           16%
+   60%-72%              111    0.614     0.593  0.149   0.37   0.50   0.61   0.69   0.78           22%
+   72%-82%               93    0.683     0.696  0.134   0.50   0.61   0.72   0.79   0.85           24%
+   82%-100%             180    0.779     0.789  0.123   0.62   0.71   0.81   0.88   0.93           31%
+   a TE at 78% in Week 1: point estimate 0.694, 95% prediction interval [0.42, 0.97]
+     the 102 TEs who actually opened 73-83%: mean 0.709, median 0.720, 55% held 70%+, 10% fell under 55%
