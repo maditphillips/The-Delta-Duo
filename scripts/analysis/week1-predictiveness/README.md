@@ -101,6 +101,13 @@ prior-season-finish stand-in over 1999–2025. The two correlate at r ≈ 0.90 (
 but diverge in the top tier, where prior-season finish carries uncertainty a real
 draft board had already priced out; the ECR rows win those disagreements.
 
+A third trap, and the one that produced the worst claim in this study: the
+draft-tier gaps were first reported only in points per game, and points per game is
+not comparable across tiers when a top-5 tier averages 18 ppg and a 41+ tier
+averages 8. Scaled to each tier's own spread the effect is well established at WR,
+likely at RB, and unresolved at QB and TE — considerably weaker than the raw ppg
+column implies. `corrections.py` carries both scalings.
+
 Two conditioning traps worth naming, because the first drafts of these scripts fell
 into both. Conditioning on Week 1 production restricts the predictor's range and
 drags every correlation down — see the snap-share note above. And ranking breakout
@@ -121,6 +128,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `corrections.py` | `CORRECTIONS.txt` | two corrections to the tables above: Benjamini-Hochberg q-values across each position's family of breakout predictors, and the draft-tier gaps re-expressed as a share of the tier's own mean and in tier-sd units so tiers can actually be compared |
 | `outliers.py` | `OUTLIERS.txt` | two definitions of a bad Week 1 compared head to head, outlier base rates by draft tier, what predicts a breakout with draft slot held fixed, and whether the breakout was earned or vacated |
 | `adp.py` | `ADP.txt` | Week 1's value by draft position -- tier tables and a log-rank interaction, on real preseason expert consensus rank (2020-2025) and on a prior-season-finish stand-in (1999-2025) |
 | `week1_verdict.py` | `VERDICT.txt` | the broad-strokes answer: Week 1 points against both full-season and rest-of-season scoring, the tier table, and the bust rate of Week 1 stars measured against the field's |
