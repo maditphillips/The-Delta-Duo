@@ -101,6 +101,14 @@ prior-season-finish stand-in over 1999–2025. The two correlate at r ≈ 0.90 (
 but diverge in the top tier, where prior-season finish carries uncertainty a real
 draft board had already priced out; the ECR rows win those disagreements.
 
+Two conditioning traps worth naming, because the first drafts of these scripts fell
+into both. Conditioning on Week 1 production restricts the predictor's range and
+drags every correlation down — see the snap-share note above. And ranking breakout
+predictors without holding draft slot fixed returns every metric below AUC 0.50,
+because "outlier" is defined against draft slot and late-round players both have
+more room to climb and lower Week 1 usage; `outliers.py` holds slot fixed two ways
+and the signs flip.
+
 Anything that looked like a clean story but was not supported by the numbers was
 cut. In particular: EPA per play does **not** beat the Week 1 scoreboard at
 predicting the rest of the season, at any sample size tested here.
@@ -113,6 +121,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `outliers.py` | `OUTLIERS.txt` | two definitions of a bad Week 1 compared head to head, outlier base rates by draft tier, what predicts a breakout with draft slot held fixed, and whether the breakout was earned or vacated |
 | `adp.py` | `ADP.txt` | Week 1's value by draft position -- tier tables and a log-rank interaction, on real preseason expert consensus rank (2020-2025) and on a prior-season-finish stand-in (1999-2025) |
 | `week1_verdict.py` | `VERDICT.txt` | the broad-strokes answer: Week 1 points against both full-season and rest-of-season scoring, the tier table, and the bust rate of Week 1 stars measured against the field's |
 | `rookies.py` | `ROOKIES.txt` | rookie vs veteran Week 1 predictiveness, backfield-relative role metrics (share of the RB room, the lead over RB2), whether Week 1 efficiency buys a bigger role later, and prediction intervals for one named Week 1 line |
