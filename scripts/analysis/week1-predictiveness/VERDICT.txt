@@ -1,0 +1,104 @@
+==================================================================================================
+DOES WEEK 1 PREDICT THE WHOLE SEASON?
+nflverse regular seasons 1999-2025, PPR
+==================================================================================================
+
+
+## 1. THE CORRELATION, PLAINLY
+   Week 1 fantasy points against two targets. 'full season' contains Week 1,
+   so 1/17th of it is the predictor itself; 'rest of season' does not.
+
+                    full-season points/game        rest-of-season points/game
+   pos         n      r    rho     R2        p        r    rho     R2        p
+   -------------------------------------------------------------------------------
+   QB        993  0.630  0.593  0.397  <1e-16    0.504  0.473  0.254  <1e-16
+   RB       2847  0.728  0.749  0.530  <1e-16    0.663  0.684  0.440  <1e-16
+   WR       3573  0.677  0.718  0.458  <1e-16    0.593  0.643  0.352  <1e-16
+   TE       1734  0.639  0.684  0.408  <1e-16    0.545  0.592  0.297  <1e-16
+
+
+## 2. WEEK 1 FINISH -> FULL-SEASON FINISH
+   The 'bust' column is the share of that tier who finished outside a
+   startable full-season rank (QB/TE outside 12, RB outside 24, WR outside 36).
+
+   QB   (993 player-seasons, ~37 per season; startable = top 12)
+   week 1 finish        n   full-season ppg   median full rank   startable    bust
+   -------------------------------------------------------------------------------
+   top 3               81             18.00                  7         69%     31%
+   4-6                 81             16.26                 12         52%     48%
+   7-12               163             14.99                 15         41%     59%
+   13-24              323             14.09                 17         34%     66%
+   25-36              312              9.80                 27         15%     85%
+   37-60               33              6.47                 34          3%     97%
+   FIELD AVERAGE      993             13.13                 19         33%     67%
+
+   RB   (2847 player-seasons, ~105 per season; startable = top 24)
+   week 1 finish        n   full-season ppg   median full rank   startable    bust
+   -------------------------------------------------------------------------------
+   top 3               82             18.52                  8         82%     18%
+   4-6                 80             15.57                 13         75%     25%
+   7-12               162             14.18                 19         62%     38%
+   13-24              328             12.04                 26         48%     52%
+   25-36              325              9.66                 35         33%     67%
+   37-60              649              7.17                 50         18%     82%
+   61+               1221              3.33                 78          4%     96%
+   FIELD AVERAGE     2847              7.33                 53         23%     77%
+
+   WR   (3573 player-seasons, ~132 per season; startable = top 36)
+   week 1 finish        n   full-season ppg   median full rank   startable    bust
+   -------------------------------------------------------------------------------
+   top 3               81             16.13                 13         79%     21%
+   4-6                 83             15.33                 19         75%     25%
+   7-12               163             13.61                 27         61%     39%
+   13-24              324             12.41                 34         54%     46%
+   25-36              323             11.16                 35         52%     48%
+   37-60              658              9.74                 51         35%     65%
+   61+               1941              5.05                 92          9%     91%
+   FIELD AVERAGE     3573              8.01                 67         27%     73%
+
+   TE   (1734 player-seasons, ~64 per season; startable = top 12)
+   week 1 finish        n   full-season ppg   median full rank   startable    bust
+   -------------------------------------------------------------------------------
+   top 3               81             10.60                  9         60%     40%
+   4-6                 81              9.80                 12         51%     49%
+   7-12               162              8.88                 16         38%     62%
+   13-24              332              7.45                 22         28%     72%
+   25-36              341              5.15                 34         13%     87%
+   37-60              708              3.39                 47          5%     95%
+   61+                 29              2.71                 61          0%    100%
+   FIELD AVERAGE     1734              5.65                 33         19%     81%
+
+
+## 3. THE ANALYST'S CLAIM, TESTED DIRECTLY
+   'Week 1 stars turn into duds.' They do -- but compared with whom?
+
+   pos                  week 1 top 12         everyone else   ratio
+               n  bust rate   per szn       n     bust rate
+   ----------------------------------------------------------------
+   QB        325        49%       5.9     668           76%    0.65
+   RB        324        30%       3.6    2523           83%    0.36
+   WR        327        31%       3.8    3246           77%    0.41
+   TE        324        53%       6.4    1410           88%    0.60
+
+   'per szn' is how many nameable Week 1 top-12 busts a season produces at
+   that position -- the raw material for the take. The ratio is what the take
+   leaves out: below 1.00 means a Week 1 star busts LESS often than the field.
+
+
+## 4. HOW MUCH OF THE SEASON DOES ONE GAME MOVE THE ESTIMATE?
+   Season points per game predicted from Week 1 points alone (OLS).
+   pos     intercept    slope  resid sd   a 25-pt week 1 projects   a 3-pt week 1 projects
+   ---------------------------------------------------------------------------------------
+   QB           8.05    0.396      4.20                 17.9 ppg                 9.2 ppg
+   RB           3.51    0.559      4.06                 17.5 ppg                 5.2 ppg
+   WR           4.37    0.465      3.96                 16.0 ppg                 5.8 ppg
+   TE           3.38    0.426      3.04                 14.0 ppg                 4.7 ppg
+
+
+## 5. THE NAMEABLE CASES, SO THE TAKE HAS ITS DUE
+
+   RB: of 137 top-5 Week 1 finishes, 30 busted (22%) and 78 finished top-12 (57%)
+     busts: Duce Staley 2000 (36 pts wk1, finished 37), DeAngelo Williams 2016 (35 pts wk1, finished 43), Quentin Griffin 2004 (33 pts wk1, finished 59), Carlos Hyde 2015 (32 pts wk1, finished 54), Willie Parker 2008 (32 pts wk1, finished 43), LaMont Jordan 2007 (31 pts wk1, finished 37)
+
+   WR: of 135 top-5 Week 1 finishes, 32 busted (24%) and 59 finished top-12 (44%)
+     busts: Sammy Watkins 2019 (47 pts wk1, finished 48), Kevin Dyson 1999 (37 pts wk1, finished 43), DeSean Jackson 2019 (35 pts wk1, finished 107), John Ross 2019 (35 pts wk1, finished 71), Keenan Allen 2015 (32 pts wk1, finished 39), DeSean Jackson 2018 (32 pts wk1, finished 40)

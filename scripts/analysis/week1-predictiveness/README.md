@@ -103,6 +103,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `week1_verdict.py` | `VERDICT.txt` | the broad-strokes answer: Week 1 points against both full-season and rest-of-season scoring, the tier table, and the bust rate of Week 1 stars measured against the field's |
 | `rookies.py` | `ROOKIES.txt` | rookie vs veteran Week 1 predictiveness, backfield-relative role metrics (share of the RB room, the lead over RB2), whether Week 1 efficiency buys a bigger role later, and prediction intervals for one named Week 1 line |
 | `band_cells.py` | `BAND_CELLS.txt` | one conditional cell in detail -- RBs who opened at 45-60% of snaps, split by whether their Week 1 YPC cleared 5.0 -- with confidence intervals on each group and on the difference |
 | `snapshare_targets.py` | `SNAPSHARE.txt` | the three rest-of-season snap-share targets compared, plus fitted line, residual spread and observed outcome bands for a given Week 1 snap share |
