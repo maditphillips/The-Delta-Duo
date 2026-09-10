@@ -87,6 +87,14 @@ predicting the rest of the season, at any sample size tested here.
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
 | `analyze.py` | `FINDINGS.txt` | headline numbers, read back out of the `out_*.csv` files |
+| `make_report_data.py` | `report_data.json` | the study's figures collapsed into one JSON |
+| `report.py` | `week1-report.html` | a standalone HTML write-up of the study |
+
+`week1-report.html` is a **self-contained offline file**, not a site page: nothing in
+`src/` imports it and no route serves it. It borrows the house style from
+`src/app/globals.css` so it reads like the rest of the Lab, and every figure in it
+comes from `report_data.json`, so no number is typed by hand. Regenerate with
+`python3 make_report_data.py && python3 report.py`.
 
 ## Re-running it on a live Week 1
 
