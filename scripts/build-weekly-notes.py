@@ -33,6 +33,10 @@ MC = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}/mc-rankings.csv")
 # carries the reason, because an override with no argument behind it is just
 # the vibes list wearing the data list's colours.
 MANUAL = Path("data/weekly/manual-ranks.csv")
+# Men promoted onto the board from just off it, when someone published is out.
+# They are pulled from the model's own deeper pool rather than invented, so a
+# promoted player arrives with a real floor, median, ceiling and top-12 odds.
+ADDED = Path("data/weekly/added.csv")
 FILES = {
     ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
     ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
@@ -298,6 +302,32 @@ def league_ranks(frames: list[pd.DataFrame]) -> tuple[dict, dict, dict]:
     return total, ranks[0], ranks[1]
 
 
+def promote(df: pd.DataFrame, pos: str, fname: str) -> pd.DataFrame:
+    """Splice in anyone named in added.csv, taken from the model's pool."""
+    if not ADDED.exists():
+        return df
+    a = pd.read_csv(ADDED)
+    a = a[(a.season == SEASON) & (a.week == WEEK) & (a.position.str.lower() == pos)]
+    want = [p for p in a.player if p not in set(df.player_name)]
+    if not want:
+        return df
+    pool_path = SRC / ("notes_" + fname.replace("notes_", "").replace(".csv", "_pool.csv"))
+    if not pool_path.exists():
+        print(f"    {pos}: no pool file, cannot promote {want}")
+        return df
+    pool = pd.read_csv(pool_path)
+    add = pool[pool.player_name.isin(want)]
+    missing = set(want) - set(add.player_name)
+    if missing:
+        print(f"    {pos}: not in the pool either: {sorted(missing)}")
+    if add.empty:
+        return df
+    print(f"    {pos}: promoted from the pool: "
+          + ", ".join(f"{r.player_name} (model had him {int(r.rank_data)})"
+                      for r in add.itertuples()))
+    return pd.concat([df, add], ignore_index=True).sort_values("proj", ascending=False)
+
+
 def override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
     """Move a player to a hand-picked slot and close the list up behind him."""
     if not MANUAL.exists():
@@ -327,13 +357,36 @@ def override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
               + (f", projection set to {float(row['proj']):.1f}"
                  if pd.notna(row.get("proj")) else ""))
     df["rank_data"] = range(1, len(df) + 1)
+
+    # Price every man who moved for the slot he landed in.
+    #
+    # A hand placement moves the rank and leaves the projection where the model
+    # put it, which is how Sam LaPorta came to sit tenth on 7.35 with T.J.
+    # Hockenson eleventh on 7.60. The board reads as broken and the start/sit
+    # tool, which ranks on points rather than on the board, goes on preferring
+    # the man underneath. Each mover takes the midpoint of his new neighbours,
+    # in rank order so a mover placed next to another sees the corrected value.
+    # An explicit projection in the file wins over this.
+    priced = set(m.loc[m.proj.notna(), "player"]) if "proj" in m else set()
+    df = df.reset_index(drop=True)
+    for name in m.sort_values("rank").player:
+        if name in priced:
+            continue
+        at = df.index[df.player_name == name]
+        if not len(at):
+            continue
+        i = at[0]
+        above = df.proj.iloc[i - 1] if i > 0 else df.proj.max() * 1.02
+        below = df.proj.iloc[i + 1] if i + 1 < len(df) else df.proj.min() * 0.98
+        df.loc[i, "proj"] = round((float(above) + float(below)) / 2, 3)
     return df
 
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     mc = pd.read_csv(MC) if MC.exists() else None
-    loaded = {k: scratch(pd.read_csv(SRC / v), k[0]) for k, v in FILES.items()}
+    loaded = {k: scratch(promote(pd.read_csv(SRC / v), k[0], v), k[0])
+              for k, v in FILES.items()}
     rk_total, rk_pass, rk_rush = league_ranks(list(loaded.values()))
     for (pos, variant), fname in FILES.items():
         df = loaded[(pos, variant)].copy()
