@@ -53,6 +53,7 @@ are good — something you knew in August. So every metric is measured four ways
 | Test | Question it settles |
 |---|---|
 | `r(W1 → ROS)` | the correlation everyone quotes |
+| partial F on the Week 1 term | with n in the hundreds nearly every `r` clears p&nbsp;<&nbsp;0.05, so significance separates almost nothing here; effect size does. `significance.py` reports both |
 | `r(prior → ROS)` and ΔR² | what Week 1 adds *on top of* last season |
 | `r(mid-season week → rest)` | is Week 1 special, or is one game just one game? |
 | signal share and λ | how much of a single game's spread is real, and how many games until a metric is half signal |
@@ -86,6 +87,7 @@ predicting the rest of the season, at any sample size tested here.
 | `stability.py` | `STABILITY.txt` | signal share, stabilisation points, and the cumulative weeks-1..k curve |
 | `fantasy.py` | `FANTASY.txt` | best Week 1 signal for fantasy, rank transitions, the panic table, how much of a surprise is real, waiver spikes |
 | `team.py` | `TEAM.txt` | 1-0 vs 0-1, margin and EPA as predictors, blowouts, the betting-market test |
+| `significance.py` | `SIGNIFICANCE.txt` | p-values on r, the partial F on the Week 1 term next to a prior-season baseline, BH q-values across all 55 pairs, and each of weeks 1-9 correlated on its own |
 | `analyze.py` | `FINDINGS.txt` | headline numbers, read back out of the `out_*.csv` files |
 | `make_report_data.py` | `report_data.json` | the study's figures collapsed into one JSON |
 | `report.py` | `week1-report.html` | a standalone HTML write-up of the study |

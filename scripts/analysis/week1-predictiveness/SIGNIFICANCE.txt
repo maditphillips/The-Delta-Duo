@@ -1,0 +1,155 @@
+============================================================================================================
+SIGNIFICANCE TESTS
+nflverse regular seasons 1999-2025; 55 position-metric pairs tested
+============================================================================================================
+
+  r        Week 1 -> rest-of-season correlation
+  p_r/q_r  is that r different from zero (q = Benjamini-Hochberg across all pairs)
+  dR2      extra variance Week 1 explains AFTER last season is in the model
+  t_w1     t on the standardised Week 1 coefficient in ROS ~ Week1 + prior
+  p_w1/q_w1  does Week 1 add anything beyond last season (this is the real test)
+
+
+## QB
+metric              kind       n      r       p_r      q_r    | n    dR2   t_w1      p_w1     q_w1  verdict   
+------------------------------------------------------------------------------------------------------------
+fantasy_ppg         volume   766  0.345    <1e-16   <1e-16    693  0.059   7.76   3.1e-14  5.5e-14  adds signal 
+passing_yards       volume   766  0.374    <1e-16   <1e-16    693  0.046   6.87   1.5e-11  2.4e-11  adds signal 
+pass_tds            volume   766  0.261   2.2e-13  2.9e-13    693  0.045   6.40   2.9e-10  4.4e-10  adds signal 
+qb_carries          volume   766  0.636    <1e-16   <1e-16    693  0.030   8.38   3.1e-16  5.8e-16  adds signal 
+epa_per_pass        rate     756  0.250   2.8e-12  3.6e-12    634  0.028   4.69   3.4e-06  4.5e-06  adds signal 
+pass_td_rate        rate     756  0.206     1e-08  1.2e-08    634  0.028   4.47   9.2e-06  1.2e-05  adds signal 
+pass_attempts       volume   766  0.284     1e-15  1.5e-15    693  0.025   4.76   2.3e-06  3.1e-06  adds signal 
+yards_per_attempt   rate     756  0.223   5.6e-10  6.8e-10    634  0.023   4.29     2e-05  2.6e-05  adds signal 
+completion_pct      rate     756  0.272   2.5e-14  3.4e-14    634  0.014   3.72   0.00021  0.00026  adds signal 
+cpoe                rate     756  0.160   9.5e-06  1.1e-05    634  0.010   2.81     0.005   0.0058  adds signal 
+int_rate            rate     756  0.107    0.0031   0.0032    634  0.004   1.52      0.13     0.13  not distinguishable
+
+## RB
+metric              kind       n      r       p_r      q_r    | n    dR2   t_w1      p_w1     q_w1  verdict   
+------------------------------------------------------------------------------------------------------------
+snap_pct            share    578  0.666    <1e-16   <1e-16    467  0.184  12.87    <1e-16   <1e-16  adds signal 
+target_share        share   1179  0.702    <1e-16   <1e-16   1010  0.163  20.47    <1e-16   <1e-16  adds signal 
+targets             volume  1179  0.678    <1e-16   <1e-16   1010  0.162  19.67    <1e-16   <1e-16  adds signal 
+rush_share          share   1179  0.651    <1e-16   <1e-16   1010  0.155  18.22    <1e-16   <1e-16  adds signal 
+opportunities       volume  1179  0.556    <1e-16   <1e-16   1010  0.109  14.35    <1e-16   <1e-16  adds signal 
+touches             volume  1179  0.562    <1e-16   <1e-16   1010  0.104  14.16    <1e-16   <1e-16  adds signal 
+carries             volume  1179  0.535    <1e-16   <1e-16   1010  0.091  13.17    <1e-16   <1e-16  adds signal 
+fantasy_ppg_ppr     volume  1179  0.489    <1e-16   <1e-16   1010  0.088  12.27    <1e-16   <1e-16  adds signal 
+fantasy_ppg_half    volume  1179  0.468    <1e-16   <1e-16   1010  0.085  11.89    <1e-16   <1e-16  adds signal 
+receptions          volume  1179  0.505    <1e-16   <1e-16   1010  0.075  11.56    <1e-16   <1e-16  adds signal 
+rushing_yards       volume  1179  0.429    <1e-16   <1e-16   1010  0.070  10.87    <1e-16   <1e-16  adds signal 
+rushing_tds         volume  1179  0.247    <1e-16   <1e-16   1010  0.037   6.75   2.5e-11  3.9e-11  adds signal 
+yards_per_touch     rate    1127  0.234   1.9e-15  2.7e-15    928  0.026   5.38   9.2e-08  1.4e-07  adds signal 
+rush_fd_rate        rate    1096  0.188   3.9e-10  4.9e-10    890  0.026   4.98   7.8e-07  1.1e-06  adds signal 
+epa_per_carry       rate    1096  0.111   0.00023  0.00026    890  0.008   2.65    0.0082    0.009  adds signal 
+yards_per_carry     rate    1096  0.096    0.0014   0.0015    890  0.003   1.76     0.079    0.082  not distinguishable
+
+## WR
+metric              kind       n      r       p_r      q_r    | n    dR2   t_w1      p_w1     q_w1  verdict   
+------------------------------------------------------------------------------------------------------------
+snap_pct            share   1114  0.652    <1e-16   <1e-16    904  0.194  19.27    <1e-16   <1e-16  adds signal 
+target_share        share   1763  0.547    <1e-16   <1e-16   1492  0.118  18.02    <1e-16   <1e-16  adds signal 
+wopr                share   1763  0.494    <1e-16   <1e-16   1492  0.102  16.53    <1e-16   <1e-16  adds signal 
+targets             volume  1763  0.497    <1e-16   <1e-16   1492  0.096  15.92    <1e-16   <1e-16  adds signal 
+air_yards           volume  1763  0.647    <1e-16   <1e-16   1492  0.083  17.80    <1e-16   <1e-16  adds signal 
+air_yards_share     share   1763  0.397    <1e-16   <1e-16   1492  0.077  13.75    <1e-16   <1e-16  adds signal 
+receptions          volume  1763  0.490    <1e-16   <1e-16   1492  0.057  13.03    <1e-16   <1e-16  adds signal 
+receiving_yards     volume  1763  0.419    <1e-16   <1e-16   1492  0.049  11.67    <1e-16   <1e-16  adds signal 
+fantasy_ppg_ppr     volume  1763  0.420    <1e-16   <1e-16   1492  0.049  11.58    <1e-16   <1e-16  adds signal 
+fantasy_ppg_half    volume  1763  0.392    <1e-16   <1e-16   1492  0.044  10.84    <1e-16   <1e-16  adds signal 
+yards_per_catch     rate    1408  0.196   1.2e-13  1.6e-13   1036  0.018   4.89   1.2e-06  1.6e-06  adds signal 
+adot                role    1644  0.698    <1e-16   <1e-16   1236  0.016  10.29    <1e-16   <1e-16  adds signal 
+catch_rate          rate    1644  0.193   2.9e-15  4.1e-15   1236  0.009   3.82   0.00014  0.00017  adds signal 
+receiving_tds       volume  1763  0.144   1.2e-09  1.4e-09   1492  0.008   3.69   0.00023  0.00027  adds signal 
+yards_per_target    rate    1644  0.115   2.7e-06  3.1e-06   1236  0.006   2.78    0.0055   0.0061  adds signal 
+epa_per_target      rate    1644  0.089   0.00032  0.00035   1236  0.004   2.25     0.025    0.026  adds signal 
+
+## TE
+metric              kind       n      r       p_r      q_r    | n    dR2   t_w1      p_w1     q_w1  verdict   
+------------------------------------------------------------------------------------------------------------
+snap_pct            share    555  0.738    <1e-16   <1e-16    473  0.284  18.05    <1e-16   <1e-16  adds signal 
+target_share        share    836  0.593    <1e-16   <1e-16    740  0.154  15.40    <1e-16   <1e-16  adds signal 
+targets             volume   836  0.559    <1e-16   <1e-16    740  0.127  13.51    <1e-16   <1e-16  adds signal 
+air_yards           volume   836  0.632    <1e-16   <1e-16    740  0.105  14.02    <1e-16   <1e-16  adds signal 
+air_yards_share     share    836  0.427    <1e-16   <1e-16    740  0.075   9.80    <1e-16   <1e-16  adds signal 
+receptions          volume   836  0.499    <1e-16   <1e-16    740  0.058   9.29    <1e-16   <1e-16  adds signal 
+fantasy_ppg_ppr     volume   836  0.431    <1e-16   <1e-16    740  0.044   7.91   9.1e-15  1.7e-14  adds signal 
+fantasy_ppg_half    volume   836  0.403    <1e-16   <1e-16    740  0.039   7.36     5e-13  8.4e-13  adds signal 
+receiving_yards     volume   836  0.447    <1e-16   <1e-16    740  0.037   7.51   1.7e-13    3e-13  adds signal 
+adot                role     728  0.556    <1e-16   <1e-16    540  0.018   5.11   4.4e-07  6.4e-07  adds signal 
+catch_rate          rate     728  0.113    0.0024   0.0024    540  0.010   2.50     0.013    0.014  adds signal 
+yards_per_target    rate     728  0.066     0.074    0.074    540  0.000   0.54      0.59     0.59  not distinguishable
+
+
+============================================================================================================
+WEEK 1 PLACED INSIDE THE WEEK-TO-WEEK SPREAD
+Each of weeks 1-9 correlated on its own against the rest of that same season.
+============================================================================================================
+
+                            r from           weeks 2-9 alone    wk1      z
+metric                      week 1     mean      sd     min     max   rank       
+----------------------------------------------------------------------------------------------------
+QB qb_carries                0.636    0.638   0.041   0.588   0.697    5/9  -0.05
+QB passing_yards             0.374    0.362   0.029   0.328   0.414    7/9   0.42
+QB fantasy_ppg               0.345    0.385   0.029   0.337   0.416    2/9  -1.36
+QB pass_attempts             0.284    0.248   0.018   0.222   0.270    9/9   2.03
+QB completion_pct            0.272    0.344   0.030   0.282   0.378    1/9  -2.37
+QB pass_tds                  0.261    0.276   0.042   0.216   0.337    4/9  -0.36
+QB epa_per_pass              0.250    0.285   0.029   0.222   0.309    2/9  -1.20
+QB yards_per_attempt         0.223    0.266   0.026   0.229   0.306    1/9  -1.66
+QB pass_td_rate              0.206    0.197   0.042   0.122   0.254    6/9   0.23
+QB cpoe                      0.160    0.251   0.023   0.209   0.273    1/9  -3.90
+QB int_rate                  0.107    0.109   0.023   0.070   0.134    4/9  -0.05
+RB target_share              0.702    0.684   0.035   0.609   0.712    6/9   0.53
+RB targets                   0.678    0.690   0.012   0.674   0.708    2/9  -0.98
+RB snap_pct                  0.666    0.690   0.033   0.655   0.743    4/9  -0.73
+RB rush_share                0.651    0.675   0.017   0.653   0.704    1/9  -1.39
+RB touches                   0.562    0.572   0.017   0.550   0.594    3/9  -0.61
+RB opportunities             0.556    0.577   0.020   0.548   0.604    3/9  -1.04
+RB carries                   0.535    0.548   0.019   0.522   0.578    3/9  -0.71
+RB receptions                0.505    0.531   0.014   0.502   0.545    2/9  -1.90
+RB fantasy_ppg_ppr           0.489    0.460   0.025   0.438   0.498    7/9   1.17
+RB fantasy_ppg_half          0.468    0.434   0.027   0.412   0.476    7/9   1.27
+RB rushing_yards             0.429    0.412   0.030   0.380   0.463    7/9   0.59
+RB rushing_tds               0.247    0.219   0.026   0.182   0.249    7/9   1.10
+RB yards_per_touch           0.234    0.212   0.034   0.157   0.253    6/9   0.63
+RB rush_fd_rate              0.188    0.158   0.037   0.116   0.220    7/9   0.80
+RB epa_per_carry             0.111    0.116   0.027   0.079   0.171    5/9  -0.20
+RB yards_per_carry           0.096    0.140   0.028   0.094   0.187    2/9  -1.57
+WR adot                      0.698    0.707   0.023   0.668   0.738    3/9  -0.39
+WR snap_pct                  0.652    0.694   0.022   0.665   0.720    1/9  -1.90
+WR air_yards                 0.647    0.640   0.017   0.616   0.667    6/9   0.45
+WR target_share              0.547    0.575   0.016   0.553   0.601    1/9  -1.78
+WR targets                   0.497    0.517   0.020   0.489   0.546    3/9  -1.01
+WR wopr                      0.494    0.502   0.021   0.471   0.532    4/9  -0.37
+WR receptions                0.490    0.482   0.028   0.434   0.511    5/9   0.29
+WR fantasy_ppg_ppr           0.420    0.428   0.017   0.406   0.459    4/9  -0.48
+WR receiving_yards           0.419    0.419   0.012   0.399   0.433    4/9  -0.07
+WR air_yards_share           0.397    0.387   0.032   0.342   0.435    6/9   0.31
+WR fantasy_ppg_half          0.392    0.406   0.018   0.386   0.437    3/9  -0.76
+WR yards_per_catch           0.196    0.212   0.026   0.163   0.243    3/9  -0.62
+WR catch_rate                0.193    0.223   0.020   0.195   0.246    1/9  -1.49
+WR receiving_tds             0.144    0.192   0.028   0.145   0.230    1/9  -1.71
+WR yards_per_target          0.115    0.135   0.014   0.111   0.153    2/9  -1.36
+WR epa_per_target            0.089    0.106   0.025   0.082   0.157    4/9  -0.70
+TE snap_pct                  0.738    0.758   0.025   0.731   0.795    4/9  -0.81
+TE air_yards                 0.632    0.622   0.023   0.591   0.654    7/9   0.43
+TE target_share              0.593    0.612   0.019   0.576   0.635    2/9  -0.97
+TE targets                   0.559    0.579   0.016   0.556   0.598    3/9  -1.22
+TE adot                      0.556    0.572   0.011   0.561   0.590    1/9  -1.40
+TE receptions                0.499    0.523   0.022   0.490   0.559    2/9  -1.12
+TE receiving_yards           0.447    0.479   0.023   0.445   0.517    2/9  -1.43
+TE fantasy_ppg_ppr           0.431    0.463   0.026   0.426   0.488    3/9  -1.23
+TE air_yards_share           0.427    0.412   0.038   0.339   0.463    6/9   0.39
+TE fantasy_ppg_half          0.403    0.436   0.028   0.396   0.466    3/9  -1.19
+TE catch_rate                0.113    0.147   0.045   0.074   0.189    3/9  -0.77
+TE yards_per_target          0.066    0.102   0.037   0.029   0.149    2/9  -0.95
+
+Across all 55 metrics, Week 1's r minus the mean of weeks 2-9:
+  mean difference -0.0130   sd 0.0256   t(54) = -3.77   p = 0.0004
+  metrics where Week 1 is the single lowest of the nine weeks: 9 of 55
+  metrics where Week 1 is the single highest: 1 of 55
+  metrics where Week 1 sits inside the weeks 2-9 range: 45 of 55
+  (these metrics share players and seasons, so they are not independent tests --
+   the t above treats each metric as one observation and overstates its own precision)
