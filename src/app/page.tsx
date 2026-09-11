@@ -44,6 +44,13 @@ const otherTabs = [
     color: CHALK.green,
   },
   {
+    href: "/buy-sell",
+    label: "Buy Low / Sell High",
+    blurb:
+      "Which of last week's outliers meant something. Each miss split into the work a man was given and what he did with it, judged against four seasons of what followed.",
+    color: "var(--accent-2-lt)",
+  },
+  {
     href: "/rankings",
     label: "Season Rankings",
     blurb:

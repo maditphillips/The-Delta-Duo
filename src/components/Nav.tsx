@@ -7,6 +7,7 @@ const tabs = [
   { href: "/", label: "The Deltas" },
   { href: "/data-vs-vibes", label: "Weekly Rankings" },
   { href: "/start-sit", label: "Start / Sit" },
+  { href: "/buy-sell", label: "Buy Low / Sell High" },
   { href: "/wide-receiver", label: "Wide Receiver" },
   { href: "/quarterback", label: "Quarterback" },
   { href: "/running-back", label: "Running Back" },
