@@ -267,7 +267,8 @@ def _why(r) -> str:
     td_a = r.a_rec_td + r.a_rush_td + r.a_pass_td
     td_p = r.p_rec_td + r.p_rush_td + r.p_pass_td
     if abs(td_a - td_p) >= 0.6:
-        bits.append(f"{td_a:.0f} touchdowns against {td_p:.1f} expected")
+        word = "touchdown" if abs(td_a - 1) < 0.5 else "touchdowns"
+        bits.append(f"{td_a:.0f} {word} against {td_p:.1f} expected")
     return ". ".join(bits[:4]) + "." if bits else ""
 
 
