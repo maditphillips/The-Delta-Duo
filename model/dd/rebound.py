@@ -171,11 +171,23 @@ FEATURES = ["resid", "d_targets", "d_carries", "d_pass_att", "opp_ratio",
             "prior_ppg", "week"]
 
 
-def _matrix(df: pd.DataFrame) -> np.ndarray:
+def _frame(df: pd.DataFrame) -> pd.DataFrame:
     X = df[FEATURES].copy()
     for pos in POSITIONS[1:]:          # QB is the reference level
         X[f"is_{pos}"] = (df.position == pos).astype(float)
-    return X.fillna(X.median(numeric_only=True)).to_numpy()
+    return X
+
+
+def _matrix(df: pd.DataFrame, fill: pd.Series | None = None) -> np.ndarray:
+    """Gaps are filled from the training seasons, never from the week in hand.
+
+    In week one nobody has prior form, so prior_ppg and the role features are
+    empty for the entire slate and a median taken from the slate itself is
+    simply NaN again. Filling from training also keeps one week's rows from
+    informing each other, which is its own small leak the rest of the season.
+    """
+    X = _frame(df)
+    return X.fillna(fill if fill is not None else X.median(numeric_only=True)).to_numpy()
 
 
 def usable(f: pd.DataFrame) -> pd.DataFrame:
@@ -191,7 +203,10 @@ def fit(train: pd.DataFrame):
     from sklearn.preprocessing import StandardScaler
     m = make_pipeline(StandardScaler(),
                       RidgeCV(alphas=np.logspace(-2, 4, 25)))
-    return m.fit(_matrix(train), train.target.to_numpy())
+    fill = _frame(train).median(numeric_only=True)
+    m.fit(_matrix(train, fill), train.target.to_numpy())
+    m.fill_ = fill
+    return m
 
 
 def backtest(f: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
@@ -203,7 +218,7 @@ def backtest(f: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     for season in sorted(d.season.unique())[1:]:
         tr, te = d[d.season < season], d[d.season == season]
         m = fit(tr)
-        pred = m.predict(_matrix(te))
+        pred = m.predict(_matrix(te, m.fill_))
         y = te.target.to_numpy()
         for name, p in (("model", pred),
                         ("week meant nothing", np.zeros(len(te))),
@@ -216,3 +231,73 @@ def backtest(f: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     if verbose:
         print(r.groupby("source")[["mae", "rmse", "spearman"]].mean().round(3).to_string())
     return r
+
+
+# How big a miss has to be before it is worth a second look. Taken from the
+# historical spread rather than from the week in hand, so a Thursday night with
+# four games on it is judged by the same yardstick as a full Sunday.
+FLAG_PCT = 0.15
+
+
+def calibrate(train: pd.DataFrame, model) -> dict:
+    """Where to cut, learned from history instead of guessed."""
+    lo, hi = train.resid.quantile(FLAG_PCT), train.resid.quantile(1 - FLAG_PCT)
+    pred = model.predict(_matrix(train, model.fill_))
+    t = train.assign(pred=pred)
+    sell = t[t.resid >= hi]
+    buy = t[(t.resid <= lo) & (t.level >= 15)]
+    return {"resid_lo": float(lo), "resid_hi": float(hi),
+            "sell_cut": float(sell.pred.median()),
+            "buy_cut": float(buy.pred.median())}
+
+
+def _why(r) -> str:
+    """The week in one line: what he was given, and what he did with it."""
+    bits = []
+    opp = [(r.a_rec_tgt, r.p_rec_tgt, "targets"),
+           (r.a_rush_att, r.p_rush_att, "carries"),
+           (r.a_pass_att, r.p_pass_att, "attempts")]
+    for a, p, name in opp:
+        if max(a, p) >= 3 and abs(a - p) >= 1:
+            bits.append(f"{a:.0f} {name} against {p:.1f} expected")
+        elif max(a, p) >= 3:
+            bits.append(f"{a:.0f} {name}, about what was expected")
+    if pd.notna(r.snap_share):
+        bits.append(f"{r.snap_share:.0%} of the snaps")
+    td_a = r.a_rec_td + r.a_rush_td + r.a_pass_td
+    td_p = r.p_rec_td + r.p_rush_td + r.p_pass_td
+    if abs(td_a - td_p) >= 0.6:
+        bits.append(f"{td_a:.0f} touchdowns against {td_p:.1f} expected")
+    return ". ".join(bits[:4]) + "." if bits else ""
+
+
+VERDICTS = ("SELL HIGH", "BUY LOW", "HOLD", "NO CALL")
+
+
+def predict(season: int, week: int, f: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Call the week just played, using every season before it."""
+    if f is None:
+        f = features(panel(verbose=False))
+    train = usable(f[f.season < season])
+    model = fit(train)
+    cuts = calibrate(train, model)
+
+    live = f[(f.season == season) & (f.week == week)].copy()
+    live["pred_change"] = model.predict(_matrix(live, model.fill_))
+
+    sell = (live.resid >= cuts["resid_hi"]) & (live.pred_change <= cuts["sell_cut"])
+    # Below a 15-point projection the backtest cannot call a rebound, so it
+    # does not pretend to. Saying nothing is the honest answer there.
+    buyable = (live.resid <= cuts["resid_lo"]) & (live.level >= 15)
+    buy = buyable & (live.pred_change >= cuts["buy_cut"])
+    live["verdict"] = np.select(
+        [sell, buy, buyable | (live.resid >= cuts["resid_hi"]),
+         live.resid <= cuts["resid_lo"]],
+        ["SELL HIGH", "BUY LOW", "HOLD", "NO CALL"],
+        default="HOLD")
+    live["why"] = live.apply(_why, axis=1)
+    live["cuts"] = json.dumps(cuts)
+    cols = ["season", "week", "sleeper_id", "player", "position", "team",
+            "a_pts_ppr", "p_pts_ppr", "resid", "pred_change", "verdict", "why",
+            "snap_share", "level", "d_targets", "d_carries", "d_tds", "cuts"]
+    return live[cols].sort_values("resid")
