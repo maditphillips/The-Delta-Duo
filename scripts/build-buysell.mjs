@@ -63,6 +63,9 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
       why: r.why || null,
       snapShare: num(r.snap_share),
       level: num(r.level),
+      injuryStatus: r.injury_status || null,
+      injuryPart: r.injury_part || null,
+      leftEarly: r.left_early === "True" || r.left_early === "true",
     })).filter((r) => r.player && r.verdict);
     if (!rows.length) continue;
     const cuts = JSON.parse(parseCsv(fs.readFileSync(path.join(SRC, season, file), "utf8"))[0].cuts || "{}");

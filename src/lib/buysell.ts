@@ -11,7 +11,13 @@ export type BuySellRow = {
   resid: number | null;
   /** Points a game against his current level over the rest of the season. */
   predChange: number | null;
-  verdict: "SELL HIGH" | "BUY LOW" | "HOLD" | "NO CALL" | string;
+  verdict: "INJURED" | "SELL HIGH" | "BUY LOW" | "HOLD" | "NO CALL" | string;
+  /** Sleeper's live status, when he carries one. */
+  injuryStatus?: string | null;
+  injuryPart?: string | null;
+  /** A projected starter who played almost none of the snaps, so the week
+   *  ended early even if the report has not caught up yet. */
+  leftEarly?: boolean;
   /** The week in one line: what he was given and what he did with it. */
   why?: string | null;
   snapShare?: number | null;
@@ -39,10 +45,20 @@ export const BUY_LEVEL_FLOOR = 15;
 export const SELL_COLOR = "var(--accent-2-lt)";
 export const BUY_COLOR = "var(--accent-3)";
 
+export const HURT_COLOR = "var(--accent-gold)";
+
 export function verdictColor(v: string) {
   if (v === "SELL HIGH") return SELL_COLOR;
   if (v === "BUY LOW") return BUY_COLOR;
+  if (v === "INJURED") return HURT_COLOR;
   return "var(--ink-faint)";
+}
+
+/** Why he is off the boards, in as few words as the feed allows. */
+export function hurtReason(r: BuySellRow): string {
+  const part = r.injuryPart ? ` (${r.injuryPart.toLowerCase()})` : "";
+  if (r.injuryStatus) return `${r.injuryStatus}${part}`;
+  return "left the game early";
 }
 
 /** What the verdict means in a sentence, for the lookup. */
@@ -51,6 +67,8 @@ export function verdictLine(r: BuySellRow): string {
   // "missed by -6.9" reads as a double negative.
   const miss = r.resid == null ? "" : Math.abs(r.resid).toFixed(1);
   switch (r.verdict) {
+    case "INJURED":
+      return `Off the board: ${hurtReason(r)}. He did not play a full game, so this week is not a performance and there is nothing in it to trade on either way.`;
     case "SELL HIGH":
       return `Sell high. He beat his projection by ${miss} and the model expects it back.`;
     case "BUY LOW":

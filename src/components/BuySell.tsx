@@ -6,7 +6,9 @@ import { initials, photoUrl } from "@/lib/startSit";
 import {
   BUY_COLOR,
   BUY_LEVEL_FLOOR,
+  HURT_COLOR,
   SELL_COLOR,
+  hurtReason,
   verdictColor,
   verdictLine,
   type BuySellBoard as Board,
@@ -118,6 +120,13 @@ export default function BuySell() {
       .sort((a, b) => (a.resid ?? 0) - (b.resid ?? 0)),
     [board]
   );
+  // Off both boards. A man who left on the fifth play scored nothing because
+  // he was not on the field, and the miss says nothing about him either way.
+  const hurt = useMemo(
+    () => (board?.rows ?? []).filter((r) => r.verdict === "INJURED")
+      .sort((a, b) => (a.resid ?? 0) - (b.resid ?? 0)),
+    [board]
+  );
   const found = useMemo(() => {
     const t = query.trim().toLowerCase();
     if (t.length < 2) return [];
@@ -181,6 +190,34 @@ export default function BuySell() {
           </p>
         )}
       </div>
+
+      {hurt.length > 0 && (
+        <ChalkCard
+          kicker={`${board.label} · not a performance`}
+          title="Taken off both boards"
+          source="an injury is not a bad game"
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            {hurt.map((r) => (
+              <div key={r.player} className="chalk-inset flex items-center gap-3 px-4 py-2">
+                <Face row={r} size={32} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm" style={{ color: "var(--ink)" }}>
+                    {r.player}
+                  </div>
+                  <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
+                    {r.position} · {r.team} · {r.actual?.toFixed(1)} of {r.projected?.toFixed(1)} projected
+                    {r.snapShare != null ? ` on ${Math.round(r.snapShare * 100)}% of the snaps` : ""}
+                  </div>
+                </div>
+                <span className="text-xs whitespace-nowrap" style={{ color: HURT_COLOR }}>
+                  {hurtReason(r)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </ChalkCard>
+      )}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <ChalkCard
