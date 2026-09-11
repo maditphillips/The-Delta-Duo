@@ -100,16 +100,32 @@ def panel(seasons=SEASONS, weeks=WEEKS, verbose: bool = True) -> pd.DataFrame:
     return pd.concat(out, ignore_index=True) if out else pd.DataFrame()
 
 
+# A status that means he is not playing the next one. Questionable is not on
+# the list: a questionable player played, and his week counts.
+SIDELINED = {"Out", "IR", "PUP", "Doubtful", "NA", "DNR", "COV", "Sus"}
+# Their roster document is refetched this often, because injury status is the
+# one field on it that changes by the hour and a stale copy would quietly hand
+# back last week's answer.
+PLAYERS_MAX_AGE = 6 * 3600
+
+
 def _players() -> pd.DataFrame:
-    """Sleeper's roster, for position and name. One document, cached."""
+    """Sleeper's roster: position, team, and today's injury status."""
     path = STORE / "players.json"
-    if not path.exists():
-        with urllib.request.urlopen(f"{SLEEPER}/players/nfl", timeout=180) as fh:
-            path.write_text(json.dumps(json.load(fh)))
+    stale = (not path.exists()
+             or time.time() - path.stat().st_mtime > PLAYERS_MAX_AGE)
+    if stale:
+        try:
+            with urllib.request.urlopen(f"{SLEEPER}/players/nfl", timeout=180) as fh:
+                path.write_text(json.dumps(json.load(fh)))
+        except Exception:
+            if not path.exists():
+                raise            # nothing cached to fall back on
     d = json.loads(path.read_text())
     return pd.DataFrame([
         {"sleeper_id": k, "player": v.get("full_name"), "position": v.get("position"),
-         "team": v.get("team")}
+         "team": v.get("team"), "injury_status": v.get("injury_status"),
+         "injury_part": v.get("injury_body_part")}
         for k, v in d.items() if v.get("position") in ("QB", "RB", "WR", "TE")
     ])
 
@@ -272,7 +288,21 @@ def _why(r) -> str:
     return ". ".join(bits[:4]) + "." if bits else ""
 
 
-VERDICTS = ("SELL HIGH", "BUY LOW", "HOLD", "NO CALL")
+VERDICTS = ("INJURED", "SELL HIGH", "BUY LOW", "HOLD", "NO CALL")
+# A man projected as a starter who played almost none of the snaps did not
+# finish the game. This is the backstop for the hours between a Sunday exit
+# and the injury report catching up; the status feed is the first line.
+EXIT_SNAP_SHARE = 0.35
+EXIT_LEVEL = 12.0
+
+
+def sidelined(live: pd.DataFrame) -> pd.Series:
+    """Whoever's week should not be read as a performance at all."""
+    status = live.injury_status.isin(SIDELINED)
+    left_early = ((live.snap_share < EXIT_SNAP_SHARE)
+                  & (live.level >= EXIT_LEVEL)
+                  & (live.resid < 0))
+    return status | left_early
 
 
 def predict(season: int, week: int, f: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -291,14 +321,22 @@ def predict(season: int, week: int, f: pd.DataFrame | None = None) -> pd.DataFra
     # does not pretend to. Saying nothing is the honest answer there.
     buyable = (live.resid <= cuts["resid_lo"]) & (live.level >= 15)
     buy = buyable & (live.pred_change >= cuts["buy_cut"])
+    # An injury is not a performance. A man who left on the fifth play scored
+    # nothing because he was not on the field, and reading that as a bad game
+    # is the one mistake this tab exists to stop people making. It takes
+    # precedence over every other call and he comes off both boards.
+    hurt = sidelined(live)
     live["verdict"] = np.select(
-        [sell, buy, buyable | (live.resid >= cuts["resid_hi"]),
+        [hurt, sell, buy, buyable | (live.resid >= cuts["resid_hi"]),
          live.resid <= cuts["resid_lo"]],
-        ["SELL HIGH", "BUY LOW", "HOLD", "NO CALL"],
+        ["INJURED", "SELL HIGH", "BUY LOW", "HOLD", "NO CALL"],
         default="HOLD")
     live["why"] = live.apply(_why, axis=1)
     live["cuts"] = json.dumps(cuts)
+    live["left_early"] = ((live.snap_share < EXIT_SNAP_SHARE)
+                          & (live.level >= EXIT_LEVEL) & (live.resid < 0))
     cols = ["season", "week", "sleeper_id", "player", "position", "team",
             "a_pts_ppr", "p_pts_ppr", "resid", "pred_change", "verdict", "why",
-            "snap_share", "level", "d_targets", "d_carries", "d_tds", "cuts"]
+            "snap_share", "level", "d_targets", "d_carries", "d_tds",
+            "injury_status", "injury_part", "left_early", "cuts"]
     return live[cols].sort_values("resid")
