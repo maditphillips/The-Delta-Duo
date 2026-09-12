@@ -191,34 +191,6 @@ export default function BuySell() {
         )}
       </div>
 
-      {hurt.length > 0 && (
-        <ChalkCard
-          kicker={`${board.label} · not a performance`}
-          title="Taken off both boards"
-          source="an injury is not a bad game"
-        >
-          <div className="grid gap-2 sm:grid-cols-2">
-            {hurt.map((r) => (
-              <div key={r.player} className="chalk-inset flex items-center gap-3 px-4 py-2">
-                <Face row={r} size={32} />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm" style={{ color: "var(--ink)" }}>
-                    {r.player}
-                  </div>
-                  <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
-                    {r.position} · {r.team} · {r.actual?.toFixed(1)} of {r.projected?.toFixed(1)} projected
-                    {r.snapShare != null ? ` on ${Math.round(r.snapShare * 100)}% of the snaps` : ""}
-                  </div>
-                </div>
-                <span className="text-xs whitespace-nowrap" style={{ color: HURT_COLOR }}>
-                  {hurtReason(r)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </ChalkCard>
-      )}
-
       <div className="grid gap-5 lg:grid-cols-2">
         <ChalkCard
           kicker={`${board.label} · sell high`}
@@ -258,6 +230,34 @@ export default function BuySell() {
           </p>
         </ChalkCard>
       </div>
+
+      {hurt.length > 0 && (
+        <ChalkCard
+          kicker={`${board.label} · not a performance`}
+          title="Taken off both boards"
+          source="an injury is not a bad game"
+        >
+          <div className="grid gap-2 sm:grid-cols-2">
+            {hurt.map((r) => (
+              <div key={r.player} className="chalk-inset flex items-center gap-3 px-4 py-2">
+                <Face row={r} size={32} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm" style={{ color: "var(--ink)" }}>
+                    {r.player}
+                  </div>
+                  <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
+                    {r.position} · {r.team} · {r.actual?.toFixed(1)} of {r.projected?.toFixed(1)} projected
+                    {r.snapShare != null ? ` on ${Math.round(r.snapShare * 100)}% of the snaps` : ""}
+                  </div>
+                </div>
+                <span className="text-xs whitespace-nowrap" style={{ color: HURT_COLOR }}>
+                  {hurtReason(r)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </ChalkCard>
+      )}
     </div>
   );
 }
