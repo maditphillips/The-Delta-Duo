@@ -2,7 +2,7 @@
 //
 //   node scripts/build-weekly.mjs
 //
-// Reads data/weekly/<season>/week-<NN>/{qb,rb,wr,te}.csv — one CSV per
+// Reads data/weekly/<season>/week-<NN>/{qb,rb,wr,te,k}.csv — one CSV per
 // position per week, with both lists in one file:
 //
 //   rank_data,rank_vibes,player,team,note_data,note_vibes
@@ -19,7 +19,30 @@ import path from "node:path";
 
 const SRC = path.join(process.cwd(), "data", "weekly");
 const OUT = path.join(process.cwd(), "public", "data");
-const POSITIONS = ["qb", "rb", "wr", "te"];
+const POSITIONS = ["qb", "rb", "wr", "te", "k"];
+// Sleeper ids, resolved offline by scripts/build-sleeper-ids.py. Their endpoint
+// is 14.6 MB for the whole league, so it is never touched from a browser; the
+// page just renders <img> tags against the CDN.
+const IDS = path.join(process.cwd(), "data", "sleeper-ids.csv");
+
+// A position may ship one list (k.csv) or several scoring variants
+// (qb-4pt.csv, qb-6pt.csv, rb-ppr.csv, rb-half.csv...). Variants are keyed by
+// the filename suffix and shown as a second row of buttons; a position with a
+// single file behaves exactly as before.
+const VARIANT_LABELS = { "4pt": "4-PT TD", "6pt": "6-PT TD", ppr: "PPR", half: "HALF-PPR" };
+const VARIANT_ORDER = ["ppr", "half", "4pt", "6pt"];
+
+function variantFiles(dir, pos) {
+  const plain = path.join(dir, `${pos}.csv`);
+  if (fs.existsSync(plain)) return [[null, plain]];
+  const found = fs
+    .readdirSync(dir)
+    .map((f) => f.match(new RegExp(`^${pos}-(.+)\\.csv$`)))
+    .filter(Boolean)
+    .map((m) => [m[1], path.join(dir, m[0])]);
+  found.sort((a, b) => VARIANT_ORDER.indexOf(a[0]) - VARIANT_ORDER.indexOf(b[0]));
+  return found;
+}
 
 function parseCsv(text) {
   const rows = [];
@@ -50,6 +73,17 @@ const pick = (rec, keys) => {
   return null;
 };
 
+// Number(null) is 0, which would hand every kicker a 0.0 projection and a
+// 0.0 floor rather than saying the column is not there.
+const numOrNull = (raw) =>
+  raw != null && Number.isFinite(Number(raw)) ? Number(raw) : null;
+
+const photos = new Map();
+if (fs.existsSync(IDS)) {
+  for (const r of parseCsv(fs.readFileSync(IDS, "utf8")))
+    photos.set(`${r.player}|${r.team}`, r.sleeper_id);
+}
+
 if (!fs.existsSync(SRC)) {
   console.log("no data/weekly directory — nothing to build");
   process.exit(0);
@@ -64,9 +98,12 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
       ? fs.readFileSync(path.join(SRC, season, weekDir, "LABEL.txt"), "utf8").trim()
       : `Week ${week}`;
     const positions = {};
+    const variants = {};
     for (const pos of POSITIONS) {
-      const file = path.join(SRC, season, weekDir, `${pos}.csv`);
-      if (!fs.existsSync(file)) continue;
+      const files = variantFiles(path.join(SRC, season, weekDir), pos);
+      if (!files.length) continue;
+      const byVariant = {};
+      for (const [variant, file] of files) {
       const rows = parseCsv(fs.readFileSync(file, "utf8")).map((r) => {
         const player = pick(r, ["player", "name"]);
         const rd = Number(pick(r, ["rank_data", "rank_wilson", "wilson", "data"]));
@@ -75,6 +112,17 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
           ? {
               player,
               team: pick(r, ["team", "tm"]),
+              opponent: pick(r, ["opponent", "opp"]),
+              isHome: pick(r, ["is_home", "home"]) === "1",
+              proj: numOrNull(pick(r, ["proj", "points", "projection"])),
+              // What MC's rank is worth on Wilson's scale, so his board shows
+              // points that descend with his own order rather than Wilson's.
+              projVibes: numOrNull(pick(r, ["proj_vibes"])),
+              floor: numOrNull(pick(r, ["floor"])),
+              median: numOrNull(pick(r, ["median"])),
+              ceiling: numOrNull(pick(r, ["ceiling"])),
+              pTop12: numOrNull(pick(r, ["p_top12"])),
+              photo: photos.get(`${player}|${pick(r, ["team", "tm"])}`) ?? null,
               rankData: rd,
               rankVibes: rv,
               noteData: pick(r, ["note_data", "note_wilson", "wilson_note"]),
@@ -82,11 +130,19 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
             }
           : null;
       }).filter(Boolean);
-      if (rows.length) positions[pos.toUpperCase()] = rows.sort((a, b) => a.rankData - b.rankData);
+      if (!rows.length) continue;
+      rows.sort((a, b) => a.rankData - b.rankData);
+      const label = variant ? VARIANT_LABELS[variant] ?? variant.toUpperCase() : null;
+      if (label) byVariant[label] = rows;
+      if (!positions[pos.toUpperCase()]) positions[pos.toUpperCase()] = rows;
+      }
+      if (Object.keys(byVariant).length > 1) variants[pos.toUpperCase()] = byVariant;
     }
     if (Object.keys(positions).length === 0) continue;
     const key = `${season}-w${String(week).padStart(2, "0")}`;
-    fs.writeFileSync(path.join(OUT, `weekly-${key}.json`), JSON.stringify({ season: Number(season), week, label, positions }));
+    const payload = { season: Number(season), week, label, positions };
+    if (Object.keys(variants).length) payload.variants = variants;
+    fs.writeFileSync(path.join(OUT, `weekly-${key}.json`), JSON.stringify(payload));
     index.push({ key, season: Number(season), week, label, positions: Object.keys(positions) });
     console.log(`${key} (${label}): ${Object.keys(positions).join(", ")}`);
   }

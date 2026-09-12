@@ -1,0 +1,9 @@
+season,week,position,variant,player,rank,proj,reason
+2026,1,rb,ppr,Jadarian Price,17,12.0,"Editorial override. The model prices him at 34 because his floor is 0.0, a rookie with no NFL usage the play model will not commit to, and a zero floor drags a mean down hard. His ceiling is 21.6 and his top-12 odds are 19%, higher than eight of the ten backs above him. Ranked and priced where the upside says rather than where the floor drags him."
+2026,1,rb,half,Jadarian Price,22,10.2,"Same override in half-PPR, where he sits 38th on the same reasoning."
+2026,1,te,ppr,Sam LaPorta,10,,"His usage last season is deflated by the games he missed, so the model prices a healthy season worth of role off a partial one. Placed above Hockenson."
+2026,1,te,ppr,Isaiah Likely,12,,"Likely is the TE1 on the Giants depth chart and Theo Johnson is not, so the model had that room the wrong way round."
+2026,1,te,ppr,Michael Mayer,16,,"Promoted with Bowers out. Priced for the slot rather than by the model, which still has him as a backup behind Bowers."
+2026,1,te,half,Sam LaPorta,10,,Same call in half-PPR.
+2026,1,te,half,Isaiah Likely,12,,Same call in half-PPR.
+2026,1,te,half,Michael Mayer,16,,Promoted with Bowers out. Priced for the slot after the other moves land.

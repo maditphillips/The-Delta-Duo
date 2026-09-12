@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChalkCard from "@/components/ChalkCard";
+import WeeklyDeltas from "@/components/WeeklyDeltas";
 import { anchorClaim, crossStudy } from "@/data/crossStudy";
 import { CHALK } from "@/components/charts/theme";
 
@@ -30,9 +31,23 @@ const dashboards = [
 const otherTabs = [
   {
     href: "/data-vs-vibes",
-    label: "Weekly Data vs. Vibes",
+    label: "Weekly Rankings",
     blurb:
       "Every week, two rankings per position: Wilson's built purely from the data, MC's built purely from the vibes — plus the delta between them.",
+    color: "var(--accent-2-lt)",
+  },
+  {
+    href: "/start-sit",
+    label: "Start / Sit",
+    blurb:
+      "Two players in, one decision out — plus who wins you the week, who keeps you out of trouble, and why those aren't the same man.",
+    color: CHALK.green,
+  },
+  {
+    href: "/buy-sell",
+    label: "Buy Low / Sell High",
+    blurb:
+      "Which of last week's outliers meant something. Each miss split into the work a man was given and what he did with it, judged against four seasons of what followed.",
     color: "var(--accent-2-lt)",
   },
   {
@@ -76,11 +91,11 @@ export default function Home() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(69,227,255,0.35)" }}>
-          <div className="font-retro text-2xl" style={{ color: "var(--accent-3)" }}>
+        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(255,47,166,0.4)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-2)" }}>
             Wilson
           </div>
-          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-3)" }}>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-2)" }}>
             the data
           </div>
           <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
@@ -88,11 +103,11 @@ export default function Home() {
             you&apos;ve never even thought of.
           </p>
         </div>
-        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(255,47,166,0.4)" }}>
-          <div className="font-retro text-2xl" style={{ color: "var(--accent-2)" }}>
+        <div className="chalk-inset px-5 py-4 sm:px-6 sm:py-5" style={{ borderColor: "rgba(69,227,255,0.35)" }}>
+          <div className="font-retro text-2xl" style={{ color: "var(--accent-3)" }}>
             MC
           </div>
-          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-2)" }}>
+          <div className="chalk-kicker mt-1" style={{ color: "var(--accent-3)" }}>
             the vibes
           </div>
           <p className="mt-2 text-sm leading-snug" style={{ color: "var(--ink-dim)" }}>
@@ -150,6 +165,8 @@ export default function Home() {
         </div>
       </div>
 
+      <WeeklyDeltas />
+
       <ChalkCard
         kicker="The connective tissue"
         title="One question, three positions"
@@ -178,6 +195,7 @@ export default function Home() {
           </table>
         </div>
       </ChalkCard>
+
     </div>
   );
 }
