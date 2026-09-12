@@ -23,7 +23,7 @@ function Legend({ items }: { items: { label: string; color: string }[] }) {
     <div className="mb-2 flex flex-wrap gap-x-5 gap-y-1 text-base" style={{ color: "var(--ink-dim)" }}>
       {items.map((it) => (
         <span key={it.label} className="flex items-center gap-2">
-          <span aria-hidden style={{ background: it.color, width: 12, height: 12, borderRadius: 3, display: "inline-block" }} />
+          <span aria-hidden className="neon-swatch" style={{ background: it.color, color: it.color, width: 12, height: 12, borderRadius: 3, display: "inline-block" }} />
           {it.label}
         </span>
       ))}
