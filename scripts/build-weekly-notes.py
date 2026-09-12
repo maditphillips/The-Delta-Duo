@@ -37,6 +37,12 @@ MANUAL = Path("data/weekly/manual-ranks.csv")
 # They are pulled from the model's own deeper pool rather than invented, so a
 # promoted player arrives with a real floor, median, ceiling and top-12 odds.
 ADDED = Path("data/weekly/added.csv")
+# Hand placements on MC's board. His own file is one list per position, because
+# a player's rank is his opinion of the player and that does not change with a
+# league's reception setting. Membership does though, and occasionally so does
+# he: a target hog is worth more in PPR than in half. These rows are keyed by
+# scoring format so one can be moved in one list without touching the other.
+MC_MANUAL = Path("data/weekly/mc-manual-ranks.csv")
 FILES = {
     ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
     ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
@@ -382,6 +388,31 @@ def override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
     return df
 
 
+def mc_override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
+    """Move a player on MC's side alone, in one scoring format alone."""
+    if not MC_MANUAL.exists():
+        return df
+    m = pd.read_csv(MC_MANUAL)
+    m = m[(m.season == SEASON) & (m.week == WEEK)
+          & (m.position.str.lower() == pos) & (m.variant.str.lower() == variant)]
+    if m.empty:
+        return df
+    df = df.sort_values("rank_vibes").reset_index(drop=True)
+    for _, row in m.iterrows():
+        hit = df.index[df.player_name == row.player]
+        if not len(hit):
+            print(f"    {pos}-{variant}: MC override skipped, not on the list: {row.player}")
+            continue
+        moved = df.loc[hit[0]]
+        rest = df.drop(hit[0]).reset_index(drop=True)
+        to = min(max(int(row["rank"]), 1), len(rest) + 1) - 1
+        df = pd.concat([rest.iloc[:to], moved.to_frame().T, rest.iloc[to:]],
+                       ignore_index=True)
+        print(f"    {pos}-{variant}: MC has {row.player} at {int(row['rank'])}")
+    df["rank_vibes"] = range(1, len(df) + 1)
+    return df
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     mc = pd.read_csv(MC) if MC.exists() else None
@@ -419,6 +450,7 @@ def main() -> None:
             # list. MC's order is preserved, only compacted.
             df["rank_data"] = df.rank_data.rank(method="first").astype(int)
             df["rank_vibes"] = df.rank_vibes.rank(method="first").astype(int)
+            df = mc_override(df, pos, variant)
         else:
             # No board from MC yet, so consensus stands in. It is re-ranked
             # inside our published list so both columns order the same players
