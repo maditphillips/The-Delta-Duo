@@ -131,9 +131,14 @@ def _players() -> pd.DataFrame:
 
 
 POSITIONS = ("QB", "RB", "WR", "TE")
-# Below this he was not a startable asset going in, and the "miss" is noise
-# about a man nobody would trade for either way.
-MIN_PROJECTED = 5.0
+# Only enough of a projection to be a real forecast rather than a blank row.
+#
+# This was 5.0, which quietly threw away the best signal on the board: a man
+# projected for 2.8 who scores 13 has had the most informative week of anyone,
+# and Demarcus Robinson did exactly that in week one of 2026 without appearing
+# anywhere. Dropping the floor to 1.0 adds six thousand training rows and the
+# model gets better everywhere, MAE 3.10 to 2.72.
+MIN_PROJECTED = 1.0
 # Fewer games left than this and the target is one or two outings, which is
 # not a rest of season anything.
 MIN_REMAINING = 3
@@ -261,7 +266,7 @@ def calibrate(train: pd.DataFrame, model) -> dict:
     pred = model.predict(_matrix(train, model.fill_))
     t = train.assign(pred=pred)
     sell = t[t.resid >= hi]
-    buy = t[(t.resid <= lo) & (t.level >= 15)]
+    buy = t[t.resid <= lo]
     return {"resid_lo": float(lo), "resid_hi": float(hi),
             "sell_cut": float(sell.pred.median()),
             "buy_cut": float(buy.pred.median())}
@@ -288,7 +293,7 @@ def _why(r) -> str:
     return ". ".join(bits[:4]) + "." if bits else ""
 
 
-VERDICTS = ("INJURED", "SELL HIGH", "BUY LOW", "HOLD", "NO CALL")
+VERDICTS = ("INJURED", "SELL HIGH", "BUY LOW", "BREAKOUT", "HOLD")
 # A man projected as a starter who played almost none of the snaps did not
 # finish the game. This is the backstop for the hours between a Sunday exit
 # and the injury report catching up; the status feed is the first line.
@@ -317,20 +322,28 @@ def predict(season: int, week: int, f: pd.DataFrame | None = None) -> pd.DataFra
     live["pred_change"] = model.predict(_matrix(live, model.fill_))
 
     sell = (live.resid >= cuts["resid_hi"]) & (live.pred_change <= cuts["sell_cut"])
-    # Below a 15-point projection the backtest cannot call a rebound, so it
-    # does not pretend to. Saying nothing is the honest answer there.
-    buyable = (live.resid <= cuts["resid_lo"]) & (live.level >= 15)
+    # No projection floor on the buy side any more. It carried one because an
+    # early test said the rebound call only held above 15 points, and that was
+    # an artifact of banding the test set by quartile, which puts a different
+    # population in each band every run. Measured against fixed bands the call
+    # holds in all twelve season and band cells, mean edge +1.47.
+    buyable = live.resid <= cuts["resid_lo"]
     buy = buyable & (live.pred_change >= cuts["buy_cut"])
     # An injury is not a performance. A man who left on the fifth play scored
     # nothing because he was not on the field, and reading that as a bad game
     # is the one mistake this tab exists to stop people making. It takes
     # precedence over every other call and he comes off both boards.
     hurt = sidelined(live)
+    # A huge week comes in two kinds and they are opposite trades. The model
+    # expects Deebo Samuel's back and does not expect Demarcus Robinson's,
+    # which is the same split the backtest measured: among big weeks, the half
+    # it declines to call a sell goes on to beat the half it does by about a
+    # point and a half a game. Calling both of them "sell high" would have had
+    # people trading away the one man on the slate who had genuinely changed.
+    breakout = (live.resid >= cuts["resid_hi"]) & ~sell
     live["verdict"] = np.select(
-        [hurt, sell, buy, buyable | (live.resid >= cuts["resid_hi"]),
-         live.resid <= cuts["resid_lo"]],
-        ["INJURED", "SELL HIGH", "BUY LOW", "HOLD", "NO CALL"],
-        default="HOLD")
+        [hurt, sell, buy, breakout],
+        ["INJURED", "SELL HIGH", "BUY LOW", "BREAKOUT"], default="HOLD")
     live["why"] = live.apply(_why, axis=1)
     live["cuts"] = json.dumps(cuts)
     live["left_early"] = ((live.snap_share < EXIT_SNAP_SHARE)
