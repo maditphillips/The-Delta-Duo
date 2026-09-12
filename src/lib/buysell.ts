@@ -63,21 +63,25 @@ export function hurtReason(r: BuySellRow): string {
 
 /** What the verdict means in a sentence, for the lookup. */
 export function verdictLine(r: BuySellRow): string {
-  // The verb says which way it went, so the number does not need a sign too:
-  // "missed by -6.9" reads as a double negative.
+  // The verb carries the direction so the number does not need a sign too,
+  // which means every branch has to supply one. Leave it off and a miss of
+  // 6.9 prints as "a 6.9 week", which reads as the number he scored.
   const miss = r.resid == null ? "" : Math.abs(r.resid).toFixed(1);
+  const by = r.resid != null && r.resid > 0
+    ? `beat his projection by ${miss}`
+    : `missed his projection by ${miss}`;
   switch (r.verdict) {
     case "INJURED":
       return `Off the board: ${hurtReason(r)}. He did not play a full game, so this week is not a performance and there is nothing in it to trade on either way.`;
     case "SELL HIGH":
-      return `Sell high. He beat his projection by ${miss} and the model expects it back.`;
+      return `Sell high. He ${by} points and the model expects it back.`;
     case "BUY LOW":
-      return `Buy low. He missed by ${miss} and the model expects a rebound.`;
+      return `Buy low. He ${by} points and the model expects a rebound.`;
     case "NO CALL":
-      return `No call. He missed by ${miss}, but under ${BUY_LEVEL_FLOOR} projected points the model could not pick rebounds from declines in backtest, so it says nothing rather than guessing.`;
+      return `No call. He ${by} points, but under ${BUY_LEVEL_FLOOR} projected the model could not pick rebounds from declines in backtest, so it says nothing rather than guessing.`;
     default:
       return r.resid != null && Math.abs(r.resid) >= 5
-        ? `Hold. A ${miss} week, and the model does not read it as a turning point.`
+        ? `Hold. He ${by} points, and the model does not read that as a turning point.`
         : "Hold. Nothing in this week worth trading on.";
   }
 }
