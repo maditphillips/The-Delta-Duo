@@ -23,9 +23,6 @@ import {
   type Pick,
 } from "@/lib/startSit";
 
-/** The pink reads hot against the green board, so the player card takes a
- *  slightly deeper, slightly less neon version of it. */
-const WILSON_ON_CHALK = "#ef4b9f";
 const CHOSEN = "var(--accent-gold)";
 
 type Entry = { pos: string; row: WeeklyRow; key: string };
@@ -384,7 +381,7 @@ export default function StartSit() {
                     ))}
                   </dl>
                   <div className="mt-2 flex gap-3 text-xs">
-                    <span style={{ color: WILSON_ON_CHALK }}>
+                    <span style={{ color: WILSON_COLOR }}>
                       Wilson {p.pos}{p.row.rankData} · {p.wilson?.toFixed(1) ?? "n/a"}
                     </span>
                     <span style={{ color: MC_COLOR }}>
