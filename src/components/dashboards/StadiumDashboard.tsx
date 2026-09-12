@@ -21,9 +21,9 @@ import ChalkTooltip from "@/components/charts/ChalkTooltip";
 import { CHALK, axisLine, axisTick, gridProps } from "@/components/charts/theme";
 import { stadiums, stadiumMeta, type Stadium, type StadiumBand } from "@/data/stadiums";
 
-// Diverging pair, validated against the board surface (#466553):
-// gold <-> blue clears CVD separation at dE 18.7 (protan) / 20.8 (normal vision),
-// where the site's pink/blue pair only reaches the 6.8 warning band. Near-zero
+// Diverging pair, validated against the board surface (#181d26):
+// gold <-> blue clears CVD separation at dE 23.1 (deutan) / 27.2 (normal vision),
+// where the site's pink/blue pair only reaches the 12.7 band. Near-zero
 // venues take neutral chalk ink so the midpoint is not a hue.
 const HARD = CHALK.gold;
 const EASY = CHALK.blue;

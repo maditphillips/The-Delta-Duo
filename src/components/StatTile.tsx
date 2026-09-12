@@ -11,7 +11,7 @@ export default function StatTile({
 }) {
   return (
     <div className="chalk-card-alt flex flex-col items-center px-4 py-5 text-center">
-      <div className="font-sketch relative text-4xl leading-none sm:text-5xl" style={{ color }}>
+      <div className="font-sketch neon-glow relative text-4xl leading-none sm:text-5xl" style={{ color }}>
         {value}
       </div>
       <div className="relative mt-2 text-base leading-tight" style={{ color: "var(--ink)" }}>

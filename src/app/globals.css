@@ -1,23 +1,27 @@
 @import "tailwindcss";
 
 /* ————— The Delta Duo house style —————
-   Matches the getinsidethelab.com chart language: green chalkboard panels
-   on a near-black page, sketch-chalk titles, gold em-dash kickers, a
-   gold/pink/white series palette, and handwritten gold annotations.
-   Palette validated against the board surface (#466553): >=3:1 contrast,
-   CVD warning band covered by direct labels + legends everywhere. */
+   Dark slate boards in the same wooden frame, on a near-black page, with
+   the logo's own neon carried into the chalk: orange, hot pink, and cyan.
+   Sketch-chalk titles, neon em-dash kickers, handwritten annotations.
+   Palette validated against the board surface (#181d26): all >=3:1
+   contrast, CVD separation 12.7 (deutan), normal-vision floor 27.3. The
+   marks sit deliberately above the dark-mode lightness band -- that is
+   what makes them read as neon rather than as muted chalk. Green
+   (#8fd98a) is kept for positive/survivor semantics: every neon-er green
+   tested collided with the cyan below the normal-vision floor. */
 :root {
   --page: #0c0e0d;
-  --board: #466553;
-  --board-hi: #4e7060;
-  --board-lo: #3e5a4a;
+  --board: #12161c;
+  --board-hi: #181d26;
+  --board-lo: #0d1015;
   --ink: #f2eee2;
   --ink-dim: rgba(242, 238, 226, 0.72);
   --ink-faint: rgba(242, 238, 226, 0.42);
   --ink-ghost: rgba(242, 238, 226, 0.16);
-  --chalk-gold: #e9c464;
-  --chalk-pink: #f4a3be;
-  --chalk-blue: #7cc4ea;
+  --chalk-gold: #ffb03a;
+  --chalk-pink: #ff5cbb;
+  --chalk-blue: #45e3ff;
   --chalk-green: #8fd98a;
   /* website-chrome accents sampled straight from the Delta Duo logo:
      wordmark orange, sunset gold, hot pink, cyan trim. The chalkboard
@@ -90,7 +94,7 @@ footer {
   box-shadow: 0 0 8px rgba(255, 47, 166, 0.5);
 }
 
-/* ————— the board panel: green slate in a wooden frame ————— */
+/* ————— the board panel: dark slate in a wooden frame ————— */
 .chalk-card,
 .chalk-card-alt {
   position: relative;
@@ -98,8 +102,8 @@ footer {
   border: 12px solid transparent;
   /* top layers paint the slate (padding-box); bottom layers paint the wood frame (border-box) */
   background:
-    radial-gradient(ellipse at 25% 12%, rgba(255, 255, 255, 0.05), transparent 50%) padding-box,
-    radial-gradient(ellipse at 78% 88%, rgba(0, 0, 0, 0.16), transparent 55%) padding-box,
+    radial-gradient(ellipse at 26% 10%, rgba(120, 150, 190, 0.1), transparent 55%) padding-box,
+    radial-gradient(ellipse at 78% 88%, rgba(0, 0, 0, 0.28), transparent 55%) padding-box,
     linear-gradient(158deg, var(--board-hi) 0%, var(--board) 55%, var(--board-lo) 100%) padding-box,
     repeating-linear-gradient(
         93deg,
@@ -130,18 +134,28 @@ footer {
   inset: 0;
   border-radius: 4px;
   pointer-events: none;
-  opacity: 0.055;
+  opacity: 0.08;
   /* chalk X's, O's, and dashed route arrows over the chalk-dust noise */
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420'%3E%3Cg fill='none' stroke='%23f2eee2' stroke-width='2.5' stroke-linecap='round' opacity='0.55'%3E%3Cpath d='M38 52 l16 16 M54 52 l-16 16'/%3E%3Ccircle cx='128' cy='96' r='9'/%3E%3Cpath d='M330 60 l16 16 M346 60 l-16 16'/%3E%3Cpath d='M212 150 q40 -28 78 -6' stroke-dasharray='2 7'/%3E%3Cpath d='M286 141 l10 2 -4 9'/%3E%3Ccircle cx='58' cy='236' r='9'/%3E%3Cpath d='M150 300 l16 16 M166 300 l-16 16'/%3E%3Cpath d='M70 366 q46 -20 84 6' stroke-dasharray='2 7'/%3E%3Ccircle cx='330' cy='250' r='9'/%3E%3Cpath d='M368 330 l16 16 M384 330 l-16 16'/%3E%3Cpath d='M240 392 l16 16 M256 392 l-16 16'/%3E%3C/g%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* ————— neon bloom —————
+   Applied to stat-tile numerals and legend swatches only. Chart marks stay
+   flat: a blurred bar edge costs precision against the gridlines. */
+.neon-glow {
+  text-shadow: 0 0 18px currentColor, 0 0 42px color-mix(in srgb, currentColor 45%, transparent);
+}
+.neon-swatch {
+  box-shadow: 0 0 7px currentColor, 0 0 14px color-mix(in srgb, currentColor 40%, transparent);
+}
+
 /* inset panel used INSIDE a board (quadrants, stat blocks) */
 .chalk-inset {
   border-radius: 8px;
   border: 1px solid rgba(242, 238, 226, 0.16);
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(255, 255, 255, 0.035);
 }
 
 /* gold em-dash kicker, like "— DRAFT PICK VALUE" */
@@ -394,12 +408,12 @@ footer {
     flex-direction: column;
     border: 1px solid rgba(242, 238, 226, 0.18);
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.14);
+    background: rgba(255, 255, 255, 0.035);
     padding: 0.5rem 0.7rem;
     margin-bottom: 0.6rem;
   }
   .chalk-table.cards-on-mobile tr:hover {
-    background: rgba(0, 0, 0, 0.14);
+    background: rgba(255, 255, 255, 0.035);
   }
   .chalk-table.cards-on-mobile td {
     border: 0;

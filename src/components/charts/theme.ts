@@ -1,21 +1,23 @@
-// The Delta Duo chart theme — matches the published article's chart language.
-// Series palette validated against the board surface (#466553): all >= 3:1
-// contrast; the pink/blue CVD warning band is covered by direct labels,
-// legends, and bar gaps on every chart.
+// The Delta Duo chart theme — the logo's neon carried onto a dark slate board.
+// Series palette validated against the board surface (#181d26): all >= 3:1
+// contrast, CVD separation 12.7 (deutan), normal-vision floor 27.3. The marks
+// sit above the dark-mode lightness band on purpose — that is what makes them
+// read as neon. Green is held at #8fd98a for positive/survivor semantics:
+// neon-er greens collide with the cyan below the normal-vision floor (13.7).
 
 export const CHALK = {
   ink: "#f2eee2",
   inkDim: "rgba(242,238,226,0.72)",
   inkFaint: "rgba(242,238,226,0.42)",
   inkGhost: "rgba(242,238,226,0.16)",
-  gold: "#e9c464",
-  pink: "#f4a3be",
-  blue: "#7cc4ea",
+  gold: "#ffb03a",
+  pink: "#ff5cbb",
+  blue: "#45e3ff",
   white: "#f2eee2",
   green: "#8fd98a",
   // legacy aliases (older components) — same brand values
-  yellow: "#e9c464",
-  salmon: "#f4a3be",
+  yellow: "#ffb03a",
+  salmon: "#ff5cbb",
   violet: "#f2eee2",
 };
 
