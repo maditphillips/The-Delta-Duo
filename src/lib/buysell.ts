@@ -11,7 +11,7 @@ export type BuySellRow = {
   resid: number | null;
   /** Points a game against his current level over the rest of the season. */
   predChange: number | null;
-  verdict: "INJURED" | "SELL HIGH" | "BUY LOW" | "HOLD" | "NO CALL" | string;
+  verdict: "INJURED" | "SELL HIGH" | "BUY LOW" | "BREAKOUT" | "HOLD" | string;
   /** Sleeper's live status, when he carries one. */
   injuryStatus?: string | null;
   injuryPart?: string | null;
@@ -38,18 +38,16 @@ export type BuySellIndex = {
   weeks: { key: string; season: number; week: number; label: string; count: number }[];
 };
 
-/** Below this projection the backtest could not call a rebound, so the tab
- *  does not pretend to. See model/dd/rebound.py. */
-export const BUY_LEVEL_FLOOR = 15;
-
 export const SELL_COLOR = "var(--accent-2-lt)";
 export const BUY_COLOR = "var(--accent-3)";
+export const BREAKOUT_COLOR = "var(--chalk-gold)";
 
 export const HURT_COLOR = "var(--accent-gold)";
 
 export function verdictColor(v: string) {
   if (v === "SELL HIGH") return SELL_COLOR;
   if (v === "BUY LOW") return BUY_COLOR;
+  if (v === "BREAKOUT") return BREAKOUT_COLOR;
   if (v === "INJURED") return HURT_COLOR;
   return "var(--ink-faint)";
 }
@@ -77,8 +75,8 @@ export function verdictLine(r: BuySellRow): string {
       return `Sell high. He ${by} points and the model expects it back.`;
     case "BUY LOW":
       return `Buy low. He ${by} points and the model expects a rebound.`;
-    case "NO CALL":
-      return `No call. He ${by} points, but under ${BUY_LEVEL_FLOOR} projected the model could not pick rebounds from declines in backtest, so it says nothing rather than guessing.`;
+    case "BREAKOUT":
+      return `Go and get him. He ${by} points and the model does not expect it back, which is the opposite trade to a sell high.`;
     default:
       return r.resid != null && Math.abs(r.resid) >= 5
         ? `Hold. He ${by} points, and the model does not read that as a turning point.`

@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import ChalkCard from "@/components/ChalkCard";
 import { initials, photoUrl } from "@/lib/startSit";
 import {
+  BREAKOUT_COLOR,
   BUY_COLOR,
-  BUY_LEVEL_FLOOR,
   HURT_COLOR,
   SELL_COLOR,
   hurtReason,
@@ -127,6 +127,12 @@ export default function BuySell() {
       .sort((a, b) => (a.resid ?? 0) - (b.resid ?? 0)),
     [board]
   );
+  // A big week the model does not expect back. The opposite trade to a sell.
+  const breakouts = useMemo(
+    () => (board?.rows ?? []).filter((r) => r.verdict === "BREAKOUT")
+      .sort((a, b) => (b.resid ?? 0) - (a.resid ?? 0)),
+    [board]
+  );
   const found = useMemo(() => {
     const t = query.trim().toLowerCase();
     if (t.length < 2) return [];
@@ -211,7 +217,7 @@ export default function BuySell() {
         <ChalkCard
           kicker={`${board.label} · buy low`}
           title={buys.length ? "Bad week, intact player" : "Nobody to buy this week"}
-          source={`only players projected ${BUY_LEVEL_FLOOR}+ are eligible`}
+          source="a bad week with the role intact"
         >
           {buys.length ? (
             <div className="flex flex-col gap-3">
@@ -223,13 +229,29 @@ export default function BuySell() {
             </p>
           )}
           <p className="mt-4 text-xs leading-snug" style={{ color: "var(--ink-faint)" }}>
-            The buy side only covers players projected {BUY_LEVEL_FLOOR} points or more.
-            Below that the backtest could not tell a rebound from a decline, so the
-            model says nothing rather than guessing. The sell side has no such limit:
-            it held in every season and every projection band from 2022 to 2025.
+            Both calls held in every season and every projection band from 2022 to 2025,
+            worth about a point and a half a game against the players the model declined
+            to flag.
           </p>
         </ChalkCard>
       </div>
+
+      {breakouts.length > 0 && (
+        <ChalkCard
+          kicker={`${board.label} · not a fluke`}
+          title="The week the model believes"
+          source="a big week it does not expect back"
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            {breakouts.map((r) => <Card key={r.player} row={r} accent={BREAKOUT_COLOR} />)}
+          </div>
+          <p className="mt-4 text-xs leading-snug" style={{ color: "var(--ink-faint)" }}>
+            The opposite trade to a sell high, off the same split: among big weeks, the
+            half the model declines to call a sell goes on to beat the half it does.
+            These are the men to go and get, not the ones to cash in.
+          </p>
+        </ChalkCard>
+      )}
 
       {hurt.length > 0 && (
         <ChalkCard
