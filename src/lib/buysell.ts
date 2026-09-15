@@ -238,10 +238,19 @@ export function nameKey(name: string): string {
     .replace(/[^a-z]/g, "");
 }
 
-/** Where a man stops being tradeable up. Twenty-four is the first two rounds
- *  of a twelve-team draft: above that line you are asking somebody to hand
- *  you a better asset than the one you are giving away, which nobody does. */
+/** Where a man stops being tradeable up on overall value. Twenty-four is the
+ *  first two rounds of a twelve-team draft: above that line you are asking
+ *  somebody to hand you a better asset than the one you are giving away. */
 export const DEFAULT_RANK_GATE = 24;
+
+/** And the other way in: the top of a scarce position, whatever the overall
+ *  board says. One-quarterback and one-tight-end scoring discounts those
+ *  positions into the thirties and forties overall, so the rank gate alone
+ *  calls QB1 and TE2 sellable — but the next man at those positions is a real
+ *  drop, not a lateral move, so there is still nothing to trade up to. Two
+ *  deep, because that is where the drop is; by TE3 you are trading inside a
+ *  tier and the gate should not be shut. */
+export const DEFAULT_POS_GATE = 2;
 
 export type RankEntry = { rank: number; posRank: number | null };
 
@@ -254,25 +263,28 @@ export type RankEntry = { rank: number; posRank: number | null };
  * big game — which cannot be acted on, and reads as nonsense next to the
  * calls that can.
  *
- * The gate reads overall rank rather than positional rank, because position
- * is not what you trade against. A quarterback is QB1 in every format, but in
- * one-quarterback leagues he is the 22nd most valuable asset and there are
- * twenty-one better things to ask for; in superflex he is the 3rd and there
- * are two. Positional rank cannot tell those apart — it is identical across
- * all three of our boards — so gating on it would have held the same players
- * back whatever league the reader is in.
+ * Two ways a man is held back, because one number cannot catch both cases.
+ * Overall rank catches the elite running backs and receivers, and moves with
+ * the scoring, which it has to: a quarterback is the 22nd asset in PPR and
+ * the 3rd in superflex. Positional rank catches the top of the thin
+ * positions, which overall rank prices below what they can actually be
+ * traded for. A player inside either is shown at peak price instead.
  */
 export function applyRankGate(
   rows: GradedRow[],
   ranks: Map<string, RankEntry>,
-  gate = DEFAULT_RANK_GATE
+  gate = DEFAULT_RANK_GATE,
+  posGate = DEFAULT_POS_GATE
 ): GradedRow[] {
   for (const r of rows) {
     const found = ranks.get(nameKey(r.player));
     r.overallRank = found?.rank ?? null;
     r.posRank = found?.posRank ?? null;
-    // Unranked means deep, not elite, so the gate never catches him.
-    if (r.shown === "SELL HIGH" && r.overallRank != null && r.overallRank <= gate) r.shown = "PEAK";
+    // Unranked means deep, not elite, so neither gate catches him.
+    const held =
+      (r.overallRank != null && r.overallRank <= gate) ||
+      (r.posRank != null && r.posRank <= posGate);
+    if (r.shown === "SELL HIGH" && held) r.shown = "PEAK";
   }
   return rows;
 }

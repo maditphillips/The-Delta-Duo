@@ -6,6 +6,7 @@ import { initials, photoUrl } from "@/lib/startSit";
 import {
   BREAKOUT_COLOR,
   BUY_COLOR,
+  DEFAULT_POS_GATE,
   DEFAULT_RANK_GATE,
   HURT_COLOR,
   PEAK_COLOR,
@@ -132,8 +133,8 @@ export default function BuySell() {
 
   // The gate is a claim about what you could get back, so it has to be read
   // in the scoring the league actually uses. Josh Allen is QB1 on all three
-  // boards; he is the 22nd asset in one-quarterback and the 3rd in superflex,
-  // and only the second of those is unsellable.
+  // boards but the 22nd asset in one-quarterback and the 3rd in superflex,
+  // which is why overall rank has to come from the format the reader picked.
   useEffect(() => {
     let off = false;
     (async () => {
@@ -276,9 +277,9 @@ export default function BuySell() {
           )}
           {peak.length > 0 && (
             <p className="mt-4 text-xs leading-snug" style={{ color: "var(--ink-faint)" }}>
-              {peak.length} more had the week for it but are already inside the top{" "}
-              {DEFAULT_RANK_GATE} overall, so there is nothing better to trade them for.
-              They are below.
+              {peak.length} more had the week for it but are already at the top of the
+              board, or the top of their position, so there is nothing better to trade
+              them for. They are below.
             </p>
           )}
         </ChalkCard>
@@ -309,18 +310,19 @@ export default function BuySell() {
         <ChalkCard
           kicker={`${board.label} · peak price`}
           title="Loud week, nobody better to get"
-          source={`top ${DEFAULT_RANK_GATE} overall · ${formatLabels[format]}`}
+          source={`top ${DEFAULT_RANK_GATE} overall or top ${DEFAULT_POS_GATE} at his spot · ${formatLabels[format]}`}
         >
           <div className="grid gap-3 sm:grid-cols-2">
             {peak.map((r) => <Card key={r.player} row={r} accent={PEAK_COLOR} />)}
           </div>
           <p className="mt-4 text-xs leading-snug" style={{ color: "var(--ink-faint)" }}>
             The model expects these weeks back, and on the number alone each of these men
-            is a sell. But a sell is a trade, and there is no trade here: they are already
-            inside the first two rounds, so anything you could realistically get back is
-            worse than what you gave up. You can only sell so high. Hold them and take the
-            regression. Who lands here moves with the scoring above — a quarterback is
-            unsellable in superflex and a fair sell in one-quarterback.
+            is a sell. But a sell is a trade, and there is no trade here: they are either
+            inside the first two rounds or the best thing left at their position, so
+            anything you could realistically get back is worse than what you gave up. You
+            can only sell so high. Hold them and take the regression. Who lands here moves
+            with the scoring above, and the quarterbacks move furthest: one is the 22nd
+            asset in PPR and the 3rd in superflex.
           </p>
         </ChalkCard>
       )}
