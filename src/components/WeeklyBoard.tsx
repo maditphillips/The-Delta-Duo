@@ -195,6 +195,10 @@ export default function WeeklyBoard() {
   // stored choice pointing at a scoring that position does not offer, so fall
   // back to its first one instead of writing state during render.
   const activeScoring = scorings.includes(scoring) ? scoring : scorings[0] ?? "";
+  // A week MC has not ranked yet shows expert consensus in his column. The
+  // ranks are real, they are just not his, and the card says so rather than
+  // putting his name over somebody else's order.
+  const standIn = board?.vibes === "consensus";
   const view = `${weekKey}|${pos}|${activeScoring}`;
   const [lastView, setLastView] = useState(view);
   if (view !== lastView) {
@@ -384,8 +388,8 @@ export default function WeeklyBoard() {
               onToggle={(name) => setOpen((cur) => (cur === name ? null : name))}
             />
             <RankList
-              who="MC · the vibes"
-              title={`${pos} — by the vibes`}
+              who={standIn ? "Consensus · standing in for MC" : "MC · the vibes"}
+              title={standIn ? `${pos} — by the market` : `${pos} — by the vibes`}
               color={MC_COLOR}
               rows={rows}
               orderBy="rankVibes"

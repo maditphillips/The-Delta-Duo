@@ -29,6 +29,9 @@ export type WeeklyBoard = {
   season: number;
   week: number;
   label: string;
+  /** Who is in the vibes column. "consensus" on a week MC has not ranked yet,
+   *  so the board can say whose order it is showing. Absent means MC. */
+  vibes?: "MC" | "consensus";
   positions: Record<string, WeeklyRow[]>;
   /** Scoring variants, present only where a position ships more than one list
    *  (QB at 4-pt and 6-pt passing TDs; RB/WR/TE in PPR and half-PPR). Keyed by
@@ -37,7 +40,14 @@ export type WeeklyBoard = {
 };
 
 export type WeeklyIndex = {
-  weeks: { key: string; season: number; week: number; label: string; positions: string[] }[];
+  weeks: {
+    key: string;
+    season: number;
+    week: number;
+    label: string;
+    vibes?: "MC" | "consensus";
+    positions: string[];
+  }[];
 };
 
 export const WEEKLY_POSITIONS = ["QB", "RB", "WR", "TE", "K"] as const;

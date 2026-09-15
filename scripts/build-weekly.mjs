@@ -140,10 +140,17 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
     }
     if (Object.keys(positions).length === 0) continue;
     const key = `${season}-w${String(week).padStart(2, "0")}`;
-    const payload = { season: Number(season), week, label, positions };
+    // Who is in the vibes column. Absent (every week before this was
+    // recorded) means MC, which is what those weeks were.
+    const vibesPath = path.join(SRC, season, weekDir, "VIBES.txt");
+    const vibes = fs.existsSync(vibesPath)
+      ? fs.readFileSync(vibesPath, "utf8").trim()
+      : "MC";
+    const payload = { season: Number(season), week, label, vibes, positions };
     if (Object.keys(variants).length) payload.variants = variants;
     fs.writeFileSync(path.join(OUT, `weekly-${key}.json`), JSON.stringify(payload));
-    index.push({ key, season: Number(season), week, label, positions: Object.keys(positions) });
+    index.push({ key, season: Number(season), week, label, vibes,
+                 positions: Object.keys(positions) });
     console.log(`${key} (${label}): ${Object.keys(positions).join(", ")}`);
   }
 }
