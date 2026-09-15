@@ -10,17 +10,32 @@ two independent voices and the gap between them; showing MC the data list while
 he ranks would close that gap by contaminating it, and the delta would stop
 meaning anything.
 
-    python3 scripts/build-mc-tool.py
+    python3 scripts/build-mc-tool.py --week 2
+
+The board is seeded from the published lists for that week, ordered by whatever
+sits in the vibes column. On a week MC has already ranked that is his own last
+answer, so reopening the tool picks up where he left off. On a week he has not,
+it is consensus, which gives him a sensible starting order to drag against
+rather than an alphabetical one.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 from pathlib import Path
 
-SEASON, WEEK = 2026, 1
+ap = argparse.ArgumentParser(description=__doc__)
+ap.add_argument("--season", type=int, default=2026)
+ap.add_argument("--week", type=int, default=1)
+ap.add_argument("--out", default=None)
+args = ap.parse_args()
+
+SEASON, WEEK = args.season, args.week
 SRC = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}")
-OUT = Path("tools/mc-rankings.html")
+# One file per week, so an older week's board is never silently overwritten by
+# a newer one while he still has it open.
+OUT = Path(args.out) if args.out else Path(f"tools/mc-rankings-week-{WEEK:02d}.html")
 # Consensus is the same list in both scoring formats -- nought differing ranks
 # at WR and QB, two at RB -- so he ranks once per position, not once per list.
 # The membership is not identical though: the depth cut lands in a different

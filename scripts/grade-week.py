@@ -1,11 +1,18 @@
-"""Grade week 1: Wilson's board, MC's board, and preseason consensus."""
-import csv, json, re, sys
+"""Grade week 1: Wilson's board, MC's board, and preseason consensus.
+
+Two scopes are graded. The full list is every player a voice ranked, which
+answers "is the board any good". The startable scope is the top of each
+position, which answers the question anyone actually has on a Sunday: the
+back of a 80-deep receiver list is not a lineup decision.
+"""
+import csv, json, sys
 from pathlib import Path
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 
 SCRATCH = Path("/tmp/claude-0/-home-user-The-Delta-Duo/8c91f04b-24b4-5638-8c4d-a7fd7c62ef31/scratchpad")
 WEEK = Path("data/weekly/2026/week-01")
+OUT = Path("data/grades/2026")
 st = json.load(open(SCRATCH / "st1.json"))
 ids = {(r["player"], r["team"]): r["sleeper_id"]
        for r in csv.DictReader(open("data/sleeper-ids.csv"))}
@@ -27,6 +34,10 @@ FILES = {("qb", "4pt"): "qb-4pt", ("qb", "6pt"): "qb-6pt",
          ("wr", "ppr"): "wr-ppr", ("wr", "half"): "wr-half",
          ("te", "ppr"): "te-ppr", ("te", "half"): "te-half"}
 STARTERS = {"qb": 12, "rb": 24, "wr": 24, "te": 12}
+# The startable scope: roughly one starter per team at quarterback and tight
+# end, three deep at the positions a lineup starts two or three of.
+TOPN = {"qb": 16, "rb": 36, "wr": 36, "te": 24}
+VOICES = [("Wilson", "rank_data"), ("MC", "rank_vibes"), ("consensus", "cons")]
 
 
 def actual(sid, variant):
@@ -52,7 +63,8 @@ def actual(sid, variant):
 
 def pairwise(pred_rank, pts):
     """Of every pair whose real scores differed, how many did the list order
-    correctly? Chance is 50%."""
+    correctly? Chance is 50%. Returned as the fraction it is, so that pairs
+    from several positions can be added up rather than averaged."""
     n = len(pred_rank); right = total = 0
     for i in range(n):
         for j in range(i + 1, n):
@@ -62,7 +74,22 @@ def pairwise(pred_rank, pts):
             better = i if pts[i] > pts[j] else j
             ahead = i if pred_rank[i] < pred_rank[j] else j
             right += (better == ahead)
-    return right / total if total else np.nan
+    return right, total
+
+
+def grade(rank, pts, k):
+    """One voice on one set of players. Truth is ranked inside the same set,
+    so spots off asks how badly the order was wrong, not how deep the set is."""
+    right, total = pairwise(rank.to_numpy(), pts.to_numpy())
+    truth = pts.rank(ascending=False, method="first").to_numpy()
+    mine = rank.rank(method="first").to_numpy()
+    got = pts.iloc[np.argsort(rank.to_numpy())[:k]].sum()
+    best = pts.nlargest(k).sum()
+    return {"n": len(rank), "pairwise": right / total if total else np.nan,
+            "pw_right": right, "pw_total": total,
+            "spots_off": float(np.abs(mine - truth).mean()),
+            "spearman": spearmanr(-rank, pts).statistic,
+            "pts_got": got, "pts_best": best, "pts_lost": best - got}
 
 
 rows = []
@@ -71,24 +98,48 @@ for (pos, variant), stem in FILES.items():
     df["sid"] = [ids.get((p, t)) or by_name.get(p) for p, t in zip(df.player, df.team)]
     df["pts"] = [actual(s, variant) for s in df.sid]
     df["cons"] = [CONS.get((pos, p), np.nan) for p in df.player]
-    # Ranked inside our own pool: a man we never listed cannot take a top spot.
-    df["truth"] = df.pts.rank(ascending=False, method="first")
-    k = STARTERS[pos]
-    best = df.nlargest(k, "pts").pts.sum()
-    for who, col in (("Wilson", "rank_data"), ("MC", "rank_vibes"), ("consensus", "cons")):
+    for who, col in VOICES:
         r = pd.to_numeric(df[col], errors="coerce")
         ok = r.notna()
-        if ok.sum() < k:
+        if ok.sum() < STARTERS[pos]:
             continue
-        d = df[ok].copy(); rr = r[ok]
-        got = d.assign(_r=rr).nsmallest(k, "_r").pts.sum()
-        rows.append({
-            "pos": pos.upper(), "variant": variant, "who": who, "n": int(ok.sum()),
-            "pairwise": pairwise(rr.to_numpy(), d.pts.to_numpy()),
-            "spots_off": float(np.abs(rr.rank(method="first").to_numpy()
-                                      - d.pts.rank(ascending=False, method="first").to_numpy()).mean()),
-            "spearman": spearmanr(-rr, d.pts).statistic,
-            "pts_got": got, "pts_best": best, "pts_lost": best - got,
-        })
-pd.DataFrame(rows).to_csv(SCRATCH / "week1_grades.csv", index=False)
-print(f"graded {len(rows)} list-voice combinations")
+        d = df[ok].reset_index(drop=True); rr = r[ok].reset_index(drop=True)
+        base = {"pos": pos.upper(), "variant": variant, "who": who}
+        rows.append({**base, "scope": "full", **grade(rr, d.pts, STARTERS[pos])})
+        # The startable scope. Each voice is graded on the players it chose to
+        # put up there, which is the selection as well as the ordering.
+        top = rr.nsmallest(TOPN[pos]).index
+        rows.append({**base, "scope": f"top{TOPN[pos]}",
+                     **grade(rr[top].reset_index(drop=True),
+                             d.pts[top].reset_index(drop=True),
+                             min(STARTERS[pos], len(top)))})
+
+g = pd.DataFrame(rows)
+
+# All four positions at once. Pairs are only ever compared inside a position,
+# so the combined figure is the pairs added up, not the rates averaged. The
+# eight lists are four league settings, and each is pooled on its own.
+QBV, SKV = ["4pt", "6pt"], ["ppr", "half"]
+alls = []
+for qv in QBV:
+    for sv in SKV:
+        pick = g[((g.pos == "QB") & (g.variant == qv)) | ((g.pos != "QB") & (g.variant == sv))]
+        for scope in pick.scope.unique():
+            for who in pick.who.unique():
+                s = pick[(pick.scope == scope) & (pick.who == who)]
+                if len(s) < 4:            # a voice missing a position is not comparable
+                    continue
+                n = s.n.sum()
+                alls.append({
+                    "pos": "ALL", "variant": f"{qv}+{sv}", "who": who, "scope": scope,
+                    "n": int(n), "pairwise": s.pw_right.sum() / s.pw_total.sum(),
+                    "pw_right": int(s.pw_right.sum()), "pw_total": int(s.pw_total.sum()),
+                    "spots_off": float((s.spots_off * s.n).sum() / n),
+                    "spearman": float((s.spearman * s.n).sum() / n),
+                    "pts_got": s.pts_got.sum(), "pts_best": s.pts_best.sum(),
+                    "pts_lost": s.pts_lost.sum()})
+g = pd.concat([g, pd.DataFrame(alls)], ignore_index=True)
+OUT.mkdir(parents=True, exist_ok=True)
+g.to_csv(OUT / "week-01.csv", index=False)
+g.to_csv(SCRATCH / "week1_grades.csv", index=False)
+print(f"graded {len(g)} rows")

@@ -1,4 +1,4 @@
-"""Turn the model's week-1 output into the Weekly Data vs. Vibes CSVs.
+"""Turn the model's output for one week into the Weekly Data vs. Vibes CSVs.
 
 Each note is composed from the drivers the model actually used -- projected
 volume, scoring-position work, and the opponent's measured defence last season
@@ -6,18 +6,38 @@ volume, scoring-position work, and the opponent's measured defence last season
 him. Notes are shared across scoring formats: the reasoning does not change
 between PPR and half-PPR.
 
-    python3 scripts/build-weekly-notes.py && node scripts/build-weekly.mjs
+    python3 scripts/build-weekly-notes.py --week 2 && node scripts/build-weekly.mjs
+
+Week 1 and the weeks after it come from two different models and two different
+export paths, so the source is an argument rather than a constant. Week 1 was
+written to /tmp by `dd.cli predict` with a notes_ prefix and is left alone;
+week 2 onward is written by `dd.cli week` into model/outputs/<season>/week-NN.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import math
 from pathlib import Path
 
 import pandas as pd
 
-SRC = Path("/tmp")
-SEASON, WEEK = 2026, 1
+ap = argparse.ArgumentParser(description=__doc__)
+ap.add_argument("--season", type=int, default=2026)
+ap.add_argument("--week", type=int, default=1)
+ap.add_argument("--src", default=None, help="where the model's CSVs are")
+ap.add_argument("--prefix", default=None, help="filename prefix on those CSVs")
+args = ap.parse_args()
+
+SEASON, WEEK = args.season, args.week
+# Week 1 kept its original home; everything after it reads the model's own
+# output directory, which is committed rather than living in /tmp.
+if args.src is not None:
+    SRC, PREFIX = Path(args.src), (args.prefix or "")
+elif WEEK == 1:
+    SRC, PREFIX = Path("/tmp"), "notes_"
+else:
+    SRC, PREFIX = Path(f"model/outputs/{SEASON}/week-{WEEK:02d}"), ""
 OUT = Path(f"data/weekly/{SEASON}/week-{WEEK:02d}")
 # Players ruled out after the model last ran. nflverse publishes the official
 # report on its own schedule, and a Sunday-morning ruling lands hours after it;
@@ -43,12 +63,23 @@ ADDED = Path("data/weekly/added.csv")
 # he: a target hog is worth more in PPR than in half. These rows are keyed by
 # scoring format so one can be moved in one list without touching the other.
 MC_MANUAL = Path("data/weekly/mc-manual-ranks.csv")
+# Keyed by position and scoring format, valued by the model's own stem for
+# that list. The prefix and directory are decided above, because they differ
+# between week 1 and the weeks after it.
 FILES = {
-    ("qb", "4pt"): "notes_qb_qb_4pt.csv", ("qb", "6pt"): "notes_qb_qb_6pt.csv",
-    ("rb", "ppr"): "notes_rb_ppr.csv",    ("rb", "half"): "notes_rb_half_ppr.csv",
-    ("wr", "ppr"): "notes_wr_ppr.csv",    ("wr", "half"): "notes_wr_half_ppr.csv",
-    ("te", "ppr"): "notes_te_ppr.csv",    ("te", "half"): "notes_te_half_ppr.csv",
+    ("qb", "4pt"): "qb_qb_4pt", ("qb", "6pt"): "qb_qb_6pt",
+    ("rb", "ppr"): "rb_ppr",    ("rb", "half"): "rb_half_ppr",
+    ("wr", "ppr"): "wr_ppr",    ("wr", "half"): "wr_half_ppr",
+    ("te", "ppr"): "te_ppr",    ("te", "half"): "te_half_ppr",
 }
+
+
+def model_csv(stem: str) -> Path:
+    return SRC / f"{PREFIX}{stem}.csv"
+
+
+def pool_csv(stem: str) -> Path:
+    return SRC / f"{PREFIX}{stem}_pool.csv"
 
 
 def upper_first(text: str) -> str:
@@ -317,7 +348,7 @@ def promote(df: pd.DataFrame, pos: str, fname: str) -> pd.DataFrame:
     want = [p for p in a.player if p not in set(df.player_name)]
     if not want:
         return df
-    pool_path = SRC / ("notes_" + fname.replace("notes_", "").replace(".csv", "_pool.csv"))
+    pool_path = pool_csv(fname)
     if not pool_path.exists():
         print(f"    {pos}: no pool file, cannot promote {want}")
         return df
@@ -416,7 +447,7 @@ def mc_override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     mc = pd.read_csv(MC) if MC.exists() else None
-    loaded = {k: scratch(promote(pd.read_csv(SRC / v), k[0], v), k[0])
+    loaded = {k: scratch(promote(pd.read_csv(model_csv(v)), k[0], v), k[0])
               for k, v in FILES.items()}
     rk_total, rk_pass, rk_rush = league_ranks(list(loaded.values()))
     for (pos, variant), fname in FILES.items():
@@ -512,6 +543,9 @@ def main() -> None:
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")
+    (OUT / "LABEL.txt").write_text(f"Week {WEEK}\n")
+    if not MC.exists():
+        print(f"  no {MC} yet, so consensus fills the vibes column")
     for stale in ("qb.csv", "rb.csv"):
         p = OUT / stale
         if p.exists():
