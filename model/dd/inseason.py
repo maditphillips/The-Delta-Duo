@@ -40,6 +40,17 @@ EFFICIENCY = ["yards_per_target", "yards_per_carry", "yards_per_attempt",
 TEAM = ["team_plays", "team_pass_rate", "team_sec_per_play",
         "team_rz_trips", "team_points"]
 
+# The first season the in-season half of the panel covers. Earlier seasons sit
+# in the panel with every sd_ column blank, because build() starts here, and
+# they are a quarter of the rows. Training on them taught the model to lean on
+# preseason features for a fifth of its evidence, and it cost real accuracy:
+# excluding them is worth +0.053 Spearman at running back, +0.033 at receiver.
+# Worse, any column that happened to be blank before this season let a booster
+# split those rows off and looked like a feature that worked. That is how the
+# matchup layer first appeared to help. Nothing should train on the panel
+# without going through usable().
+FIRST_IN_SEASON = 2019
+
 
 def _weekly(seasons) -> pd.DataFrame:
     """One row per player-week: the raw counting stats, plus his team's."""
@@ -167,6 +178,11 @@ TEAM_PAIRS = {
 }
 
 
+def usable(panel: pd.DataFrame) -> pd.DataFrame:
+    """The rows that actually carry this-season evidence."""
+    return panel[panel.season >= FIRST_IN_SEASON]
+
+
 def blend(df: pd.DataFrame, k_role: float, k_eff: float,
           k_team: float | None = None) -> pd.DataFrame:
     """Weigh this season against last, by how much of this season there is.
@@ -217,31 +233,36 @@ def feature_list(position: str) -> list[str]:
 def training_frame(panel: pd.DataFrame, position: str, k_role: float,
                    k_eff: float) -> pd.DataFrame:
     from .features import rankable
-    d = rankable(panel, position)
+    d = rankable(usable(panel), position)
     return blend(d, k_role, k_eff)
 
 
 def _fast_eval(d: pd.DataFrame, feats: list[str], target: str,
                seasons) -> float:
-    """Ridge only, for searching k. The full hurdle model is too slow to run
-    a grid against, and the question here is which blend carries most signal,
-    which a linear fit answers as well as a bagged one."""
-    from sklearn.linear_model import RidgeCV
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import StandardScaler
+    """One booster, for searching k and ablating groups.
+
+    This was a ridge fed median-filled NaNs, and it was the wrong instrument.
+    Most of the panel has no in-season history at all in any given week, and
+    filling those blanks with the median tells the model a man who has not
+    played is an average one. The ridge scored 0.62 where the shipped model
+    scores 0.84, so every conclusion drawn from it was drawn about a different
+    model. A booster that reads a blank as a blank scores what the real thing
+    scores, which is the whole point of a search harness.
+    """
     from scipy.stats import spearmanr
+    from sklearn.ensemble import HistGradientBoostingRegressor
     cols = [c for c in feats if c in d.columns]
     out = []
     for s in seasons:
         tr, te = d[d.season < s], d[d.season == s]
         if len(tr) < 500 or len(te) < 200:
             continue
-        med = tr[cols].median(numeric_only=True)
-        Xtr, Xte = tr[cols].fillna(med), te[cols].fillna(med)
-        m = make_pipeline(StandardScaler(), RidgeCV(alphas=np.logspace(-2, 4, 20)))
-        m.fit(Xtr, tr[target])
+        m = HistGradientBoostingRegressor(max_depth=4, learning_rate=0.05,
+                                          max_iter=300, l2_regularization=1.0,
+                                          random_state=0)
+        m.fit(tr[cols], tr[target])
         # Scored within each week, because that is how a weekly list is used.
-        p = pd.Series(m.predict(Xte), index=te.index)
+        p = pd.Series(m.predict(te[cols]), index=te.index)
         rho = te.assign(p=p).groupby("week").apply(
             lambda g: spearmanr(g.p, g[target]).statistic if len(g) > 5 else np.nan)
         out.append(rho.mean())
@@ -252,7 +273,7 @@ def search_k(panel: pd.DataFrame, position: str, scoring_col: str,
              seasons, k_roles=(1, 2, 4, 8, 16), k_effs=(4, 8, 16, 32, 64)):
     """How many games of prior each half of the game is worth."""
     from .features import rankable
-    base = rankable(panel, position)
+    base = rankable(usable(panel), position)
     feats = feature_list(position)
     rows = []
     for kr in k_roles:
@@ -285,7 +306,7 @@ GROUPS = {
 def ablate(panel: pd.DataFrame, position: str, scoring_col: str, seasons):
     """Drop each group in turn and see what the list loses without it."""
     from .features import rankable
-    d = blend(rankable(panel, position), K_ROLE, K_EFF)
+    d = blend(rankable(usable(panel), position), K_ROLE, K_EFF)
     full = feature_list(position)
     base = _fast_eval(d, full, scoring_col, seasons)
     rows = [{"group": "(everything)", "n_feats": len(full), "rho": base, "delta": 0.0}]
@@ -305,8 +326,22 @@ def ablate(panel: pd.DataFrame, position: str, scoring_col: str, seasons):
 DROP = set(GROUPS["efficiency"]) | set(GROUPS["opponent"])
 
 
-def features_final(position: str) -> list[str]:
-    return [c for c in feature_list(position) if c not in DROP]
+# The matchup layer in dd/defense.py is built, measured and not used. What a
+# defence has given up so far, opponent-adjusted and shrunk towards last
+# season, adds nothing at any position: between -0.002 and +0.003 Spearman,
+# and negative at three of the four. The test that settles it is the
+# permutation one. Join every player to a real defence from the same week
+# chosen at random instead of the one he actually faced, and the model scores
+# exactly what it scores with the right defence. There is no matchup signal
+# being used because at one to a few games of evidence there is none to use.
+# It stays behind a flag rather than being deleted, because the measurement is
+# worth keeping and the answer may change with a better opponent adjustment.
+def features_final(position: str, matchup: bool = False) -> list[str]:
+    f = [c for c in feature_list(position) if c not in DROP]
+    if matchup:
+        from .defense import MATCHUP
+        f = f + [c for c in MATCHUP if c not in f]
+    return f
 
 
 def backtest(panel: pd.DataFrame, seasons=range(2022, 2026), verbose: bool = True):
@@ -315,6 +350,7 @@ def backtest(panel: pd.DataFrame, seasons=range(2022, 2026), verbose: bool = Tru
     from scipy.stats import spearmanr
     from .features import rankable
     from .model import PositionModel
+    panel = usable(panel)
     rows = []
     for pos, col in [("QB", "actual_qb_4pt"), ("RB", "actual_ppr"),
                      ("WR", "actual_ppr"), ("TE", "actual_ppr")]:
@@ -387,14 +423,15 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
 
 
 def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
-                 train_seasons=range(2019, 2026)) -> dict:
+                 train_seasons=None) -> dict:
     """Wilson's board for one in-season week, one list per position and format."""
     from .config import LIST_DEPTH, LISTS, POSITIONS
     from .features import rankable
     from .model import PositionModel, rank_frame
     if panel is None:
         panel = pd.read_parquet(CACHE / "inseason_panel.parquet")
-    panel = panel[panel.season.isin(list(train_seasons))]
+    panel = usable(panel) if train_seasons is None \
+        else panel[panel.season.isin(list(train_seasons))]
     rows = target_rows(season, week)
     out = {}
     for pos in POSITIONS:
