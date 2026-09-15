@@ -142,10 +142,13 @@ NOISE_BAND = 0.10
 
 class PositionModel:
     def __init__(self, position: str, scoring: str, kind: str = "auto",
-                 use_z: bool | None = None):
+                 use_z: bool | None = None, features: list[str] | None = None):
         self.position = position
         self.scoring = scoring
         self.kind = kind
+        # The week 2 model feeds its own list; left None this is the preseason
+        # model and takes the one in features.py, unchanged.
+        self.feature_override = features
         self.use_z = USE_Z_TARGET if use_z is None else use_z
         self.z_ref_: tuple = (0.0, 1.0)
         self.features_: list[str] = []
@@ -157,7 +160,8 @@ class PositionModel:
 
     # -- data ------------------------------------------------------------
     def _cols(self, df: pd.DataFrame) -> list[str]:
-        return list(dict.fromkeys(c for c in FEATURES[self.position] if c in df.columns))
+        want = self.feature_override or FEATURES[self.position]
+        return list(dict.fromkeys(c for c in want if c in df.columns))
 
     def _matrix(self, df: pd.DataFrame, cols=None) -> pd.DataFrame:
         cols = cols or self._cols(df)
