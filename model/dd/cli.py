@@ -5,6 +5,7 @@
     python -m dd.cli backtest            # expanding-window backtest + metrics
     python -m dd.cli carryover           # 'does the play-caller's style travel?'
     python -m dd.cli predict             # write the eight week-1 lists
+    python -m dd.cli week 2              # week 2 onward, from the in-season model
     python -m dd.cli skeleton            # regenerate config/playcallers.csv
 """
 from __future__ import annotations
@@ -137,13 +138,47 @@ def cmd_predict():
               f"({min(len(out), LIST_DEPTH[pos])} players, {len(out)} in the pool)")
 
 
+def cmd_week():
+    """Wilson's board for an in-season week: python -m dd.cli week 2
+
+    Uses dd/inseason.py, which is a different model from the one behind week
+    one: trained on weeks 2 through 18 rather than on week ones, and fed this
+    season's usage as well as last season's.
+    """
+    from . import inseason
+    week = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+    lists = inseason.predict_week(TARGET_SEASON, week)
+    outdir = OUTPUTS / str(TARGET_SEASON) / f"week-{week:02d}"
+    outdir.mkdir(parents=True, exist_ok=True)
+    keep = ["rank_data", "player_id", "player_name", "team", "opponent", "is_home",
+            "proj", "floor_q20", "median_q50", "ceiling_q90", "p_top12",
+            "depth_rank", "expected_targets", "expected_carries",
+            "expected_rz_targets", "expected_gl_carries", "expected_pass_att",
+            "expected_pass_yards", "target_share_eb", "snap_share_eb",
+            "sd_games", "sd_targets", "sd_carries", "sd_snap_share",
+            "sd_target_share", "b_targets", "b_carries", "b_snap_share",
+            "b_target_share", "implied_team_total",
+            "opp_prev_def_epa_pass", "opp_prev_def_epa_rush",
+            "off_continuity", "hc_continuity", "hc_change", "changed_team",
+            "is_rookie", "is_out", "is_questionable", "practice_status", "learner"]
+    for (pos, scoring), df in lists.items():
+        cols = [c for c in keep if c in df.columns]
+        out = df[cols].round(3)
+        path = outdir / f"{pos.lower()}_{scoring}.csv"
+        out.head(LIST_DEPTH[pos]).to_csv(path, index=False)
+        out.to_csv(outdir / f"{pos.lower()}_{scoring}_pool.csv", index=False)
+        print(f"  wrote {path.relative_to(OUTPUTS.parent)}  "
+              f"({min(len(out), LIST_DEPTH[pos])} players, {len(out)} in the pool)")
+
+
 def cmd_skeleton():
     sk = pc.write_overlay_skeleton()
     print(f"wrote {pc.OVERLAY} ({len(sk)} team-seasons)")
 
 
 COMMANDS = {"ingest": cmd_ingest, "panel": cmd_panel, "backtest": cmd_backtest,
-            "carryover": cmd_carryover, "predict": cmd_predict, "skeleton": cmd_skeleton}
+            "carryover": cmd_carryover, "predict": cmd_predict, "week": cmd_week,
+            "skeleton": cmd_skeleton}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:

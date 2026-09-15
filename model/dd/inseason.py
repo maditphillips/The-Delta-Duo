@@ -348,3 +348,65 @@ def backtest(panel: pd.DataFrame, seasons=range(2022, 2026), verbose: bool = Tru
     if verbose:
         print(r.pivot_table(index="position", columns="source", values="rho").round(4).to_string())
     return r
+
+
+def target_rows(season: int, week: int) -> pd.DataFrame:
+    """The board to be predicted, with this season's weeks so far attached.
+
+    dataset.build_rows deliberately withholds weeks 1..W-1 of the current
+    season, because the preseason model poses every week as the week-1 problem.
+    This model is the opposite: those weeks are the whole point, so they are
+    joined back on here.
+    """
+    from . import dataset
+    rows = dataset.build_rows(season, week=week)
+    ins = build()
+    sd = [c for c in ins.columns if c.startswith("sd_")]
+    prior = ins[(ins.season == season) & (ins.week < week)]
+    if prior.empty:
+        raise SystemExit(f"no {season} weeks before {week} to learn from")
+    # Averaged over the weeks played, not lifted off the last row.
+    #
+    # to_date gives every row the state *before* it, which is what a training
+    # row needs and exactly wrong here: the week 1 row carries "before week 1",
+    # which is nothing at all. Predicting week 2 needs the state after week 1,
+    # so the same means are taken again at the boundary.
+    raw = [c.removeprefix("sd_") for c in sd
+           if c.removeprefix("sd_") in prior.columns]
+    latest = prior.groupby("player_id")[raw].mean()
+    latest.columns = [f"sd_{c}" for c in latest.columns]
+    latest["sd_games"] = prior.groupby("player_id").week.count()
+    tm = prior.groupby("team").agg(
+        sd_team_plays=("team_plays", "mean"),
+        sd_team_pass_rate=("team_pass_rate", "mean")) \
+        if "team_plays" in prior.columns else \
+        prior.groupby("team")[["sd_team_plays", "sd_team_pass_rate"]].last()
+    tm["sd_team_games"] = prior.groupby("team").week.nunique()
+    rows = rows.merge(latest.reset_index(), on="player_id", how="left")
+    return rows.merge(tm.reset_index(), on="team", how="left")
+
+
+def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
+                 train_seasons=range(2019, 2026)) -> dict:
+    """Wilson's board for one in-season week, one list per position and format."""
+    from .config import LIST_DEPTH, LISTS, POSITIONS
+    from .features import rankable
+    from .model import PositionModel, rank_frame
+    if panel is None:
+        panel = pd.read_parquet(CACHE / "inseason_panel.parquet")
+    panel = panel[panel.season.isin(list(train_seasons))]
+    rows = target_rows(season, week)
+    out = {}
+    for pos in POSITIONS:
+        feats = features_final(pos)
+        tr_all = blend(rankable(panel, pos), K_ROLE, K_EFF)
+        te = blend(rankable(rows, pos), K_ROLE, K_EFF)
+        for scoring in LISTS[pos]:
+            col = f"actual_{scoring}"
+            tr = tr_all[tr_all[col].notna()].copy()
+            m = PositionModel(pos, scoring, features=feats)
+            m.fit(tr)
+            ranked = rank_frame(te, m.predict(te), LIST_DEPTH[pos] * 3)
+            ranked["learner"] = m.chosen_
+            out[(pos, scoring)] = ranked
+    return out
