@@ -145,14 +145,22 @@ def cmd_week():
     one: trained on weeks 2 through 18 rather than on week ones, and fed this
     season's usage as well as last season's.
     """
-    from . import inseason
+    from . import benchmark, inseason
     week = int(sys.argv[2]) if len(sys.argv) > 2 else 2
     lists = inseason.predict_week(TARGET_SEASON, week)
+    # Consensus is not a feature of this model and never will be: a model
+    # handed the market's answer learns to repeat it. It rides along as a
+    # reported column so the boards can be compared, and so the site has
+    # something to put in the vibes column on a week MC has not ranked yet.
+    cons = benchmark.weekly_consensus(TARGET_SEASON, week)
+    if len(cons):
+        print(f"  consensus as scraped {cons.scraped.max()}")
+        cons = cons[["player_id", "consensus_rank"]]
     outdir = OUTPUTS / str(TARGET_SEASON) / f"week-{week:02d}"
     outdir.mkdir(parents=True, exist_ok=True)
     keep = ["rank_data", "player_id", "player_name", "team", "opponent", "is_home",
             "proj", "floor_q20", "median_q50", "ceiling_q90", "p_top12",
-            "depth_rank", "expected_targets", "expected_carries",
+            "consensus_rank", "depth_rank", "expected_targets", "expected_carries",
             "expected_rz_targets", "expected_gl_carries", "expected_pass_att",
             "expected_pass_yards", "target_share_eb", "snap_share_eb",
             "sd_games", "sd_targets", "sd_carries", "sd_snap_share",
@@ -162,6 +170,8 @@ def cmd_week():
             "off_continuity", "hc_continuity", "hc_change", "changed_team",
             "is_rookie", "is_out", "is_questionable", "practice_status", "learner"]
     for (pos, scoring), df in lists.items():
+        if len(cons):
+            df = df.merge(cons, on="player_id", how="left")
         cols = [c for c in keep if c in df.columns]
         out = df[cols].round(3)
         path = outdir / f"{pos.lower()}_{scoring}.csv"

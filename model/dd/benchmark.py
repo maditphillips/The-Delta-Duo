@@ -90,3 +90,58 @@ def preseason_consensus(season: int, cutoff: str | None = None) -> pd.DataFrame:
               .rename(columns={"gsis_id": "player_id", "sd": "consensus_sd"})
               [["season", "player_id", "position", "consensus_rank", "consensus_sd", "ecr"]]
               .drop_duplicates(["season", "player_id"]))
+
+
+def weekly_consensus(season: int, week: int) -> pd.DataFrame:
+    """Expert consensus for one week, as it stood going into that week.
+
+    The weekly pages are scraped once a week, midweek, so the right snapshot
+    is the last one published strictly before that week's first kickoff. Early
+    in a week the scrape has not happened yet; rather than return nothing, the
+    most recent weekly snapshot is used and `scraped` says which, so a caller
+    can tell a current board from a carried-over one and re-run when the real
+    thing lands.
+    """
+    from . import ingest
+    d = _load_ecr(set(WEEKLY_PAGES.values()))
+    if d.empty:
+        return pd.DataFrame(columns=["season", "week", "player_id", "position",
+                                     "consensus_rank", "consensus_sd", "scraped"])
+    sched = ingest.load("schedules")
+    g = sched[(sched.season == season) & (sched.week == week)]
+    if g.empty:
+        raise SystemExit(f"no schedule for {season} week {week}")
+    kickoff = pd.Timestamp(pd.to_datetime(g.gameday).min())
+    before = d[d.scrape_date < kickoff]
+    # A week of the current season with no scrape yet falls back to whatever
+    # the market last said, which is stale by one week and honest about it.
+    pick = before if not before.empty else d
+    out = []
+    for pos, page in WEEKLY_PAGES.items():
+        sub = pick[pick.page_type == page]
+        if sub.empty:
+            continue
+        sub = sub[sub.scrape_date == sub.scrape_date.max()].copy()
+        sub["position"] = pos
+        out.append(sub)
+    if not out:
+        return pd.DataFrame(columns=["season", "week", "player_id", "position",
+                                     "consensus_rank", "consensus_sd", "scraped"])
+    df = pd.concat(out, ignore_index=True)
+    xw = crosswalk()
+    df = df.merge(xw[["fantasypros_id", "gsis_id"]], left_on="id",
+                  right_on="fantasypros_id", how="left")
+    miss = df["gsis_id"].isna()
+    if miss.any():
+        xw2 = xw.dropna(subset=["merge_name"]).drop_duplicates(["merge_name", "position"])
+        df.loc[miss, "gsis_id"] = df.loc[miss].merge(
+            xw2, left_on=["mergename", "position"], right_on=["merge_name", "position"],
+            how="left")["gsis_id_y"].values
+    df["season"], df["week"] = season, week
+    df["scraped"] = df.scrape_date.dt.strftime("%Y-%m-%d")
+    df["consensus_rank"] = df.groupby("position")["ecr"].rank(method="first")
+    return (df.dropna(subset=["gsis_id"])
+              .rename(columns={"gsis_id": "player_id", "sd": "consensus_sd"})
+              [["season", "week", "player_id", "position", "consensus_rank",
+                "consensus_sd", "ecr", "scraped"]]
+              .drop_duplicates(["season", "week", "player_id"]))
