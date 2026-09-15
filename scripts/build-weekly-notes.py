@@ -543,14 +543,9 @@ def main() -> None:
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")
-    # What the week is called, and who is actually in the vibes column. On a
-    # week MC has not ranked, consensus stands in, and the board says so
-    # rather than putting his name over somebody else's order.
     (OUT / "LABEL.txt").write_text(f"Week {WEEK}\n")
-    source = "MC" if MC.exists() else "consensus"
-    (OUT / "VIBES.txt").write_text(source + "\n")
-    if source == "consensus":
-        print(f"  vibes column is consensus: no {MC} yet")
+    if not MC.exists():
+        print(f"  no {MC} yet, so consensus fills the vibes column")
     for stale in ("qb.csv", "rb.csv"):
         p = OUT / stale
         if p.exists():
