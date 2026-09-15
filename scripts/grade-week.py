@@ -30,16 +30,24 @@ STARTERS = {"qb": 12, "rb": 24, "wr": 24, "te": 12}
 
 
 def actual(sid, variant):
+    """The week's real score, in the scoring the model was fitted to.
+
+    Sleeper's own totals are close but not identical to ours: they dock one
+    point for an interception and model/dd/config.py docks two. Everything
+    else matches, so the correction is a single term, and it only moves
+    quarterbacks. Grading a model fitted to minus two against a truth paying
+    minus one would quietly punish it for the interceptions it was built to
+    fear.
+    """
     s = st.get(sid) or {}
     if not isinstance(s, dict):
         return 0.0
-    if variant == "4pt":
-        return float(s.get("pts_ppr") or 0.0)
-    if variant == "6pt":                      # Sleeper pays 4 for a passing TD
-        return float(s.get("pts_ppr") or 0.0) + 2 * float(s.get("pass_td") or 0.0)
-    if variant == "half":
-        return float(s.get("pts_half_ppr") or 0.0)
-    return float(s.get("pts_ppr") or 0.0)
+    ints = float(s.get("pass_int") or 0.0)
+    base = float(s.get("pts_half_ppr" if variant == "half" else "pts_ppr") or 0.0)
+    pts = base - ints                          # their -1 becomes our -2
+    if variant == "6pt":                       # their 4 per passing TD becomes 6
+        pts += 2 * float(s.get("pass_td") or 0.0)
+    return pts
 
 
 def pairwise(pred_rank, pts):
