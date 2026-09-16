@@ -1,22 +1,27 @@
 """Kicker ranking for one week: venue expectation blended with the kicker's own rate.
 
-The model, as specified:
+The model, as it was settled on in week 1:
 
-    score = 0.75 x venue_rate + 0.25 x kicker_rate
+    score = 0.50 x venue_rate + 0.50 x [league + w x (kicker_rate - league)]
+    w     = n / (n + 100), applied ONE-SIDED (only above the league average)
 
 where venue_rate is the venue's field goal percentage for a kicker in that
 role - visPct straight from src/data/stadiums.ts for a visitor, visPct + gap
 for the home kicker - and kicker_rate is his regular-season career field goal
 percentage.
 
+The split started at 75/25 and moved to 50/50 by hand: 75/25 let the venue
+term carry nearly the whole board, and the week-1 slate it produced put
+kickers in places football sense would not. Both weights remain overridable.
+
 A second column reports the same idea built on deviations instead of levels:
 
-    score = league + (venue - league) + 0.25 x (kicker - league)
+    score = league + (venue - league) + W_KICKER x (kicker - league)
 
 Both inputs already contain the league average, so averaging them mostly
 averages two copies of that average and shrinks the venue effect it is meant
-to respect. Adding deviations keeps the venue at full weight, which is what
-the 75/25 split was trying to express, and shrinks only the noisy kicker term.
+to respect. That version is reported, never published: its weights sum to
+more than one, so it is not on the make-rate scale.
 
 Run fetch_plays.py first, then:
 
@@ -65,8 +70,8 @@ SEASON, WEEK = args.season, args.week
 SRC = args.plays or sorted(
     p for p in os.listdir(HERE) if p.startswith("plays_") and p.endswith(".parquet"))[-1]
 SRC = SRC if os.path.isabs(SRC) else os.path.join(HERE, SRC)
-# venue / kicker split, overridable: W_VENUE=0.5 python3 week1_kickers.py
-W_VENUE = float(os.environ.get("W_VENUE", 0.75))
+# venue / kicker split, overridable: W_VENUE=0.75 python3 weekly_kickers.py
+W_VENUE = float(os.environ.get("W_VENUE", 0.50))
 W_KICKER = 1.0 - W_VENUE
 # Attempts at which a kicker's own rate earns half weight. The empirical value
 # from the year-to-year correlation of distance-adjusted FG% (r = 0.102, so
@@ -92,12 +97,98 @@ def sub(t):
     print(f"\n-- {t}")
 
 
-def grab(url, name):
+def grab(url, name, refresh=False):
     os.makedirs(TMP, exist_ok=True)
     path = os.path.join(TMP, name)
-    if not os.path.exists(path):
+    if refresh or not os.path.exists(path):
         subprocess.run(["curl", "-sSL", "--retry", "4", "-o", path, url], check=True)
     return path
+
+
+ACTIVE = "A01"          # nflverse status_description_abbr for a genuinely active player
+PBP = ("https://github.com/nflverse/nflverse-data/releases/download/"
+       f"pbp/play_by_play_{SEASON}.parquet")
+
+
+def plays_with_current_season():
+    """The archive parquet, plus this season's completed games.
+
+    Career rates have to move as men kick, and the archive is only refreshed
+    when fetch_plays.py is re-run. The current season's pbp release is small,
+    so it is pulled fresh every time and appended - restricted to the columns
+    the archive already carries, so the frame keeps its shape.
+    """
+    d = pd.read_parquet(SRC)
+    try:
+        path = grab(PBP, f"pbp_{SEASON}.parquet", refresh=True)
+        cols = [c for c in d.columns if c in set(pq_columns(path))]
+        cur = pd.read_parquet(path, columns=cols)
+        cur = cur[~cur.season.isin(d.season.unique())]
+        if len(cur):
+            weeks = sorted(cur[cur.season_type.eq("REG")].week.unique())
+            note = (f"  {SEASON} weeks folded into the career rates: "
+                    + ", ".join(str(int(w)) for w in weeks))
+            return pd.concat([d, cur], ignore_index=True), note
+        return d, f"  {SEASON} is already in the archive parquet"
+    except Exception as e:
+        return d, f"  no separate {SEASON} play-by-play ({type(e).__name__})"
+
+
+def pq_columns(path):
+    import pyarrow.parquet as pq
+    return pq.ParquetFile(path).schema.names
+
+
+def pick_kickers(ros, week, season):
+    """One kicker per team for this week, with the reason when it is not obvious.
+
+    status == "ACT" is not enough: nflverse files injured reserve under ACT
+    with a status_description_abbr of I01, so a man on IR can outrank the
+    practice-squad kicker who is actually taking the snaps. Prefer A01; if a
+    team has none, fall back to whoever last attempted a kick for them this
+    season, which is how an elevation shows up.
+    """
+    k = ros[ros.position.eq("K")]
+    if "week" in k.columns and k.week.notna().any():
+        wks = sorted(k.week.dropna().unique())
+        k = k[k.week.eq(week if week in wks else max(wks))]
+    active = k[k.status_description_abbr.eq(ACTIVE)]
+    try:
+        cur = pd.read_parquet(os.path.join(TMP, f"pbp_{season}.parquet"),
+                              columns=["posteam", "week", "play_type",
+                                       "kicker_player_id", "kicker_player_name"])
+        cur = cur[cur.play_type.isin(["field_goal", "extra_point"])
+                  & cur.kicker_player_id.notna()]
+        last = (cur.sort_values("week").groupby("posteam")
+                .agg(kid=("kicker_player_id", "last")))
+    except Exception:
+        last = pd.DataFrame(columns=["kid"])
+
+    out, notes = {}, []
+    for team in sorted(set(ros.team.dropna())):
+        a = active[active.team.eq(team)]
+        if len(a) == 1:
+            out[team] = (a.iloc[0].full_name, a.iloc[0].gsis_id)
+        elif team in last.index:
+            kid = last.loc[team, "kid"]
+            row = k[k.gsis_id.eq(kid)]
+            name = row.iloc[0].full_name if len(row) else str(kid)
+            tag = (f"{row.iloc[0].status}/{row.iloc[0].status_description_abbr}"
+                   if len(row) else "not on the roster file")
+            benched = ", ".join(f"{x.full_name} ({x.status_description_abbr})"
+                                for _, x in k[k.team.eq(team)].iterrows()
+                                if x.gsis_id != kid)
+            out[team] = (name, kid)
+            notes.append(f"  {team}: no active (A01) kicker listed - using "
+                         f"{name} [{tag}], who kicked most recently"
+                         + (f"; the roster also lists {benched}" if benched else ""))
+        elif len(a) > 1:
+            out[team] = (a.iloc[0].full_name, a.iloc[0].gsis_id)
+            notes.append(f"  {team}: {len(a)} active kickers, took "
+                         f"{a.iloc[0].full_name}")
+        else:
+            notes.append(f"  {team}: no kicker found at all")
+    return out, notes
 
 
 def publish(r, league):
@@ -141,13 +232,15 @@ def main():
     venues = {v["id"]: v for v in json.loads(
         re.search(r"export const stadiums[^=]*=\s*(\[.*?\]);", ts, re.S).group(1))}
 
-    g = pd.read_csv(grab(SCHED, "games.csv"))
+    g = pd.read_csv(grab(SCHED, "games.csv", refresh=True))
     wk = g[(g.season == SEASON) & (g.week == WEEK)].copy()
 
-    ros = pd.read_parquet(grab(ROSTER, f"roster_{SEASON}.parquet"))
-    ks = ros[ros.position.eq("K") & ros.status.eq("ACT")].set_index("team")
+    ros = pd.read_parquet(grab(ROSTER, f"roster_{SEASON}.parquet", refresh=True))
 
-    d, _ = add_adjusted(pd.read_parquet(SRC))
+    plays, pbp_note = plays_with_current_season()
+    ks, ks_notes = pick_kickers(ros, WEEK, SEASON)
+
+    d, _ = add_adjusted(plays)
     fg = d[d.is_fg & d.season_type.eq("REG")]
     league = fg[fg.season.ge(2023)].made.mean()
     by_id = fg.groupby("kicker_player_id").agg(att=("made", "size"),
@@ -158,19 +251,23 @@ def main():
     print(f"model            : score = {W_VENUE:.2f} x venue rate + "
           f"{W_KICKER:.2f} x kicker rate")
     print(f"league average   : {league:.4f} (all regular-season attempts, "
-          f"2023-2025)")
+          f"2023 onward)")
     print(f"venue rate       : visPct from stadiums.ts for a visitor, "
           f"visPct + gap for the home kicker")
     print(f"kicker rate      : career REGULAR-SEASON field goal percentage, "
           f"blocks included")
     print(f"games            : {len(wk)}")
+    print(pbp_note)
+
+    sub("who is kicking, where the roster needed a second look")
+    print("\n".join(ks_notes) if ks_notes else
+          "  every team has exactly one genuinely active (A01) kicker")
 
     rows = []
     for _, m in wk.iterrows():
         v = venues.get(m.stadium_id)
         for team, role in [(m.away_team, "visitor"), (m.home_team, "home")]:
-            k = ks.loc[team] if team in ks.index else None
-            kid = k.gsis_id if k is not None else None
+            kname, kid = ks.get(team, (None, None))
             rec = by_id.loc[kid] if kid in by_id.index else None
             kpct = float(rec.pct) if rec is not None else np.nan
             katt = int(rec.att) if rec is not None else 0
@@ -182,7 +279,7 @@ def main():
                 vpct = (v["visPct"] + v["gap"]) / 100.0
                 vsrc = f"visPct {v['visPct']:.1f} + gap {v['gap']:+.1f}"
             rows.append({
-                "team": team, "kicker": k.full_name if k is not None else "?",
+                "team": team, "kicker": kname or "?",
                 "role": role, "opp": m.home_team if role == "visitor" else m.away_team,
                 "venue": (v["name"] if v else m.stadium)[:26],
                 "venue_id": m.stadium_id, "venue_rate": vpct, "venue_src": vsrc,
