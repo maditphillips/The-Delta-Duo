@@ -172,7 +172,7 @@ def matchup_phrase(r, pos: str) -> str:
 # price, because his preseason share was zero and always would be.
 VOLUME = {"targets": "expected_targets", "carries": "expected_carries",
           "attempts": "expected_pass_att", "snap_share": "snap_share_eb",
-          "target_share": "target_share_eb"}
+          "target_share": "target_share_eb", "carry_share": "rush_share_eb"}
 
 
 def vol(r, name: str, default=None):
@@ -192,6 +192,7 @@ def blurb(r, pos: str) -> str:
     et, ec = vol(r, "targets", 0), vol(r, "carries", 0)
     gl, rz = num(r.get("expected_gl_carries"), 0), num(r.get("expected_rz_targets"), 0)
     ts, ss = vol(r, "target_share"), vol(r, "snap_share")
+    cs = vol(r, "carry_share")
     att = vol(r, "attempts", 0)
     pyd = num(r.get("expected_pass_yards"), 0)
     # There is no in-season passing-yards figure to blend, because yards a
@@ -220,11 +221,18 @@ def blurb(r, pos: str) -> str:
         if ec < 1 and et < 1:
             return no_history_clause(r, pos) + "."
         bits = [f"{ec:.1f} carries"]
+        # "of them" has to follow the carries it refers to, so the share comes
+        # after the goal-line clause rather than between the two.
         if gl >= 0.5:
             bits.append(f"{gl:.1f} of them at the goal line")
+        # A count says what he got; a share says whether he is the back. Ten
+        # carries is a committee in Arizona and most of the backfield in
+        # Seattle, and the note should be able to tell them apart.
+        if cs is not None:
+            bits.append(f"a {cs:.0%} carry share")
         if et >= 2:
             bits.append(f"{et:.1f} targets out of the backfield")
-        if ss is not None and ss >= 0.6:
+        if ss is not None:
             bits.append(f"{ss:.0%} of the snaps")
         return ", ".join(bits) + "."
 
@@ -236,7 +244,7 @@ def blurb(r, pos: str) -> str:
         bits.append(f"{article} {ts:.0%} target share")
     if rz >= 0.6:
         bits.append(plural(rz, "red-zone look"))
-    if ss is not None and ss >= 0.5:
+    if ss is not None:
         bits.append(f"{ss:.0%} of the snaps")
     elif depth and depth >= 3:
         bits.append("a rotational snap count")
