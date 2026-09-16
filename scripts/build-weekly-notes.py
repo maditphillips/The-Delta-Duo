@@ -162,6 +162,26 @@ def matchup_phrase(r, pos: str) -> str:
     return f"{total or upper_first(defense)}."
 
 
+# The volume a note quotes has two possible sources and they are not the same
+# number. expected_* is built from last season's shares times a projected team
+# volume, which is what week 1 had and all it could have had. From week 2 the
+# model ranks on b_*, this season blended into last, and quoting the preseason
+# figure next to an in-season ranking made the notes describe a board nobody
+# was looking at. It read worst on the men with no last season at all: Jadarian
+# Price carried ten times in week 1 and his note said he had no NFL usage to
+# price, because his preseason share was zero and always would be.
+VOLUME = {"targets": "expected_targets", "carries": "expected_carries",
+          "attempts": "expected_pass_att", "snap_share": "snap_share_eb",
+          "target_share": "target_share_eb"}
+
+
+def vol(r, name: str, default=None):
+    """This season blended into last where the model has it, last season where
+    it does not."""
+    v = num(r.get(f"b_{name}"))
+    return v if v is not None else num(r.get(VOLUME[name]), default)
+
+
 def blurb(r, pos: str) -> str:
     """The volume behind the projection, in the model's own numbers.
 
@@ -169,10 +189,18 @@ def blurb(r, pos: str) -> str:
     version told readers Josh Allen had "no rushing floor", which was a
     threshold artefact rather than a finding.
     """
-    et, ec = num(r.get("expected_targets"), 0), num(r.get("expected_carries"), 0)
+    et, ec = vol(r, "targets", 0), vol(r, "carries", 0)
     gl, rz = num(r.get("expected_gl_carries"), 0), num(r.get("expected_rz_targets"), 0)
-    ts, ss = num(r.get("target_share_eb")), num(r.get("snap_share_eb"))
-    att, pyd = num(r.get("expected_pass_att"), 0), num(r.get("expected_pass_yards"), 0)
+    ts, ss = vol(r, "target_share"), vol(r, "snap_share")
+    att = vol(r, "attempts", 0)
+    pyd = num(r.get("expected_pass_yards"), 0)
+    # There is no in-season passing-yards figure to blend, because yards a
+    # throw is an efficiency measure and the model deliberately leaves those on
+    # last season. Holding the implied yards per attempt and moving the volume
+    # keeps the two halves of the sentence talking about the same quarterback.
+    pre_att = num(r.get("expected_pass_att"), 0)
+    if pre_att and att:
+        pyd = pyd * att / pre_att
     depth = num(r.get("depth_rank"), 9)
     rookie = num(r.get("is_rookie"), 0) == 1
 
@@ -282,12 +310,66 @@ def build_note(r, pos: str) -> str:
     return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), outlook(r), flags(r)) if x)
 
 
+# Sleeper's tags, and which of them mean he is not playing. Questionable is
+# not among them on purpose: a hundred and twenty players carry it in a normal
+# week and most of them start. Those are printed for a human to rule on
+# instead, which is what data/weekly/ruled-out.csv is for.
+SLEEPER = "https://api.sleeper.app/v1"
+SLEEPER_CACHE = Path("/tmp/sleeper-players.json")
+SLEEPER_MAX_AGE = 6 * 3600
+NOT_PLAYING = {"Out", "IR", "PUP", "Doubtful", "NA", "DNR", "Sus"}
+INJURIES = pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
+
+
+def sleeper_status() -> pd.DataFrame:
+    """Every skill player carrying an injury tag right now.
+
+    nflverse publishes the official report, and for this season it is all but
+    empty: eleven rows for the whole of 2026, none past week 1, so is_out and
+    is_questionable are dead columns and a man on IR shipped in the rankings
+    with no flag on him at all. Sleeper's roster carries the same field, keeps
+    it current to the hour, and had Ja'Kobi Lane as Doubtful with a wrist when
+    ours had nothing.
+    """
+    import json
+    import time
+    import urllib.request
+    stale = (not SLEEPER_CACHE.exists()
+             or time.time() - SLEEPER_CACHE.stat().st_mtime > SLEEPER_MAX_AGE)
+    if stale:
+        try:
+            with urllib.request.urlopen(f"{SLEEPER}/players/nfl", timeout=180) as fh:
+                SLEEPER_CACHE.write_text(json.dumps(json.load(fh)))
+        except Exception as exc:
+            if not SLEEPER_CACHE.exists():
+                print(f"  ! could not reach Sleeper ({exc}); no injury pass")
+                return pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
+            print(f"  ! Sleeper unreachable ({exc}); using the cached copy")
+    d = json.loads(SLEEPER_CACHE.read_text())
+    rows = [{"player": v.get("full_name"), "team": v.get("team"),
+             "pos": (v.get("position") or "").lower(),
+             "status": v.get("injury_status"),
+             "part": v.get("injury_body_part") or ""}
+            for v in d.values()
+            if v.get("position") in ("QB", "RB", "WR", "TE") and v.get("injury_status")]
+    return pd.DataFrame(rows)
+
+
 def ruled_out(pos: str) -> pd.DataFrame:
-    """This week's manual scratches for one position."""
-    if not RULED_OUT.exists():
-        return pd.DataFrame(columns=["player", "team", "pos", "reason"])
-    r = pd.read_csv(RULED_OUT)
-    return r[(r.season == SEASON) & (r.week == WEEK) & (r.pos.str.lower() == pos)]
+    """This week's scratches for one position: the hand-written ones, plus
+    anyone Sleeper has tagged with a status that means he is not playing."""
+    cols = ["player", "team", "pos", "reason"]
+    hand = pd.DataFrame(columns=cols)
+    if RULED_OUT.exists():
+        r = pd.read_csv(RULED_OUT)
+        hand = r[(r.season == SEASON) & (r.week == WEEK)
+                 & (r.pos.str.lower() == pos)][cols]
+    inj = INJURIES[(INJURIES.pos == pos) & INJURIES.status.isin(NOT_PLAYING)]
+    if inj.empty:
+        return hand
+    auto = inj.assign(reason=lambda d: d.status + " on Sleeper"
+                      + d.part.where(d.part.eq(""), " (" + d.part + ")"))[cols]
+    return pd.concat([hand, auto[~auto.player.isin(hand.player)]], ignore_index=True)
 
 
 def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
@@ -445,7 +527,13 @@ def mc_override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
 
 
 def main() -> None:
+    global INJURIES
     OUT.mkdir(parents=True, exist_ok=True)
+    INJURIES = sleeper_status()
+    hard = INJURIES[INJURIES.status.isin(NOT_PLAYING)]
+    soft = INJURIES[~INJURIES.status.isin(NOT_PLAYING)]
+    print(f"  injuries: {len(hard)} not playing, {len(soft)} questionable or worse "
+          f"but expected to play")
     mc = pd.read_csv(MC) if MC.exists() else None
     loaded = {k: scratch(promote(pd.read_csv(model_csv(v)), k[0], v), k[0])
               for k, v in FILES.items()}
@@ -543,6 +631,19 @@ def main() -> None:
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")
+    # Everyone still on a board who is carrying a tag we did not act on. These
+    # are the calls only a human can make: Zay Flowers is Questionable with a
+    # hamstring and might play sixty snaps or none, and no status code says
+    # which. Add a row to data/weekly/ruled-out.csv to take one off.
+    shipped = set()
+    for df in loaded.values():
+        shipped |= set(df.player_name)
+    left = INJURIES[INJURIES.player.isin(shipped) & ~INJURIES.status.isin(NOT_PLAYING)]
+    if len(left):
+        print(f"  still on the board, carrying a tag ({len(left)}), your call:")
+        for _, x in left.sort_values(["pos", "player"]).iterrows():
+            part = f", {x.part}" if x.part else ""
+            print(f"    {x.player} ({x.team}, {x.pos.upper()}) {x.status}{part}")
     (OUT / "LABEL.txt").write_text(f"Week {WEEK}\n")
     if not MC.exists():
         print(f"  no {MC} yet, so consensus fills the vibes column")
