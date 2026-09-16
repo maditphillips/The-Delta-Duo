@@ -1,0 +1,143 @@
+
+====================================================================================================
+WEEK 2, 2026 - KICKER RANKING
+====================================================================================================
+model            : score = 0.50 x venue rate + 0.50 x shrunk kicker rate
+shrinkage        : w = n/(n+100), onesided
+league average   : 0.8516 (all regular-season attempts, 2023-2026)
+venue rate       : visPct from stadiums.ts for a visitor, visPct + gap for the home kicker
+kicker rate      : career REGULAR-SEASON field goal percentage, blocks included
+games            : 16
+  2026 regular-season weeks folded into career rates: 1
+
+-- who is kicking, where the roster needed a second look
+  NYJ: no active (A01) kicker on the roster - using Jason Sanders [DEV/P07], who kicked most recently; roster also lists Blake Grupe (I01)
+
+-- gaps in the inputs, and how they are filled
+    -> 0 venue rate(s) set to the league average, 0.8516
+  Dominic Zvada (NYG) has no regular-season NFL attempts
+    -> 1 kicker rate(s) set to the league average, 0.8516
+
+====================================================================================================
+THE RANKING
+====================================================================================================
+  #  kicker             tm   role     venue                        venue     raw  att     w  shrunk   score  acc#
+  1  Eddy Pineiro       SF   home     Levi's® Stadium             0.9170  0.8924  158  0.61  0.8766  0.8968     7
+  2  Cameron Dicker     LAC  home     SoFi Stadium                0.8750  0.9348  138  0.58  0.8998  0.8874     3
+  3  Brandon Aubrey     DAL  home     AT&T Stadium                0.9020  0.8819  127  0.56  0.8685  0.8853    10
+  4  Dominic Zvada      NYG  visitor  SoFi Stadium                0.8990  0.8516    0  1.00  0.8516  0.8753    19
+  5  Tyler Loop         BAL  home     M&T Bank Stadium            0.8860  0.8889   36  0.26  0.8614  0.8737     8
+  6  Ryan Fitzgerald    CAR  visitor  Mercedes-Benz Stadium       0.9120  0.8333   30  1.00  0.8333  0.8727    29
+  7  Matt Gay           LV   visitor  SoFi Stadium                0.8990  0.8440  218  1.00  0.8440  0.8715    25
+  8  Nick Folk          ATL  home     Mercedes-Benz Stadium       0.8940  0.8474  511  1.00  0.8474  0.8707    23
+  9  Cam Little         JAX  visitor  Empower Field at Mile High  0.8620  0.9077   65  0.39  0.8737  0.8678     5
+ 10  Harrison Mevis     LA   home     SoFi Stadium                0.8750  0.9231   13  0.12  0.8598  0.8674     4
+ 11  Trey Smack         GB   visitor  MetLife Stadium             0.8650  1.0000    3  0.03  0.8559  0.8604     1
+ 12  Spencer Shrader    IND  visitor  GEHA Field at Arrowhead St  0.8470  0.9500   20  0.17  0.8680  0.8575     2
+ 13  Daniel Carlson     NO   visitor  M&T Bank Stadium            0.8520  0.8659  261  0.72  0.8619  0.8570    15
+ 14  Cairo Santos       CHI  home     Soldier Field               0.8570  0.8530  313  0.76  0.8527  0.8548    18
+ 15  Harrison Butker    KC   home     GEHA Field at Arrowhead St  0.8330  0.8842  285  0.74  0.8757  0.8544     9
+ 16  Wil Lutz           DEN  home     Empower Field at Mile High  0.8490  0.8615  296  0.75  0.8590  0.8540    16
+ 17  Jason Myers        SEA  visitor  State Farm Stadium          0.8500  0.8567  349  0.78  0.8556  0.8528    17
+ 18  Jake Elliott       PHI  visitor  Nissan Stadium              0.8660  0.8378  259  1.00  0.8378  0.8519    27
+ 19  Ka'imi Fairbairn   HOU  home     NRG Stadium                 0.8330  0.8767  292  0.74  0.8703  0.8516    12
+ 20  Joey Slye          TEN  home     Nissan Stadium              0.8850  0.8148  216  1.00  0.8148  0.8499    30
+ 21  Riley Patterson    MIA  visitor  Levi's® Stadium             0.8380  0.8679  106  0.51  0.8600  0.8490    14
+ 22  Evan McPherson     CIN  visitor  NRG Stadium                 0.8600  0.8367  147  1.00  0.8367  0.8484    28
+ 23  Andre Szmyt        CLE  visitor  Raymond James Stadium       0.8360  0.8929   28  0.22  0.8606  0.8483     6
+ 24  Andy Borregales    NE   home     Gillette Stadium            0.8470  0.8485   33  1.00  0.8485  0.8477    21
+ 25  Jake Bates         DET  visitor  Highmark Stadium            0.8480  0.8438   64  1.00  0.8438  0.8459    26
+ 26  Jason Sanders      NYJ  home     MetLife Stadium             0.8460  0.8444  225  1.00  0.8444  0.8452    24
+ 27  Will Reichard      MIN  visitor  Soldier Field               0.8250  0.8788   66  0.40  0.8624  0.8437    11
+ 28  Chase McLaughlin   TB   home     Raymond James Stadium       0.8250  0.8511  188  1.00  0.8511  0.8380    20
+ 29  Tyler Bass         BUF  home     Highmark Stadium            0.8150  0.8481  158  1.00  0.8481  0.8316    22
+ 30  Chris Boswell      PIT  visitor  Gillette Stadium            0.7930  0.8750  344  0.77  0.8697  0.8314    13
+ 31  Chad Ryland        ARI  home     State Farm Stadium          0.8430  0.7684   95  1.00  0.7684  0.8057    31
+ 32  Drew Stevens       WAS  visitor  AT&T Stadium                0.8820  0.5000    2  1.00  0.5000  0.6910    32
+
+====================================================================================================
+THE VENUES IN THIS SLATE, BEST TO WORST FOR THE MAN KICKING THERE
+====================================================================================================
+venue                        tm   role        rate  source
+Levi's® Stadium              SF   home      0.9170  visPct 83.8 + gap +7.9
+Mercedes-Benz Stadium        CAR  visitor   0.9120  visPct 91.2
+AT&T Stadium                 DAL  home      0.9020  visPct 88.2 + gap +2.0
+SoFi Stadium                 NYG  visitor   0.8990  visPct 89.9
+SoFi Stadium                 LV   visitor   0.8990  visPct 89.9
+Mercedes-Benz Stadium        ATL  home      0.8940  visPct 91.2 + gap -1.8
+M&T Bank Stadium             BAL  home      0.8860  visPct 85.2 + gap +3.4
+Nissan Stadium               TEN  home      0.8850  visPct 86.6 + gap +1.9
+AT&T Stadium                 WAS  visitor   0.8820  visPct 88.2
+SoFi Stadium                 LAC  home      0.8750  visPct 89.9 + gap -2.4
+SoFi Stadium                 LA   home      0.8750  visPct 89.9 + gap -2.4
+Nissan Stadium               PHI  visitor   0.8660  visPct 86.6
+MetLife Stadium              GB   visitor   0.8650  visPct 86.5
+Empower Field at Mile High   JAX  visitor   0.8620  visPct 86.2
+NRG Stadium                  CIN  visitor   0.8600  visPct 86.0
+Soldier Field                CHI  home      0.8570  visPct 82.5 + gap +3.2
+M&T Bank Stadium             NO   visitor   0.8520  visPct 85.2
+State Farm Stadium           SEA  visitor   0.8500  visPct 85.0
+Empower Field at Mile High   DEN  home      0.8490  visPct 86.2 + gap -1.3
+Highmark Stadium             DET  visitor   0.8480  visPct 84.8
+Gillette Stadium             NE   home      0.8470  visPct 79.3 + gap +5.4
+GEHA Field at Arrowhead St   IND  visitor   0.8470  visPct 84.7
+MetLife Stadium              NYJ  home      0.8460  visPct 86.5 + gap -1.9
+State Farm Stadium           ARI  home      0.8430  visPct 85.0 + gap -0.7
+Levi's® Stadium              MIA  visitor   0.8380  visPct 83.8
+Raymond James Stadium        CLE  visitor   0.8360  visPct 83.6
+GEHA Field at Arrowhead St   KC   home      0.8330  visPct 84.7 + gap -1.4
+NRG Stadium                  HOU  home      0.8330  visPct 86.0 + gap -2.7
+Raymond James Stadium        TB   home      0.8250  visPct 83.6 + gap -1.1
+Soldier Field                MIN  visitor   0.8250  visPct 82.5
+Highmark Stadium             BUF  home      0.8150  visPct 84.8 + gap -3.3
+Gillette Stadium             PIT  visitor   0.7930  visPct 79.3
+
+====================================================================================================
+WHERE THE SHRINKAGE BITES
+====================================================================================================
+  w = n/(n+100); w = 1.00 marks a below-average kicker, whose record stands
+
+kicker              att     raw      w  shrunk   moved  rank  acc#
+Dominic Zvada         0  0.8516   1.00  0.8516 +0.0000     4    19
+Drew Stevens          2  0.5000   1.00  0.5000 +0.0000    32    32
+Trey Smack            3  1.0000   0.03  0.8559 -0.1441    11     1
+Harrison Mevis       13  0.9231   0.12  0.8598 -0.0633    10     4
+Spencer Shrader      20  0.9500   0.17  0.8680 -0.0820    12     2
+Andre Szmyt          28  0.8929   0.22  0.8606 -0.0323    23     6
+Ryan Fitzgerald      30  0.8333   1.00  0.8333 +0.0000     6    29
+Andy Borregales      33  0.8485   1.00  0.8485 +0.0000    24    21
+Tyler Loop           36  0.8889   0.26  0.8614 -0.0275     5     8
+Jake Bates           64  0.8438   1.00  0.8438 +0.0000    25    26
+Cam Little           65  0.9077   0.39  0.8737 -0.0340     9     5
+Will Reichard        66  0.8788   0.40  0.8624 -0.0164    27    11
+Chad Ryland          95  0.7684   1.00  0.7684 +0.0000    31    31
+Riley Patterson     106  0.8679   0.51  0.8600 -0.0079    21    14
+Brandon Aubrey      127  0.8819   0.56  0.8685 -0.0134     3    10
+Cameron Dicker      138  0.9348   0.58  0.8998 -0.0350     2     3
+Evan McPherson      147  0.8367   1.00  0.8367 +0.0000    22    28
+Tyler Bass          158  0.8481   1.00  0.8481 +0.0000    29    22
+Eddy Pineiro        158  0.8924   0.61  0.8766 -0.0158     1     7
+Chase McLaughlin    188  0.8511   1.00  0.8511 +0.0000    28    20
+Joey Slye           216  0.8148   1.00  0.8148 +0.0000    20    30
+Matt Gay            218  0.8440   1.00  0.8440 +0.0000     7    25
+Jason Sanders       225  0.8444   1.00  0.8444 +0.0000    26    24
+Jake Elliott        259  0.8378   1.00  0.8378 +0.0000    18    27
+Daniel Carlson      261  0.8659   0.72  0.8619 -0.0040    13    15
+Harrison Butker     285  0.8842   0.74  0.8757 -0.0085    15     9
+Ka'imi Fairbairn    292  0.8767   0.74  0.8703 -0.0064    19    12
+Wil Lutz            296  0.8615   0.75  0.8590 -0.0025    16    16
+Cairo Santos        313  0.8530   0.76  0.8527 -0.0004    14    18
+Chris Boswell       344  0.8750   0.77  0.8697 -0.0053    30    13
+Jason Myers         349  0.8567   0.78  0.8556 -0.0012    17    17
+Nick Folk           511  0.8474   1.00  0.8474 +0.0000     8    23
+
+====================================================================================================
+WHAT THIS MODEL RANKS, AND WHAT IT DOES NOT
+====================================================================================================
+  It ranks EXPECTED MAKE RATE on one kick. It says nothing about how
+  many kicks a man gets, and that is where the rest of the
+  disagreement with intuition lives. Volume - team quality, coach
+  aggression, red-zone efficiency, the short leash - is a separate
+  term and belongs in a separate term.
+
+  wrote week2_2026_kickers_50_50_k100_onesided.csv

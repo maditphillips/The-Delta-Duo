@@ -50,3 +50,4 @@ cloudflare-env.d.ts
 /.venv-*
 scripts/analysis/**/*.parquet
 scripts/analysis/**/*.csv
+scripts/analysis/**/__pycache__/
