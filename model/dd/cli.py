@@ -164,9 +164,9 @@ def cmd_week():
             "expected_rz_targets", "expected_gl_carries", "expected_pass_att",
             "expected_pass_yards", "target_share_eb", "snap_share_eb",
             "sd_games", "sd_targets", "sd_carries", "sd_attempts",
-            "sd_snap_share", "sd_target_share",
+            "sd_snap_share", "sd_target_share", "sd_carry_share",
             "b_targets", "b_carries", "b_attempts", "b_snap_share",
-            "b_target_share", "implied_team_total",
+            "b_target_share", "b_carry_share", "implied_team_total",
             "opp_prev_def_epa_pass", "opp_prev_def_epa_rush",
             "off_continuity", "hc_continuity", "hc_change", "changed_team",
             "is_rookie", "is_out", "is_questionable", "practice_status", "learner"]
