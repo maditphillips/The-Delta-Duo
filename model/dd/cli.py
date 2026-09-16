@@ -166,7 +166,11 @@ def cmd_week():
             "sd_games", "sd_targets", "sd_carries", "sd_attempts",
             "sd_snap_share", "sd_target_share", "sd_carry_share",
             "b_targets", "b_carries", "b_attempts", "b_snap_share",
-            "b_target_share", "b_carry_share", "implied_team_total",
+            "b_target_share", "b_carry_share",
+            # The prior half of each blend, so a note can tell a man with no
+            # last season from one whose last season happens to match his week.
+            "carries_per_game", "targets_per_game", "attempts_per_game",
+            "implied_team_total",
             "opp_prev_def_epa_pass", "opp_prev_def_epa_rush",
             "off_continuity", "hc_continuity", "hc_change", "changed_team",
             "is_rookie", "is_out", "is_questionable", "practice_status", "learner"]
