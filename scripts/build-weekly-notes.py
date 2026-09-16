@@ -182,6 +182,67 @@ def vol(r, name: str, default=None):
     return v if v is not None else num(r.get(VOLUME[name]), default)
 
 
+def played(r, pos: str) -> str:
+    """What he has actually done this season, kept apart from what is projected.
+
+    Every number in blurb() is a forecast for the coming week, including the
+    ones that look like history: b_carries is this season blended into last,
+    which is the model's expectation and not a count of anything. Read next to
+    a rank it was impossible to tell which was which, so the measured half is
+    now said separately and labelled.
+
+    The sd_ columns are expanding means over the weeks strictly before this
+    one, so after a single game they are that game and can be quoted as counts.
+    From the second game they are averages and have to be called averages.
+    """
+    n = num(r.get("sd_games"), 0)
+    if not n:
+        return ""
+    ca, ta, at = (num(r.get("sd_carries")), num(r.get("sd_targets")),
+                  num(r.get("sd_attempts")))
+    cs, ts, ss = (num(r.get("sd_carry_share")), num(r.get("sd_target_share")),
+                  num(r.get("sd_snap_share")))
+    one = n < 2
+    fmt = (lambda v, w: f"{v:.0f} {w}") if one else (lambda v, w: f"{v:.1f} {w} a game")
+    bits = []
+    if pos == "qb":
+        if at:
+            bits.append(fmt(at, "attempt" if one and at == 1 else "attempts"))
+        if ca:
+            bits.append(fmt(ca, "carry" if one and ca == 1 else "carries"))
+    elif pos == "rb":
+        if ca:
+            bits.append(fmt(ca, "carry" if one and ca == 1 else "carries"))
+        if cs is not None:
+            bits.append(f"a {cs:.0%} carry share")
+        if ta:
+            bits.append(fmt(ta, "target" if one and ta == 1 else "targets"))
+    else:
+        if ta:
+            bits.append(fmt(ta, "target" if one and ta == 1 else "targets"))
+        if ts is not None:
+            bits.append(f"a {ts:.0%} target share")
+    if ss is not None:
+        bits.append(f"{ss:.0%} of the snaps")
+    if not bits:
+        return ""
+    # A man with nothing before this season has a blend with nothing to blend:
+    # b_ falls back to sd_ exactly, so the projection IS the history and saying
+    # both is saying one thing twice. Jadarian Price read "projected 10.0
+    # carries" and then "last week he had 10 carries", which is not a second
+    # fact. Say why they match instead.
+    key = {"qb": "attempts", "rb": "carries"}.get(pos, "targets")
+    if num(r.get(f"b_{key}")) == num(r.get(f"sd_{key}")) and one:
+        return ("That is last week exactly: he has no prior season to weigh it"
+                " against, so the week he has played is the whole forecast.")
+    body = ", ".join(bits[:-1]) + (f" and {bits[-1]}" if len(bits) > 1 else bits[-1])
+    if one:
+        lead = "Last week he had" if WEEK == 2 else "In his one game this season he had"
+    else:
+        lead = f"Across {n:.0f} games he has averaged"
+    return f"{lead} {body}."
+
+
 def blurb(r, pos: str) -> str:
     """The volume behind the projection, in the model's own numbers.
 
@@ -208,7 +269,7 @@ def blurb(r, pos: str) -> str:
     if pos == "qb":
         if att < 5:
             return no_history_clause(r, pos)
-        bits = [f"{att:.0f} attempts for {pyd:.0f} yards"]
+        bits = [f"Projected {att:.0f} attempts for {pyd:.0f} yards"]
         if ec >= 4:
             bits.append(f"plus {ec:.1f} carries of his own")
         elif ec >= 2:
@@ -220,7 +281,7 @@ def blurb(r, pos: str) -> str:
     if pos == "rb":
         if ec < 1 and et < 1:
             return no_history_clause(r, pos) + "."
-        bits = [f"{ec:.1f} carries"]
+        bits = [f"Projected {ec:.1f} carries"]
         # "of them" has to follow the carries it refers to, so the share comes
         # after the goal-line clause rather than between the two.
         if gl >= 0.5:
@@ -238,7 +299,7 @@ def blurb(r, pos: str) -> str:
 
     if et < 1:
         return no_history_clause(r, pos) + "."
-    bits = [f"{et:.1f} targets"]
+    bits = [f"Projected {et:.1f} targets"]
     if ts is not None:
         article = "an" if f"{ts:.0%}".startswith(("8", "11", "18")) else "a"
         bits.append(f"{article} {ts:.0%} target share")
@@ -315,7 +376,8 @@ def flags(r) -> str:
 
 
 def build_note(r, pos: str) -> str:
-    return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), outlook(r), flags(r)) if x)
+    return " ".join(x for x in (matchup_phrase(r, pos), blurb(r, pos), played(r, pos),
+                                outlook(r), flags(r)) if x)
 
 
 # Sleeper's tags, and which of them mean he is not playing. Questionable is
