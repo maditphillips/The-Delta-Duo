@@ -182,6 +182,23 @@ def vol(r, name: str, default=None):
     return v if v is not None else num(r.get(VOLUME[name]), default)
 
 
+def a_share(v: float, what: str) -> str:
+    """"an 84% carry share", "a 46% carry share". Spoken, not spelled: it is
+    the digit that decides, so 8, 11 and 18 take "an" and 80 does not."""
+    pct = f"{v:.0%}"
+    return f"{'an' if pct.startswith(('8', '11', '18')) else 'a'} {pct} {what}"
+
+
+SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv", "v"}
+
+
+def surname(r) -> str:
+    """What to call him in a sentence: the last real word of his name."""
+    parts = [w for w in str(r.get("player_name") or "").split()
+             if w.lower().strip(".") not in SUFFIXES]
+    return parts[-1] if parts else "he"
+
+
 def played(r, pos: str) -> str:
     """What he has actually done this season, kept apart from what is projected.
 
@@ -214,14 +231,14 @@ def played(r, pos: str) -> str:
         if ca:
             bits.append(fmt(ca, "carry" if one and ca == 1 else "carries"))
         if cs is not None:
-            bits.append(f"a {cs:.0%} carry share")
+            bits.append(a_share(cs, "carry share"))
         if ta:
             bits.append(fmt(ta, "target" if one and ta == 1 else "targets"))
     else:
         if ta:
             bits.append(fmt(ta, "target" if one and ta == 1 else "targets"))
         if ts is not None:
-            bits.append(f"a {ts:.0%} target share")
+            bits.append(a_share(ts, "target share"))
     if ss is not None:
         bits.append(f"{ss:.0%} of the snaps")
     if not bits:
@@ -231,10 +248,23 @@ def played(r, pos: str) -> str:
     # both is saying one thing twice. Jadarian Price read "projected 10.0
     # carries" and then "last week he had 10 carries", which is not a second
     # fact. Say why they match instead.
+    # Whether the blend had anything to blend, asked of the prior itself rather
+    # than inferred from the two halves matching. Jonathan Taylor averaged
+    # exactly 19.0 carries a game last season and ran exactly 19 times in week
+    # 1, so his blend returned 19.0 and an equality test called him a man with
+    # no NFL history. He is the opposite of that.
     key = {"qb": "attempts", "rb": "carries"}.get(pos, "targets")
-    if num(r.get(f"b_{key}")) == num(r.get(f"sd_{key}")) and one:
-        return ("That is last week exactly: he has no prior season to weigh it"
-                " against, so the week he has played is the whole forecast.")
+    if one and num(r.get(f"{key}_per_game")) is None:
+        # The two halves are the same numbers, because the blend has nothing to
+        # blend. Repeating them is not a second fact, so the space goes to why
+        # one game is enough to move him: the k search put the weight on a
+        # single game of role at every position, which is the whole reason his
+        # rank jumped at all.
+        game = "week 1" if WEEK == 2 else "his one game"
+        return (f"Usage in {game} is actually fairly predictive. With only one"
+                f" game on the books, {surname(r)}'s projection leans on his"
+                f" exact usage {'last week' if WEEK == 2 else 'in it'}. This"
+                " will change as he gets more games under his belt.")
     body = ", ".join(bits[:-1]) + (f" and {bits[-1]}" if len(bits) > 1 else bits[-1])
     if one:
         lead = "Last week he had" if WEEK == 2 else "In his one game this season he had"
@@ -290,7 +320,7 @@ def blurb(r, pos: str) -> str:
         # carries is a committee in Arizona and most of the backfield in
         # Seattle, and the note should be able to tell them apart.
         if cs is not None:
-            bits.append(f"a {cs:.0%} carry share")
+            bits.append(a_share(cs, "carry share"))
         if et >= 2:
             bits.append(f"{et:.1f} targets out of the backfield")
         if ss is not None:
@@ -301,8 +331,7 @@ def blurb(r, pos: str) -> str:
         return no_history_clause(r, pos) + "."
     bits = [f"Projected {et:.1f} targets"]
     if ts is not None:
-        article = "an" if f"{ts:.0%}".startswith(("8", "11", "18")) else "a"
-        bits.append(f"{article} {ts:.0%} target share")
+        bits.append(a_share(ts, "target share"))
     if rz >= 0.6:
         bits.append(plural(rz, "red-zone look"))
     if ss is not None:
