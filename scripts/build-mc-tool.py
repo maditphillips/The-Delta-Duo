@@ -131,8 +131,29 @@ def ordinal(k: int) -> str:
     return f"{k}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(k % 10, 'th') }"
 
 
+def injuries() -> dict:
+    """What each man is carrying, keyed by name and by name and team.
+
+    Anyone with a status that means he is not playing is already off the board
+    before the tool is built, so what survives here is the judgement call:
+    Questionable, and what body part. That is the part MC cannot get from a
+    ranking, and the part that most often decides where a man belongs.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from sleeper import status
+    out = {}
+    for _, x in status().iterrows():
+        if not x.player:
+            continue
+        tag = x.status + (f" ({x.part})" if x.part else "")
+        out[(x.player, x.team)] = tag
+        out.setdefault(x.player, tag)
+    return out
+
+
 def load() -> dict:
     last, defrank = week_one()
+    hurt = injuries()
     board = {}
     for pos, fnames in POSITIONS.items():
         seen, rows = set(), []
@@ -155,6 +176,7 @@ def load() -> dict:
             # game already played rather than the one being ranked.
             "def": (defrank.get(r["opponent"], {}).get(
                 "rush" if pos == "RB" else "pass")),
+            "inj": hurt.get((r["player"], r["team"])) or hurt.get(r["player"]),
         } for r in rows]
     return board
 
@@ -185,6 +207,10 @@ HTML = """<!doctype html>
   /* The defence he is about to face. Kept apart from last week's line so the
      two are not read as one sentence. */
   .dfn { padding:0 10px 8px 46px; color:var(--warn); font-size:12.5px; }
+  /* Beside the name rather than below it: everyone still on this board has
+     been cleared to play, so the tag is a caveat on the man, not a headline. */
+  .inj { flex:0 0 auto; color:var(--warn); border:1px solid var(--warn);
+         border-radius:3px; padding:1px 5px; font-size:11px; white-space:nowrap; }
   main { max-width:900px; margin:0 auto; padding:0 20px 80px; }
   .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center;
          padding:12px 0; position:sticky; top:0; background:var(--bg); z-index:5;
@@ -342,6 +368,7 @@ function render() {
         '<span class="grip">&#9776;</span>' +
         '<span class="rank">' + rank + '</span>' +
         '<span class="name"></span>' +
+        (r.inj ? '<span class="inj"></span>' : "") +
         '<span class="match"></span>' +
         '<span class="delta">' + (d === 0 ? "" : (d > 0 ? "+" + d : d)) + '</span>' +
         '<input class="jump" type="number" min="1" max="' + rows.length +
@@ -352,6 +379,7 @@ function render() {
       (r.def ? '<div class="dfn"></div>' : "") +
       '<div class="note"><textarea placeholder="Why MC has him here"></textarea></div>';
     li.querySelector(".name").textContent = r.player;
+    if (r.inj) li.querySelector(".inj").textContent = r.inj;
     li.querySelector(".match").textContent =
       r.team + (r.opp ? (r.home ? " vs " : " @ ") + r.opp : "");
     if (r.def) {

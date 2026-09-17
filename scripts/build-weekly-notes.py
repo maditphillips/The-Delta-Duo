@@ -468,45 +468,11 @@ def build_note(r, pos: str) -> str:
 # not among them on purpose: a hundred and twenty players carry it in a normal
 # week and most of them start. Those are printed for a human to rule on
 # instead, which is what data/weekly/ruled-out.csv is for.
-SLEEPER = "https://api.sleeper.app/v1"
-SLEEPER_CACHE = Path("/tmp/sleeper-players.json")
-SLEEPER_MAX_AGE = 6 * 3600
-NOT_PLAYING = {"Out", "IR", "PUP", "Doubtful", "NA", "DNR", "Sus"}
+# Sleeper's live injury tags, shared with MC's tool. See scripts/sleeper.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sleeper import NOT_PLAYING, status as sleeper_status   # noqa: E402
+
 INJURIES = pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
-
-
-def sleeper_status() -> pd.DataFrame:
-    """Every skill player carrying an injury tag right now.
-
-    nflverse publishes the official report, and for this season it is all but
-    empty: eleven rows for the whole of 2026, none past week 1, so is_out and
-    is_questionable are dead columns and a man on IR shipped in the rankings
-    with no flag on him at all. Sleeper's roster carries the same field, keeps
-    it current to the hour, and had Ja'Kobi Lane as Doubtful with a wrist when
-    ours had nothing.
-    """
-    import json
-    import time
-    import urllib.request
-    stale = (not SLEEPER_CACHE.exists()
-             or time.time() - SLEEPER_CACHE.stat().st_mtime > SLEEPER_MAX_AGE)
-    if stale:
-        try:
-            with urllib.request.urlopen(f"{SLEEPER}/players/nfl", timeout=180) as fh:
-                SLEEPER_CACHE.write_text(json.dumps(json.load(fh)))
-        except Exception as exc:
-            if not SLEEPER_CACHE.exists():
-                print(f"  ! could not reach Sleeper ({exc}); no injury pass")
-                return pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
-            print(f"  ! Sleeper unreachable ({exc}); using the cached copy")
-    d = json.loads(SLEEPER_CACHE.read_text())
-    rows = [{"player": v.get("full_name"), "team": v.get("team"),
-             "pos": (v.get("position") or "").lower(),
-             "status": v.get("injury_status"),
-             "part": v.get("injury_body_part") or ""}
-            for v in d.values()
-            if v.get("position") in ("QB", "RB", "WR", "TE") and v.get("injury_status")]
-    return pd.DataFrame(rows)
 
 
 def ruled_out(pos: str) -> pd.DataFrame:
