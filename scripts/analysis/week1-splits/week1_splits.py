@@ -114,7 +114,7 @@ def main(season=2026, week=1):
     sg = (sg.reset_index().rename(columns={"posteam": "team"})
             .merge(results(pbp), on="team", how="left"))
     emit("team_shotgun", f"Shotgun rate by half, {tag} (offence)",
-         sg.sort_values("h1_rate", ascending=False)
+         sg.sort_values("neutral_rate", ascending=False)
            .astype({"points": int, "points_allowed": int})
            [["team", "h1_snaps", "h1_rate", "h2_snaps", "h2_rate", "h2_minus_h1",
              "neutral_snaps", "neutral_rate", "all_snaps", "all_rate",
