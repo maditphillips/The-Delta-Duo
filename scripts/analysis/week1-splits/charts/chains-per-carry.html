@@ -1,0 +1,456 @@
+<title>Chains Per Carry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=Righteous&display=swap">
+<style>
+  /* The Delta Duo house style: dark slate board in a wooden frame, neon chalk.
+     Palette and surfaces lifted from src/app/globals.css. Single visual world
+     by design, so every color is painted explicitly and no theme flips it. */
+  :root {
+    --page: #0c0e0d;
+    --board: #12161c;
+    --board-hi: #181d26;
+    --board-lo: #0d1015;
+    --ink: #f2eee2;
+    --ink-dim: rgba(242, 238, 226, 0.72);
+    --ink-faint: rgba(242, 238, 226, 0.42);
+    --ink-ghost: rgba(242, 238, 226, 0.16);
+    --grid: rgba(242, 238, 226, 0.09);
+    --chalk-gold: #ffb03a;
+    --chalk-blue: #45e3ff;
+    --chalk-pink: #ff5cbb;
+    --accent-2: #f80693;
+    --accent-3: #01def3;
+    --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-retro: "Righteous", "Cabin Sketch", sans-serif;
+    --font-sketch: "Cabin Sketch", "Patrick Hand", cursive;
+    --font-hand: "Caveat", "Patrick Hand", cursive;
+    --label-w: 168px;
+    --value-w: 60px;
+    color-scheme: dark;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.03), transparent 55%),
+      var(--page);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 28px 40px;
+  }
+
+  /* the board panel: dark slate in a wooden frame */
+  .board {
+    position: relative;
+    border-radius: 14px;
+    border: 12px solid transparent;
+    background:
+      radial-gradient(ellipse at 26% 10%, rgba(120, 150, 190, 0.1), transparent 55%) padding-box,
+      radial-gradient(ellipse at 78% 88%, rgba(0, 0, 0, 0.28), transparent 55%) padding-box,
+      linear-gradient(158deg, var(--board-hi) 0%, var(--board) 55%, var(--board-lo) 100%) padding-box,
+      repeating-linear-gradient(93deg, rgba(255, 231, 195, 0.1) 0px, rgba(74, 40, 16, 0.16) 3px,
+        rgba(255, 226, 185, 0.07) 7px, rgba(66, 36, 14, 0.12) 12px, rgba(255, 231, 195, 0.09) 18px) border-box,
+      linear-gradient(118deg, #9a6a3e 0%, #7c4e28 26%, #8d5c33 47%, #6b3f1e 74%, #85562f 100%) border-box;
+    box-shadow:
+      inset 0 0 0 2px rgba(20, 12, 5, 0.55),
+      inset 0 2px 8px rgba(0, 0, 0, 0.4),
+      inset 0 0 60px rgba(0, 0, 0, 0.14),
+      0 0 0 1px rgba(30, 18, 8, 0.9),
+      0 1px 0 1px rgba(255, 220, 170, 0.08),
+      0 6px 22px rgba(0, 0, 0, 0.55);
+    padding: 22px 20px 18px;
+  }
+
+  .kicker {
+    color: var(--chalk-gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .kicker::before { content: "— "; }
+
+  h1 {
+    font-family: var(--font-retro);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: clamp(1.7rem, 6vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    margin: 6px 0 0;
+    text-wrap: balance;
+    background: linear-gradient(180deg, #ffc46a 5%, #fb9f55 48%, #f4702a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0.045em 0.05em 0 rgba(248, 6, 147, 0.9)) drop-shadow(-0.02em -0.02em 0 rgba(1, 222, 243, 0.35));
+  }
+
+  .standfirst {
+    color: var(--ink-dim);
+    margin: 10px 0 0;
+    max-width: 62ch;
+    line-height: 1.5;
+  }
+  .standfirst b { color: var(--ink); font-weight: 600; }
+
+  .rule {
+    height: 2px;
+    border: 0;
+    margin: 16px 0 18px;
+    background: linear-gradient(90deg, transparent, var(--accent-3) 18%, var(--accent-2) 50%, #fb9f55 82%, transparent);
+    box-shadow: 0 0 8px rgba(255, 47, 166, 0.5);
+  }
+
+  /* ————— chart ————— */
+  .plot { position: relative; }
+
+  .grid-layer {
+    position: absolute;
+    inset: 0 var(--value-w) 0 var(--label-w);
+    pointer-events: none;
+  }
+  .grid-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--grid);
+  }
+  .avg-line {
+    position: absolute;
+    top: -4px;
+    bottom: 0;
+    width: 1px;
+    background: var(--chalk-blue);
+    opacity: 0.55;
+  }
+
+  .rows { position: relative; display: flex; flex-direction: column; gap: 4px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: var(--label-w) 1fr var(--value-w);
+    align-items: center;
+    border-radius: 6px;
+    padding-block: 2px;
+    cursor: default;
+  }
+  .row:hover, .row:focus-visible { background: rgba(242, 238, 226, 0.05); outline: none; }
+  .row:focus-visible { box-shadow: inset 0 0 0 1px var(--chalk-gold); }
+
+  .who { min-width: 0; padding-right: 12px; }
+  .name { font-weight: 600; font-size: 0.86rem; line-height: 1.25; overflow-wrap: anywhere; }
+  .meta {
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .track { position: relative; height: 22px; }
+  .bar {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    height: 18px;
+    background: var(--chalk-gold);
+    border-radius: 0 4px 4px 0;
+  }
+  .row:hover .bar, .row:focus-visible .bar { filter: brightness(1.15); }
+
+  .value {
+    text-align: right;
+    font-weight: 600;
+    font-size: 0.86rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .axis {
+    position: relative;
+    height: 20px;
+    margin-top: 6px;
+    border-top: 1px solid var(--ink-ghost);
+  }
+  .axis-inner { position: absolute; inset: 0 var(--value-w) 0 var(--label-w); }
+  .tick {
+    position: absolute;
+    top: 4px;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .annotation {
+    font-family: var(--font-hand);
+    color: var(--chalk-blue);
+    font-size: 1.05rem;
+    line-height: 1.2;
+    margin: 14px 0 0;
+    padding-left: 2px;
+  }
+
+  /* ————— tooltip ————— */
+  #tip {
+    position: fixed;
+    z-index: 30;
+    pointer-events: none;
+    min-width: 168px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(242, 238, 226, 0.18);
+    background: #0f1319;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    font-size: 0.78rem;
+  }
+  #tip[hidden] { display: none !important; }
+  .tip-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+  .tip-key { width: 14px; height: 3px; border-radius: 2px; background: var(--chalk-gold); flex: none; }
+  .tip-name { font-weight: 600; color: var(--ink); }
+  .tip-big { font-size: 1.25rem; font-weight: 700; color: var(--chalk-gold); line-height: 1.1; }
+  .tip-sub { color: var(--ink-dim); margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+  /* ————— table view ————— */
+  .tools { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  button {
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--ink-ghost);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+  button:hover { color: var(--ink); border-color: rgba(242, 238, 226, 0.34); }
+  button:focus-visible { outline: 2px solid var(--chalk-gold); outline-offset: 2px; }
+
+  .table-wrap { overflow-x: auto; margin-top: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  caption { text-align: left; color: var(--ink-faint); font-size: 0.72rem; padding-bottom: 8px; }
+  th, td { padding: 6px 10px 6px 0; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    color: var(--ink-faint);
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink-ghost);
+  }
+  tbody tr + tr td { border-top: 1px solid rgba(242, 238, 226, 0.07); }
+
+  footer { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .brand { color: var(--chalk-gold); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase; }
+  .source { color: rgba(242, 238, 226, 0.45); font-size: 0.7rem; letter-spacing: 0.04em; }
+
+  @media (max-width: 560px) {
+    :root { --label-w: 116px; --value-w: 52px; }
+    .name { font-size: 0.8rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <main class="board">
+    <p class="kicker">Week 1 · 2026 · Rushing</p>
+    <h1>Chains Per Carry</h1>
+    <p class="standfirst">
+      Share of carries that moved the sticks or scored, for the fifteen best backs of week 1.
+      Running backs with <b>five or more carries</b>; a carry counts when nflverse charges it
+      <b>first_down_rush</b>, so a touchdown counts and a first down handed over by penalty does not.
+    </p>
+    <hr class="rule">
+
+    <div class="plot">
+      <div class="grid-layer" id="gridLayer" aria-hidden="true"></div>
+      <div class="rows" id="rows" role="list"></div>
+      <div class="axis">
+        <div class="axis-inner" id="axis" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <p class="annotation" id="annotation"></p>
+
+    <div class="tools">
+      <button id="toggle" type="button" aria-expanded="false" aria-controls="tableWrap">Show the table</button>
+      <span class="source">Hover or tab a row for the full line.</span>
+    </div>
+
+    <div class="table-wrap" id="tableWrap" hidden>
+      <table>
+        <caption>Rushing first downs, 2026 week 1 — running backs with five or more carries.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Back</th>
+            <th scope="col">Team</th>
+            <th scope="col">Carries</th>
+            <th scope="col">First downs</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Yards</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <footer>
+      <span class="brand">The Delta Duo</span>
+      <span class="source">Source: nflverse play-by-play, 2026 week 1 (16 games)</span>
+    </footer>
+  </main>
+</div>
+
+<div id="tip" role="status" aria-live="polite" hidden></div>
+
+<script>
+  const BACKS = [
+    { name: "J.Gibbs", team: "DET", carries: 29, fd: 14, rate: 48.3, yards: 156 },
+    { name: "W.Marks", team: "HOU", carries: 9, fd: 4, rate: 44.4, yards: 42 },
+    { name: "J.Croskey-Merritt", team: "WAS", carries: 16, fd: 7, rate: 43.8, yards: 63 },
+    { name: "O.Hampton", team: "LAC", carries: 12, fd: 5, rate: 41.7, yards: 43 },
+    { name: "J.Price", team: "SEA", carries: 10, fd: 4, rate: 40.0, yards: 52 },
+    { name: "B.Irving", team: "TB", carries: 8, fd: 3, rate: 37.5, yards: 45 },
+    { name: "J.Taylor", team: "IND", carries: 19, fd: 7, rate: 36.8, yards: 98 },
+    { name: "K.Walker", team: "KC", carries: 23, fd: 8, rate: 34.8, yards: 173 },
+    { name: "Bi.Robinson", team: "ATL", carries: 21, fd: 7, rate: 33.3, yards: 83 },
+    { name: "C.Skattebo", team: "NYG", carries: 18, fd: 6, rate: 33.3, yards: 81 },
+    { name: "J.Hill", team: "BAL", carries: 6, fd: 2, rate: 33.3, yards: 18 },
+    { name: "B.Hall", team: "NYJ", carries: 22, fd: 7, rate: 31.8, yards: 102 },
+    { name: "A.Jeanty", team: "LV", carries: 23, fd: 7, rate: 30.4, yards: 102 },
+    { name: "J.Warren", team: "PIT", carries: 10, fd: 3, rate: 30.0, yards: 46 },
+    { name: "B.Allen", team: "NYJ", carries: 10, fd: 3, rate: 30.0, yards: 40 }
+  ];
+  const MAX = 50;                 // axis top, %
+  const LEAGUE = 24.7;            // every qualifying back pooled: 165 of 668 carries
+  const pos = v => (v / MAX) * 100;
+
+  // gridlines, then the league-average reference line on top of them
+  const gridLayer = document.getElementById("gridLayer");
+  const axis = document.getElementById("axis");
+  for (let v = 0; v <= MAX; v += 10) {
+    const line = document.createElement("div");
+    line.className = "grid-line";
+    line.style.left = pos(v) + "%";
+    gridLayer.appendChild(line);
+
+    const tick = document.createElement("div");
+    tick.className = "tick";
+    tick.style.left = pos(v) + "%";
+    tick.textContent = v + "%";
+    axis.appendChild(tick);
+  }
+  const avg = document.createElement("div");
+  avg.className = "avg-line";
+  avg.style.left = pos(LEAGUE) + "%";
+  gridLayer.appendChild(avg);
+
+  // rows
+  const rows = document.getElementById("rows");
+  const tbody = document.getElementById("tbody");
+  BACKS.forEach(b => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.setAttribute("role", "listitem");
+    row.tabIndex = 0;
+
+    const who = document.createElement("div");
+    who.className = "who";
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = b.name;
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = b.team + " · " + b.carries + " car";
+    who.append(name, meta);
+
+    const track = document.createElement("div");
+    track.className = "track";
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.width = pos(b.rate) + "%";
+    track.appendChild(bar);
+
+    const value = document.createElement("div");
+    value.className = "value";
+    value.textContent = b.rate.toFixed(1) + "%";
+
+    row.append(who, track, value);
+    row.addEventListener("pointermove", e => showTip(b, e.clientX, e.clientY));
+    row.addEventListener("pointerleave", hideTip);
+    row.addEventListener("focus", () => {
+      const r = row.getBoundingClientRect();
+      showTip(b, r.left + Math.min(240, r.width / 2), r.top + r.height / 2);
+    });
+    row.addEventListener("blur", hideTip);
+    rows.appendChild(row);
+
+    const tr = document.createElement("tr");
+    [b.name, b.team, b.carries, b.fd, b.rate.toFixed(1) + "%", b.yards].forEach(v => {
+      const td = document.createElement("td");
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("annotation").textContent =
+    "the blue line is the league's backs pooled — " + LEAGUE + "% of 668 carries";
+
+  // tooltip: value leads, name follows
+  const tip = document.getElementById("tip");
+  function showTip(b, x, y) {
+    tip.replaceChildren();
+    const head = document.createElement("div");
+    head.className = "tip-head";
+    const key = document.createElement("span");
+    key.className = "tip-key";
+    const nm = document.createElement("span");
+    nm.className = "tip-name";
+    nm.textContent = b.name + " · " + b.team;
+    head.append(key, nm);
+
+    const big = document.createElement("div");
+    big.className = "tip-big";
+    big.textContent = b.rate.toFixed(1) + "%";
+    const sub = document.createElement("div");
+    sub.className = "tip-sub";
+    sub.textContent = b.fd + " first downs on " + b.carries + " carries · " + b.yards + " yards";
+
+    tip.append(head, big, sub);
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    const left = Math.min(Math.max(8, x + 14), window.innerWidth - w - 8);
+    const top = Math.min(Math.max(8, y - h - 12), window.innerHeight - h - 8);
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+  }
+  function hideTip() { tip.hidden = true; }
+
+  // table view
+  const toggle = document.getElementById("toggle");
+  const tableWrap = document.getElementById("tableWrap");
+  toggle.addEventListener("click", () => {
+    const open = tableWrap.hidden;
+    tableWrap.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.textContent = open ? "Hide the table" : "Show the table";
+  });
+</script>

@@ -1,0 +1,466 @@
+<title>Neutral Script Shotgun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=Righteous&display=swap">
+<style>
+  /* The Delta Duo house style: dark slate board in a wooden frame, neon chalk.
+     Palette and surfaces lifted from src/app/globals.css. Single visual world
+     by design, so every color is painted explicitly and no theme flips it.
+     Cyan and gold are the diverging pair here: one cool pole, one warm, a
+     neutral hairline at the 50% midpoint. CVD separation 23.1, normal-vision
+     27.2 against the board surface. */
+  :root {
+    --page: #0c0e0d;
+    --board: #12161c;
+    --board-hi: #181d26;
+    --board-lo: #0d1015;
+    --ink: #f2eee2;
+    --ink-dim: rgba(242, 238, 226, 0.72);
+    --ink-faint: rgba(242, 238, 226, 0.42);
+    --ink-ghost: rgba(242, 238, 226, 0.16);
+    --grid: rgba(242, 238, 226, 0.09);
+    --chalk-gold: #ffb03a;
+    --chalk-blue: #45e3ff;
+    --accent-2: #f80693;
+    --accent-3: #01def3;
+    --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-retro: "Righteous", "Cabin Sketch", sans-serif;
+    --font-hand: "Caveat", "Patrick Hand", cursive;
+    --label-w: 74px;
+    --value-w: 78px;
+    color-scheme: dark;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.03), transparent 55%),
+      var(--page);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 28px 40px;
+  }
+
+  .board {
+    position: relative;
+    border-radius: 14px;
+    border: 12px solid transparent;
+    background:
+      radial-gradient(ellipse at 26% 10%, rgba(120, 150, 190, 0.1), transparent 55%) padding-box,
+      radial-gradient(ellipse at 78% 88%, rgba(0, 0, 0, 0.28), transparent 55%) padding-box,
+      linear-gradient(158deg, var(--board-hi) 0%, var(--board) 55%, var(--board-lo) 100%) padding-box,
+      repeating-linear-gradient(93deg, rgba(255, 231, 195, 0.1) 0px, rgba(74, 40, 16, 0.16) 3px,
+        rgba(255, 226, 185, 0.07) 7px, rgba(66, 36, 14, 0.12) 12px, rgba(255, 231, 195, 0.09) 18px) border-box,
+      linear-gradient(118deg, #9a6a3e 0%, #7c4e28 26%, #8d5c33 47%, #6b3f1e 74%, #85562f 100%) border-box;
+    box-shadow:
+      inset 0 0 0 2px rgba(20, 12, 5, 0.55),
+      inset 0 2px 8px rgba(0, 0, 0, 0.4),
+      inset 0 0 60px rgba(0, 0, 0, 0.14),
+      0 0 0 1px rgba(30, 18, 8, 0.9),
+      0 1px 0 1px rgba(255, 220, 170, 0.08),
+      0 6px 22px rgba(0, 0, 0, 0.55);
+    padding: 22px 20px 18px;
+  }
+
+  .kicker {
+    color: var(--chalk-gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .kicker::before { content: "— "; }
+
+  h1 {
+    font-family: var(--font-retro);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: clamp(1.7rem, 6vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    margin: 6px 0 0;
+    text-wrap: balance;
+    background: linear-gradient(180deg, #ffc46a 5%, #fb9f55 48%, #f4702a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0.045em 0.05em 0 rgba(248, 6, 147, 0.9)) drop-shadow(-0.02em -0.02em 0 rgba(1, 222, 243, 0.35));
+  }
+
+  .standfirst {
+    color: var(--ink-dim);
+    margin: 10px 0 0;
+    max-width: 64ch;
+    line-height: 1.5;
+  }
+  .standfirst b { color: var(--ink); font-weight: 600; }
+
+  .rule {
+    height: 2px;
+    border: 0;
+    margin: 16px 0 16px;
+    background: linear-gradient(90deg, transparent, var(--accent-3) 18%, var(--accent-2) 50%, #fb9f55 82%, transparent);
+    box-shadow: 0 0 8px rgba(255, 47, 166, 0.5);
+  }
+
+  /* ————— legend ————— */
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 0 0 14px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; color: var(--ink-dim); }
+  .swatch { width: 16px; height: 8px; border-radius: 2px; flex: none; }
+  .swatch.shotgun { background: var(--chalk-blue); box-shadow: 0 0 7px var(--chalk-blue); }
+  .swatch.center { background: var(--chalk-gold); box-shadow: 0 0 7px var(--chalk-gold); }
+
+  /* ————— chart ————— */
+  .plot { position: relative; }
+
+  .grid-layer { position: absolute; inset: 0 var(--value-w) 0 var(--label-w); pointer-events: none; }
+  .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+  .mid-line { position: absolute; top: -6px; bottom: 0; width: 1px; background: rgba(242, 238, 226, 0.34); }
+
+  .rows { position: relative; display: flex; flex-direction: column; gap: 3px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: var(--label-w) 1fr var(--value-w);
+    align-items: center;
+    border-radius: 6px;
+    padding-block: 1px;
+  }
+  .row:hover, .row:focus-visible { background: rgba(242, 238, 226, 0.05); outline: none; }
+  .row:focus-visible { box-shadow: inset 0 0 0 1px var(--chalk-gold); }
+
+  .team { font-weight: 700; font-size: 0.84rem; letter-spacing: 0.06em; padding-right: 10px; }
+  .team .flag { color: var(--chalk-gold); font-weight: 400; }
+
+  .track { position: relative; height: 20px; }
+  .bar { position: absolute; top: 2px; height: 16px; }
+  .bar.shotgun { background: var(--chalk-blue); border-radius: 0 4px 4px 0; }
+  .bar.center { background: var(--chalk-gold); border-radius: 4px 0 0 4px; }
+  .row:hover .bar, .row:focus-visible .bar { filter: brightness(1.15); }
+
+  .value {
+    text-align: right;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  /* fixed width so the percentages stay in one column whatever the snap count */
+  .value .n {
+    display: inline-block;
+    min-width: 30px;
+    text-align: right;
+    color: var(--ink-faint);
+    font-weight: 400;
+    font-size: 0.72rem;
+    margin-left: 6px;
+  }
+  .value .n.low { color: var(--chalk-gold); }
+
+  .axis { position: relative; height: 20px; margin-top: 6px; border-top: 1px solid var(--ink-ghost); }
+  .axis-inner { position: absolute; inset: 0 var(--value-w) 0 var(--label-w); }
+  .tick {
+    position: absolute;
+    top: 4px;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .annotation {
+    font-family: var(--font-hand);
+    color: var(--chalk-gold);
+    font-size: 1.05rem;
+    line-height: 1.25;
+    margin: 14px 0 0;
+  }
+
+  #tip {
+    position: fixed;
+    z-index: 30;
+    pointer-events: none;
+    min-width: 186px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(242, 238, 226, 0.18);
+    background: #0f1319;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    font-size: 0.78rem;
+  }
+  #tip[hidden] { display: none !important; }
+  .tip-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+  .tip-key { width: 14px; height: 3px; border-radius: 2px; flex: none; }
+  .tip-name { font-weight: 600; color: var(--ink); }
+  .tip-big { font-size: 1.25rem; font-weight: 700; line-height: 1.1; }
+  .tip-sub { color: var(--ink-dim); margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .tip-warn { color: var(--chalk-gold); margin-top: 4px; }
+
+  .tools { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  button {
+    font: inherit;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--ink-ghost);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+  button:hover { color: var(--ink); border-color: rgba(242, 238, 226, 0.34); }
+  button:focus-visible { outline: 2px solid var(--chalk-gold); outline-offset: 2px; }
+
+  .table-wrap { overflow-x: auto; margin-top: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  caption { text-align: left; color: var(--ink-faint); font-size: 0.72rem; padding-bottom: 8px; }
+  th, td { padding: 6px 10px 6px 0; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    color: var(--ink-faint);
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink-ghost);
+  }
+  tbody tr + tr td { border-top: 1px solid rgba(242, 238, 226, 0.07); }
+
+  footer { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .brand { color: var(--chalk-gold); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase; }
+  .source { color: rgba(242, 238, 226, 0.45); font-size: 0.7rem; letter-spacing: 0.04em; }
+
+  @media (max-width: 560px) {
+    :root { --label-w: 58px; --value-w: 70px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <main class="board">
+    <p class="kicker">Week 1 · 2026 · Formation</p>
+    <h1>Neutral Script Shotgun</h1>
+    <p class="standfirst">
+      Shotgun rate on <b>neutral-script snaps only</b> — score within one score, more than two minutes
+      left in the half — so the scoreboard stops writing the formation. Bars run from the 50% line:
+      right of it a team spent most of those snaps in the gun, left of it under center.
+      The league took <b>54.4%</b> of its 1,103 neutral snaps from shotgun.
+    </p>
+    <hr class="rule">
+
+    <div class="legend">
+      <span class="legend-item"><span class="swatch shotgun"></span>Mostly shotgun</span>
+      <span class="legend-item"><span class="swatch center"></span>Mostly under center</span>
+      <span class="legend-item"><span style="color: var(--chalk-gold); font-weight: 700;">n</span>Neutral snaps — gold below 20, where two calls move the rate</span>
+    </div>
+
+    <div class="plot">
+      <div class="grid-layer" id="gridLayer" aria-hidden="true"></div>
+      <div class="rows" id="rows" role="list"></div>
+      <div class="axis">
+        <div class="axis-inner" id="axis" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <p class="annotation" id="annotation"></p>
+
+    <div class="tools">
+      <button id="toggle" type="button" aria-expanded="false" aria-controls="tableWrap">Show the table</button>
+      <span class="source">Hover or tab a row for the halves and the result.</span>
+    </div>
+
+    <div class="table-wrap" id="tableWrap" hidden>
+      <table>
+        <caption>Shotgun rate, 2026 week 1 — neutral script, by half, and full game.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Team</th>
+            <th scope="col">Neutral snaps</th>
+            <th scope="col">Neutral</th>
+            <th scope="col">1st half</th>
+            <th scope="col">Full game</th>
+            <th scope="col">Result</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <footer>
+      <span class="brand">The Delta Duo</span>
+      <span class="source">Source: nflverse play-by-play, 2026 week 1 (16 games)</span>
+    </footer>
+  </main>
+</div>
+
+<div id="tip" role="status" aria-live="polite" hidden></div>
+
+<script>
+  const TEAMS = [
+    { team: "MIA", n: 11, rate: 81.8, h1: 66.7, game: 78.2, res: "L", pf: 13, pa: 27, opp: "LV" },
+    { team: "TEN", n: 21, rate: 81.0, h1: 77.8, game: 86.0, res: "L", pf: 10, pa: 23, opp: "NYJ" },
+    { team: "LAC", n: 36, rate: 72.2, h1: 79.2, game: 76.4, res: "L", pf: 14, pa: 26, opp: "ARI" },
+    { team: "KC", n: 37, rate: 70.3, h1: 73.7, game: 59.1, res: "W", pf: 31, pa: 10, opp: "DEN" },
+    { team: "DAL", n: 26, rate: 69.2, h1: 74.3, game: 77.6, res: "L", pf: 20, pa: 28, opp: "NYG" },
+    { team: "WAS", n: 35, rate: 68.6, h1: 68.6, game: 72.5, res: "L", pf: 22, pa: 24, opp: "PHI" },
+    { team: "NO", n: 40, rate: 67.5, h1: 68.6, game: 72.7, res: "L", pf: 30, pa: 31, opp: "DET" },
+    { team: "ATL", n: 51, rate: 66.7, h1: 76.7, game: 63.3, res: "L", pf: 13, pa: 20, opp: "PIT" },
+    { team: "DEN", n: 24, rate: 66.7, h1: 70.4, game: 78.0, res: "L", pf: 10, pa: 31, opp: "KC" },
+    { team: "CIN", n: 23, rate: 65.2, h1: 67.7, game: 69.8, res: "W", pf: 33, pa: 27, opp: "TB" },
+    { team: "HOU", n: 64, rate: 64.1, h1: 61.5, game: 70.9, res: "L", pf: 31, pa: 36, opp: "BUF" },
+    { team: "IND", n: 11, rate: 63.6, h1: 60.0, game: 64.8, res: "L", pf: 23, pa: 41, opp: "BAL" },
+    { team: "PHI", n: 48, rate: 62.5, h1: 65.5, game: 66.0, res: "W", pf: 24, pa: 22, opp: "WAS" },
+    { team: "CLE", n: 8, rate: 62.5, h1: 76.0, game: 68.6, res: "L", pf: 10, pa: 34, opp: "JAX" },
+    { team: "ARI", n: 52, rate: 57.7, h1: 64.1, game: 55.6, res: "W", pf: 26, pa: 14, opp: "LAC" },
+    { team: "CAR", n: 42, rate: 57.1, h1: 54.8, game: 66.2, res: "L", pf: 37, pa: 59, opp: "CHI" },
+    { team: "PIT", n: 56, rate: 53.6, h1: 71.4, game: 58.5, res: "W", pf: 20, pa: 13, opp: "ATL" },
+    { team: "TB", n: 17, rate: 52.9, h1: 48.5, game: 50.0, res: "L", pf: 27, pa: 33, opp: "CIN" },
+    { team: "BUF", n: 47, rate: 51.1, h1: 46.2, game: 50.9, res: "W", pf: 36, pa: 31, opp: "HOU" },
+    { team: "NE", n: 57, rate: 50.9, h1: 50.0, game: 54.9, res: "L", pf: 10, pa: 13, opp: "SEA" },
+    { team: "GB", n: 24, rate: 50.0, h1: 60.7, game: 60.3, res: "L", pf: 22, pa: 39, opp: "MIN" },
+    { team: "MIN", n: 21, rate: 47.6, h1: 60.0, game: 49.2, res: "W", pf: 39, pa: 22, opp: "GB" },
+    { team: "NYJ", n: 39, rate: 46.2, h1: 50.0, game: 46.9, res: "W", pf: 23, pa: 10, opp: "TEN" },
+    { team: "CHI", n: 51, rate: 45.1, h1: 50.0, game: 49.3, res: "W", pf: 59, pa: 37, opp: "CAR" },
+    { team: "LA", n: 25, rate: 44.0, h1: 44.0, game: 50.0, res: "L", pf: 7, pa: 27, opp: "SF" },
+    { team: "SF", n: 40, rate: 42.5, h1: 50.0, game: 43.1, res: "W", pf: 27, pa: 7, opp: "LA" },
+    { team: "NYG", n: 50, rate: 42.0, h1: 53.1, game: 50.0, res: "W", pf: 28, pa: 20, opp: "DAL" },
+    { team: "JAX", n: 17, rate: 41.2, h1: 38.9, game: 40.7, res: "W", pf: 34, pa: 10, opp: "CLE" },
+    { team: "LV", n: 32, rate: 34.4, h1: 38.7, game: 36.9, res: "W", pf: 27, pa: 13, opp: "MIA" },
+    { team: "SEA", n: 32, rate: 34.4, h1: 50.0, game: 51.0, res: "W", pf: 13, pa: 10, opp: "NE" },
+    { team: "BAL", n: 10, rate: 30.0, h1: 47.4, game: 45.3, res: "W", pf: 41, pa: 23, opp: "IND" },
+    { team: "DET", n: 56, rate: 26.8, h1: 32.4, game: 33.8, res: "W", pf: 31, pa: 30, opp: "NO" }
+  ];
+  const LOW_N = 20;
+  const MID = 50, SPAN = 34;                        // axis: 16% to 84%, centred on the 50% line
+  const pos = v => ((v - (MID - SPAN)) / (SPAN * 2)) * 100;
+
+  const gridLayer = document.getElementById("gridLayer");
+  const axis = document.getElementById("axis");
+  for (let v = 20; v <= 80; v += 10) {
+    const line = document.createElement("div");
+    line.className = v === MID ? "mid-line" : "grid-line";
+    line.style.left = pos(v) + "%";
+    gridLayer.appendChild(line);
+
+    const tick = document.createElement("div");
+    tick.className = "tick";
+    tick.style.left = pos(v) + "%";
+    tick.textContent = v + "%";
+    axis.appendChild(tick);
+  }
+
+  const rows = document.getElementById("rows");
+  const tbody = document.getElementById("tbody");
+  TEAMS.forEach(t => {
+    const shotgunSide = t.rate >= MID;
+    const row = document.createElement("div");
+    row.className = "row";
+    row.setAttribute("role", "listitem");
+    row.tabIndex = 0;
+
+    const team = document.createElement("div");
+    team.className = "team";
+    team.textContent = t.team;
+
+    const track = document.createElement("div");
+    track.className = "track";
+    const bar = document.createElement("div");
+    bar.className = "bar " + (shotgunSide ? "shotgun" : "center");
+    const a = pos(Math.min(t.rate, MID)), b = pos(Math.max(t.rate, MID));
+    bar.style.left = a + "%";
+    bar.style.width = Math.max(b - a, 0.35) + "%";
+    track.appendChild(bar);
+
+    const value = document.createElement("div");
+    value.className = "value";
+    value.textContent = t.rate.toFixed(1) + "%";
+    const n = document.createElement("span");
+    n.className = "n" + (t.n < LOW_N ? " low" : "");
+    n.textContent = "n" + t.n;
+    value.appendChild(n);
+
+    row.append(team, track, value);
+    row.addEventListener("pointermove", e => showTip(t, shotgunSide, e.clientX, e.clientY));
+    row.addEventListener("pointerleave", hideTip);
+    row.addEventListener("focus", () => {
+      const r = row.getBoundingClientRect();
+      showTip(t, shotgunSide, r.left + Math.min(240, r.width / 2), r.top + r.height / 2);
+    });
+    row.addEventListener("blur", hideTip);
+    rows.appendChild(row);
+
+    const tr = document.createElement("tr");
+    [t.team, t.n, t.rate.toFixed(1) + "%", t.h1.toFixed(1) + "%", t.game.toFixed(1) + "%",
+     t.res + " " + t.pf + "–" + t.pa + " vs " + t.opp].forEach(v => {
+      const td = document.createElement("td");
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("annotation").textContent =
+    "Kansas City reads run-first over the full game — 59.1% — only because the lead let them run it out. " +
+    "In neutral script they are fourth in the league.";
+
+  const tip = document.getElementById("tip");
+  function showTip(t, shotgunSide, x, y) {
+    const hue = shotgunSide ? "var(--chalk-blue)" : "var(--chalk-gold)";
+    tip.replaceChildren();
+
+    const head = document.createElement("div");
+    head.className = "tip-head";
+    const key = document.createElement("span");
+    key.className = "tip-key";
+    key.style.background = hue;
+    const nm = document.createElement("span");
+    nm.className = "tip-name";
+    nm.textContent = t.team + " " + t.res + " " + t.pf + "–" + t.pa + " vs " + t.opp;
+    head.append(key, nm);
+
+    const big = document.createElement("div");
+    big.className = "tip-big";
+    big.style.color = hue;
+    big.textContent = t.rate.toFixed(1) + "% shotgun";
+
+    const sub = document.createElement("div");
+    sub.className = "tip-sub";
+    sub.textContent = t.n + " neutral snaps · 1st half " + t.h1.toFixed(1) + "% · full game " + t.game.toFixed(1) + "%";
+    tip.append(head, big, sub);
+
+    if (t.n < LOW_N) {
+      const warn = document.createElement("div");
+      warn.className = "tip-warn";
+      warn.textContent = "Small sample — under 20 neutral snaps.";
+      tip.append(warn);
+    }
+
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(Math.max(8, x + 14), window.innerWidth - w - 8) + "px";
+    tip.style.top = Math.min(Math.max(8, y - h - 12), window.innerHeight - h - 8) + "px";
+  }
+  function hideTip() { tip.hidden = true; }
+
+  const toggle = document.getElementById("toggle");
+  const tableWrap = document.getElementById("tableWrap");
+  toggle.addEventListener("click", () => {
+    const open = tableWrap.hidden;
+    tableWrap.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.textContent = open ? "Hide the table" : "Show the table";
+  });
+</script>
