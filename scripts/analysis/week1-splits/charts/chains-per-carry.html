@@ -197,7 +197,7 @@
     color: var(--chalk-blue);
     font-size: 0.8rem;
     line-height: 1.45;
-    margin: 14px 0 0;
+    margin: 16px 0 0;
   }
 
   /* ————— tooltip ————— */
@@ -219,39 +219,6 @@
   .tip-name { font-weight: 600; color: var(--ink); }
   .tip-big { font-size: 1.25rem; font-weight: 700; color: var(--chalk-gold); line-height: 1.1; }
   .tip-sub { color: var(--ink-dim); margin-top: 3px; font-variant-numeric: tabular-nums; }
-
-  /* ————— table view ————— */
-  .tools { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-  button {
-    font: inherit;
-    font-size: 0.74rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid var(--ink-ghost);
-    border-radius: 999px;
-    padding: 7px 14px;
-    cursor: pointer;
-  }
-  button:hover { color: var(--ink); border-color: rgba(242, 238, 226, 0.34); }
-  button:focus-visible { outline: 2px solid var(--chalk-gold); outline-offset: 2px; }
-
-  .table-wrap { overflow-x: auto; margin-top: 14px; }
-  table { border-collapse: collapse; width: 100%; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
-  caption { text-align: left; color: var(--ink-faint); font-size: 0.72rem; padding-bottom: 8px; }
-  th, td { padding: 6px 10px 6px 0; text-align: right; white-space: nowrap; }
-  th:first-child, td:first-child { text-align: left; }
-  thead th {
-    color: var(--ink-faint);
-    font-weight: 600;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--ink-ghost);
-  }
-  tbody tr + tr td { border-top: 1px solid rgba(242, 238, 226, 0.07); }
 
   footer { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
   .brand { color: var(--chalk-gold); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase; }
@@ -286,27 +253,6 @@
     </div>
 
     <p class="annotation" id="annotation"></p>
-
-    <div class="tools">
-      <button id="toggle" type="button" aria-expanded="false" aria-controls="tableWrap">Show the table</button>
-    </div>
-
-    <div class="table-wrap" id="tableWrap" hidden>
-      <table>
-        <caption>Rushing first downs, 2026 week 1 — running backs with five or more carries.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Back</th>
-            <th scope="col">Team</th>
-            <th scope="col">Carries</th>
-            <th scope="col">First downs</th>
-            <th scope="col">Rate</th>
-            <th scope="col">Yards</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
 
     <footer>
       <span class="brand">The Delta Duo</span>
@@ -366,7 +312,6 @@
 
   // rows
   const rows = document.getElementById("rows");
-  const tbody = document.getElementById("tbody");
   BACKS.forEach(b => {
     const row = document.createElement("div");
     row.className = "row";
@@ -405,13 +350,6 @@
     row.addEventListener("blur", hideTip);
     rows.appendChild(row);
 
-    const tr = document.createElement("tr");
-    [b.name, b.team, b.carries, b.fd, b.rate.toFixed(1) + "%", b.yards].forEach(v => {
-      const td = document.createElement("td");
-      td.textContent = v;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
   });
 
   document.getElementById("annotation").textContent =
@@ -446,14 +384,4 @@
     tip.style.top = top + "px";
   }
   function hideTip() { tip.hidden = true; }
-
-  // table view
-  const toggle = document.getElementById("toggle");
-  const tableWrap = document.getElementById("tableWrap");
-  toggle.addEventListener("click", () => {
-    const open = tableWrap.hidden;
-    tableWrap.hidden = !open;
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.textContent = open ? "Hide the table" : "Show the table";
-  });
 </script>
