@@ -1,7 +1,8 @@
 """Week 1 team and player splits from nflverse play-by-play.
 
 Five tables, printed as markdown and written to tables/ as CSV:
-  1. team_shotgun        - shotgun rate (offence), with the week's score and result
+  1. team_shotgun        - shotgun rate by half, neutral script and overall,
+                           with the week's score and result
   2. team_tfl_defense    - tackles for loss forced, per opponent carry
   3. team_tfl_offense    - tackles for loss allowed, per carry
   4. rush_first_downs    - first-down rate per carry, RB/FB, >= 5 carries
@@ -91,16 +92,33 @@ def main(season=2026, week=1):
     # the ones a penalty wiped out (the formation still happened). Two-point
     # plays are dropped - no down and distance, so no shotgun decision to read.
     snaps = pbp[((pbp["pass"] == 1) | (pbp["rush"] == 1)) & (pbp.two_point_attempt == 0)]
-    sg = (snaps.groupby("posteam")
-          .agg(snaps=("shotgun", "size"), shotgun=("shotgun", "sum")))
-    sg["shotgun_rate"] = pct(sg.shotgun / sg.snaps)
+
+    # Neutral script: one score either way, and not inside the two-minute
+    # warning of either half, where the clock dictates the formation. This is
+    # the closest thing here to a scheme read; overtime is dropped.
+    neutral = snaps[(snaps.score_differential.abs() <= 7)
+                    & (snaps.half_seconds_remaining > 120)
+                    & (snaps.game_half != "Overtime")]
+
+    def rate(df, label):
+        g = df.groupby("posteam").agg(**{f"{label}_snaps": ("shotgun", "size"),
+                                         f"{label}_rate": ("shotgun", "mean")})
+        g[f"{label}_rate"] = pct(g[f"{label}_rate"])
+        return g
+
+    sg = (rate(snaps, "all")
+          .join(rate(snaps[snaps.game_half == "Half1"], "h1"))
+          .join(rate(snaps[snaps.game_half == "Half2"], "h2"))
+          .join(rate(neutral, "neutral")))
+    sg["h2_minus_h1"] = (sg.h2_rate - sg.h1_rate).round(1)
     sg = (sg.reset_index().rename(columns={"posteam": "team"})
             .merge(results(pbp), on="team", how="left"))
-    emit("team_shotgun", f"Shotgun rate, {tag} (offence)",
-         sg.sort_values("shotgun_rate", ascending=False)
-           .astype({"shotgun": int, "points": int, "points_allowed": int})
-           [["team", "snaps", "shotgun", "shotgun_rate", "points",
-             "points_allowed", "result", "opponent"]])
+    emit("team_shotgun", f"Shotgun rate by half, {tag} (offence)",
+         sg.sort_values("h1_rate", ascending=False)
+           .astype({"points": int, "points_allowed": int})
+           [["team", "h1_snaps", "h1_rate", "h2_snaps", "h2_rate", "h2_minus_h1",
+             "neutral_snaps", "neutral_rate", "all_snaps", "all_rate",
+             "points", "points_allowed", "result", "opponent"]])
 
     # nflverse only charges tackled_for_loss on runs - sacks are their own
     # column - so the honest denominator is opponent carries, kneels aside.

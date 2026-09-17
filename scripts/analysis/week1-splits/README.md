@@ -8,12 +8,26 @@ Defaults to 2026 week 1:
 
 Definitions, because each one has a judgement call in it:
 
-- **Score and result** come from the game's final, not from the state during
-  the snaps, so the shotgun column and the win column are not independent:
-  a team that trails throws from shotgun, and a team that leads runs. In week
-  1 the eight highest shotgun rates all lost and the eight lowest all won
-  (r = -0.63 against point margin). Read that table as game script, not as
-  scheme preference.
+- **Halves and neutral script.** Shotgun rate over a whole game is partly a
+  record of the scoreboard: trailing teams throw from shotgun, leading teams
+  run. In week 1 that showed up hard - the eight highest full-game rates all
+  lost, the eight lowest all won. So the table splits it. First half is the
+  cleanest read with an even sample (18-42 snaps a team); **neutral** is
+  first- or second-half snaps with the score within one score and more than
+  two minutes left in the half, which is purer but thinner (8-64 snaps);
+  `h2_minus_h1` is the game-script drift itself.
+
+  | split | corr. with point margin | winners | losers |
+  |---|---|---|---|
+  | first half | -0.38 | 53.7% | 64.9% |
+  | neutral script | -0.48 | 46.9% | 63.7% |
+  | full game | -0.63 | 50.4% | 68.2% |
+  | second half | -0.70 | 45.6% | 71.2% |
+
+  First half and neutral agree closely (r = 0.86) and both cut the scoreboard
+  contamination roughly in half; the second half is almost pure game script.
+  Treat `h1_rate` as the scheme number and `h2_minus_h1` as what the game did
+  to it.
 - **Scrimmage snap** - any play flagged `pass` or `rush`, two-point tries
   excluded. Penalty-wiped plays stay in: the offence still lined up, and
   `shotgun` is recorded for them.
@@ -30,42 +44,42 @@ Week 1 is 16 games, so every rate below rests on 50-90 snaps, 5-39 carries or
 5-14 targets. Read it as description, not as a skill estimate.
 
 
-## Shotgun rate, 2026 week 1 (offence)
+## Shotgun rate by half, 2026 week 1 (offence)
 
-| team | snaps | shotgun | shotgun_rate | points | points_allowed | result | opponent |
-|---|---|---|---|---|---|---|---|
-| TEN | 50 | 43 | 86.0 | 10 | 23 | L | NYJ |
-| MIA | 55 | 43 | 78.2 | 13 | 27 | L | LV |
-| DEN | 50 | 39 | 78.0 | 10 | 31 | L | KC |
-| DAL | 58 | 45 | 77.6 | 20 | 28 | L | NYG |
-| LAC | 55 | 42 | 76.4 | 14 | 26 | L | ARI |
-| NO | 88 | 64 | 72.7 | 30 | 31 | L | DET |
-| WAS | 69 | 50 | 72.5 | 22 | 24 | L | PHI |
-| HOU | 79 | 56 | 70.9 | 31 | 36 | L | BUF |
-| CIN | 63 | 44 | 69.8 | 33 | 27 | W | TB |
-| CLE | 51 | 35 | 68.6 | 10 | 34 | L | JAX |
-| CAR | 68 | 45 | 66.2 | 37 | 59 | L | CHI |
-| PHI | 53 | 35 | 66.0 | 24 | 22 | W | WAS |
-| IND | 54 | 35 | 64.8 | 23 | 41 | L | BAL |
-| ATL | 60 | 38 | 63.3 | 13 | 20 | L | PIT |
-| GB | 68 | 41 | 60.3 | 22 | 39 | L | MIN |
-| KC | 66 | 39 | 59.1 | 31 | 10 | W | DEN |
-| PIT | 65 | 38 | 58.5 | 20 | 13 | W | ATL |
-| ARI | 72 | 40 | 55.6 | 26 | 14 | W | LAC |
-| NE | 71 | 39 | 54.9 | 10 | 13 | L | SEA |
-| SEA | 49 | 25 | 51.0 | 13 | 10 | W | NE |
-| BUF | 55 | 28 | 50.9 | 36 | 31 | W | HOU |
-| TB | 56 | 28 | 50.0 | 27 | 33 | L | CIN |
-| LA | 60 | 30 | 50.0 | 7 | 27 | L | SF |
-| NYG | 66 | 33 | 50.0 | 28 | 20 | W | DAL |
-| CHI | 75 | 37 | 49.3 | 59 | 37 | W | CAR |
-| MIN | 61 | 30 | 49.2 | 39 | 22 | W | GB |
-| NYJ | 64 | 30 | 46.9 | 23 | 10 | W | TEN |
-| BAL | 64 | 29 | 45.3 | 41 | 23 | W | IND |
-| SF | 65 | 28 | 43.1 | 27 | 7 | W | LA |
-| JAX | 54 | 22 | 40.7 | 34 | 10 | W | CLE |
-| LV | 65 | 24 | 36.9 | 27 | 13 | W | MIA |
-| DET | 77 | 26 | 33.8 | 31 | 30 | W | NO |
+| team | h1_snaps | h1_rate | h2_snaps | h2_rate | h2_minus_h1 | neutral_snaps | neutral_rate | all_snaps | all_rate | points | points_allowed | result | opponent |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| LAC | 24 | 79.2 | 31 | 74.2 | -5.0 | 36 | 72.2 | 55 | 76.4 | 14 | 26 | L | ARI |
+| TEN | 18 | 77.8 | 32 | 90.6 | 12.8 | 21 | 81.0 | 50 | 86.0 | 10 | 23 | L | NYJ |
+| ATL | 30 | 76.7 | 30 | 50.0 | -26.7 | 51 | 66.7 | 60 | 63.3 | 13 | 20 | L | PIT |
+| CLE | 25 | 76.0 | 26 | 61.5 | -14.5 | 8 | 62.5 | 51 | 68.6 | 10 | 34 | L | JAX |
+| DAL | 35 | 74.3 | 23 | 82.6 | 8.3 | 26 | 69.2 | 58 | 77.6 | 20 | 28 | L | NYG |
+| KC | 38 | 73.7 | 28 | 39.3 | -34.4 | 37 | 70.3 | 66 | 59.1 | 31 | 10 | W | DEN |
+| PIT | 42 | 71.4 | 23 | 34.8 | -36.6 | 56 | 53.6 | 65 | 58.5 | 20 | 13 | W | ATL |
+| DEN | 27 | 70.4 | 23 | 87.0 | 16.6 | 24 | 66.7 | 50 | 78.0 | 10 | 31 | L | KC |
+| NO | 35 | 68.6 | 42 | 76.2 | 7.6 | 40 | 67.5 | 88 | 72.7 | 30 | 31 | L | DET |
+| WAS | 35 | 68.6 | 34 | 76.5 | 7.9 | 35 | 68.6 | 69 | 72.5 | 22 | 24 | L | PHI |
+| CIN | 31 | 67.7 | 32 | 71.9 | 4.2 | 23 | 65.2 | 63 | 69.8 | 33 | 27 | W | TB |
+| MIA | 27 | 66.7 | 28 | 89.3 | 22.6 | 11 | 81.8 | 55 | 78.2 | 13 | 27 | L | LV |
+| PHI | 29 | 65.5 | 24 | 66.7 | 1.2 | 48 | 62.5 | 53 | 66.0 | 24 | 22 | W | WAS |
+| ARI | 39 | 64.1 | 33 | 45.5 | -18.6 | 52 | 57.7 | 72 | 55.6 | 26 | 14 | W | LAC |
+| HOU | 39 | 61.5 | 40 | 80.0 | 18.5 | 64 | 64.1 | 79 | 70.9 | 31 | 36 | L | BUF |
+| GB | 28 | 60.7 | 40 | 60.0 | -0.7 | 24 | 50.0 | 68 | 60.3 | 22 | 39 | L | MIN |
+| IND | 30 | 60.0 | 24 | 70.8 | 10.8 | 11 | 63.6 | 54 | 64.8 | 23 | 41 | L | BAL |
+| MIN | 35 | 60.0 | 26 | 34.6 | -25.4 | 21 | 47.6 | 61 | 49.2 | 39 | 22 | W | GB |
+| CAR | 31 | 54.8 | 37 | 75.7 | 20.9 | 42 | 57.1 | 68 | 66.2 | 37 | 59 | L | CHI |
+| NYG | 32 | 53.1 | 34 | 47.1 | -6.0 | 50 | 42.0 | 66 | 50.0 | 28 | 20 | W | DAL |
+| CHI | 38 | 50.0 | 37 | 48.6 | -1.4 | 51 | 45.1 | 75 | 49.3 | 59 | 37 | W | CAR |
+| SEA | 26 | 50.0 | 23 | 52.2 | 2.2 | 32 | 34.4 | 49 | 51.0 | 13 | 10 | W | NE |
+| NE | 32 | 50.0 | 39 | 59.0 | 9.0 | 57 | 50.9 | 71 | 54.9 | 10 | 13 | L | SEA |
+| NYJ | 38 | 50.0 | 26 | 42.3 | -7.7 | 39 | 46.2 | 64 | 46.9 | 23 | 10 | W | TEN |
+| SF | 38 | 50.0 | 27 | 33.3 | -16.7 | 40 | 42.5 | 65 | 43.1 | 27 | 7 | W | LA |
+| TB | 33 | 48.5 | 23 | 52.2 | 3.7 | 17 | 52.9 | 56 | 50.0 | 27 | 33 | L | CIN |
+| BAL | 38 | 47.4 | 26 | 42.3 | -5.1 | 10 | 30.0 | 64 | 45.3 | 41 | 23 | W | IND |
+| BUF | 26 | 46.2 | 29 | 55.2 | 9.0 | 47 | 51.1 | 55 | 50.9 | 36 | 31 | W | HOU |
+| LA | 25 | 44.0 | 35 | 54.3 | 10.3 | 25 | 44.0 | 60 | 50.0 | 7 | 27 | L | SF |
+| JAX | 36 | 38.9 | 18 | 44.4 | 5.5 | 17 | 41.2 | 54 | 40.7 | 34 | 10 | W | CLE |
+| LV | 31 | 38.7 | 34 | 35.3 | -3.4 | 32 | 34.4 | 65 | 36.9 | 27 | 13 | W | MIA |
+| DET | 37 | 32.4 | 30 | 36.7 | 4.3 | 56 | 26.8 | 77 | 33.8 | 31 | 30 | W | NO |
 
 ## Tackle-for-loss rate, 2026 week 1 (defence)
 
