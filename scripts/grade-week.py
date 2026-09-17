@@ -5,7 +5,7 @@ answers "is the board any good". The startable scope is the top of each
 position, which answers the question anyone actually has on a Sunday: the
 back of a 80-deep receiver list is not a lineup decision.
 """
-import csv, json, sys
+import csv, json, os, sys
 from pathlib import Path
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr
@@ -20,14 +20,46 @@ by_name = {}
 for (p, t), sid in ids.items():
     by_name.setdefault(p, sid)
 
-# Preseason consensus, straight off the model's own export, as a third voice.
-CONS = {}
+# Two consensus voices, because they are not the same thing and only one of
+# them is a fair opponent.
+#
+# The preseason board is FantasyPros' draft cheat sheet, last scraped nine days
+# before kickoff. It is not trying to answer who scores most in week 1: it does
+# not know the injuries, the depth charts or the matchups. Grading our weekly
+# lists against it flattered us, and it was the only consensus this file had.
+#
+# The weekly board is what FantasyPros published for week 1 itself, scraped
+# after the preseason and before the games. That is the like-for-like
+# comparison and it is the one that counts.
+#
+# The two disagree more than their shared name suggests: Spearman 0.79 to 0.87
+# between them, a median move of 9 spots at quarterback and 32 at receiver.
+CONS, WCONS = {}, {}
+NAME = {}
 for pos, f in [("qb", "qb_qb_4pt"), ("rb", "rb_ppr"), ("wr", "wr_ppr"), ("te", "te_ppr")]:
-    p = Path(f"/tmp/notes_{f}.csv")
-    if p.exists():
-        for r in csv.DictReader(p.open()):
-            if r.get("consensus_rank"):
-                CONS[(pos, r["player_name"])] = float(r["consensus_rank"])
+    src = Path(f"/tmp/notes_{f}.csv")
+    if not src.exists():
+        continue
+    for r in csv.DictReader(src.open()):
+        if r.get("consensus_rank"):
+            CONS[(pos, r["player_name"])] = float(r["consensus_rank"])
+        if r.get("player_id"):
+            NAME[r["player_id"]] = (pos, r["player_name"])
+
+# The model lives on the rankings branch, not this one, so its path is given
+# rather than assumed. Without it the weekly consensus is simply absent and the
+# other three voices grade as before.
+sys.path.insert(0, os.environ.get("DD_MODEL", "model"))
+try:
+    from dd import benchmark
+    wk = benchmark.weekly_consensus(2026, 1)
+    for _, x in wk.iterrows():
+        hit = NAME.get(x.player_id)
+        if hit and hit[0] == x.position.lower():
+            WCONS[hit] = float(x.consensus_rank)
+    print(f"  weekly consensus as scraped {wk.scraped.max()}: {len(WCONS)} matched")
+except Exception as exc:
+    print(f"  ! no weekly consensus ({exc})")
 
 FILES = {("qb", "4pt"): "qb-4pt", ("qb", "6pt"): "qb-6pt",
          ("rb", "ppr"): "rb-ppr", ("rb", "half"): "rb-half",
@@ -37,7 +69,13 @@ STARTERS = {"qb": 12, "rb": 24, "wr": 24, "te": 12}
 # The startable scope: roughly one starter per team at quarterback and tight
 # end, three deep at the positions a lineup starts two or three of.
 TOPN = {"qb": 16, "rb": 36, "wr": 36, "te": 24}
-VOICES = [("Wilson", "rank_data"), ("MC", "rank_vibes"), ("consensus", "cons")]
+VOICES = [("Wilson", "rank_data"), ("MC", "rank_vibes"),
+          ("preseason consensus", "cons"), ("weekly consensus", "wcons")]
+# The mirror carries PPR pages only, and one quarterback page at four points a
+# passing touchdown. There is no half-PPR or six-point consensus to compare
+# against at any date, so those lists get no consensus row rather than a PPR
+# ranking wearing a half-PPR label.
+CONS_VARIANT = {"qb": "4pt", "rb": "ppr", "wr": "ppr", "te": "ppr"}
 
 
 def actual(sid, variant):
@@ -98,7 +136,10 @@ for (pos, variant), stem in FILES.items():
     df["sid"] = [ids.get((p, t)) or by_name.get(p) for p, t in zip(df.player, df.team)]
     df["pts"] = [actual(s, variant) for s in df.sid]
     df["cons"] = [CONS.get((pos, p), np.nan) for p in df.player]
+    df["wcons"] = [WCONS.get((pos, p), np.nan) for p in df.player]
     for who, col in VOICES:
+        if col in ("cons", "wcons") and variant != CONS_VARIANT[pos]:
+            continue
         r = pd.to_numeric(df[col], errors="coerce")
         ok = r.notna()
         if ok.sum() < STARTERS[pos]:
