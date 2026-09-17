@@ -50,31 +50,30 @@ POSITIONS = {"QB": ["qb-4pt.csv", "qb-6pt.csv"], "RB": ["rb-ppr.csv", "rb-half.c
 def week_one() -> dict:
     """What each player did in the week before this one, and who he did it to.
 
-    Two facts sit behind every card: the line he actually put up, and whether
-    the defence he put it up against was any good. A quiet week against the
-    best unit in the league and a quiet week against the worst are not the same
-    evidence, and MC should be able to see which he is looking at without
-    opening another tab.
+    Returns what each player did, and separately how every defence has played,
+    so a card can pair his last line with the defence he is about to face. The
+    rank was briefly taken against the defence he faced last week, which
+    describes a game already played rather than the one being ranked.
 
     Needs the model on the path (DD_MODEL). Without it the cards simply carry
     the week 2 matchup, as before.
     """
     prev = WEEK - 1
     if prev < 1:
-        return {}
+        return {}, {}
     sys.path.insert(0, os.environ.get("DD_MODEL", "model"))
     try:
         from dd import defense, inseason
         from dd.scoring import fantasy_points
     except Exception as exc:
         print(f"  ! no week {prev} detail ({exc}); matchup only")
-        return {}
+        return {}, {}
     import pandas as pd
 
     w = inseason.build()
     w = w[(w.season == SEASON) & (w.week == prev)].copy()
     if w.empty:
-        return {}
+        return {}, {}
     w["pts"] = fantasy_points(w, "ppr")
 
     d = defense.build()
@@ -118,16 +117,12 @@ def week_one() -> dict:
             if n("receiving_tds"):
                 line += f", {n('receiving_tds'):.0f} TD"
         opp = x.opponent_team
-        side, which = ("rush", 1) if pos == "RB" else ("pass", 0)
-        dr = rk.get(opp)
-        against = (f"{opp} ranked {ordinal(dr[which])} of 32 against the {side}"
-                   f" in week {prev}") if dr else ""
         out[x.player_id] = {
-            "pts": round(float(x.pts), 1), "line": line,
-            "opp": opp, "against": against,
+            "pts": round(float(x.pts), 1), "line": line, "opp": opp,
         }
     print(f"  week {prev} detail attached for {len(out)} players")
-    return {name: out[pid] for name, pid in ident.items() if pid in out}
+    return ({name: out[pid] for name, pid in ident.items() if pid in out},
+            {t: {"pass": int(v[0]), "rush": int(v[1])} for t, v in rk.items()})
 
 
 def ordinal(k: int) -> str:
@@ -137,7 +132,7 @@ def ordinal(k: int) -> str:
 
 
 def load() -> dict:
-    last = week_one()
+    last, defrank = week_one()
     board = {}
     for pos, fnames in POSITIONS.items():
         seen, rows = set(), []
@@ -155,6 +150,11 @@ def load() -> dict:
             "consensus": int(r["rank_vibes"]),
             "note": r["note_vibes"] or "",
             "last": last.get(r["player"]),
+            # The defence he is about to face, on the side that matters to
+            # him. This was the defence he faced LAST week, which described a
+            # game already played rather than the one being ranked.
+            "def": (defrank.get(r["opponent"], {}).get(
+                "rush" if pos == "RB" else "pass")),
         } for r in rows]
     return board
 
@@ -182,6 +182,9 @@ HTML = """<!doctype html>
           line-height:1.5; }
   .last b { color:var(--ink); font-weight:600; }
   .last .vs { display:block; color:var(--faint); }
+  /* The defence he is about to face. Kept apart from last week's line so the
+     two are not read as one sentence. */
+  .dfn { padding:0 10px 8px 46px; color:var(--warn); font-size:12.5px; }
   main { max-width:900px; margin:0 auto; padding:0 20px 80px; }
   .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center;
          padding:12px 0; position:sticky; top:0; background:var(--bg); z-index:5;
@@ -263,6 +266,8 @@ HTML = """<!doctype html>
 const WEEK = "__WEEK__", SEASON = "__SEASON__";
 const SEED = __DATA__;
 const KEY = "mc-rankings-" + SEASON + "-w" + WEEK;
+const ord = k => k + ({1: "st", 2: "nd", 3: "rd"}[k % 10] &&
+  !(k % 100 >= 10 && k % 100 <= 20) ? {1: "st", 2: "nd", 3: "rd"}[k % 10] : "th");
 const POS = Object.keys(SEED);
 let active = POS[0];
 let board = load();
@@ -344,15 +349,21 @@ function render() {
         '<button class="notebtn' + (r.note.trim() ? " has" : "") + '">note</button>' +
       '</div>' +
       (r.last ? '<div class="last"></div>' : "") +
+      (r.def ? '<div class="dfn"></div>' : "") +
       '<div class="note"><textarea placeholder="Why MC has him here"></textarea></div>';
     li.querySelector(".name").textContent = r.player;
     li.querySelector(".match").textContent =
       r.team + (r.opp ? (r.home ? " vs " : " @ ") + r.opp : "");
+    if (r.def) {
+      const side = active === "RB" ? "run" : "pass";
+      li.querySelector(".dfn").textContent =
+        r.opp + " rank " + ord(r.def) + " of 32 against the " + side +
+        " through week " + (WEEK - 1);
+    }
     if (r.last) {
       const L = li.querySelector(".last");
       L.innerHTML = '<b>Wk ' + (WEEK - 1) + '</b> ' + r.last.pts + ' pts &middot; ' +
-        r.last.line + ' vs ' + r.last.opp +
-        (r.last.against ? '<span class="vs">' + r.last.against + '</span>' : "");
+        r.last.line + ' vs ' + r.last.opp;
     }
     const ta = li.querySelector("textarea");
     ta.value = r.note;
