@@ -111,11 +111,21 @@ def weekly_consensus(season: int, week: int) -> pd.DataFrame:
     g = sched[(sched.season == season) & (sched.week == week)]
     if g.empty:
         raise SystemExit(f"no schedule for {season} week {week}")
-    kickoff = pd.Timestamp(pd.to_datetime(g.gameday).min())
-    before = d[d.scrape_date < kickoff]
-    # A week of the current season with no scrape yet falls back to whatever
-    # the market last said, which is stale by one week and honest about it.
-    pick = before if not before.empty else d
+    # The weekly pages are scraped on the Friday INSIDE the week they rank,
+    # after Thursday night and before the Sunday slate. Selecting on the first
+    # kickoff therefore rejects a week's own board and reaches back to the
+    # previous one: asking for 2026 week 1 returned a scrape from December
+    # 2025, and asking for week 2 returned week 1's. The window is the week
+    # itself, from the day after the previous week's last game to this week's
+    # last.
+    last = pd.Timestamp(pd.to_datetime(g.gameday).max())
+    prev = sched[(sched.season == season) & (sched.week == week - 1)]
+    floor = (pd.Timestamp(pd.to_datetime(prev.gameday).max()) if len(prev)
+             else pd.Timestamp(pd.to_datetime(g.gameday).min()) - pd.Timedelta(days=7))
+    window = d[(d.scrape_date > floor) & (d.scrape_date <= last)]
+    # A week with no scrape yet falls back to whatever the market last said,
+    # which is stale by one week and says so through `scraped`.
+    pick = window if not window.empty else d[d.scrape_date <= last]
     out = []
     for pos, page in WEEKLY_PAGES.items():
         sub = pick[pick.page_type == page]
