@@ -35,7 +35,9 @@ Definitions, because each one has a judgement call in it:
   `shotgun` is recorded for them.
 - **Tackle for loss** - nflverse only charges `tackled_for_loss` on runs
   (sacks live in their own column), so the denominator is opponent carries,
-  kneels removed, not total plays.
+  kneels removed, not total plays. The player table stacks both credited
+  slots and gives each defender full credit for the play, with a `shared`
+  count alongside; week 1 had no shared ones, so 63 plays are 63 credits.
 - **Target** - a pass attempt with a charged receiver, so throwaways and sacks
   are out and every incompletion counts against the rate.
 - **First down** - `first_down_rush` / `first_down_pass`, which are 1 when the
@@ -156,6 +158,66 @@ Week 1 is 16 games, so every rate below rests on 50-90 snaps, 5-39 carries or
 | LV | 34 | 6 | 17.6 |
 | GB | 21 | 4 | 19.0 |
 | IND | 20 | 4 | 20.0 |
+
+## Tackles for loss, 2026 week 1 (every credited defender)
+
+| player | team | position | tfl | yards_lost | shared |
+|---|---|---|---|---|---|
+| P.Wilson | PIT | LB | 2 | 8 | 0 |
+| Z.Sieler | MIA | DL | 2 | 7 | 0 |
+| A.Wingard | ARI | DB | 2 | 7 | 0 |
+| B.Cashman | MIN | LB | 2 | 4 | 0 |
+| T.Simpson | BAL | LB | 2 | 4 | 0 |
+| J.Love | SEA | DB | 2 | 3 | 0 |
+| T.Jones | BAL | DL | 2 | 3 | 0 |
+| N.Bosa | SF | DL | 2 | 2 | 0 |
+| J.Brents | MIA | DB | 1 | 8 | 0 |
+| J.Davis | CIN | DB | 1 | 4 | 0 |
+| Y.Diaby | TB | LB | 1 | 4 | 0 |
+| B.Murphy | SEA | DL | 1 | 4 | 0 |
+| E.Cooper | GB | LB | 1 | 4 | 0 |
+| M.Graham | CLE | DL | 1 | 4 | 0 |
+| Z.Smith | ATL | LB | 1 | 3 | 0 |
+| U.Nwosu | SEA | LB | 1 | 3 | 0 |
+| J.Reid | NO | DB | 1 | 3 | 0 |
+| M.Herring | MIA | DL | 1 | 3 | 0 |
+| P.Werner | NO | LB | 1 | 3 | 0 |
+| M.Brown | JAX | DB | 1 | 3 | 0 |
+| S.Styles | WAS | LB | 1 | 3 | 0 |
+| G.Jacas | NE | LB | 1 | 3 | 0 |
+| E.Oliver | BUF | DL | 1 | 2 | 0 |
+| J.Kinlaw | WAS | DL | 1 | 2 | 0 |
+| T.Gipson | CAR | LB | 1 | 2 | 0 |
+| K.Paye | LV | DL | 1 | 2 | 0 |
+| D.Deablo | ATL | LB | 1 | 2 | 0 |
+| D.Tillman | DEN | LB | 1 | 2 | 0 |
+| D.Williams | BUF | LB | 1 | 2 | 0 |
+| I.Pace | MIN | LB | 1 | 2 | 0 |
+| K.Lassiter | HOU | DB | 1 | 2 | 0 |
+| D.Carter | BUF | DL | 1 | 2 | 0 |
+| K.Mack | LAC | LB | 1 | 1 | 0 |
+| T.Watt | PIT | LB | 1 | 1 | 0 |
+| J.Sweat | ARI | LB | 1 | 1 | 0 |
+| K.Nixon | GB | DB | 1 | 1 | 0 |
+| A.Al-Shaair | HOU | LB | 1 | 1 | 0 |
+| A.Hooker | TEN | DB | 1 | 1 | 0 |
+| B.Okereke | CAR | LB | 1 | 1 | 0 |
+| O.Oweh | WAS | LB | 1 | 1 | 0 |
+| T.Booker | LV | DL | 1 | 1 | 0 |
+| Z.McCollum | TB | DB | 1 | 1 | 0 |
+| N.Dean | LV | LB | 1 | 1 | 0 |
+| V.Miller | JAX | LB | 1 | 1 | 0 |
+| J.Campbell | DET | LB | 1 | 1 | 0 |
+| J.Verse | CLE | DL | 1 | 1 | 0 |
+| M.Sainristil | WAS | DB | 1 | 1 | 0 |
+| T.Ingram-Dawkins | MIN | DL | 1 | 1 | 0 |
+| J.Marshall | MIA | DB | 1 | 1 | 0 |
+| C.Schwesinger | CLE | LB | 1 | 1 | 0 |
+| J.Sanker | NO | DB | 1 | 1 | 0 |
+| R.Mills | SEA | DL | 1 | 1 | 0 |
+| D.Ezeiruaku | DAL | LB | 1 | 1 | 0 |
+| J.Trotter | TB | LB | 1 | 1 | 0 |
+| C.Johnson | MIA | DB | 1 | 1 | 0 |
 
 ## First-down rate per carry, 2026 week 1 (RB/FB, >= 5 carries)
 

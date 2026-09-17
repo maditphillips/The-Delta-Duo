@@ -1,12 +1,13 @@
 """Week 1 team and player splits from nflverse play-by-play.
 
-Five tables, printed as markdown and written to tables/ as CSV:
+Six tables, printed as markdown and written to tables/ as CSV:
   1. team_shotgun        - shotgun rate by half, neutral script and overall,
                            with the week's score and result
   2. team_tfl_defense    - tackles for loss forced, per opponent carry
   3. team_tfl_offense    - tackles for loss allowed, per carry
-  4. rush_first_downs    - first-down rate per carry, RB/FB, >= 5 carries
-  5. target_first_downs  - first-down rate per target, RB/WR, >= 5 targets
+  4. tfl_players         - every defender credited with a tackle for loss
+  5. rush_first_downs    - first-down rate per carry, RB/FB, >= 5 carries
+  6. target_first_downs  - first-down rate per target, RB/WR, >= 5 targets
 
 Downloads play_by_play_<season>.parquet and the weekly roster (for positions)
 into NFLVERSE_TMP and reuses them on later runs.
@@ -136,6 +137,30 @@ def main(season=2026, week=1):
     emit("team_tfl_offense", f"Tackle-for-loss rate allowed, {tag} (offence)",
          o.sort_values("tfl_rate_allowed").reset_index()
           .astype({"tfl_allowed": int}).rename(columns={"posteam": "team"}))
+
+    # Two players can share a TFL, so both credited slots are stacked and each
+    # gets full credit for the play; the shared ones are flagged in a column.
+    tfl_plays = pbp[pbp.tackled_for_loss == 1]
+    shared = tfl_plays.tackle_for_loss_2_player_name.notna()
+    slots = []
+    for n in (1, 2):
+        cols = {f"tackle_for_loss_{n}_player_id": "player_id",
+                f"tackle_for_loss_{n}_player_name": "player"}
+        slot = tfl_plays[list(cols) + ["defteam", "yards_gained"]].rename(columns=cols)
+        slot["shared"] = shared.values
+        slots.append(slot[slot.player.notna()])
+    credits = pd.concat(slots)
+    men = (credits.groupby(["player_id", "player", "defteam"])
+           .agg(tfl=("player", "size"), yards_lost=("yards_gained", "sum"),
+                shared=("shared", "sum"))
+           .reset_index()
+           .merge(ros, left_on="player_id", right_on="gsis_id", how="left"))
+    men["yards_lost"] = -men.yards_lost
+    emit("tfl_players", f"Tackles for loss, {tag} (every credited defender)",
+         men.sort_values(["tfl", "yards_lost"], ascending=False)
+            .astype({"yards_lost": int, "shared": int})
+            [["player", "defteam", "position", "tfl", "yards_lost", "shared"]]
+            .rename(columns={"defteam": "team"}))
 
     # first_down_rush / first_down_pass are 1 when the play moved the chains or
     # scored; first downs handed over by penalty on the play are not counted.
