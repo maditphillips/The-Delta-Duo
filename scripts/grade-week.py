@@ -69,6 +69,12 @@ STARTERS = {"qb": 12, "rb": 24, "wr": 24, "te": 12}
 # The startable scope: roughly one starter per team at quarterback and tight
 # end, three deep at the positions a lineup starts two or three of.
 TOPN = {"qb": 16, "rb": 36, "wr": 36, "te": 24}
+# Overridable, because the depth that matters is a question about leagues
+# rather than about the model: TOPN=qb:12,rb:12,wr:24,te:12 grades the range a
+# twelve-team league actually starts.
+if os.environ.get("TOPN"):
+    TOPN = {k: int(v) for k, v in
+            (pair.split(":") for pair in os.environ["TOPN"].split(","))}
 VOICES = [("Wilson", "rank_data"), ("MC", "rank_vibes"),
           ("preseason consensus", "cons"), ("weekly consensus", "wcons")]
 # The mirror carries PPR pages only, and one quarterback page at four points a
