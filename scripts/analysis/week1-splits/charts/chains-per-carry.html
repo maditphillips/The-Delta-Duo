@@ -1,4 +1,4 @@
-<title>Chains Per Carry</title>
+<title>First Downs Per Carry Rate</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=Righteous&display=swap">
@@ -194,12 +194,10 @@
   }
 
   .annotation {
-    font-family: var(--font-hand);
-    color: var(--chalk-blue);
-    font-size: 1.05rem;
-    line-height: 1.2;
+    color: var(--ink-dim);
+    font-size: 0.8rem;
+    line-height: 1.45;
     margin: 14px 0 0;
-    padding-left: 2px;
   }
 
   /* ————— tooltip ————— */
@@ -271,7 +269,7 @@
 <div class="wrap">
   <main class="board">
     <p class="kicker">Week 1 · 2026 · Rushing</p>
-    <h1>Chains Per Carry</h1>
+    <h1>First Downs Per Carry Rate</h1>
     <p class="standfirst">
       Share of carries that moved the sticks or scored, for the fifteen best backs of week 1.
       Running backs with <b>five or more carries</b>; a carry counts when nflverse charges it
@@ -338,6 +336,11 @@
     { name: "J.Warren", team: "PIT", carries: 10, fd: 3, rate: 30.0, yards: 46 },
     { name: "B.Allen", team: "NYJ", carries: 10, fd: 3, rate: 30.0, yards: 40 }
   ];
+  const TEAM_INK = {
+    ATL: "#e35760", BAL: "#777dda", DET: "#2e8fd0", HOU: "#e35760", IND: "#5c88c3",
+    KC: "#f5414d", LAC: "#228bd8", LV: "#a5acaf", NYG: "#6385d1", NYJ: "#5c927c",
+    PIT: "#ffb612", SEA: "#6589b3", TB: "#e35760", WAS: "#c0716a"
+  };
   const MAX = 50;                 // axis top, %
   const LEAGUE = 24.7;            // every qualifying back pooled: 165 of 668 carries
   const pos = v => (v / MAX) * 100;
@@ -376,6 +379,7 @@
     const name = document.createElement("div");
     name.className = "name";
     name.textContent = b.name;
+    name.style.color = TEAM_INK[b.team] || "var(--ink)";
     const meta = document.createElement("div");
     meta.className = "meta";
     meta.textContent = b.team + " · " + b.carries + " car";
@@ -412,7 +416,7 @@
   });
 
   document.getElementById("annotation").textContent =
-    "the blue line is the league's backs pooled — " + LEAGUE + "% of 668 carries";
+    "The blue line is the week 1 running back average 1st down rate: " + LEAGUE + "% over 668 carries.";
 
   // tooltip: value leads, name follows
   const tip = document.getElementById("tip");
