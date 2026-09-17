@@ -16,6 +16,8 @@ week 2 onward is written by `dd.cli week` into model/outputs/<season>/week-NN.
 from __future__ import annotations
 
 import argparse
+import os
+import sys
 import csv
 import math
 from pathlib import Path
@@ -122,6 +124,61 @@ def no_history_clause(r, pos: str) -> str:
     return f"No meaningful usage last season, ranked off a {slot} slot"
 
 
+# This season's defence, ranked over the weeks strictly before this one. The
+# model does not read any of this: the opponent group was dropped in ablation
+# because a defence measured last year says almost nothing about one week this
+# year, and the matchup layer built on this season's measure scored identically
+# when every player was joined to a defence chosen at random. So the clause is
+# context for a reader, not a driver of the number beside it.
+#
+# Last season and this are both quoted because neither is worth trusting alone.
+# Week 1 agreed with last season at rho 0.002 against the pass and 0.106
+# against the run, which is to say not at all: Houston were 6th against the
+# pass last year and 27th in week 1, Denver 5th against the run and 32nd. One
+# of those is a small sample and the other is a stale one, and a reader who
+# sees both knows exactly what he is looking at.
+DEF_TO_DATE = {}
+
+
+def defense_to_date() -> dict:
+    """Rank the 32 defences on what they have given up this season so far."""
+    sys.path.insert(0, os.environ.get("DD_MODEL", "model"))
+    try:
+        from dd import defense
+    except Exception as exc:
+        print(f"  ! no in-season defence ({exc}); last season only")
+        return {}
+    d = defense.build()
+    d = d[(d.season == SEASON) & (d.week < WEEK)]
+    if d.empty:
+        return {}
+    g = d.groupby("team").agg(pass_epa=("def_epa_pass", "mean"),
+                              rush_epa=("def_epa_rush", "mean"),
+                              games=("week", "nunique"))
+    g["rk_pass"] = g.pass_epa.rank(method="first")
+    g["rk_rush"] = g.rush_epa.rank(method="first")
+    print(f"  in-season defence: {len(g)} teams over {int(g.games.max())} week(s)")
+    return {t: (int(x.rk_pass), int(x.rk_rush), int(x.games))
+            for t, x in g.iterrows()}
+
+
+def rank_words(rk: float, unit: str, when: str) -> str:
+    """The same ladder for either season, so the two halves read alike."""
+    if rk is None:
+        return ""
+    if rk == 32:
+        return f"the worst {unit} in the league by EPA {when}"
+    if rk >= 21:
+        return f"{ordinal(33 - int(rk))}-worst {unit} by EPA {when}"
+    if rk == 1:
+        return f"the best {unit} in the league by EPA {when}"
+    if rk <= 5:
+        return f"a top-{int(rk)} {unit} by EPA {when}"
+    if rk <= 12:
+        return f"the {ordinal(int(rk))}-best {unit} by EPA {when}"
+    return f"a mid-pack {unit} {when}"
+
+
 def matchup_phrase(r, pos: str) -> str:
     """Vegas' view of the offence, then the defence it runs into. Leads with
     whichever is the sharper fact -- a league-extreme total, or an extreme
@@ -142,24 +199,22 @@ def matchup_phrase(r, pos: str) -> str:
     else:
         total = f"{itt:.1f}-point implied total"
 
-    if drk is None:
-        defense = ""
-    elif drk == 32:
-        defense = f"the worst {unit} in the league by EPA last year"
-    elif drk >= 21:
-        defense = f"{ordinal(33 - drk)}-worst {unit} by EPA last year"
-    elif drk == 1:
-        defense = f"the best {unit} in the league by EPA last year"
-    elif drk <= 5:
-        defense = f"a top-{int(drk)} {unit} by EPA last year"
-    elif drk <= 12:
-        defense = f"the {ordinal(drk)}-best {unit} by EPA last year"
-    else:
-        defense = f"a mid-pack {unit} last year"
+    defense = rank_words(drk, unit, "last year")
 
-    if total and defense:
-        return f"{total} against {defense}."
-    return f"{total or upper_first(defense)}."
+    # What that same defence has given up this season. One plain ranking, with
+    # the sample it rests on stated, so a reader can weigh one game himself.
+    now = DEF_TO_DATE.get(r.get("opponent"))
+    since = ""
+    if now:
+        rk_now = now[0] if side == "pass" else now[1]
+        games = now[2]
+        span = ("in week 1" if games == 1 and WEEK == 2
+                else f"through {games} game{'s' * (games != 1)}")
+        since = f" They rank {ordinal(rk_now)} of 32 against the {side} {span}."
+
+    head = (f"{total} against {defense}." if total and defense
+            else f"{total or upper_first(defense)}.")
+    return head + since
 
 
 # The volume a note quotes has two possible sources and they are not the same
@@ -628,6 +683,8 @@ def mc_override(df: pd.DataFrame, pos: str, variant: str) -> pd.DataFrame:
 def main() -> None:
     global INJURIES
     OUT.mkdir(parents=True, exist_ok=True)
+    global DEF_TO_DATE
+    DEF_TO_DATE = defense_to_date()
     INJURIES = sleeper_status()
     hard = INJURIES[INJURIES.status.isin(NOT_PLAYING)]
     soft = INJURIES[~INJURIES.status.isin(NOT_PLAYING)]
