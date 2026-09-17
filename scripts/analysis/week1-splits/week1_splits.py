@@ -1,7 +1,7 @@
 """Week 1 team and player splits from nflverse play-by-play.
 
 Five tables, printed as markdown and written to tables/ as CSV:
-  1. team_shotgun        - shotgun rate, share of scrimmage snaps (offence)
+  1. team_shotgun        - shotgun rate (offence), with the week's score and result
   2. team_tfl_defense    - tackles for loss forced, per opponent carry
   3. team_tfl_offense    - tackles for loss allowed, per carry
   4. rush_first_downs    - first-down rate per carry, RB/FB, >= 5 carries
@@ -53,6 +53,21 @@ def load(season, week):
     return pbp, ros
 
 
+def results(pbp):
+    """One row per team: final score, opponent, and W/L/T for the week."""
+    games = (pbp.groupby("game_id")
+             .agg(home_team=("home_team", "first"), away_team=("away_team", "first"),
+                  home_score=("home_score", "first"), away_score=("away_score", "first"))
+             .reset_index())
+    rows = []
+    for g in games.itertuples(index=False):
+        for team, opp, pf, pa in ((g.home_team, g.away_team, g.home_score, g.away_score),
+                                  (g.away_team, g.home_team, g.away_score, g.home_score)):
+            rows.append({"team": team, "opponent": opp, "points": pf, "points_allowed": pa,
+                         "result": "W" if pf > pa else "L" if pf < pa else "T"})
+    return pd.DataFrame(rows)
+
+
 def emit(name, title, df):
     """Print df as markdown under a heading and save it to tables/<name>.csv."""
     os.makedirs(TABLES, exist_ok=True)
@@ -79,10 +94,13 @@ def main(season=2026, week=1):
     sg = (snaps.groupby("posteam")
           .agg(snaps=("shotgun", "size"), shotgun=("shotgun", "sum")))
     sg["shotgun_rate"] = pct(sg.shotgun / sg.snaps)
+    sg = (sg.reset_index().rename(columns={"posteam": "team"})
+            .merge(results(pbp), on="team", how="left"))
     emit("team_shotgun", f"Shotgun rate, {tag} (offence)",
-         sg.sort_values("shotgun_rate", ascending=False).reset_index()
-           .astype({"shotgun": int})
-           .rename(columns={"posteam": "team"}))
+         sg.sort_values("shotgun_rate", ascending=False)
+           .astype({"shotgun": int, "points": int, "points_allowed": int})
+           [["team", "snaps", "shotgun", "shotgun_rate", "points",
+             "points_allowed", "result", "opponent"]])
 
     # nflverse only charges tackled_for_loss on runs - sacks are their own
     # column - so the honest denominator is opponent carries, kneels aside.

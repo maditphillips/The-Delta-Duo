@@ -8,6 +8,12 @@ Defaults to 2026 week 1:
 
 Definitions, because each one has a judgement call in it:
 
+- **Score and result** come from the game's final, not from the state during
+  the snaps, so the shotgun column and the win column are not independent:
+  a team that trails throws from shotgun, and a team that leads runs. In week
+  1 the eight highest shotgun rates all lost and the eight lowest all won
+  (r = -0.63 against point margin). Read that table as game script, not as
+  scheme preference.
 - **Scrimmage snap** - any play flagged `pass` or `rush`, two-point tries
   excluded. Penalty-wiped plays stay in: the offence still lined up, and
   `shotgun` is recorded for them.
@@ -26,40 +32,40 @@ Week 1 is 16 games, so every rate below rests on 50-90 snaps, 5-39 carries or
 
 ## Shotgun rate, 2026 week 1 (offence)
 
-| team | snaps | shotgun | shotgun_rate |
-|---|---|---|---|
-| TEN | 50 | 43 | 86.0 |
-| MIA | 55 | 43 | 78.2 |
-| DEN | 50 | 39 | 78.0 |
-| DAL | 58 | 45 | 77.6 |
-| LAC | 55 | 42 | 76.4 |
-| NO | 88 | 64 | 72.7 |
-| WAS | 69 | 50 | 72.5 |
-| HOU | 79 | 56 | 70.9 |
-| CIN | 63 | 44 | 69.8 |
-| CLE | 51 | 35 | 68.6 |
-| CAR | 68 | 45 | 66.2 |
-| PHI | 53 | 35 | 66.0 |
-| IND | 54 | 35 | 64.8 |
-| ATL | 60 | 38 | 63.3 |
-| GB | 68 | 41 | 60.3 |
-| KC | 66 | 39 | 59.1 |
-| PIT | 65 | 38 | 58.5 |
-| ARI | 72 | 40 | 55.6 |
-| NE | 71 | 39 | 54.9 |
-| SEA | 49 | 25 | 51.0 |
-| BUF | 55 | 28 | 50.9 |
-| TB | 56 | 28 | 50.0 |
-| LA | 60 | 30 | 50.0 |
-| NYG | 66 | 33 | 50.0 |
-| CHI | 75 | 37 | 49.3 |
-| MIN | 61 | 30 | 49.2 |
-| NYJ | 64 | 30 | 46.9 |
-| BAL | 64 | 29 | 45.3 |
-| SF | 65 | 28 | 43.1 |
-| JAX | 54 | 22 | 40.7 |
-| LV | 65 | 24 | 36.9 |
-| DET | 77 | 26 | 33.8 |
+| team | snaps | shotgun | shotgun_rate | points | points_allowed | result | opponent |
+|---|---|---|---|---|---|---|---|
+| TEN | 50 | 43 | 86.0 | 10 | 23 | L | NYJ |
+| MIA | 55 | 43 | 78.2 | 13 | 27 | L | LV |
+| DEN | 50 | 39 | 78.0 | 10 | 31 | L | KC |
+| DAL | 58 | 45 | 77.6 | 20 | 28 | L | NYG |
+| LAC | 55 | 42 | 76.4 | 14 | 26 | L | ARI |
+| NO | 88 | 64 | 72.7 | 30 | 31 | L | DET |
+| WAS | 69 | 50 | 72.5 | 22 | 24 | L | PHI |
+| HOU | 79 | 56 | 70.9 | 31 | 36 | L | BUF |
+| CIN | 63 | 44 | 69.8 | 33 | 27 | W | TB |
+| CLE | 51 | 35 | 68.6 | 10 | 34 | L | JAX |
+| CAR | 68 | 45 | 66.2 | 37 | 59 | L | CHI |
+| PHI | 53 | 35 | 66.0 | 24 | 22 | W | WAS |
+| IND | 54 | 35 | 64.8 | 23 | 41 | L | BAL |
+| ATL | 60 | 38 | 63.3 | 13 | 20 | L | PIT |
+| GB | 68 | 41 | 60.3 | 22 | 39 | L | MIN |
+| KC | 66 | 39 | 59.1 | 31 | 10 | W | DEN |
+| PIT | 65 | 38 | 58.5 | 20 | 13 | W | ATL |
+| ARI | 72 | 40 | 55.6 | 26 | 14 | W | LAC |
+| NE | 71 | 39 | 54.9 | 10 | 13 | L | SEA |
+| SEA | 49 | 25 | 51.0 | 13 | 10 | W | NE |
+| BUF | 55 | 28 | 50.9 | 36 | 31 | W | HOU |
+| TB | 56 | 28 | 50.0 | 27 | 33 | L | CIN |
+| LA | 60 | 30 | 50.0 | 7 | 27 | L | SF |
+| NYG | 66 | 33 | 50.0 | 28 | 20 | W | DAL |
+| CHI | 75 | 37 | 49.3 | 59 | 37 | W | CAR |
+| MIN | 61 | 30 | 49.2 | 39 | 22 | W | GB |
+| NYJ | 64 | 30 | 46.9 | 23 | 10 | W | TEN |
+| BAL | 64 | 29 | 45.3 | 41 | 23 | W | IND |
+| SF | 65 | 28 | 43.1 | 27 | 7 | W | LA |
+| JAX | 54 | 22 | 40.7 | 34 | 10 | W | CLE |
+| LV | 65 | 24 | 36.9 | 27 | 13 | W | MIA |
+| DET | 77 | 26 | 33.8 | 31 | 30 | W | NO |
 
 ## Tackle-for-loss rate, 2026 week 1 (defence)
 
