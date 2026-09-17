@@ -23,6 +23,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import sys
 from pathlib import Path
 
 ap = argparse.ArgumentParser(description=__doc__)
@@ -45,7 +47,97 @@ POSITIONS = {"QB": ["qb-4pt.csv", "qb-6pt.csv"], "RB": ["rb-ppr.csv", "rb-half.c
              "WR": ["wr-ppr.csv", "wr-half.csv"], "TE": ["te-ppr.csv", "te-half.csv"]}
 
 
+def week_one() -> dict:
+    """What each player did in the week before this one, and who he did it to.
+
+    Two facts sit behind every card: the line he actually put up, and whether
+    the defence he put it up against was any good. A quiet week against the
+    best unit in the league and a quiet week against the worst are not the same
+    evidence, and MC should be able to see which he is looking at without
+    opening another tab.
+
+    Needs the model on the path (DD_MODEL). Without it the cards simply carry
+    the week 2 matchup, as before.
+    """
+    prev = WEEK - 1
+    if prev < 1:
+        return {}
+    sys.path.insert(0, os.environ.get("DD_MODEL", "model"))
+    try:
+        from dd import defense, inseason
+        from dd.scoring import fantasy_points
+    except Exception as exc:
+        print(f"  ! no week {prev} detail ({exc}); matchup only")
+        return {}
+    import pandas as pd
+
+    w = inseason.build()
+    w = w[(w.season == SEASON) & (w.week == prev)].copy()
+    if w.empty:
+        return {}
+    w["pts"] = fantasy_points(w, "ppr")
+
+    d = defense.build()
+    d = d[(d.season == SEASON) & (d.week == prev)].copy()
+    d["rk_pass"] = d.def_epa_pass.rank(method="first")
+    d["rk_rush"] = d.def_epa_rush.rank(method="first")
+    rk = {x.team: (int(x.rk_pass), int(x.rk_rush)) for _, x in d.iterrows()}
+
+    # The tool is seeded from the published lists, which carry no player id, so
+    # the model's own pool supplies the bridge from name to id.
+    ident = {}
+    model = Path(os.environ.get("DD_MODEL", "model")) / "outputs" / str(SEASON) \
+        / f"week-{WEEK:02d}"
+    for f in model.glob("*_pool.csv"):
+        for r in csv.DictReader(f.open()):
+            ident.setdefault(r["player_name"], r["player_id"])
+
+    out = {}
+    for _, x in w.iterrows():
+        pos = x.position
+        n = lambda c: float(x.get(c) or 0)
+        if pos == "QB":
+            # Rushing touchdowns and interceptions both belong here. Without
+            # them Lamar Jackson read "324 yards, 1 TD, 7 carries for 40" next
+            # to 27.0 points, and the two do not reconcile.
+            line = f"{n('passing_yards'):.0f} pass yds, {n('passing_tds'):.0f} TD"
+            if n("passing_interceptions"):
+                line += f", {n('passing_interceptions'):.0f} INT"
+            line += f", {n('carries'):.0f} car for {n('rushing_yards'):.0f}"
+            if n("rushing_tds"):
+                line += f" and {n('rushing_tds'):.0f} TD"
+        elif pos == "RB":
+            line = (f"{n('carries'):.0f} car, {n('rushing_yards'):.0f} yds"
+                    f", {n('receptions'):.0f} rec on {n('targets'):.0f} tgt")
+            tds = n("rushing_tds") + n("receiving_tds")
+            if tds:
+                line += f", {tds:.0f} TD"
+        else:
+            line = (f"{n('receptions'):.0f} rec on {n('targets'):.0f} tgt"
+                    f", {n('receiving_yards'):.0f} yds")
+            if n("receiving_tds"):
+                line += f", {n('receiving_tds'):.0f} TD"
+        opp = x.opponent_team
+        side, which = ("rush", 1) if pos == "RB" else ("pass", 0)
+        dr = rk.get(opp)
+        against = (f"{opp} ranked {ordinal(dr[which])} of 32 against the {side}"
+                   f" in week {prev}") if dr else ""
+        out[x.player_id] = {
+            "pts": round(float(x.pts), 1), "line": line,
+            "opp": opp, "against": against,
+        }
+    print(f"  week {prev} detail attached for {len(out)} players")
+    return {name: out[pid] for name, pid in ident.items() if pid in out}
+
+
+def ordinal(k: int) -> str:
+    if 10 <= k % 100 <= 20:
+        return f"{k}th"
+    return f"{k}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(k % 10, 'th') }"
+
+
 def load() -> dict:
+    last = week_one()
     board = {}
     for pos, fnames in POSITIONS.items():
         seen, rows = set(), []
@@ -62,6 +154,7 @@ def load() -> dict:
             "home": int(r["is_home"] or 0),
             "consensus": int(r["rank_vibes"]),
             "note": r["note_vibes"] or "",
+            "last": last.get(r["player"]),
         } for r in rows]
     return board
 
@@ -83,6 +176,12 @@ HTML = """<!doctype html>
   header { padding:20px 20px 0; max-width:900px; margin:0 auto; }
   h1 { margin:0 0 4px; font-size:22px; letter-spacing:.02em; }
   .sub { color:var(--dim); font-size:13px; margin:0 0 16px; }
+  /* Last week sits under the row rather than in it, so the drag target and the
+     column widths are exactly what they were. */
+  .last { padding:0 10px 8px 46px; color:var(--dim); font-size:12.5px;
+          line-height:1.5; }
+  .last b { color:var(--ink); font-weight:600; }
+  .last .vs { display:block; color:var(--faint); }
   main { max-width:900px; margin:0 auto; padding:0 20px 80px; }
   .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center;
          padding:12px 0; position:sticky; top:0; background:var(--bg); z-index:5;
@@ -244,10 +343,17 @@ function render() {
           '" placeholder="' + rank + '">' +
         '<button class="notebtn' + (r.note.trim() ? " has" : "") + '">note</button>' +
       '</div>' +
+      (r.last ? '<div class="last"></div>' : "") +
       '<div class="note"><textarea placeholder="Why MC has him here"></textarea></div>';
     li.querySelector(".name").textContent = r.player;
     li.querySelector(".match").textContent =
       r.team + (r.opp ? (r.home ? " vs " : " @ ") + r.opp : "");
+    if (r.last) {
+      const L = li.querySelector(".last");
+      L.innerHTML = '<b>Wk ' + (WEEK - 1) + '</b> ' + r.last.pts + ' pts &middot; ' +
+        r.last.line + ' vs ' + r.last.opp +
+        (r.last.against ? '<span class="vs">' + r.last.against + '</span>' : "");
+    }
     const ta = li.querySelector("textarea");
     ta.value = r.note;
     ta.oninput = () => { r.note = ta.value; save(); };
