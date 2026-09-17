@@ -412,12 +412,19 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
     latest = prior.groupby("player_id")[raw].mean()
     latest.columns = [f"sd_{c}" for c in latest.columns]
     latest["sd_games"] = prior.groupby("player_id").week.count()
-    tm = prior.groupby("team").agg(
-        sd_team_plays=("team_plays", "mean"),
-        sd_team_pass_rate=("team_pass_rate", "mean")) \
-        if "team_plays" in prior.columns else \
-        prior.groupby("team")[["sd_team_plays", "sd_team_pass_rate"]].last()
-    tm["sd_team_games"] = prior.groupby("team").week.nunique()
+    # The offence around him, rebuilt at the boundary for the same reason the
+    # player's own role is. The panel carries sd_team_plays as the state BEFORE
+    # each week, so lifting it off the week-1 row returns nothing, and every
+    # team fell back to last season: b_team_plays and b_team_pass_rate were
+    # null on all 920 rows and carried no in-season information at all.
+    # Rebuilt from the per-week team totals, which the panel does carry.
+    tmw = prior.groupby(["team", "week"], as_index=False).agg(
+        pass_att=("tm_pass_att", "max"), rush_att=("tm_carries", "max"))
+    tmw["plays"] = tmw.pass_att + tmw.rush_att
+    tmw["pass_rate"] = tmw.pass_att / tmw.plays.replace(0, np.nan)
+    tm = tmw.groupby("team", as_index=False).agg(
+        sd_team_plays=("plays", "mean"), sd_team_pass_rate=("pass_rate", "mean"),
+        sd_team_games=("week", "nunique")).set_index("team")
     rows = rows.merge(latest.reset_index(), on="player_id", how="left")
     return rows.merge(tm.reset_index(), on="team", how="left")
 
