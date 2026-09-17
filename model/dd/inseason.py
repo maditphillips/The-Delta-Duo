@@ -60,7 +60,12 @@ def _weekly(seasons) -> pd.DataFrame:
             "opponent_team", "targets", "receptions", "receiving_yards",
             "receiving_tds", "carries", "rushing_yards", "rushing_tds",
             "attempts", "completions", "passing_yards", "passing_tds",
-            "interceptions"]
+            # nflverse calls it passing_interceptions. Asking for
+            # "interceptions" matched nothing and the keep filter dropped it
+            # silently, so the panel carried no interceptions at all. The model
+            # never read them, but anything scoring a quarterback off this
+            # frame was handing him back two points a pick.
+            "passing_interceptions"]
     s = s[[c for c in keep if c in s.columns]].copy()
     for c in s.columns:
         if c not in ("player_id", "player_name", "position", "team",
