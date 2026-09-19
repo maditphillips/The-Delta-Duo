@@ -61,6 +61,46 @@ def players():
     return p
 
 
+def weekly():
+    """stats_player_week: receiving, target share, fantasy points, by game."""
+    out = os.path.join(HERE, "weekly.parquet")
+    if os.path.exists(out):
+        return pd.read_parquet(out)
+    frames = []
+    for yr in range(START, END + 1):
+        w = pd.read_parquet(f"{REL}/stats_player/stats_player_week_{yr}.parquet")
+        keep = [c for c in [
+            "player_id", "player_display_name", "position", "season", "week",
+            "season_type", "game_id", "team", "opponent_team",
+            "carries", "rushing_yards", "rushing_tds", "rushing_epa",
+            "receptions", "targets", "receiving_yards", "receiving_tds",
+            "receiving_air_yards", "receiving_yards_after_catch",
+            "receiving_first_downs", "receiving_epa", "target_share",
+            "air_yards_share", "wopr", "fantasy_points", "fantasy_points_ppr",
+        ] if c in w.columns]
+        frames.append(w[keep])
+    w = pd.concat(frames, ignore_index=True)
+    w.to_parquet(out, index=False)
+    print(f"weekly.parquet  {len(w):>6} player-weeks")
+    return w
+
+
+def snaps():
+    """Snap counts: the share of his offence he was actually on the field for."""
+    out = os.path.join(HERE, "snaps.parquet")
+    if os.path.exists(out):
+        return pd.read_parquet(out)
+    frames = []
+    for yr in range(START, END + 1):
+        s = pd.read_parquet(f"{REL}/snap_counts/snap_counts_{yr}.parquet")
+        frames.append(s[["game_id", "season", "week", "game_type", "player",
+                         "position", "team", "offense_snaps", "offense_pct"]])
+    s = pd.concat(frames, ignore_index=True)
+    s.to_parquet(out, index=False)
+    print(f"snaps.parquet  {len(s):>6} player-games")
+    return s
+
+
 def ngs():
     out = os.path.join(HERE, "ngs_rushing.parquet")
     if os.path.exists(out):
@@ -98,4 +138,4 @@ def pbp():
 
 
 if __name__ == "__main__":
-    games(); players(); ngs(); pbp()
+    games(); players(); weekly(); snaps(); ngs(); pbp()
