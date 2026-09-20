@@ -22,6 +22,8 @@ it, and the gap between our board and the market is the entire point.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -434,6 +436,32 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
     return rows.merge(tm.reset_index(), on="team", how="left")
 
 
+# Men who missed last week and are back this one.
+#
+# The hurdle multiplies E[points if he plays] by P(he plays), and the
+# classifier has learned that a blank in-season row means he does not play.
+# It is nearly perfect about it: every back who missed week 1 came out between
+# 0.0000 and 0.0008, against a mean of 0.82 for everyone who played. That is
+# right for a man still injured and badly wrong for one who is back, and the
+# model has no way to tell them apart because the injury feed it would need is
+# empty this season. TreVeyon Henderson was worth 10.66 points if he played
+# and shipped at 0.007.
+#
+# Naming a player here asserts that he plays, and the published row becomes
+# his conditional one: the projection, the tails and the top-12 odds all stop
+# being multiplied by a probability we know to be wrong.
+RETURNING = Path(__file__).resolve().parent.parent / "data" / "returning.csv"
+
+
+def returning(season: int, week: int, position: str) -> set[str]:
+    if not RETURNING.exists():
+        return set()
+    r = pd.read_csv(RETURNING)
+    r = r[(r.season == season) & (r.week == week)
+          & (r.position.str.upper() == position.upper())]
+    return set(r.player)
+
+
 def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                  train_seasons=None) -> dict:
     """Wilson's board for one in-season week, one list per position and format."""
@@ -455,7 +483,19 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
             tr = tr_all[tr_all[col].notna()].copy()
             m = PositionModel(pos, scoring, features=feats)
             m.fit(tr)
-            ranked = rank_frame(te, m.predict(te), LIST_DEPTH[pos] * 3)
+            preds = m.predict(te)
+            back = returning(season, week, pos)
+            if back:
+                hit = te.player_name.isin(back).to_numpy()
+                if hit.any():
+                    preds = preds.copy()
+                    preds.loc[hit, "p_play"] = 1.0
+                    preds.loc[hit, "proj"] = preds.loc[hit, "cond_points"]
+                    for q in range(10, 100, 10):
+                        preds.loc[hit, f"q{q}"] = preds.loc[hit, f"cq{q}"]
+                    print(f"  {pos} {scoring}: assuming "
+                          + ", ".join(te.player_name[hit]) + " plays")
+            ranked = rank_frame(te, preds, LIST_DEPTH[pos] * 3)
             ranked["learner"] = m.chosen_
             out[(pos, scoring)] = ranked
     return out
