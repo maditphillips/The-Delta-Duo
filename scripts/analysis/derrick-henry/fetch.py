@@ -34,6 +34,20 @@ PBP_COLS = [
 ]
 
 
+# All offensive plays (not just runs) + who was on the field for them. The
+# down-usage study needs the denominator: snaps his offence ran, by down.
+PLAY_COLS = [
+    "game_id", "play_id", "season", "season_type", "week", "posteam", "defteam",
+    "home_team", "away_team", "play_type", "down", "ydstogo", "yardline_100",
+    "goal_to_go", "qtr", "score_differential", "shotgun", "no_huddle",
+    "rush_attempt", "pass_attempt", "qb_dropback", "qb_scramble", "sack",
+    "two_point_attempt", "penalty", "aborted_play", "epa", "success",
+    "yards_gained", "touchdown", "first_down", "special_teams_play",
+    "rusher_player_id", "receiver_player_id", "passer_player_id",
+    "complete_pass", "interception", "spread_line",
+]
+
+
 def games():
     out = os.path.join(HERE, "games.parquet")
     if os.path.exists(out):
@@ -137,5 +151,63 @@ def pbp():
     return r
 
 
+def plays():
+    """Every non-special-teams offensive play, for snap denominators by down."""
+    out = os.path.join(HERE, "plays.parquet")
+    if os.path.exists(out):
+        return pd.read_parquet(out)
+    os.makedirs(TMP, exist_ok=True)
+    frames = []
+    for yr in range(START, END + 1):
+        local = os.path.join(TMP, f"pbp_{yr}.parquet")
+        url = f"{REL}/pbp/play_by_play_{yr}.parquet"
+        if os.system(f'curl -sL -o "{local}" "{url}"') != 0:
+            sys.exit(f"download failed: {url}")
+        have = pd.read_parquet(local, columns=None).columns
+        df = pd.read_parquet(local, columns=[c for c in PLAY_COLS if c in have])
+        df = df[(df.play_type.isin(["run", "pass"]))
+                & (df.special_teams_play != 1) & (df.aborted_play != 1)]
+        frames.append(df)
+        os.remove(local)
+        print(f"  {yr}  {len(df):>6} offensive plays")
+    p = pd.concat(frames, ignore_index=True)
+    p.to_parquet(out, index=False)
+    print(f"plays.parquet  {len(p):>7} offensive plays")
+    return p
+
+
+def presence(peer_ids):
+    """Which peer RBs were on the field for each play.
+
+    offense_players is a 22-ish id list per play, so the lists are exploded and
+    immediately narrowed to the backs this study compares; keeping them whole
+    would be several GB for no gain. Participation stops after 2025.
+    """
+    out = os.path.join(HERE, "rb_presence.parquet")
+    if os.path.exists(out):
+        return pd.read_parquet(out)
+    frames = []
+    for yr in range(START, min(END, 2025) + 1):
+        url = f"{REL}/pbp_participation/pbp_participation_{yr}.parquet"
+        d = pd.read_parquet(url, columns=["nflverse_game_id", "play_id",
+                                          "possession_team", "offense_players",
+                                          "defenders_in_box", "offense_personnel"])
+        d = d[d.offense_players.notna() & (d.offense_players != "")]
+        ex = d.assign(pid=d.offense_players.str.split(";")).explode("pid")
+        ex = ex[ex.pid.isin(peer_ids)]
+        frames.append(ex[["nflverse_game_id", "play_id", "possession_team",
+                          "pid", "defenders_in_box", "offense_personnel"]]
+                      .rename(columns={"nflverse_game_id": "game_id"}))
+        print(f"  {yr}  {len(frames[-1]):>6} peer-RB snaps")
+    r = pd.concat(frames, ignore_index=True)
+    r.to_parquet(out, index=False)
+    print(f"rb_presence.parquet  {len(r):>7} peer-RB snaps 2016-2025")
+    return r
+
+
 if __name__ == "__main__":
-    games(); players(); weekly(); snaps(); ngs(); pbp()
+    games(); players(); weekly(); snaps(); ngs()
+    runs = pbp()
+    plays()
+    vol = runs[runs.season_type == "REG"].groupby("rusher_player_id").size()
+    presence(set(vol[vol >= 400].index))

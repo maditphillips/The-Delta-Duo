@@ -17,6 +17,7 @@ python3 -m venv .venv && .venv/bin/pip install pandas pyarrow
 .venv/bin/python touchdowns.py     # where the TDs come from
 .venv/bin/python age.py            # the age curve, and who else survives to 30
 .venv/bin/python receiving.py      # receiving work, snap share, scoring formats
+.venv/bin/python downs.py          # presence and usage by down (2016-2025)
 ```
 
 `fetch.py` is idempotent — it skips anything already cached. Play-by-play is
@@ -35,6 +36,7 @@ All free, all nflverse:
 | `nflverse-data` players | all | position filter and birth dates |
 | `nflverse-data` stats_player_week | 2016+ | targets, air yards, YAC, fantasy points |
 | `nflverse-data` snap_counts | 2016+ | share of offensive snaps played |
+| `nflverse-data` pbp_participation | 2016-2025 | who was on the field, per play |
 
 Verified against official records: 2020 reads 378/2,027/17 and 2024 reads
 325/1,921/16, both exact.
@@ -55,6 +57,13 @@ Verified against official records: 2020 reads 378/2,027/17 and 2024 reads
   credited with the same age as a December one.
 - **Snap counts key on player name**, not gsis id, so they are joined on
   (game_id, display name) through the weekly stats.
+- **Participation stops after 2025**, so `downs.py` excludes 2026 entirely.
+  `offense_players` is exploded and narrowed to peer backs at fetch time —
+  keeping the full 22-id lists would be gigabytes for no gain.
+- **Presence and usage are different questions.** Presence is participation
+  data (was he one of the eleven); usage is what happened once he was there.
+  A back looks like a two-down player either by sitting on third down or by
+  staying in to block, and only the first shows up in presence.
 - **RYOE starts in 2018**, not 2016. Box counts go back to 2016. Weighted means
   drop missing weeks rather than propagating NaN (`common.wavg`).
 
@@ -96,6 +105,13 @@ his PPR points come from the passing game** — 5th-lowest of 101 backs — whil
 finishes **1st in career standard and half-PPR points** and 2nd in full PPR. The
 only back above him in PPR, Christian McCaffrey, draws **54.9%** of his points
 from receiving and plays 80.2% of his offence's snaps against Henry's 53.7%.
+
+The down splits say the same thing a third way. He is on the field for **66.7%**
+of his offence's first downs and **22.7%** of its third downs, against a peer
+average near 50% on both. But on the third downs he *is* out there for, his
+offence runs **54.8%** of the time (peers 25.8%) — and he converts **67.5%** of
+those carries against a peer rate of 52.9%, at **+0.359 EPA** a carry. He is
+used least on the down he is best on.
 
 The prose writeup of the full findings is still open; see the session discussion
 for the tables this README summarises.
