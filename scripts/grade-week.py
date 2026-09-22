@@ -11,14 +11,42 @@ import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 
 SCRATCH = Path("/tmp/claude-0/-home-user-The-Delta-Duo/8c91f04b-24b4-5638-8c4d-a7fd7c62ef31/scratchpad")
-WEEK = Path("data/weekly/2026/week-01")
-OUT = Path("data/grades/2026")
-st = json.load(open(SCRATCH / "st1.json"))
+SEASON = int(os.environ.get("SEASON", 2026))
+WK = int(os.environ.get("WEEK", 1))
+WEEK = Path(f"data/weekly/{SEASON}/week-{WK:02d}")
+OUT = Path(f"data/grades/{SEASON}")
+st = json.load(open(SCRATCH / f"st{WK}.json"))
+
+
+# A man ruled out before kickoff is not a ranking mistake. He would otherwise
+# arrive as a zero and cost whoever had him highest the most, which punishes a
+# ranker for news that broke after he ranked. Sleeper records an offensive
+# snap count for everyone who dressed and nothing for everyone who did not:
+# across 202 ranked players in week 2, 196 had one and nobody without one
+# scored a point, so the blank is a reliable scratch.
+def dressed(sid) -> bool:
+    if not sid:
+        return True          # unknown is not the same as ruled out
+    s = st.get(sid) or {}
+    return bool(isinstance(s, dict) and s.get("off_snp"))
 ids = {(r["player"], r["team"]): r["sleeper_id"]
        for r in csv.DictReader(open("data/sleeper-ids.csv"))}
 by_name = {}
 for (p, t), sid in ids.items():
     by_name.setdefault(p, sid)
+# data/sleeper-ids.csv only covers men who have appeared on a published board,
+# so anyone promoted mid-week is missing from it. Unresolved used to mean no
+# snap count, which meant ruled out, which quietly dropped TreVeyon Henderson
+# from the grading in the week he came back and played. Sleeper's roster fills
+# the gaps.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    from sleeper import CACHE as SLEEPER_CACHE
+    for k, v in json.loads(SLEEPER_CACHE.read_text()).items():
+        if v.get("position") in ("QB", "RB", "WR", "TE") and v.get("full_name"):
+            by_name.setdefault(v["full_name"], k)
+except Exception as exc:
+    print(f"  ! no Sleeper roster to fill id gaps ({exc})")
 
 # Two consensus voices, because they are not the same thing and only one of
 # them is a fair opponent.
@@ -37,7 +65,9 @@ for (p, t), sid in ids.items():
 CONS, WCONS = {}, {}
 NAME = {}
 for pos, f in [("qb", "qb_qb_4pt"), ("rb", "rb_ppr"), ("wr", "wr_ppr"), ("te", "te_ppr")]:
-    src = Path(f"/tmp/notes_{f}.csv")
+    src = (Path(f"/tmp/notes_{f}.csv") if WK == 1 else
+           Path(os.environ.get("DD_MODEL", "model")) / "outputs" / str(SEASON)
+           / f"week-{WK:02d}" / f"{f}.csv")
     if not src.exists():
         continue
     for r in csv.DictReader(src.open()):
@@ -52,7 +82,7 @@ for pos, f in [("qb", "qb_qb_4pt"), ("rb", "rb_ppr"), ("wr", "wr_ppr"), ("te", "
 sys.path.insert(0, os.environ.get("DD_MODEL", "model"))
 try:
     from dd import benchmark
-    wk = benchmark.weekly_consensus(2026, 1)
+    wk = benchmark.weekly_consensus(SEASON, WK)
     for _, x in wk.iterrows():
         hit = NAME.get(x.player_id)
         if hit and hit[0] == x.position.lower():
@@ -143,6 +173,13 @@ for (pos, variant), stem in FILES.items():
     df["pts"] = [actual(s, variant) for s in df.sid]
     df["cons"] = [CONS.get((pos, p), np.nan) for p in df.player]
     df["wcons"] = [WCONS.get((pos, p), np.nan) for p in df.player]
+    gone = df[~df.sid.map(dressed)]
+    if len(gone):
+        print(f"  {pos}-{variant}: ruled out, not graded: " + ", ".join(gone.player))
+        df = df[df.sid.map(dressed)].reset_index(drop=True)
+        # Both boards close up behind them so the ranks stay contiguous.
+        for col in ("rank_data", "rank_vibes"):
+            df[col] = pd.to_numeric(df[col], errors="coerce").rank(method="first")
     for who, col in VOICES:
         if col in ("cons", "wcons") and variant != CONS_VARIANT[pos]:
             continue
@@ -187,6 +224,6 @@ for qv in QBV:
                     "pts_lost": s.pts_lost.sum()})
 g = pd.concat([g, pd.DataFrame(alls)], ignore_index=True)
 OUT.mkdir(parents=True, exist_ok=True)
-g.to_csv(OUT / "week-01.csv", index=False)
-g.to_csv(SCRATCH / "week1_grades.csv", index=False)
+g.to_csv(OUT / f"week-{WK:02d}.csv", index=False)
+g.to_csv(SCRATCH / f"week{WK}_grades.csv", index=False)
 print(f"graded {len(g)} rows")
