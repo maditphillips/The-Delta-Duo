@@ -35,6 +35,23 @@ SEASONS = range(2022, 2027)
 WEEKS = range(1, 19)
 
 
+def _settled(season: int, week: int) -> pd.Timestamp | None:
+    """When a week's documents stop changing: two days after its last game.
+
+    Projections move until kickoff and stats settle overnight after Monday, so
+    anything fetched before this is a snapshot of a week still in progress.
+    None when the schedule does not know the week, and the old rule applies.
+    """
+    path = CACHE / "schedules" / "games.parquet"
+    if not path.exists():
+        return None
+    g = pd.read_parquet(path, columns=["season", "week", "game_type", "gameday"])
+    g = g[(g.season == season) & (g.week == week) & (g.game_type == "REG")]
+    if g.empty:
+        return None
+    return pd.Timestamp(pd.to_datetime(g.gameday).max()) + pd.Timedelta(days=2)
+
+
 def _get(kind: str, season: int, week: int) -> dict:
     """One week of one endpoint, cached on disk.
 
@@ -44,11 +61,20 @@ def _get(kind: str, season: int, week: int) -> dict:
     through 18 of 2026 and the buy/sell board could never have seen another
     week without someone deleting them by hand. An empty answer is now treated
     as "not yet", and refetched next time.
+
+    The same sweep cached the week 2 through 18 PROJECTIONS, which are not
+    empty before a week is played, only early. Every 2026 week 2 call was
+    measured against what Sleeper thought of him on the Friday of week one,
+    before most of week one had been played. A file is now trusted only if it
+    was written after the week settled; anything older is refetched.
     """
     STORE.mkdir(parents=True, exist_ok=True)
     path = STORE / f"{kind}_{season}_{week:02d}.json"
     if path.exists():
-        return json.loads(path.read_text())
+        settled = _settled(season, week)
+        written = pd.Timestamp(path.stat().st_mtime, unit="s")
+        if settled is None or written >= settled:
+            return json.loads(path.read_text())
     url = f"{SLEEPER}/{kind}/nfl/regular/{season}/{week}"
     for attempt in range(4):
         try:
@@ -73,7 +99,10 @@ ACT = PROJ + ["off_snp", "tm_off_snp", "gp", "pass_int", "fum_lost"]
 
 def week_frame(season: int, week: int) -> pd.DataFrame:
     """Actuals and projections for one week, one row per player."""
-    st, pr = _get("stats", season, week), _get("projections", season, week)
+    st = _get("stats", season, week)
+    if not st:
+        return pd.DataFrame()      # not played yet; its projection is not needed
+    pr = _get("projections", season, week)
     rows = []
     for pid, s in st.items():
         if not isinstance(s, dict) or not s.get("gp"):
