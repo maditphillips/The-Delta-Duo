@@ -36,8 +36,15 @@ WEEKS = range(1, 19)
 
 
 def _get(kind: str, season: int, week: int) -> dict:
-    """One week of one endpoint, cached on disk. Their data for a finished week
-    never changes, so it is fetched once and kept."""
+    """One week of one endpoint, cached on disk.
+
+    Their data for a FINISHED week never changes, so it is fetched once and
+    kept. A week that has not happened answers with an empty document, and
+    caching that is permanent: a sweep on 11 September wrote {} for weeks 2
+    through 18 of 2026 and the buy/sell board could never have seen another
+    week without someone deleting them by hand. An empty answer is now treated
+    as "not yet", and refetched next time.
+    """
     STORE.mkdir(parents=True, exist_ok=True)
     path = STORE / f"{kind}_{season}_{week:02d}.json"
     if path.exists():
@@ -52,7 +59,8 @@ def _get(kind: str, season: int, week: int) -> dict:
             if attempt == 3:
                 raise
             time.sleep(2 ** attempt)
-    path.write_text(json.dumps(data))
+    if data:
+        path.write_text(json.dumps(data))
     return data
 
 
