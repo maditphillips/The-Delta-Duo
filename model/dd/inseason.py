@@ -462,6 +462,43 @@ def returning(season: int, week: int, position: str) -> set[str]:
     return set(r.player)
 
 
+# A player whose role this season is not the one he is about to play. The
+# blend weighs this season's games over last season's, which is right for
+# nearly everyone and wrong for a backup whose starters are hurt: Oronde
+# Gadsden played 18% of the snaps behind David Njoku and Charlie Kolar, both
+# of whom are now out, and two games in that job outweighed a 2025 in which he
+# was the starter. A row here prices him on last season's role instead, and
+# at the depth chart slot he now holds. Like returning.csv it is an explicit,
+# dated assertion rather than an edited number, and it lasts one week.
+ROLE = Path(__file__).resolve().parent.parent / "data" / "role.csv"
+
+
+def role_overrides(te: pd.DataFrame, season: int, week: int,
+                   position: str) -> pd.DataFrame:
+    if not ROLE.exists():
+        return te
+    r = pd.read_csv(ROLE)
+    r = r[(r.season == season) & (r.week == week)
+          & (r.position.str.upper() == position.upper())]
+    if r.empty:
+        return te
+    te = te.copy()
+    for _, row in r.iterrows():
+        hit = te.player_name == row.player
+        if not hit.any():
+            print(f"  role.csv: {row.player} is not in the {position} rows")
+            continue
+        if row.basis == "last_season":
+            for name, (_, prior, kind) in PAIRS.items():
+                col = f"b_{name}"
+                if kind == "role" and col in te and prior in te:
+                    val = te.loc[hit, prior]
+                    te.loc[hit & val.notna(), col] = val
+        te.loc[hit, "depth_rank"] = float(row.depth_rank)
+        print(f"  {position}: pricing {row.player} on {row.basis}, depth {int(row.depth_rank)}")
+    return te
+
+
 def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                  train_seasons=None) -> dict:
     """Wilson's board for one in-season week, one list per position and format."""
@@ -477,7 +514,8 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
     for pos in POSITIONS:
         feats = features_final(pos)
         tr_all = blend(rankable(panel, pos), K_ROLE, K_EFF)
-        te = blend(rankable(rows, pos), K_ROLE, K_EFF)
+        te = role_overrides(blend(rankable(rows, pos), K_ROLE, K_EFF),
+                            season, week, pos)
         for scoring in LISTS[pos]:
             col = f"actual_{scoring}"
             tr = tr_all[tr_all[col].notna()].copy()
