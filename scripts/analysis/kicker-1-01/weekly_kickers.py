@@ -89,6 +89,18 @@ ROSTER = ("https://github.com/nflverse/nflverse-data/releases/download/"
           f"rosters/roster_{SEASON}.parquet")
 
 
+# Venues whose stadium_id was REUSED for a different physical building. nfldata
+# keeps BUF00 for the Bills' new stadium, so 2002-2025 numbers from the old
+# ground in Orchard Park would otherwise be applied to a building that opened in
+# 2026. A venue listed here has no usable history from that season on, and falls
+# back to the league average like any other unknown ground.
+REBUILT = {"BUF00": 2026}
+
+
+def rebuilt(stadium_id, season):
+    return stadium_id in REBUILT and season >= REBUILT[stadium_id]
+
+
 def hdr(t):
     print("\n" + "=" * 100 + f"\n{t}\n" + "=" * 100)
 
@@ -265,14 +277,16 @@ def main():
 
     rows = []
     for _, m in wk.iterrows():
-        v = venues.get(m.stadium_id)
+        v = None if rebuilt(m.stadium_id, SEASON) else venues.get(m.stadium_id)
         for team, role in [(m.away_team, "visitor"), (m.home_team, "home")]:
             kname, kid = ks.get(team, (None, None))
             rec = by_id.loc[kid] if kid in by_id.index else None
             kpct = float(rec.pct) if rec is not None else np.nan
             katt = int(rec.att) if rec is not None else 0
             if v is None:
-                vpct, vsrc = np.nan, "no venue history"
+                vpct = np.nan
+                vsrc = ("new building, no history yet"
+                        if rebuilt(m.stadium_id, SEASON) else "no venue history")
             elif role == "visitor":
                 vpct, vsrc = v["visPct"] / 100.0, f"visPct {v['visPct']:.1f}"
             else:
@@ -291,8 +305,9 @@ def main():
     nov = r[r.venue_rate.isna()]
     nok = r[r.kicker_rate.isna()]
     for _, x in nov.iterrows():
-        print(f"  {x.venue_id} ({x.venue}) has no entry in stadiums.ts - "
-              f"{x.team} {x.role}")
+        why = ("is a new building with no history yet" if rebuilt(x.venue_id, SEASON)
+               else "has no entry in stadiums.ts")
+        print(f"  {x.venue_id} ({x.venue}) {why} - {x.team} {x.role}")
     print(f"    -> venue rate set to the league average, {league:.4f}")
     for _, x in nok.iterrows():
         print(f"  {x.kicker} ({x.team}) has no regular-season NFL attempts")

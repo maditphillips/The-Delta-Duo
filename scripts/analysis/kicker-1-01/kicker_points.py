@@ -91,6 +91,18 @@ PLAY_COLS = ["season", "week", "season_type", "game_id", "posteam", "play_type",
              "kicker_player_id"]
 
 
+# Venues whose stadium_id was REUSED for a different physical building. nfldata
+# keeps BUF00 for the Bills' new stadium, so 2002-2025 numbers from the old
+# ground in Orchard Park would otherwise be applied to a building that opened in
+# 2026. A venue listed here has no usable history from that season on, and falls
+# back to the league average like any other unknown ground.
+REBUILT = {"BUF00": 2026}
+
+
+def rebuilt(stadium_id, season):
+    return stadium_id in REBUILT and season >= REBUILT[stadium_id]
+
+
 def hdr(t):
     print("\n" + "=" * 100 + f"\n{t}\n" + "=" * 100)
 
@@ -211,10 +223,12 @@ def venues():
         re.search(r"export const stadiums[^=]*=\s*(\[.*?\]);", ts, re.S).group(1))}
 
 
-def venue_rate(V, stadium_id, home, league):
-    v = V.get(stadium_id)
+def venue_rate(V, stadium_id, home, league, season=None):
+    v = None if rebuilt(stadium_id, season or SEASON) else V.get(stadium_id)
     if v is None:
-        return league, "no venue history, league average"
+        why = ("new building, no history yet" if rebuilt(stadium_id, season or SEASON)
+               else "no venue history")
+        return league, f"{why}, league average"
     if home:
         return (v["visPct"] + v["gap"]) / 100.0, f"visPct {v['visPct']:.1f} + gap {v['gap']:+.1f}"
     return v["visPct"] / 100.0, f"visPct {v['visPct']:.1f}"
