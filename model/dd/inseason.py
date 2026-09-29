@@ -495,6 +495,9 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
         te.loc[hit, "depth_rank"] = float(row.depth_rank)
+        # Carried to the published lists so the note can say why he is priced
+        # the way he is, instead of "his teammate's work is not priced in".
+        te.loc[hit, "role_basis"] = row.basis
         print(f"  {position}: pricing {row.player} on {row.basis}, depth {int(row.depth_rank)}")
     return te
 
