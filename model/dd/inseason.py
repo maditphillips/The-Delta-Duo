@@ -470,14 +470,14 @@ def returning(season: int, week: int, position: str) -> set[str]:
 # was the starter. A row here prices him on last season's role instead, and
 # at the depth chart slot he now holds. Like returning.csv it is an explicit,
 # dated assertion rather than an edited number, and it lasts one week.
-ROLE = Path(__file__).resolve().parent.parent / "data" / "role.csv"
+ROLE_FILE = Path(__file__).resolve().parent.parent / "data" / "role.csv"
 
 
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
-    if not ROLE.exists():
+    if not ROLE_FILE.exists():
         return te
-    r = pd.read_csv(ROLE)
+    r = pd.read_csv(ROLE_FILE)
     r = r[(r.season == season) & (r.week == week)
           & (r.position.str.upper() == position.upper())]
     if r.empty:
