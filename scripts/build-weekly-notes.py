@@ -511,6 +511,19 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
         mates = df.team == g["team"]
         df.loc[mates, "_vacated"] += (
             f"{g['player_name']} is out; his work is not yet priced in here. ")
+    # A man the model priced on another role (model/data/role.csv) HAS had the
+    # vacated work priced in, and saying otherwise contradicts his projection.
+    # His note names everyone out at his position on his team, listed or not.
+    if "role_basis" in df:
+        for i in df.index[df.role_basis.eq("last_season")]:
+            names = sorted(out[out.team.eq(df.at[i, "team"])].player)
+            if not names:
+                continue
+            who = names[0] if len(names) == 1 else " and ".join(names)
+            verb = "is" if len(names) == 1 else "are"
+            df.at[i, "_vacated"] = (
+                f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
+                f"starter rather than on his games this season as a backup. ")
     df["rank_data"] = df["proj"].rank(ascending=False, method="first").astype(int)
     return df.sort_values("rank_data").reset_index(drop=True)
 
