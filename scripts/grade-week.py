@@ -25,8 +25,13 @@ st = json.load(open(SCRATCH / f"st{WK}.json"))
 # across 202 ranked players in week 2, 196 had one and nobody without one
 # scored a point, so the blank is a reliable scratch.
 def dressed(sid) -> bool:
-    if not sid:
-        return True          # unknown is not the same as ruled out
+    # pandas stores an unresolved id as NaN, not None, and NaN is truthy, so
+    # "if not sid" let every unmatched name through to the snap check and
+    # failed it: Oronde Gadsden played 39 snaps in week 3 and was dropped as
+    # ruled out. Anything that is not a real id is unknown, and unknown is not
+    # the same as ruled out.
+    if not isinstance(sid, str) or not sid:
+        return True
     s = st.get(sid) or {}
     return bool(isinstance(s, dict) and s.get("off_snp"))
 ids = {(r["player"], r["team"]): r["sleeper_id"]
@@ -40,11 +45,26 @@ for (p, t), sid in ids.items():
 # from the grading in the week he came back and played. Sleeper's roster fills
 # the gaps.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Suffixes are written one way on our boards and another on Sleeper's: the
+# model says "Oronde Gadsden II" and Sleeper says "Oronde Gadsden". Both sides
+# are matched with the suffix taken off.
+SUFFIXES = (" jr.", " jr", " sr.", " sr", " ii", " iii", " iv", " v")
+
+
+def bare(name: str) -> str:
+    n = name.strip().lower()
+    for suf in SUFFIXES:
+        if n.endswith(suf):
+            return n[: -len(suf)].strip()
+    return n
+
+
 try:
     from sleeper import CACHE as SLEEPER_CACHE
     for k, v in json.loads(SLEEPER_CACHE.read_text()).items():
         if v.get("position") in ("QB", "RB", "WR", "TE") and v.get("full_name"):
             by_name.setdefault(v["full_name"], k)
+            by_name.setdefault(bare(v["full_name"]), k)
 except Exception as exc:
     print(f"  ! no Sleeper roster to fill id gaps ({exc})")
 
@@ -169,7 +189,11 @@ def grade(rank, pts, k):
 rows = []
 for (pos, variant), stem in FILES.items():
     df = pd.DataFrame(list(csv.DictReader(open(WEEK / f"{stem}.csv"))))
-    df["sid"] = [ids.get((p, t)) or by_name.get(p) for p, t in zip(df.player, df.team)]
+    df["sid"] = [ids.get((p, t)) or by_name.get(p) or by_name.get(bare(p))
+                 for p, t in zip(df.player, df.team)]
+    lost = df[df.sid.isna()]
+    if len(lost):
+        print(f"  ! {pos}-{variant}: no Sleeper id, graded as unknown: " + ", ".join(lost.player))
     df["pts"] = [actual(s, variant) for s in df.sid]
     df["cons"] = [CONS.get((pos, p), np.nan) for p in df.player]
     df["wcons"] = [WCONS.get((pos, p), np.nan) for p in df.player]
@@ -208,9 +232,13 @@ alls = []
 for qv in QBV:
     for sv in SKV:
         pick = g[((g.pos == "QB") & (g.variant == qv)) | ((g.pos != "QB") & (g.variant == sv))]
-        for scope in pick.scope.unique():
+        # The startable depth differs by position (top16, top36, top24), so
+        # pooling on the scope label found no four positions sharing one and
+        # the combined startable row was silently never written.
+        pick = pick.assign(kind=np.where(pick.scope == "full", "full", "startable"))
+        for scope in pick.kind.unique():
             for who in pick.who.unique():
-                s = pick[(pick.scope == scope) & (pick.who == who)]
+                s = pick[(pick.kind == scope) & (pick.who == who)]
                 if len(s) < 4:            # a voice missing a position is not comparable
                     continue
                 n = s.n.sum()
