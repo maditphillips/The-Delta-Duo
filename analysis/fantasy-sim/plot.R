@@ -39,7 +39,7 @@ plot_pos <- function(pos) {
     share = pmax(0, as.vector(shares))
   )
 
-  pct <- function(x) ifelse(x >= 0.005, sprintf("%.0f%%", 100 * x), "<1%")
+  pct <- function(x) ifelse(x >= 0.01, sprintf("%.0f%%", 100 * x), ifelse(x > 0, "<1%", "0%"))
   # in-bar labels only on the best tier, and only when the segment is wide enough
   best <- data.frame(label = d$label, share = cum[, 1])
   best <- best[best$share >= 0.08, ]
