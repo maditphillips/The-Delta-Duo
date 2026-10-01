@@ -13,7 +13,8 @@ BINS = [(0, .1), (.1, .3), (.3, .5), (.5, .7), (.7, .9), (.9, 1.01)]
 def main():
     season = int(sys.argv[1]) if len(sys.argv) > 1 else 2025
     params = json.load(open(sys.argv[2] if len(sys.argv) > 2 else 'params_2024.json'))
-    rows = simulate(season, params, n_sims=int(sys.argv[3]) if len(sys.argv) > 3 else 5000)
+    rows = simulate(season, params, n_sims=int(sys.argv[3]) if len(sys.argv) > 3 else 5000,
+                    overrides={})  # past seasons: no hand-entered injuries
 
     # actual finish: rank of full-season PPR among every player at the position
     full = load_weeks(season)

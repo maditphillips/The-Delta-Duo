@@ -7,6 +7,9 @@ players with the closest expectation (missed games scoring zero). That one
 draw carries injury, role change, and talent miss together. Points already
 scored are kept as-is. Players are then ranked by season total within position.
 
+Known injuries go in overrides.csv: each simulated season draws a number of
+missed games between out_min and out_max (inclusive) and those games score zero.
+
     python3 sim.py [season] [params_file] [n_sims] [seed]   -> sim_<season>.csv
 """
 import bisect, csv, json, random, sys
@@ -30,12 +33,22 @@ def neighbors(pairs, x, k=NEIGHBORS):
     return [p[1] for p in pairs[lo:hi]]
 
 
-def simulate(season, params, n_sims=10000, seed=2026):
+def load_overrides(path='overrides.csv'):
+    """(player name, team) -> (out_min, out_max) games missed."""
+    try:
+        return {(r['player'], r['team']): (int(r['out_min']), int(r['out_max']))
+                for r in csv.DictReader(open(path))}
+    except FileNotFoundError:
+        return {}
+
+
+def simulate(season, params, n_sims=10000, seed=2026, overrides=None):
     cutoff = params['cutoff']
     sched = load_schedule()
     weeks = {s: load_weeks(s) for s in (season - 2, season - 1, season)}
     rows = build_rows(season, cutoff, weeks, sched)
     rng = random.Random(seed)
+    overrides = load_overrides() if overrides is None else overrides
 
     by_pos = defaultdict(list)
     for r in rows:
@@ -43,12 +56,16 @@ def simulate(season, params, n_sims=10000, seed=2026):
         r['pred'] = predict(p['coef'], r, cutoff)
         r['errors'] = neighbors(p['pairs'], r['pred'])
         r['proj'] = r['pts0'] + r['pred'] * r['remaining']
+        r['out'] = overrides.get((r['name'], r['team']), (0, 0))
         r['totals'], r['finishes'] = [], []
         by_pos[r['pos']].append(r)
+    for name, team in set(overrides) - {(r['name'], r['team']) for r in rows}:
+        print(f'warning: override for {name} ({team}) matches no player in the pool')
 
     for _ in range(n_sims):
         for pos, pr in by_pos.items():
-            totals = [r['pts0'] + max(0.0, r['pred'] + rng.choice(r['errors'])) * r['remaining'] for r in pr]
+            totals = [r['pts0'] + max(0.0, r['pred'] + rng.choice(r['errors']))
+                      * max(0, r['remaining'] - rng.randint(*r['out'])) for r in pr]
             order = sorted(range(len(pr)), key=lambda i: -totals[i])
             for rank, i in enumerate(order, 1):
                 pr[i]['totals'].append(totals[i])

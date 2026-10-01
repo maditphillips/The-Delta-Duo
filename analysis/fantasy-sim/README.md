@@ -72,11 +72,23 @@ weakest call (skill +0.09 in 2024). Full bins: `python3 calibrate.py`.
 Only 2 of 240 actual top-24/top-36 finishers in the two test seasons were missing from the
 week-1–3 pool, so leaving out not-yet-active players costs little.
 
+## Known injuries: `overrides.csv`
+
+General injury risk is already built in (the backtest counts missed games as zero).
+A specific injury is not, so enter it by hand: `player,team,out_min,out_max,note`.
+Each simulated season draws a whole number of missed games between `out_min` and
+`out_max` (inclusive, equally likely) and those games score zero. Names must match
+nflverse exactly; `sim.py` warns if one doesn't. Remove the row once he's back.
+
+Currently: **Breece Hall** (NYJ), quad injury in week 3, week-to-week, did not
+practice in week 4 -> misses 1-3 games. It moves him from median RB19 to RB23 and
+his top-24 odds from 66% to 54%.
+
 ## Caveats
 
-- **No news.** The model sees box scores only. It does not know about injuries
-  announced this week, depth-chart changes, trades, or a player returning from IR.
-  Anyone who has not played yet in 2026 is not in the pool.
+- **Little news.** Beyond `overrides.csv`, the model sees box scores only. It does
+  not know about depth-chart changes, trades, or a player returning from IR. Anyone
+  who has not played yet in 2026 is not in the pool.
 - **Players are independent.** If a WR1 gets hurt, his teammates do not get a bump in
   the same simulation, and there is no team-level boom or bust shared by teammates.
   nflseedr's game-by-game structure would add that; this version does not.
@@ -90,78 +102,78 @@ week-1–3 pool, so leaving out not-yet-active players costs little.
 
 | Player | Tm | Pts wk 1–3 | Median total (10th–90th) | Median finish | #1 | Top 6 | Top 12 | Top 24 |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| Josh Allen | BUF | 93.9 | 386 (212–463) | 2 | 49% | 77% | 84% | 99% |
-| Brock Purdy | SF | 80.9 | 311 (211–395) | 7 | 8% | 44% | 75% | 93% |
-| Jared Goff | DET | 65.6 | 311 (169–380) | 7 | 8% | 45% | 71% | 88% |
-| Bryce Young | CAR | 69.2 | 293 (200–384) | 9 | 5% | 36% | 69% | 92% |
-| Patrick Mahomes | KC | 66.6 | 293 (133–385) | 9 | 5% | 36% | 68% | 89% |
-| Dak Prescott | DAL | 63.1 | 289 (129–381) | 9 | 5% | 34% | 65% | 89% |
-| Lamar Jackson | BAL | 60.2 | 284 (129–381) | 10 | 4% | 31% | 61% | 88% |
-| Tyler Shough | NO | 69.4 | 280 (159–353) | 11 | 2% | 28% | 59% | 88% |
-| Jalen Hurts | PHI | 53.5 | 280 (119–371) | 11 | 3% | 28% | 58% | 88% |
-| Matthew Stafford | LA | 52.0 | 264 (140–358) | 13 | 2% | 21% | 46% | 84% |
-| Trevor Lawrence | JAX | 52.0 | 263 (142–344) | 13 | 1% | 19% | 48% | 85% |
+| Josh Allen | BUF | 93.9 | 386 (212–449) | 2 | 49% | 77% | 84% | 99% |
+| Brock Purdy | SF | 80.9 | 303 (193–380) | 7 | 8% | 43% | 75% | 92% |
+| Jared Goff | DET | 65.6 | 311 (143–380) | 7 | 8% | 45% | 70% | 88% |
+| Bryce Young | CAR | 69.2 | 301 (200–369) | 9 | 5% | 36% | 70% | 92% |
+| Patrick Mahomes | KC | 66.6 | 293 (133–385) | 9 | 6% | 36% | 68% | 89% |
+| Dak Prescott | DAL | 63.1 | 288 (129–366) | 10 | 4% | 32% | 64% | 88% |
+| Lamar Jackson | BAL | 60.2 | 287 (179–381) | 10 | 5% | 32% | 62% | 89% |
+| Tyler Shough | NO | 69.4 | 280 (159–353) | 10 | 2% | 28% | 60% | 88% |
+| Jalen Hurts | PHI | 53.5 | 280 (170–371) | 11 | 3% | 28% | 58% | 88% |
+| Trevor Lawrence | JAX | 52.0 | 266 (136–335) | 13 | 1% | 20% | 48% | 84% |
+| Matthew Stafford | LA | 52.0 | 264 (135–358) | 13 | 2% | 21% | 46% | 84% |
 | Bo Nix | DEN | 43.7 | 246 (132–348) | 15 | 1% | 18% | 39% | 83% |
-| Jordan Love | GB | 51.8 | 246 (132–358) | 16 | 2% | 18% | 38% | 79% |
-| Geno Smith | NYJ | 50.9 | 237 (122–353) | 17 | 1% | 16% | 34% | 75% |
-| Deshaun Watson | CLE | 54.0 | 240 (101–335) | 17 | 1% | 17% | 36% | 68% |
+| Jordan Love | GB | 51.8 | 242 (132–348) | 16 | 1% | 17% | 37% | 79% |
+| Geno Smith | NYJ | 50.9 | 237 (127–343) | 17 | 1% | 16% | 35% | 75% |
+| Deshaun Watson | CLE | 54.0 | 240 (94–335) | 17 | 1% | 17% | 36% | 67% |
 
 **RB**
 
 | Player | Tm | Pts wk 1–3 | Median total (10th–90th) | Median finish | #1 | Top 12 | Top 24 | Top 36 |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| Jahmyr Gibbs | DET | 98.3 | 417 (331–495) | 1 | 58% | 100% | 100% | 100% |
+| Jahmyr Gibbs | DET | 98.3 | 414 (324–495) | 1 | 57% | 99% | 100% | 100% |
 | Bijan Robinson | ATL | 77.7 | 357 (272–436) | 3 | 17% | 96% | 99% | 100% |
-| Derrick Henry | BAL | 74.9 | 332 (246–411) | 4 | 9% | 92% | 98% | 100% |
+| Derrick Henry | BAL | 74.9 | 329 (239–410) | 4 | 9% | 92% | 98% | 100% |
 | Kenneth Walker III | KC | 79.2 | 321 (236–400) | 5 | 7% | 90% | 98% | 100% |
-| Jonathan Taylor | IND | 63.5 | 308 (217–390) | 5 | 5% | 85% | 97% | 100% |
-| Christian McCaffrey | SF | 58.0 | 293 (208–373) | 6 | 2% | 80% | 96% | 99% |
-| James Cook | BUF | 50.2 | 258 (150–339) | 9 | 1% | 65% | 87% | 96% |
-| Kyren Williams | LA | 53.0 | 259 (152–302) | 9 | 1% | 66% | 87% | 97% |
-| D'Andre Swift | CHI | 56.1 | 254 (148–298) | 11 | 1% | 58% | 83% | 96% |
-| Ashton Jeanty | LV | 55.3 | 252 (146–297) | 11 | <1% | 58% | 83% | 96% |
-| Chuba Hubbard | CAR | 53.1 | 214 (132–299) | 15 | <1% | 41% | 76% | 94% |
-| Javonte Williams | DAL | 50.5 | 225 (132–279) | 15 | <1% | 39% | 76% | 96% |
-| Chase Brown | CIN | 38.9 | 200 (111–264) | 18 | <1% | 29% | 69% | 89% |
-| Breece Hall | NYJ | 42.5 | 197 (108–261) | 19 | <1% | 26% | 66% | 87% |
-| Bucky Irving | TB | 41.1 | 192 (80–259) | 20 | <1% | 24% | 63% | 83% |
+| Jonathan Taylor | IND | 63.5 | 310 (217–390) | 5 | 5% | 86% | 97% | 100% |
+| Christian McCaffrey | SF | 58.0 | 293 (200–372) | 6 | 3% | 81% | 96% | 99% |
+| James Cook | BUF | 50.2 | 258 (150–339) | 9 | <1% | 66% | 87% | 96% |
+| Kyren Williams | LA | 53.0 | 258 (152–302) | 9 | 1% | 66% | 87% | 97% |
+| D'Andre Swift | CHI | 56.1 | 254 (140–319) | 11 | 1% | 58% | 82% | 96% |
+| Ashton Jeanty | LV | 55.3 | 247 (138–317) | 11 | 1% | 57% | 82% | 95% |
+| Chuba Hubbard | CAR | 53.1 | 214 (126–299) | 15 | <1% | 41% | 75% | 93% |
+| Javonte Williams | DAL | 50.5 | 225 (145–278) | 15 | <1% | 40% | 76% | 95% |
+| Chase Brown | CIN | 38.9 | 200 (117–285) | 18 | <1% | 30% | 69% | 90% |
+| Bucky Irving | TB | 41.1 | 194 (91–259) | 20 | <1% | 25% | 63% | 83% |
+| David Montgomery | HOU | 40.1 | 193 (96–241) | 21 | <1% | 19% | 58% | 78% |
 
 **WR**
 
 | Player | Tm | Pts wk 1–3 | Median total (10th–90th) | Median finish | #1 | Top 12 | Top 24 | Top 36 |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| Jaxon Smith-Njigba | SEA | 104.1 | 396 (258–505) | 1 | 55% | 95% | 100% | 100% |
-| Amon-Ra St. Brown | DET | 75.8 | 316 (179–409) | 3 | 14% | 82% | 88% | 95% |
-| CeeDee Lamb | DAL | 70.9 | 282 (167–392) | 5 | 7% | 78% | 87% | 93% |
+| Jaxon Smith-Njigba | SEA | 104.1 | 396 (267–489) | 1 | 55% | 95% | 100% | 100% |
+| Amon-Ra St. Brown | DET | 75.8 | 316 (188–409) | 3 | 14% | 83% | 89% | 95% |
 | Chris Olave | NO | 70.5 | 279 (164–372) | 5 | 6% | 78% | 87% | 92% |
-| Davante Adams | LA | 65.8 | 271 (158–364) | 6 | 5% | 74% | 88% | 91% |
-| Ja'Marr Chase | CIN | 54.5 | 265 (152–360) | 7 | 4% | 69% | 87% | 90% |
-| Christian Watson | GB | 69.4 | 251 (138–344) | 9 | 3% | 60% | 80% | 88% |
-| Garrett Wilson | NYJ | 57.3 | 230 (144–301) | 13 | 1% | 48% | 74% | 87% |
-| DeVonta Smith | PHI | 48.5 | 223 (149–255) | 15 | <1% | 38% | 71% | 87% |
-| Zay Flowers | BAL | 41.4 | 223 (110–316) | 16 | 2% | 38% | 68% | 83% |
-| Drake London | ATL | 42.8 | 222 (124–281) | 16 | <1% | 33% | 70% | 85% |
-| Tee Higgins | CIN | 44.4 | 222 (135–260) | 16 | <1% | 33% | 71% | 86% |
-| Rashee Rice | KC | 38.0 | 216 (114–260) | 17 | <1% | 29% | 70% | 84% |
-| Justin Jefferson | MIN | 44.9 | 216 (144–250) | 18 | <1% | 29% | 67% | 84% |
-| Stefon Diggs | WAS | 44.5 | 213 (140–252) | 18 | <1% | 28% | 68% | 83% |
+| CeeDee Lamb | DAL | 70.9 | 282 (167–375) | 6 | 7% | 77% | 88% | 93% |
+| Davante Adams | LA | 65.8 | 271 (156–364) | 6 | 5% | 73% | 87% | 91% |
+| Ja'Marr Chase | CIN | 54.5 | 267 (154–360) | 7 | 5% | 70% | 88% | 91% |
+| Christian Watson | GB | 69.4 | 251 (136–324) | 9 | 3% | 60% | 81% | 87% |
+| Garrett Wilson | NYJ | 57.3 | 230 (116–301) | 13 | 1% | 48% | 74% | 86% |
+| DeVonta Smith | PHI | 48.5 | 224 (124–260) | 15 | <1% | 38% | 70% | 86% |
+| Zay Flowers | BAL | 41.4 | 223 (110–296) | 16 | 2% | 38% | 68% | 84% |
+| Tee Higgins | CIN | 44.4 | 222 (135–255) | 16 | <1% | 33% | 71% | 86% |
+| Drake London | ATL | 42.8 | 222 (124–261) | 17 | <1% | 33% | 71% | 86% |
+| Rashee Rice | KC | 38.0 | 214 (138–250) | 17 | <1% | 29% | 70% | 84% |
+| Justin Jefferson | MIN | 44.9 | 216 (119–255) | 18 | <1% | 28% | 67% | 84% |
+| Stefon Diggs | WAS | 44.5 | 213 (140–246) | 18 | <1% | 28% | 68% | 83% |
 
 **TE**
 
 | Player | Tm | Pts wk 1–3 | Median total (10th–90th) | Median finish | #1 | Top 6 | Top 12 | Top 24 |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| Trey McBride | ARI | 59.1 | 264 (209–347) | 2 | 39% | 88% | 99% | 100% |
-| Brock Bowers | LV | 27.6 | 207 (156–299) | 6 | 15% | 57% | 85% | 100% |
-| George Kittle | SF | 47.4 | 211 (146–294) | 7 | 12% | 49% | 78% | 99% |
+| Trey McBride | ARI | 59.1 | 250 (209–347) | 2 | 38% | 88% | 99% | 100% |
+| Brock Bowers | LV | 27.6 | 207 (166–299) | 6 | 15% | 57% | 85% | 100% |
+| George Kittle | SF | 47.4 | 211 (146–289) | 7 | 11% | 48% | 78% | 99% |
 | Travis Kelce | KC | 49.1 | 200 (146–284) | 8 | 10% | 43% | 73% | 97% |
-| Juwan Johnson | NO | 48.3 | 188 (134–271) | 10 | 6% | 35% | 62% | 93% |
-| Dalton Kincaid | BUF | 44.3 | 178 (116–254) | 12 | 4% | 28% | 51% | 85% |
-| Tyler Warren | IND | 39.4 | 177 (116–253) | 13 | 3% | 28% | 50% | 85% |
-| Harold Fannin Jr. | CLE | 38.6 | 176 (115–247) | 13 | 3% | 28% | 50% | 84% |
-| Dalton Schultz | HOU | 39.5 | 170 (108–246) | 14 | 2% | 25% | 47% | 80% |
-| Sam LaPorta | DET | 34.4 | 155 (101–238) | 16 | 1% | 21% | 40% | 73% |
-| Isaiah Likely | NYG | 39.4 | 154 (96–232) | 16 | 1% | 19% | 40% | 74% |
-| Kenyon Sadiq | NYJ | 38.6 | 151 (89–223) | 16 | 0% | 15% | 38% | 71% |
-| Dallas Goedert | PHI | 25.1 | 147 (92–225) | 18 | <1% | 17% | 36% | 66% |
-| Jake Ferguson | DAL | 32.2 | 156 (94–227) | 18 | 1% | 17% | 35% | 65% |
-| Pat Freiermuth | PIT | 28.1 | 144 (86–222) | 18 | <1% | 14% | 34% | 66% |
+| Juwan Johnson | NO | 48.3 | 188 (133–266) | 10 | 6% | 35% | 61% | 93% |
+| Dalton Kincaid | BUF | 44.3 | 178 (117–254) | 12 | 4% | 29% | 51% | 85% |
+| Tyler Warren | IND | 39.4 | 169 (115–253) | 13 | 3% | 27% | 49% | 84% |
+| Harold Fannin Jr. | CLE | 38.6 | 169 (114–252) | 13 | 3% | 27% | 49% | 83% |
+| Dalton Schultz | HOU | 39.5 | 163 (108–246) | 14 | 2% | 25% | 46% | 79% |
+| Sam LaPorta | DET | 34.4 | 162 (100–233) | 16 | 1% | 21% | 41% | 73% |
+| Isaiah Likely | NYG | 39.4 | 154 (96–232) | 16 | 1% | 20% | 40% | 74% |
+| Kenyon Sadiq | NYJ | 38.6 | 151 (89–216) | 17 | <1% | 15% | 38% | 71% |
+| Dallas Goedert | PHI | 25.1 | 147 (93–225) | 18 | 1% | 18% | 36% | 67% |
+| Jake Ferguson | DAL | 32.2 | 156 (94–227) | 18 | 1% | 18% | 35% | 66% |
+| Pat Freiermuth | PIT | 28.1 | 144 (83–217) | 18 | <1% | 13% | 34% | 65% |
