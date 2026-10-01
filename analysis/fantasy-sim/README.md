@@ -78,7 +78,7 @@ General injury risk is already built in (the backtest counts missed games as zer
 A specific injury is not, so enter it by hand: `player,team,out_min,out_max,note`.
 Each simulated season draws a whole number of missed games between `out_min` and
 `out_max` (inclusive, equally likely) and those games score zero. Names must match
-nflverse exactly; `sim.py` warns if one doesn't. Remove the row once he's back.
+nflverse exactly; `sim.py` warns if one doesn't. Remove the row once he's back. For a season-ending injury set both to his team's games left.
 
 Currently:
 
@@ -86,6 +86,7 @@ Currently:
 |---|---|--:|--:|
 | Breece Hall (NYJ) | 1-3 games (quad, week 3; did not practice week 4) | RB19 -> RB23 | 66% -> 55% |
 | Travis Etienne (NO) | 1-3 games | RB23 -> RB28 | 53% -> 38% |
+| De'Von Achane (MIA) | rest of season (14 games) | RB24 -> RB81 | 52% -> 0% |
 
 ## Caveats
 
@@ -126,20 +127,20 @@ Currently:
 | Player | Tm | Pts wk 1–3 | Median total (10th–90th) | Median finish | #1 | Top 12 | Top 24 | Top 36 |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
 | Jahmyr Gibbs | DET | 98.3 | 417 (331–495) | 1 | 59% | 100% | 100% | 100% |
-| Bijan Robinson | ATL | 77.7 | 354 (264–435) | 3 | 16% | 96% | 99% | 100% |
-| Derrick Henry | BAL | 74.9 | 329 (239–411) | 4 | 9% | 92% | 98% | 100% |
+| Bijan Robinson | ATL | 77.7 | 354 (264–435) | 3 | 16% | 96% | 100% | 100% |
+| Derrick Henry | BAL | 74.9 | 329 (239–411) | 4 | 9% | 92% | 99% | 100% |
 | Kenneth Walker III | KC | 79.2 | 319 (236–400) | 5 | 6% | 90% | 98% | 100% |
 | Jonathan Taylor | IND | 63.5 | 308 (217–389) | 5 | 5% | 87% | 97% | 100% |
-| Christian McCaffrey | SF | 58.0 | 293 (208–373) | 6 | 2% | 81% | 96% | 99% |
-| James Cook | BUF | 50.2 | 257 (150–339) | 9 | 1% | 66% | 87% | 96% |
-| Kyren Williams | LA | 53.0 | 259 (144–323) | 9 | 0% | 67% | 87% | 97% |
-| D'Andre Swift | CHI | 56.1 | 254 (140–319) | 11 | 1% | 58% | 83% | 96% |
-| Ashton Jeanty | LV | 55.3 | 247 (138–297) | 11 | <1% | 57% | 82% | 96% |
-| Javonte Williams | DAL | 50.5 | 225 (145–278) | 15 | <1% | 41% | 77% | 96% |
-| Chuba Hubbard | CAR | 53.1 | 214 (132–279) | 15 | <1% | 41% | 76% | 93% |
-| Chase Brown | CIN | 38.9 | 200 (111–264) | 18 | <1% | 30% | 70% | 90% |
-| Bucky Irving | TB | 41.1 | 194 (91–279) | 19 | <1% | 26% | 65% | 84% |
-| Bhayshul Tuten | JAX | 41.0 | 192 (84–266) | 21 | <1% | 20% | 57% | 76% |
+| Christian McCaffrey | SF | 58.0 | 293 (208–373) | 6 | 2% | 81% | 97% | 99% |
+| James Cook | BUF | 50.2 | 257 (150–339) | 9 | 1% | 66% | 88% | 97% |
+| Kyren Williams | LA | 53.0 | 259 (144–323) | 9 | 0% | 67% | 88% | 97% |
+| D'Andre Swift | CHI | 56.1 | 254 (140–319) | 11 | 1% | 59% | 84% | 96% |
+| Ashton Jeanty | LV | 55.3 | 247 (138–297) | 11 | <1% | 57% | 83% | 96% |
+| Javonte Williams | DAL | 50.5 | 225 (145–278) | 14 | <1% | 42% | 78% | 96% |
+| Chuba Hubbard | CAR | 53.1 | 214 (132–279) | 14 | <1% | 42% | 78% | 94% |
+| Chase Brown | CIN | 38.9 | 200 (111–264) | 17 | <1% | 31% | 71% | 90% |
+| Bucky Irving | TB | 41.1 | 194 (91–279) | 19 | <1% | 27% | 66% | 85% |
+| Bhayshul Tuten | JAX | 41.0 | 192 (84–266) | 21 | <1% | 21% | 58% | 76% |
 
 **WR**
 
