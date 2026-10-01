@@ -49,3 +49,5 @@ cloudflare-env.d.ts
 # analysis working files
 analysis/**/games.csv
 analysis/**/*.json
+analysis/**/w20*.csv
+__pycache__/
