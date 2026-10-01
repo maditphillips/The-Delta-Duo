@@ -5,7 +5,12 @@ the same thing for **fantasy finishes**: it takes 2026 as it stands after week 3
 simulates the remaining 15 weeks 10,000 times, and counts how often each player
 finishes #1, top 12, top 24, etc. at his position (full PPR, regular season).
 
-Results for every player: `sim_2026.csv`.
+Results for every player: `sim_2026.csv`. Charts (made with nflplotR):
+
+![QB](plots/finish_odds_qb_2026.png)
+![RB](plots/finish_odds_rb_2026.png)
+![WR](plots/finish_odds_wr_2026.png)
+![TE](plots/finish_odds_te_2026.png)
 
 ## Running it
 
@@ -13,14 +18,16 @@ Results for every player: `sim_2026.csv`.
 ./fetch.sh                                   # nflverse schedule + weekly player stats, 2020-2026
 python3 fit.py 3 2025                        # fit on 2022-2025 at week 3   -> params_2025.json
 python3 sim.py 2026 params_2025.json 10000   # simulate 2026               -> sim_2026.csv
+Rscript plot.R 2026                          # charts                      -> plots/*.png
 
 # out-of-sample checks
 python3 fit.py 3 2024 && python3 calibrate.py 2025 params_2024.json
 python3 fit.py 3 2023 && python3 calibrate.py 2024 params_2023.json
 ```
 
-Standard library only. 10,000 seasons run in about 6 seconds. To update after week 4,
-rerun `fetch.sh`, then `fit.py 4 2025` and `sim.py` with the new params.
+The simulation is Python standard library only. The charts need R with `ggplot2` and
+`nflplotR` (`install.packages("nflplotR")`); team logos ship inside nflplotR. 10,000 seasons run in about 6 seconds. To update after week 4,
+rerun `fetch.sh`, then `fit.py 4 2025`, `sim.py` and `plot.R`.
 
 ## Method
 
