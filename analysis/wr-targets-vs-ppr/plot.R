@@ -1,5 +1,6 @@
-# Top 50 WRs of the 2026 season: total targets (x) vs. total PPR points (y).
-# Quadrants split at the median of the 50 players on each axis.
+# Top 60 WRs of the 2026 season (plus any extra names in ALWAYS_INCLUDE):
+# total targets (x) vs. total PPR points (y).
+# Quadrants split at the median of the plotted players on each axis.
 #
 # install.packages(c("nflreadr", "nflplotR", "ggplot2", "dplyr", "ggrepel"))
 # Run: Rscript plot.R   -> writes wr_targets_vs_ppr_2026.png next to this file
@@ -11,14 +12,16 @@ library(dplyr)
 library(ggrepel)
 
 SEASON <- 2026
-N_PLAYERS <- 50
+N_PLAYERS <- 60
+# Players to plot even if they fall outside the top N (full display name)
+ALWAYS_INCLUDE <- c("KC Concepcion")
 
 stats <- load_player_stats(seasons = SEASON, summary_level = "reg")
 
 wr <- stats |>
   filter(position == "WR") |>
   arrange(desc(fantasy_points_ppr)) |>
-  slice_head(n = N_PLAYERS) |>
+  filter(row_number() <= N_PLAYERS | player_display_name %in% ALWAYS_INCLUDE) |>
   mutate(
     # "Amon-Ra St. Brown" -> "A. St. Brown"
     label = paste0(substr(player_display_name, 1, 1), ". ",
@@ -69,7 +72,7 @@ p <- ggplot(wr, aes(x = targets, y = fantasy_points_ppr)) +
   geom_nfl_logos(aes(team_abbr = recent_team), width = 0.026, alpha = 0.95) +
   geom_text_repel(
     aes(label = label),
-    size = 2.8, colour = "grey15",
+    size = 2.7, colour = "grey15", force = 2,
     point.size = 4, box.padding = 0.4, min.segment.length = 0.3,
     segment.colour = "grey60", segment.size = 0.25,
     max.overlaps = Inf, seed = 2026
@@ -78,7 +81,9 @@ p <- ggplot(wr, aes(x = targets, y = fantasy_points_ppr)) +
   scale_y_continuous(limits = y_lim, expand = c(0, 0)) +
   labs(
     title = paste(SEASON, "Wide Receivers: Targets vs. PPR Points"),
-    subtitle = paste0("Top ", N_PLAYERS, " WRs by PPR points. Dashed lines = median of the group (",
+    subtitle = paste0("Top ", N_PLAYERS, " WRs by PPR points",
+                      if (length(ALWAYS_INCLUDE)) paste0(" + ", paste(ALWAYS_INCLUDE, collapse = ", ")) else "",
+                      ". Dashed lines = median of the group (",
                       x_mid, " targets, ", round(y_mid, 1), " PPR pts)."),
     x = "Total targets",
     y = "Total PPR points",
@@ -95,5 +100,5 @@ p <- ggplot(wr, aes(x = targets, y = fantasy_points_ppr)) +
   )
 
 out <- file.path(getwd(), "wr_targets_vs_ppr_2026.png")
-ggsave(out, p, width = 11, height = 8.5, dpi = 300)
+ggsave(out, p, width = 12, height = 10, dpi = 300)
 message("Saved ", out)
