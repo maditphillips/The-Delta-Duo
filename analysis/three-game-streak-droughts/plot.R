@@ -1,5 +1,3 @@
-# Chart for plot.csv (from analyze.py). Logos: squared_logos/ from github.com/nflverse/nflverse-pbp
-# (ESPN logo CDN is blocked in the build environment, so geom_from_path is used instead of geom_nfl_logos).
 suppressPackageStartupMessages({library(ggplot2); library(nflplotR); library(dplyr)})
 d <- read.csv("plot.csv", stringsAsFactors = FALSE)
 nick <- c(LV="Raiders",CLE="Browns",LA="Rams",ARI="Cardinals",JAX="Jaguars",HOU="Texans",BUF="Bills",
@@ -12,14 +10,13 @@ d <- d |>
          id = paste(team, start)) |>
   arrange(desc(group), games) |>
   mutate(y = row_number() + ifelse(kind == "done", 1.6, 0),
-         path = file.path("squared_logos", paste0(team, ".png")),
          value_lab = paste0(games, " games", ifelse(kind=="ongoing", " & counting", "")))
 
 ink <- "#1f2328"; muted <- "#6b7280"; grid <- "#e5e7eb"
 p <- ggplot(d, aes(y = y, x = games)) +
   geom_col(aes(fill = team, alpha = kind), width = 0.72, orientation = "y") +
   annotate("segment", x = 37, xend = 37, y = 0.4, yend = max(d$y) + 0.5, linetype = "22", colour = "#FF3C00", linewidth = 0.6) +
-  geom_from_path(aes(x = games + 5, path = path), height = 0.055) +
+  geom_nfl_logos(aes(x = games + 4.5, team_abbr = team), height = 0.05) +
   geom_text(aes(x = games + 9.5, label = value_lab), hjust = 0, size = 3.6, colour = ink, fontface = "bold") +
   annotate("text", x = -1.5, y = c(max(d$y) + 1, 5.9), label = c("LONGEST GAPS (ENDED)", "DROUGHTS STILL GOING"), hjust = 1, size = 3.3, colour = "#FF3C00", fontface = "bold") +
   scale_fill_nfl(alpha = 1) +
