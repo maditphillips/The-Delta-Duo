@@ -73,11 +73,12 @@ ink <- "#111111"
 muted <- "#6b6b6b"
 stripe <- "#eef2f6"
 
-# Bars run 0-100%; the label columns sit left of zero, made/att right of 100%.
+# Bars run 0-100%; the label columns sit left of zero.
+x_min <- -0.64
+x_max <- 1.00
 x_rank <- -0.60
 x_logo <- -0.50
 x_name <- -0.43
-x_madeatt <- 1.20
 
 panel <- function(b) {
   d <- filter(rates, bucket == b)
@@ -87,13 +88,13 @@ panel <- function(b) {
   ggplot(d, aes(y = row)) +
     geom_rect(
       data = filter(d, row %% 2 == 1),
-      aes(xmin = -0.64, xmax = 1.30, ymin = row - 0.5, ymax = row + 0.5),
+      aes(xmin = x_min, xmax = x_max, ymin = row - 0.5, ymax = row + 0.5),
       fill = stripe, inherit.aes = FALSE
     ) +
     geom_vline(xintercept = seq(0, 1, 0.25), colour = "#d9dee4", linewidth = 0.3) +
     geom_vline(xintercept = lg$pct, linetype = "dashed", colour = muted, linewidth = 0.5) +
     geom_col(
-      aes(x = pct, fill = team), orientation = "y", width = 0.72
+      aes(x = pct, fill = team), orientation = "y", width = 0.78
     ) +
     annotate(
       "label", x = lg$pct, y = n + 1.1,
@@ -102,29 +103,25 @@ panel <- function(b) {
       label.size = 0, label.padding = unit(0.12, "lines")
     ) +
     geom_text(aes(x = x_rank, label = paste0(rank, ".")),
-              family = font, size = 4, colour = muted, hjust = 1) +
-    geom_nfl_logos(aes(x = x_logo, team_abbr = team), height = 0.024) +
+              family = font, size = 4.8, colour = muted, hjust = 1) +
+    geom_nfl_logos(aes(x = x_logo, team_abbr = team), height = 0.027) +
     geom_text(aes(x = x_name, label = nick),
-              family = font, fontface = "bold", size = 4.3, colour = ink, hjust = 0) +
+              family = font, fontface = "bold", size = 5.4, colour = ink, hjust = 0) +
     # Mask the average line behind each % label, in that row's background.
     geom_rect(
       data = d,
-      aes(xmin = pct + 0.008, xmax = pct + 0.115, ymin = row - 0.4, ymax = row + 0.4),
+      aes(xmin = pct + 0.008, xmax = pct + 0.135, ymin = row - 0.4, ymax = row + 0.4),
       fill = if_else(d$row %% 2 == 1, stripe, "white"), inherit.aes = FALSE
     ) +
     geom_text(aes(x = pct + 0.015, label = sprintf("%.1f%%", 100 * pct)),
-              family = font, fontface = "bold", size = 4, colour = ink, hjust = 0) +
-    geom_text(aes(x = x_madeatt, label = paste(made, "/", att)),
-              family = font, size = 4, colour = ink) +
-    annotate("text", x = x_madeatt, y = 0.05, label = "Made / Att.",
-             family = font, fontface = "bold", size = 3.6, colour = ink) +
+              family = font, fontface = "bold", size = 5, colour = ink, hjust = 0) +
     scale_fill_nfl(type = "primary") +
     scale_x_continuous(
       breaks = seq(0, 1, 0.25), labels = scales::percent,
       expand = expansion(0)
     ) +
     scale_y_reverse(expand = expansion(add = c(0.6, 0.7))) +
-    coord_cartesian(xlim = c(-0.64, 1.30), clip = "off") +
+    coord_cartesian(xlim = c(x_min, x_max), clip = "off") +
     labs(title = b, subtitle = sprintf("NFL: %d / %d", lg$made, lg$att)) +
     theme_void(base_family = font) +
     theme(
