@@ -1,5 +1,5 @@
-# Top 40 WRs of the 2026 season: total targets (x) vs. total PPR points (y).
-# Quadrants split at the median of the 40 players on each axis.
+# Top 50 WRs of the 2026 season: total targets (x) vs. total PPR points (y).
+# Quadrants split at the median of the 50 players on each axis.
 #
 # install.packages(c("nflreadr", "nflplotR", "ggplot2", "dplyr", "ggrepel"))
 # Run: Rscript plot.R   -> writes wr_targets_vs_ppr_2026.png next to this file
@@ -11,7 +11,7 @@ library(dplyr)
 library(ggrepel)
 
 SEASON <- 2026
-N_PLAYERS <- 40
+N_PLAYERS <- 50
 
 stats <- load_player_stats(seasons = SEASON, summary_level = "reg")
 
