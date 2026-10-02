@@ -16,10 +16,10 @@ ink <- "#1f2328"; muted <- "#6b7280"; grid <- "#e5e7eb"
 p <- ggplot(d, aes(y = y, x = games)) +
   geom_col(aes(fill = team, alpha = kind), width = 0.72, orientation = "y") +
   annotate("segment", x = 37, xend = 37, y = 0.4, yend = max(d$y) + 0.5, linetype = "22", colour = "#FF3C00", linewidth = 0.6) +
-  geom_nfl_logos(aes(x = games + 4.5, team_abbr = team), height = 0.05) +
-  geom_text(aes(x = -58, label = name, colour = team), hjust = 0, size = 3.7, fontface = "bold") +
+  geom_nfl_logos(aes(x = -55, team_abbr = team), height = 0.05) +
+  geom_text(aes(x = -50, label = name, colour = team), hjust = 0, size = 3.7, fontface = "bold") +
   geom_text(aes(x = -1.5, label = dates), hjust = 1, size = 3.5, colour = ink) +
-  geom_text(aes(x = games + 9.5, label = value_lab), hjust = 0, size = 3.6, colour = ink, fontface = "bold") +
+  geom_text(aes(x = games + 1.5, label = value_lab), hjust = 0, size = 3.6, colour = ink, fontface = "bold") +
   annotate("text", x = -58, y = c(max(d$y) + 1, 5.9), label = c("LONGEST GAPS (ENDED)", "DROUGHTS STILL GOING"), hjust = 0, size = 3.3, colour = "#FF3C00", fontface = "bold") +
   scale_fill_nfl(alpha = 1) +
   scale_colour_nfl() +
