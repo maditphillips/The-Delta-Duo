@@ -22,6 +22,14 @@ First-round RBs 2000-2020: n = 47
    4       4.5, 8.5, 29.0  -2.736    0.774  0.062
 line log(pick), no groups  -6.582    0.827  0.051
 
+   yr-2+ PPR per game   (best BIC: k=1, best CV: k=line)
+   k     best cuts (pick)     BIC  CV loss  CV se
+   1                 none 136.326   17.530  0.649
+   2                 10.5 139.956   19.133  1.073
+   3            4.5, 10.5 145.731   20.590  1.560
+   4     10.5, 22.5, 25.5 151.277   20.920  1.557
+line log(pick), no groups 137.951   17.440  0.793
+
    any top-12 season   (best BIC: k=1, best CV: k=1)
    k     best cuts (pick)    BIC  CV loss  CV se
    1                 none 67.272    0.708  0.026

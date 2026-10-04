@@ -23,6 +23,7 @@ df = pd.read_csv("rbs.csv")
 df = df[(df.draft_round == 1) & df.rookie_year.between(2000, 2020)].sort_values("draft_pick")
 pick = df.draft_pick.to_numpy()
 OUT = {"log yr-2+ PPR": np.log1p(df.y2_ppr.to_numpy()),
+       "yr-2+ PPR per game": (df.y2_ppr / df.y2_games).to_numpy(),
        "any top-12 season": (df.y2_top12 > 0).astype(float).to_numpy(),
        "any top-24 season": (df.y2_top24 > 0).astype(float).to_numpy()}
 MIN_SIZE = 6
@@ -85,7 +86,7 @@ def predict(p_tr, y_tr, cuts, p_te):
 
 rows = []
 for oname, y in OUT.items():
-    binary = oname != "log yr-2+ PPR"
+    binary = oname.startswith("any ")
     n = len(y)
     for k in range(1, 5):
         loss, cuts = fit_cuts(pick, y, k, binary)

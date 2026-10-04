@@ -184,7 +184,8 @@ Rd 1-3 67% vs 57%; Rd 4+/UDFA 27% vs 20%.
 
   | Outcome | Best by BIC | Best by CV | Best cut |
   |---|---|---|---|
-  | Year-2+ PPR points | 2 groups | 2 groups | picks 1-29 vs 30-32 |
+  | Year-2+ PPR points (total) | 2 groups | 2 groups | picks 1-29 vs 30-32 |
+  | Year-2+ PPR points per game | 1 group | 1 group (tied with a straight line in pick) | none |
   | Any top-12 season | 1 group | 1 group | none |
   | Any top-24 season | 1 group | 1 group | none |
 
@@ -192,8 +193,11 @@ Rd 1-3 67% vs 57%; Rd 4+/UDFA 27% vs 20%.
   the round. It cuts off the last three picks: 8 backs (Kevin Jones, Joseph Addai,
   Chris Wells, Jahvid Best, David Wilson, Doug Martin, Sony Michel, Clyde Edwards-Helaire)
   with a median 350 year-2+ PPR points vs 1,248 for picks 1-29. That is probably a cluster
-  of busts more than a real cliff at pick 30. For top-12 and top-24 hit rates, splitting
-  round 1 at all does worse out of sample than treating it as one group.
+  of busts more than a real cliff at pick 30. For points per game and for top-12 and top-24
+  hit rates, splitting round 1 at all does worse out of sample than treating it as one
+  group. PPG does drift down a little with pick (13.7 for picks 1-10, 12.0 for 11-24,
+  10.3 for 25-32), but that drift is gradual and noisy (rho -0.27, p = 0.07), so a
+  smooth trend describes it as well as groups do.
 
 So 2 groups beats 3, but the honest answer is that the data barely supports splitting
 round 1. The 1-16 / 17-32 and 1-10 / 11-24 / 25-32 splits above were set by hand, and
