@@ -1,3 +1,4 @@
-season,week,position,player,basis,depth_rank,reason
-2026,3,TE,Oronde Gadsden II,last_season,1,"David Njoku is on IR (lower leg) and Charlie Kolar is out (forearm). Sleeper lists Gadsden first on the Chargers depth chart. Priced on his 2025 role, when he started: 4.6 targets a game, 62% of the snaps, a 13% target share."
-2026,4,TE,Oronde Gadsden II,last_season,1,"Njoku (IR, lower leg) and Kolar (out, forearm) are still both out. Same basis as week 3: his 2025 role as the starter. His one game in the job so far, week 3, was 39 snaps and 3 targets."
+season,week,position,player,basis,from_player,depth_rank,reason
+2026,3,TE,Oronde Gadsden II,last_season,,1,"David Njoku is on IR (lower leg) and Charlie Kolar is out (forearm). Sleeper lists Gadsden first on the Chargers depth chart. Priced on his 2025 role, when he started: 4.6 targets a game, 62% of the snaps, a 13% target share."
+2026,4,TE,Oronde Gadsden II,last_season,,1,"Njoku (IR, lower leg) and Kolar (out, forearm) are still both out. Same basis as week 3: his 2025 role as the starter. His one game in the job so far, week 3, was 39 snaps and 3 targets."
+2026,4,RB,Braelon Allen,inherit,Breece Hall,1,"Breece Hall is out (quadriceps). Allen is next in the Jets backfield and is priced on the share of a starting back's work the next man has picked up in past seasons: 45% of the carries, 37% of the targets, 41% of the snaps."

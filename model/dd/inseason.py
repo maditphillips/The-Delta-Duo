@@ -473,6 +473,18 @@ def returning(season: int, week: int, position: str) -> set[str]:
 ROLE_FILE = Path(__file__).resolve().parent.parent / "data" / "role.csv"
 
 
+# What the next man up has inherited when the starter at his position sat,
+# measured in dd/absence.py over 2019-2025 (first missed game, starter only):
+# the share of the starter's per-game carries, targets and snap share that
+# went to the highest-usage teammate behind him.
+INHERIT = {
+    "RB": [("b_carries", "sd_carries", 0.45), ("b_targets", "sd_targets", 0.37),
+           ("b_snap_share", "sd_snap_share", 0.41)],
+    "TE": [("b_targets", "sd_targets", 0.33), ("b_snap_share", "sd_snap_share", 0.33)],
+    "WR": [("b_targets", "sd_targets", 0.14), ("b_snap_share", "sd_snap_share", 0.04)],
+}
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -494,6 +506,19 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if kind == "role" and col in te and prior in te:
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
+        elif row.basis == "inherit":
+            src = te[te.player_name == row.from_player]
+            if src.empty:
+                print(f"  role.csv: {row.from_player} is not in the {position} rows")
+                continue
+            s = src.iloc[0]
+            for col, sd, share in INHERIT.get(position.upper(), []):
+                old = te.loc[hit, col].fillna(0)
+                te.loc[hit, col] = old + share * (s[sd] if pd.notna(s[sd]) else 0)
+                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
+                if ratio and ratio in te:
+                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+            te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         te.loc[hit, "depth_rank"] = float(row.depth_rank)
         # Carried to the published lists so the note can say why he is priced
         # the way he is, instead of "his teammate's work is not priced in".
