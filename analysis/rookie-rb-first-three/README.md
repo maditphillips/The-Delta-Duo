@@ -147,14 +147,21 @@ Rd 1-3 67% vs 57%; Rd 4+/UDFA 27% vs 20%.
   | Picks 17-32 | 24 | 67% | 50% | 641 |
 
 - **Within each group, early usage still doesn't separate hits from misses.** Splitting
-  each group at its own median first-3 carry share:
-  - Picks 1-10: high-share half 75% top-24, low-share half 100%.
-  - Picks 11-24: 67% vs 88%.
-  - Picks 25-32: 57% vs 57%.
-  - Picks 17-32: high-share 58% vs low-share 75%. (Late firsts who got the ball right
+  each group at its own median first-3 carry share (share of team carries; "more" =
+  at or above the median):
+
+  | Group | Split at | More early carries: top-24 / top-12 | Fewer: top-24 / top-12 |
+  |---|---|---|---|
+  | Picks 1-10 (n=16) | 68% | 75% / 63% (n=8) | 100% / 88% (n=8) |
+  | Picks 11-24 (n=17) | 39% | 67% / 56% (n=9) | 88% / 75% (n=8) |
+  | Picks 25-32 (n=14) | 42% | 57% / 29% (n=7) | 57% / 43% (n=7) |
+  | Picks 1-16 (n=23) | 52% | 83% / 75% (n=12) | 82% / 64% (n=11) |
+  | Picks 17-32 (n=24) | 32% | 58% / 42% (n=12) | 75% / 58% (n=12) |
+
+  Late firsts who got the ball right
     away did slightly *worse*: Jahvid Best, Sony Michel, Doug Martin, Clyde Edwards-Helaire.
     Several who barely played early became stars: Steven Jackson, Larry Johnson,
-    Deuce McAllister, Rashard Mendenhall, DeAngelo Williams.)
+    Deuce McAllister, Rashard Mendenhall, DeAngelo Williams.
 - **The groups don't differ from each other either.** Tests of whether the
   first-3-to-career slope differs by group: p = 0.80 (two groups, carry share), 0.13
   (two groups, PPR/g), 0.67 and 0.94 (three groups). The one hint, PPR/g mattering a bit
