@@ -142,6 +142,10 @@ for pid, g in wk.groupby("player_id", sort=False):
     # a drafted back who missed his rookie year still counts as drafted
     d["draft_pick"] = i.draft_pick if pd.notna(i.draft_pick) and i.draft_year in (ry, ry - 1) else np.nan
     d["draft_round"] = i.draft_round if pd.notna(d["draft_pick"]) else np.nan
+    # supplemental-draft picks carry a meaningless pick number (Tony Hollings: round 2,
+    # "pick 1"); place them mid-round
+    if pd.notna(d["draft_round"]) and d["draft_pick"] < 32 * (d["draft_round"] - 1) - 4:
+        d["draft_pick"] = 32 * (d["draft_round"] - 1) + 16
     d["undrafted"] = int(pd.isna(d["draft_pick"]))
     bd = pd.to_datetime(i.birth_date, errors="coerce")
     d["age"] = (pd.Timestamp(f"{ry}-09-01") - bd).days / 365.25 if pd.notna(bd) else np.nan

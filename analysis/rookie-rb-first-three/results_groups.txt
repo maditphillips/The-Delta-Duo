@@ -1,4 +1,4 @@
-First-round RBs 2000-2020: n = 47
+Round 1 RBs 2000-2020: n = 47, picks 2-32
 
 1. Clustering on draft pick alone
    k=1: within-SS     4972  silhouette   nan  gap -0.37 (se 0.12)  centers [17]
@@ -8,7 +8,7 @@ First-round RBs 2000-2020: n = 47
    k=5: within-SS      125  silhouette  0.63  gap -0.12 (se 0.13)  centers [4, 11, 17, 23, 29]
    k=6: within-SS       78  silhouette  0.68  gap -0.10 (se 0.14)  centers [4, 11, 17, 23, 27, 31]
    gap-statistic choice (first k with gap(k) >= gap(k+1) - se): k = 2
-   Picks are spread evenly 1-32, so any 'clusters' here are just equal slices.
+   Picks are spread evenly, so any 'clusters' here are just equal slices.
 
 2. Groups chosen to explain career outcome (lower BIC / CV loss = better)
    CV loss: squared error per player (PPR) or log-loss per player (top-12/24);

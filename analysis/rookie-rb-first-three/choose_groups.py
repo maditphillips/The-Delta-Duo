@@ -1,4 +1,7 @@
-"""How many groups should round 1 be split into?
+"""How many groups should round 1 (or rounds 1-2) be split into?
+
+Usage: python3 choose_groups.py        # round 1
+       python3 choose_groups.py 2      # rounds 1 and 2 pooled
 
 Two views:
   1. Unsupervised (clustering on draft pick alone): elbow, silhouette, gap statistic.
@@ -8,7 +11,7 @@ Two views:
      and with cross-validation (cut points re-chosen inside each training fold, so the
      search itself can't overfit the test players).
 """
-import itertools
+import sys
 import warnings
 import numpy as np
 import pandas as pd
@@ -20,14 +23,17 @@ warnings.filterwarnings("ignore")
 rng = np.random.default_rng(0)
 
 df = pd.read_csv("rbs.csv")
-df = df[(df.draft_round == 1) & df.rookie_year.between(2000, 2020)].sort_values("draft_pick")
+ROUNDS = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+K_MAX = 4 if ROUNDS == 1 else 5
+df = df[(df.draft_round <= ROUNDS) & df.rookie_year.between(2000, 2020)].sort_values("draft_pick")
 pick = df.draft_pick.to_numpy()
 OUT = {"log yr-2+ PPR": np.log1p(df.y2_ppr.to_numpy()),
        "yr-2+ PPR per game": (df.y2_ppr / df.y2_games).to_numpy(),
        "any top-12 season": (df.y2_top12 > 0).astype(float).to_numpy(),
        "any top-24 season": (df.y2_top24 > 0).astype(float).to_numpy()}
 MIN_SIZE = 6
-print(f"First-round RBs 2000-2020: n = {len(df)}\n")
+print(f"Round 1{'-' + str(ROUNDS) if ROUNDS > 1 else ''} RBs 2000-2020: n = {len(df)}, "
+      f"picks {pick.min():.0f}-{pick.max():.0f}\n")
 
 # ---------- 1. unsupervised ----------
 X = pick.reshape(-1, 1).astype(float)
@@ -47,27 +53,55 @@ for k, (w, sil, gap, sk, c) in inertia.items():
 ks = sorted(inertia)
 gap_pick = next((k for k in ks[:-1] if inertia[k][2] >= inertia[k + 1][2] - inertia[k + 1][3]), ks[-1])
 print(f"   gap-statistic choice (first k with gap(k) >= gap(k+1) - se): k = {gap_pick}")
-print("   Picks are spread evenly 1-32, so any 'clusters' here are just equal slices.\n")
+print("   Picks are spread evenly, so any 'clusters' here are just equal slices.\n")
 
 
 # ---------- 2. supervised: best contiguous cut points ----------
+def seg_cost(y, binary):
+    """cost[i, j] = loss of one group holding sorted players i..j-1, fit by its mean."""
+    n = len(y)
+    c1 = np.concatenate([[0], np.cumsum(y)])
+    c2 = np.concatenate([[0], np.cumsum(y ** 2)])
+    cost = np.full((n + 1, n + 1), np.inf)
+    for i in range(n):
+        for j in range(i + MIN_SIZE, n + 1):
+            m, s = j - i, c1[j] - c1[i]
+            if binary:
+                mu = np.clip(s / m, 0.02, 0.98)
+                cost[i, j] = -(s * np.log(mu) + (m - s) * np.log(1 - mu))
+            else:
+                cost[i, j] = (c2[j] - c2[i]) - s * s / m
+    return cost
+
+
 def fit_cuts(p, y, k, binary):
-    """Exhaustive search for k contiguous pick groups minimizing SSE / log-loss.
-    Cuts fall between distinct pick values; each group needs MIN_SIZE players."""
-    vals = np.unique(p)
-    cands = (vals[:-1] + vals[1:]) / 2
-    best = (np.inf, None)
-    for cuts in itertools.combinations(cands, k - 1):
-        edges = [-np.inf, *cuts, np.inf]
-        g = np.digitize(p, edges[1:-1])
-        sizes = np.bincount(g, minlength=k)
-        if sizes.min() < MIN_SIZE:
-            continue
-        means = np.array([y[g == j].mean() for j in range(k)])
-        loss = loss_fn(y, means[g], binary)
-        if loss < best[0]:
-            best = (loss, cuts)
-    return best
+    """Exact best split of players (sorted by pick) into k contiguous groups, by dynamic
+    programming. Cuts fall between distinct pick values; each group needs MIN_SIZE players."""
+    o = np.argsort(p, kind="stable")
+    p, y = p[o], y[o]
+    n = len(y)
+    cost = seg_cost(y, binary)
+    ok = np.r_[True, p[1:] != p[:-1], True]  # may a group start/end at index i?
+    D = np.full((k + 1, n + 1), np.inf)
+    B = np.zeros((k + 1, n + 1), dtype=int)
+    D[0, 0] = 0
+    for g in range(1, k + 1):
+        for j in range(1, n + 1):
+            if not ok[j]:
+                continue
+            cand = D[g - 1, :j] + cost[:j, j]
+            cand[~ok[:j]] = np.inf
+            i = int(np.argmin(cand))
+            D[g, j], B[g, j] = cand[i], i
+    if not np.isfinite(D[k, n]):
+        return np.inf, None
+    cuts, j = [], n
+    for g in range(k, 0, -1):
+        i = B[g, j]
+        if g > 1:
+            cuts.append((p[i - 1] + p[i]) / 2)
+        j = i
+    return D[k, n], tuple(sorted(cuts))
 
 
 def loss_fn(y, yhat, binary):
@@ -85,10 +119,16 @@ def predict(p_tr, y_tr, cuts, p_te):
 
 
 rows = []
+pick_all = pick
 for oname, y in OUT.items():
     binary = oname.startswith("any ")
+    # PPG is undefined for backs who never played after year 1; leave them out of that one
+    keep = ~np.isnan(y)
+    if (~keep).any():
+        print(f"   ({oname}: {(~keep).sum()} backs with no games after year 1 left out)")
+    pick, y = pick_all[keep], y[keep]
     n = len(y)
-    for k in range(1, 5):
+    for k in range(1, K_MAX + 1):
         loss, cuts = fit_cuts(pick, y, k, binary)
         n_par = k + (k - 1)  # group means + cut points
         if binary:
@@ -125,6 +165,7 @@ for oname, y in OUT.items():
     rows.append({"outcome": oname, "k": "line", "best cuts (pick)": "log(pick), no groups",
                  "BIC": bic, "CV loss": np.mean(cv), "CV se": np.std(cv)})
 
+pick = pick_all
 res = pd.DataFrame(rows)
 print("2. Groups chosen to explain career outcome (lower BIC / CV loss = better)")
 print("   CV loss: squared error per player (PPR) or log-loss per player (top-12/24);")
@@ -136,3 +177,23 @@ for oname in OUT:
     print(f"   {oname}   (best BIC: k={best_bic}, best CV: k={best_cv})")
     print(t.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
     print()
+
+# ---------- 3. rounds 1-2: where do picks 30-32 belong? ----------
+if ROUNDS >= 2:
+    df["ppg"] = df.y2_ppr / df.y2_games
+    df["band"] = pd.cut(df.draft_pick, [0, 29, 32, 48, 64],
+                        labels=["Picks 1-29", "Picks 30-32", "Picks 33-48", "Picks 49-64"])
+    print("3. Picks 30-32 next to their neighbors")
+    print(df.groupby("band", observed=True).agg(
+        n=("ppg", "size"), ppg_mean=("ppg", "mean"), ppg_median=("ppg", "median"),
+        total_ppr_median=("y2_ppr", "median"), top12=("y2_top12", lambda v: (v > 0).mean()),
+        top24=("y2_top24", lambda v: (v > 0).mean()))
+        .to_string(float_format=lambda x: f"{x:.2f}"))
+    print()
+    from scipy import stats
+    a = df[df.band == "Picks 30-32"]
+    for other in ("Picks 1-29", "Picks 33-48"):
+        b = df[df.band == other]
+        print(f"   30-32 vs {other}:  PPG p = {stats.ttest_ind(a.ppg.dropna(), b.ppg.dropna(), equal_var=False).pvalue:.2f}"
+              f",  log total PPR p = {stats.ttest_ind(np.log1p(a.y2_ppr), np.log1p(b.y2_ppr), equal_var=False).pvalue:.2f}"
+              f",  top-12 Fisher p = {stats.fisher_exact([[(a.y2_top12 > 0).sum(), (a.y2_top12 == 0).sum()], [(b.y2_top12 > 0).sum(), (b.y2_top12 == 0).sum()]])[1]:.2f}")

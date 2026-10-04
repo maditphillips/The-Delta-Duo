@@ -9,52 +9,52 @@ A. Spearman correlation of first-3-game metric with career outcome (year 2+)
    efficiency metrics: only backs with 10+ carries (4+ targets for yds/target)
 
               metric       kind   n    rho     p  partial_rho  partial_p
-      Carries / game      usage 503  0.408 0.000        0.160      0.000
-         Carry share      usage 503  0.407 0.000        0.160      0.000
-   Receptions / game      usage 503  0.319 0.000        0.148      0.001
-     Reception share      usage 503  0.331 0.000        0.150      0.001
+      Carries / game      usage 503  0.408 0.000        0.158      0.000
+         Carry share      usage 503  0.407 0.000        0.158      0.000
+   Receptions / game      usage 503  0.319 0.000        0.146      0.001
+     Reception share      usage 503  0.331 0.000        0.149      0.001
         Target share      usage 379  0.324 0.000        0.145      0.005
           Snap share      usage 215  0.435 0.000        0.163      0.017
-      Touches / game      usage 503  0.423 0.000        0.175      0.000
-       Yards / carry efficiency 264  0.234 0.000        0.250      0.000
+      Touches / game      usage 503  0.423 0.000        0.173      0.000
+       Yards / carry efficiency 264  0.234 0.000        0.253      0.000
     Rush EPA / carry efficiency 264  0.202 0.001        0.249      0.000
    Rush success rate efficiency 264  0.176 0.004        0.191      0.002
-   1st downs / carry efficiency 264  0.167 0.007        0.180      0.003
+   1st downs / carry efficiency 264  0.167 0.007        0.183      0.003
       Yards / target efficiency 140 -0.016 0.854       -0.062      0.470
-Scrimmage yds / game production 503  0.451 0.000        0.226      0.000
-      PPR pts / game production 503  0.435 0.000        0.228      0.000
+Scrimmage yds / game production 503  0.451 0.000        0.225      0.000
+      PPR pts / game production 503  0.435 0.000        0.226      0.000
 
-   reference: draft pick vs year-2+ PPR, rho = 0.537
+   reference: draft pick vs year-2+ PPR, rho = 0.539
 
 B. Out-of-sample fit, 20x repeated 10-fold CV (linear / logistic)
    cv_r2: log(1 + year-2+ PPR points);  auc: had any top-24 / top-12 season in year 2+
    d_*: gain over draft capital alone (same folds)
 
                         model  k  cv_r2   d_r2  d_r2_lo  auc_top24  d_auc24  auc_top12  d_auc12
-          Draft capital + age  3  0.276  0.000    0.000      0.757    0.000      0.790    0.000
-           First 3 games only  9  0.148 -0.128   -0.136      0.712   -0.044      0.726   -0.065
-        Draft + first-3 usage  7  0.291  0.015    0.012      0.764    0.008      0.793    0.003
-   Draft + first-3 efficiency  7  0.286  0.011    0.007      0.764    0.007      0.786   -0.004
-  Draft + first 3 games (all) 12  0.293  0.017    0.010      0.771    0.014      0.789   -0.001
-   Draft + full rookie season 13  0.409  0.133    0.127      0.806    0.049      0.827    0.037
-Draft + full rookie + first 3 22  0.394  0.118    0.112      0.802    0.045      0.817    0.027
+          Draft capital + age  3  0.288  0.000    0.000      0.757    0.000      0.791    0.000
+           First 3 games only  9  0.148 -0.140   -0.147      0.712   -0.044      0.726   -0.065
+        Draft + first-3 usage  7  0.297  0.010    0.006      0.765    0.008      0.793    0.003
+   Draft + first-3 efficiency  7  0.299  0.011    0.008      0.766    0.009      0.788   -0.003
+  Draft + first 3 games (all) 12  0.300  0.013    0.006      0.772    0.015      0.791   -0.000
+   Draft + full rookie season 13  0.411  0.124    0.117      0.808    0.052      0.828    0.037
+Draft + full rookie + first 3 22  0.396  0.109    0.102      0.804    0.047      0.818    0.027
 
-   gradient boosting, draft + first 3: cv_r2 = 0.228 (nonlinearity check)
+   gradient boosting, draft + first 3: cv_r2 = 0.229 (nonlinearity check)
 
    standardized OLS coefficients, draft + first 3 (correlated inputs; read with care)
           feature  std_coef     p
-         log_pick    -0.541 0.000
-        undrafted    -0.354 0.001
-              age    -0.496 0.000
-    f3_carries_pg     0.556 0.186
-   f3_carry_share    -0.237 0.536
-        f3_rec_pg    -0.042 0.917
-     f3_rec_share     0.227 0.542
-         f3_ypc_s     0.310 0.025
- f3_rush_epa_pc_s     0.015 0.922
-     f3_rush_sr_s     0.024 0.862
-f3_rush_1d_rate_s     0.007 0.957
-        f3_ppr_pg    -0.049 0.878
+         log_pick    -0.623 0.000
+        undrafted    -0.321 0.003
+              age    -0.484 0.000
+    f3_carries_pg     0.518 0.216
+   f3_carry_share    -0.226 0.553
+        f3_rec_pg    -0.009 0.982
+     f3_rec_share     0.180 0.628
+         f3_ypc_s     0.322 0.020
+ f3_rush_epa_pc_s     0.016 0.914
+     f3_rush_sr_s     0.010 0.942
+f3_rush_1d_rate_s     0.014 0.914
+        f3_ppr_pg    -0.057 0.859
 
 C. Stability: first-3-game value vs the same metric over the rest of the career
    (backs with 50+ later carries; efficiency needs 10+ first-3 carries)
@@ -75,10 +75,10 @@ D. Hit rate (any top-24 season, year 2+) by draft tier x first-3 carry share
 
   tier share_bin   n  hit_top24  med_y2_ppr
   Rd 1      <15%   5       0.80     1248.16
-  Rd 1    15-35%  15       0.80      919.90
+  Rd 1    15-35%  14       0.86      938.40
   Rd 1      35%+  28       0.68     1019.56
 Rd 2-3      <15%  31       0.45      324.50
-Rd 2-3    15-35%  39       0.51      421.20
+Rd 2-3    15-35%  40       0.50      415.95
 Rd 2-3      35%+  34       0.59      415.85
 Rd 4-7      <15% 118       0.17       60.95
 Rd 4-7    15-35%  51       0.22       85.90
@@ -98,12 +98,12 @@ Rd 4+/UDFA  low SR 44       0.20       59.15
 E. 2026 rookies: chance of a top-24 season in year 2+ (model fit on 2000-2020)
 
                name team  draft_pick  f3_carries_pg  f3_carry_share  f3_rec_pg  f3_ypc  f3_rush_sr  f3_ppr_pg  p_top24_draft_only  p_top24  delta
-     Jeremiyah Love  ARI        3.00          13.67            0.53       3.33    3.90        0.46      14.13                0.94     0.92  -0.02
-     Jadarian Price  SEA       32.00           9.33            0.35       1.33    4.25        0.36       4.67                0.57     0.41  -0.16
-Mike Washington Jr.   LV      122.00           5.00            0.16       0.00    6.80        0.40       5.40                0.27     0.37   0.10
-       Kaelon Black   SF       90.00           8.33            0.31       0.33    4.28        0.40       4.07                0.25     0.27   0.02
-     Emmett Johnson   KC      161.00           5.33            0.17       1.33    3.50        0.50       5.33                0.24     0.21  -0.03
-       CJ Donaldson   NO         NaN           1.33            0.05       0.33    2.75        1.00       0.63                0.16     0.11  -0.04
-       Seth McGowan  IND      237.00           2.00            0.07       0.33    2.33        0.17       0.80                0.12     0.11  -0.02
+     Jeremiyah Love  ARI        3.00          13.67            0.53       3.33    3.90        0.46      14.13                0.96     0.94  -0.02
+     Jadarian Price  SEA       32.00           9.33            0.35       1.33    4.25        0.36       4.67                0.60     0.44  -0.16
+Mike Washington Jr.   LV      122.00           5.00            0.16       0.00    6.80        0.40       5.40                0.27     0.38   0.11
+       Kaelon Black   SF       90.00           8.33            0.31       0.33    4.28        0.40       4.07                0.25     0.28   0.02
+     Emmett Johnson   KC      161.00           5.33            0.17       1.33    3.50        0.50       5.33                0.23     0.19  -0.03
+       CJ Donaldson   NO         NaN           1.33            0.05       0.33    2.75        1.00       0.63                0.15     0.11  -0.04
+       Seth McGowan  IND      237.00           2.00            0.07       0.33    2.33        0.17       0.80                0.11     0.10  -0.01
 
-   holdout check, 2021-22 rookies (n=49): AUC draft-only 0.778, draft + first 3 0.769
+   holdout check, 2021-22 rookies (n=49): AUC draft-only 0.775, draft + first 3 0.775

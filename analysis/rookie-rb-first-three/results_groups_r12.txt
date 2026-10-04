@@ -1,0 +1,63 @@
+Round 1-2 RBs 2000-2020: n = 99, picks 2-63
+
+1. Clustering on draft pick alone
+   k=1: within-SS    35735  silhouette   nan  gap -0.16 (se 0.09)  centers [35]
+   k=2: within-SS     8581  silhouette  0.63  gap -0.16 (se 0.10)  centers [17, 50]
+   k=3: within-SS     3125  silhouette  0.65  gap  0.03 (se 0.08)  centers [8, 31, 54]
+   k=4: within-SS     1703  silhouette  0.62  gap  0.02 (se 0.09)  centers [7, 26, 41, 56]
+   k=5: within-SS     1201  silhouette  0.58  gap -0.12 (se 0.10)  centers [7, 23, 34, 45, 57]
+   k=6: within-SS      831  silhouette  0.57  gap -0.11 (se 0.07)  centers [4, 13, 27, 40, 52, 59]
+   gap-statistic choice (first k with gap(k) >= gap(k+1) - se): k = 1
+   Picks are spread evenly, so any 'clusters' here are just equal slices.
+
+   (yr-2+ PPR per game: 3 backs with no games after year 1 left out)
+2. Groups chosen to explain career outcome (lower BIC / CV loss = better)
+   CV loss: squared error per player (PPR) or log-loss per player (top-12/24);
+   cut points re-optimized inside every training fold, 20x repeated 5-fold
+
+   log yr-2+ PPR   (best BIC: k=line, best CV: k=line)
+   k       best cuts (pick)     BIC  CV loss  CV se
+   1                   none 116.846    3.183  0.050
+   2                   29.0 109.247    3.081  0.145
+   3             29.0, 49.5 113.801    3.008  0.165
+   4       29.0, 56.5, 59.5 119.137    3.214  0.166
+   5 29.0, 49.5, 56.5, 59.5 126.799    3.325  0.200
+line   log(pick), no groups 107.802    2.813  0.055
+
+   yr-2+ PPR per game   (best BIC: k=line, best CV: k=line)
+   k       best cuts (pick)     BIC  CV loss  CV se
+   1                   none 302.865   23.002  0.412
+   2                   48.5 295.925   22.031  0.718
+   3             10.5, 48.5 301.062   22.186  1.293
+   4       30.5, 34.5, 48.5 307.397   23.281  1.774
+   5 10.5, 30.5, 34.5, 48.5 314.748   23.821  1.681
+line   log(pick), no groups 295.628   20.904  0.559
+
+   any top-12 season   (best BIC: k=2, best CV: k=2)
+   k      best cuts (pick)     BIC  CV loss  CV se
+   1                  none 140.614    0.700  0.008
+   2                  29.0 136.737    0.679  0.028
+   3            22.5, 25.5 141.377    0.773  0.034
+   4      12.5, 22.5, 25.5 145.842    0.795  0.038
+   5 6.0, 12.5, 22.5, 25.5 153.239    0.848  0.058
+line  log(pick), no groups 136.986    0.680  0.020
+
+   any top-24 season   (best BIC: k=line, best CV: k=line)
+   k       best cuts (pick)     BIC  CV loss  CV se
+   1                   none 131.966    0.653  0.005
+   2                   49.5 132.947    0.681  0.025
+   3             49.5, 54.5 138.813    0.715  0.044
+   4       49.5, 54.5, 57.5 144.182    0.739  0.052
+   5 15.5, 49.5, 54.5, 57.5 150.954    0.754  0.060
+line   log(pick), no groups 130.784    0.640  0.007
+
+3. Picks 30-32 next to their neighbors
+              n  ppg_mean  ppg_median  total_ppr_median  top12  top24
+band                                                                 
+Picks 1-29   39     12.51       11.98           1248.16   0.67   0.79
+Picks 30-32   8     10.09        9.10            349.65   0.25   0.50
+Picks 33-48  20     11.30        9.81            664.10   0.35   0.75
+Picks 49-64  32      7.86        7.46            349.45   0.28   0.47
+
+   30-32 vs Picks 1-29:  PPG p = 0.19,  log total PPR p = 0.02,  top-12 Fisher p = 0.05
+   30-32 vs Picks 33-48:  PPG p = 0.54,  log total PPR p = 0.40,  top-12 Fisher p = 1.00
