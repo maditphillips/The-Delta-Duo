@@ -518,6 +518,34 @@ REST = {("RB", "starter"): [(_C, "sd_carries", .26), (_T, "sd_targets", .33), (_
         ("WR", "no2"):     [(_T, "sd_targets", .56), (_S, "sd_snap_share", .67)]}
 
 
+# What each heir gained, as a share of the absent player's per-game usage,
+# by his rank in the room on that stat (1 = busiest remaining, 3 = third or
+# lower). dd/absence.py, 2019-2025, first missed games. The busiest receiver
+# left gains almost nothing when a WR1 sits; the depth receivers take it.
+RANK_RATES = {
+    ("RB", "starter", "carries"): {1: .51, 2: .21, 3: .08},
+    ("RB", "starter", "targets"): {1: .29, 2: .31, 3: .14},
+    ("RB", "starter", "snaps"):   {1: .40, 2: .32, 3: .13},
+    ("RB", "no2", "carries"):     {1: .26, 2: .15, 3: .08},
+    ("RB", "no2", "targets"):     {1: .21, 2: .18, 3: .05},
+    ("RB", "no2", "snaps"):       {1: .14, 2: .15, 3: .09},
+    ("TE", "starter", "targets"): {1: .37, 2: .20, 3: .04},
+    ("TE", "starter", "snaps"):   {1: .33, 2: .31, 3: .09},
+    ("TE", "no2", "targets"):     {1: .32, 2: .11, 3: .05},
+    ("TE", "no2", "snaps"):       {1: .15, 2: .17, 3: .16},
+    ("WR", "starter", "targets"): {1: .10, 2: .20, 3: .19},
+    ("WR", "starter", "snaps"):   {1: .04, 2: .19, 3: .23},
+    ("WR", "no2", "targets"):     {1: .00, 2: .06, 3: .12},
+    ("WR", "no2", "snaps"):       {1: .00, 2: .10, 3: .12},
+}
+RANKED_COLS = {
+    "RB": [("b_carries", "sd_carries", "carries"), ("b_targets", "sd_targets", "targets"),
+           ("b_snap_share", "sd_snap_share", "snaps")],
+    "TE": [("b_targets", "sd_targets", "targets"), ("b_snap_share", "sd_snap_share", "snaps")],
+    "WR": [("b_targets", "sd_targets", "targets"), ("b_snap_share", "sd_snap_share", "snaps")],
+}
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -539,6 +567,31 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if kind == "role" and col in te and prior in te:
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
+        elif row.basis == "ranked":
+            # Each heir is priced on what a player in his spot in the room has
+            # historically gained: the busiest one left, the second, the rest.
+            # Ranked per stat on this season's usage among everyone listed
+            # for the same absent player.
+            src = te[te.player_name == row.from_player]
+            if src.empty:
+                print(f"  role.csv: {row.from_player} is not in the {position} rows")
+                continue
+            s = src.iloc[0]
+            role = row.get("absent_role") if isinstance(row.get("absent_role"), str) else "starter"
+            wt = float(row.weight) if pd.notna(row.get("weight")) else 1.0
+            te.loc[hit, "role_weight"] = wt
+            te.loc[hit, "role_absent"] = role
+            peers = r[(r.basis == "ranked") & (r.from_player == row.from_player)].player
+            mates = te[te.player_name.isin(peers)].set_index("player_name")
+            for col, sd, stat in RANKED_COLS.get(position.upper(), []):
+                rk = int(mates[sd].fillna(0).rank(ascending=False, method="first").get(row.player, 3))
+                rate = RANK_RATES.get((position.upper(), role, stat), {}).get(min(rk, 3), 0.0)
+                old = te.loc[hit, col].fillna(0)
+                te.loc[hit, col] = old + wt * rate * (s[sd] if pd.notna(s[sd]) else 0)
+                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
+                if ratio and ratio in te:
+                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+            te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis in ("next", "rest"):
             # The measured structure: the next man below the absent one takes
             # one share, everyone else in the room splits another by how much
