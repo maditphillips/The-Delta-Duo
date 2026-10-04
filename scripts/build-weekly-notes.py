@@ -519,7 +519,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                "te": "about a third of the targets and snaps",
                "wr": "about 14% of the targets"}
     if "role_basis" in df:
-        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split"])]:
+        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
             names = ([src] if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
@@ -531,6 +531,19 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] in ("next", "rest"):
+                wt = df.at[i, "role_weight"] if "role_weight" in df else 1.0
+                if pos == "wr":
+                    how = ("No single receiver inherits his work; the room splits it by how "
+                           "many targets each was already getting")
+                elif df.at[i, "role_basis"] == "next":
+                    how = "He is priced on the share the next man up has taken in past seasons"
+                else:
+                    how = ("He is priced on his part of the share the rest of the room has "
+                           "taken in past seasons, split by how much each was already getting")
+                tail = (f", scaled down because {who} has already missed games and part of "
+                        f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
+                df.at[i, "_vacated"] = f"{who} {verb} out. {how}{tail}. "
             elif df.at[i, "role_basis"] == "inherit_split":
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, and his work is split across the room by how much "
