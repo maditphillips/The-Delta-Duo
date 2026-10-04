@@ -485,6 +485,16 @@ INHERIT = {
 }
 
 
+# A committee's share: everything the backups took between them, next man and
+# the rest of the room together (same source as INHERIT).
+SPLIT = {
+    "RB": [("b_carries", "sd_carries", 0.71), ("b_targets", "sd_targets", 0.70),
+           ("b_snap_share", "sd_snap_share", 0.73)],
+    "TE": [("b_targets", "sd_targets", 0.57), ("b_snap_share", "sd_snap_share", 0.65)],
+    "WR": [("b_targets", "sd_targets", 0.72), ("b_snap_share", "sd_snap_share", 0.76)],
+}
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -506,6 +516,25 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if kind == "role" and col in te and prior in te:
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
+        elif row.basis == "inherit_split":
+            # A committee: the starter's work goes to the whole room, each stat
+            # split by how much of it each heir was already getting.
+            src = te[te.player_name == row.from_player]
+            heirs = r[(r.basis == "inherit_split") & (r.from_player == row.from_player)].player
+            mates = te[te.player_name.isin(heirs)]
+            if src.empty or mates.empty:
+                print(f"  role.csv: cannot split {row.from_player}'s work")
+                continue
+            s = src.iloc[0]
+            for col, sd, share in SPLIT.get(position.upper(), []):
+                w = mates.set_index("player_name")[sd].fillna(0)
+                frac = (w / w.sum()).get(row.player, 0) if w.sum() > 0 else 1 / len(w)
+                old = te.loc[hit, col].fillna(0)
+                te.loc[hit, col] = old + share * frac * (s[sd] if pd.notna(s[sd]) else 0)
+                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
+                if ratio and ratio in te:
+                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+            te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis == "inherit":
             src = te[te.player_name == row.from_player]
             if src.empty:
@@ -523,6 +552,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
         # Carried to the published lists so the note can say why he is priced
         # the way he is, instead of "his teammate's work is not priced in".
         te.loc[hit, "role_basis"] = row.basis
+        te.loc[hit, "role_from"] = row.get("from_player") if isinstance(row.get("from_player"), str) else None
         print(f"  {position}: pricing {row.player} on {row.basis}, depth {int(row.depth_rank)}")
     return te
 

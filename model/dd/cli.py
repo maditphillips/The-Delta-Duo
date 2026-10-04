@@ -127,7 +127,7 @@ def cmd_predict():
                 "off_continuity", "hc_continuity", "hc_change", "changed_team",
                 "is_rookie", "is_out", "is_questionable", "practice_status", "learner",
             # Set when model/data/role.csv priced him on another role.
-            "role_basis"]
+            "role_basis", "role_from"]
         keep = [c for c in keep if c in df.columns]
         out = df[keep].copy()
         out["delta_vs_consensus"] = out["consensus_rank"] - out["rank_data"]
@@ -177,7 +177,7 @@ def cmd_week():
             "off_continuity", "hc_continuity", "hc_change", "changed_team",
             "is_rookie", "is_out", "is_questionable", "practice_status", "learner",
             # Set when model/data/role.csv priced him on another role.
-            "role_basis"]
+            "role_basis", "role_from"]
     for (pos, scoring), df in lists.items():
         if len(cons):
             df = df.merge(cons, on="player_id", how="left")
