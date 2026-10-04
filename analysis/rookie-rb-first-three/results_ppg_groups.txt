@@ -1,0 +1,25 @@
+Year-2+ PPR per game, first-round RBs 2000-2020
+
+        n  mean  median  sd
+grp                        
+1-10   16  13.7    13.1 4.3
+11-24  17  12.0    12.4 3.7
+25-32  14  10.3     9.2 3.9
+
+Tests (one-sided for the trend rows: is there a decline?)
+                                                         test     p  permutation p
+             One-way ANOVA: any difference among the 3 groups 0.074          0.072
+                                 Welch ANOVA (unequal spread) 0.095            NaN
+                   Kruskal-Wallis (ranks; robust to outliers) 0.082          0.081
+Trend: steady decline across groups (-1.7 PPG per group step) 0.011          0.010
+     Trend on raw pick number, Spearman rho -0.27 (two-sided) 0.068            NaN
+
+Pairwise (two-sided). Holm adjusts for making 3 comparisons.
+    comparison  gap (PPG)       95% CI  Welch t p  Holm p  perm p  Holm perm p
+ 1-10 vs 11-24      1.711 [-0.8, +4.4]      0.234   0.445   0.233        0.445
+11-24 vs 25-32      1.720 [-0.9, +4.2]      0.222   0.445   0.222        0.445
+ 1-10 vs 25-32      3.431 [+0.6, +6.3]      0.030   0.090   0.030        0.090
+
+Share of PPG variation explained by group (eta^2): 11.2%
+Spread of PPG between players (sd): 4.1
+Smallest 1-10 vs 25-32 gap this sample detects 80% of the time (5% level): ~4.2 PPG

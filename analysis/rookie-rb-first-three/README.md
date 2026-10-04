@@ -6,7 +6,7 @@ Efficiency in those games mostly doesn't repeat. A full rookie season is worth a
 times as much as the first three games. Among first-round picks alone, the first three
 games predict nothing (see `analyze_round1.py`).
 
-Full output: `results.txt`, `results_round1.txt` and `results_groups.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
+Full output: `results.txt`, `results_round1.txt`, `results_groups.txt` and `results_ppg_groups.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
 
 ## Running it
 
@@ -16,6 +16,7 @@ python3 build.py      # -> rbs.csv  (one row per rookie RB)
 python3 analyze.py    # all tables to stdout, -> report_data.json
 python3 analyze_round1.py   # first-round-only version, split into pick groups
 python3 choose_groups.py    # how many round-1 groups the data supports
+python3 test_ppg_groups.py  # is the PPG drop across round-1 groups significant?
 ```
 
 Needs pandas, numpy, scipy, scikit-learn, statsmodels, pyarrow.
@@ -202,6 +203,31 @@ Rd 1-3 67% vs 57%; Rd 4+/UDFA 27% vs 20%.
 So 2 groups beats 3, but the honest answer is that the data barely supports splitting
 round 1. The 1-16 / 17-32 and 1-10 / 11-24 / 25-32 splits above were set by hand, and
 neither changes the main finding: early usage doesn't predict career within round 1.
+
+### 7. Is the PPG drop across round-1 groups real?
+
+Year-2+ PPR per game: picks 1-10 **13.7**, 11-24 **12.0**, 25-32 **10.3** (n = 16, 17, 14;
+player-to-player sd about 4).
+
+| Test | Question | p |
+|---|---|---|
+| ANOVA / permutation | Do the 3 groups differ at all? | 0.07 |
+| Kruskal-Wallis (ranks) | Same, robust to outliers | 0.08 |
+| Trend test | Steady decline across the 3 groups? (two-sided) | **0.02** |
+| Spearman on raw pick | Decline with pick number, no groups? | 0.07 |
+| 1-10 vs 11-24 | gap 1.7 PPG, 95% CI -0.8 to +4.4 | 0.23 (Holm 0.45) |
+| 11-24 vs 25-32 | gap 1.7 PPG, 95% CI -0.9 to +4.2 | 0.22 (Holm 0.45) |
+| 1-10 vs 25-32 | gap 3.4 PPG, 95% CI +0.6 to +6.3 | 0.03 (Holm 0.09) |
+
+Borderline. There is some evidence that PPG slides as you go later in round 1 (the trend
+test passes), but no single step between neighboring groups is distinguishable from
+noise, and the top-vs-bottom gap doesn't survive correction for testing three pairs.
+The group cut points were set by hand, which also makes the trend p a bit optimistic.
+Group explains about 11% of PPG variation. With this sample, a 1-10 vs 25-32 gap would
+need to be about 4.2 PPG to be detected reliably; the observed 3.4 is just under that.
+
+Read it as: earlier first-round backs probably score a bit more per game, by roughly
+1-2 PPG per tier, but the data can't pin down where (or whether) the steps are.
 
 ## Caveats
 
