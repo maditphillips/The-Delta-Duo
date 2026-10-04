@@ -1,0 +1,196 @@
+First-round RBs, 2000-2020 debuts, 3+ rookie games: n = 47
+  any top-24 season (yr 2+): 74%   any top-12: 60%   median yr-2+ PPR: 998
+
+1. Spearman rho, first-3 metric vs career (yr 2+), all first-rounders  (* = 10+ first-3 carries)
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 47     +0.07 [-0.23, +0.37] +0.62       +0.05         +0.10
+      Carries / game 47     +0.10 [-0.23, +0.38] +0.52       +0.05         +0.11
+   Receptions / game 47     +0.13 [-0.18, +0.40] +0.40       +0.18         +0.20
+      Touches / game 47     +0.11 [-0.18, +0.41] +0.45       +0.10         +0.14
+      PPR pts / game 47     +0.15 [-0.18, +0.47] +0.32       +0.25         +0.17
+Scrimmage yds / game 47     +0.18 [-0.14, +0.48] +0.24       +0.25         +0.20
+      Yards / carry* 44     +0.25 [-0.07, +0.52] +0.10       +0.20         +0.19
+   Rush EPA / carry* 44     +0.26 [-0.04, +0.53] +0.09       +0.22         +0.21
+  Rush success rate* 44     +0.26 [-0.04, +0.50] +0.09       +0.29         +0.25
+
+   reference: pick number within round 1 vs yr-2+ PPR: rho = +0.39 (p = 0.01)
+
+2. Out-of-sample (50x repeated 5-fold CV). Outcome: log yr-2+ PPR; AUC: any top-12 season
+                          model  cv_r2   d_r2  share_of_reps_better  auc_top12  d_auc
+                     Pick + age -0.013 +0.000                   NaN     +0.511 +0.000
+       Pick + age + carry share -0.070 -0.057                +0.000     +0.495 -0.016
+             Pick + age + PPR/g -0.108 -0.095                +0.000     +0.439 -0.071
+         Pick + age + touches/g -0.064 -0.052                +0.000     +0.466 -0.045
+      Pick + age + success rate +0.011 +0.024                +0.760     +0.529 +0.018
+               Pick + age + YPC +0.023 +0.035                +0.780     +0.541 +0.030
+Pick + age + share + PPR/g + SR -0.129 -0.116                +0.020     +0.495 -0.016
+
+3a. Round 1 split into two groups
+              n  top24  top12  med_y2_ppr  f3_carry_share  f3_ppr_pg
+grp                                                                 
+Picks 1-16   23   0.83   0.70     1188.70            0.52      12.13
+Picks 17-32  24   0.67   0.50      640.60            0.32       6.85
+
+   Picks 1-16: Spearman rho with career
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 23     +0.14 [-0.35, +0.62] +0.52       +0.05         +0.21
+      Carries / game 23     +0.13 [-0.34, +0.55] +0.57       +0.13         +0.25
+   Receptions / game 23     +0.36 [-0.08, +0.69] +0.09       +0.34         +0.47
+      Touches / game 23     +0.23 [-0.24, +0.62] +0.28       +0.22         +0.34
+      PPR pts / game 23     +0.32 [-0.16, +0.70] +0.14       +0.38         +0.38
+Scrimmage yds / game 23     +0.40 [-0.04, +0.73] +0.06       +0.50         +0.46
+      Yards / carry* 23     +0.15 [-0.31, +0.54] +0.51       +0.26         +0.06
+   Rush EPA / carry* 23     +0.01 [-0.42, +0.44] +0.96       +0.16         +0.05
+  Rush success rate* 23     +0.30 [-0.21, +0.67] +0.17       +0.41         +0.29
+
+   Picks 17-32: Spearman rho with career
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 24     -0.17 [-0.57, +0.25] +0.42       -0.12         -0.19
+      Carries / game 24     -0.16 [-0.57, +0.25] +0.44       -0.19         -0.22
+   Receptions / game 24     -0.17 [-0.57, +0.25] +0.42       -0.07         -0.21
+      Touches / game 24     -0.17 [-0.59, +0.26] +0.43       -0.13         -0.20
+      PPR pts / game 24     -0.10 [-0.54, +0.35] +0.64       -0.03         -0.17
+Scrimmage yds / game 24     -0.16 [-0.59, +0.29] +0.45       -0.11         -0.22
+      Yards / carry* 21     +0.35 [-0.10, +0.70] +0.13       +0.03         +0.32
+   Rush EPA / carry* 21     +0.37 [-0.08, +0.74] +0.09       +0.15         +0.33
+  Rush success rate* 21     +0.16 [-0.25, +0.55] +0.48       +0.10         +0.19
+
+   High vs low half of first-3 usage, within each group (two groups)
+      group    split on half  n  median_f3  top24  top12  med_y2_ppr  busts (<300 yr2+ PPR)
+ Picks 1-16 carry share high 12       0.70   0.83   0.75     1499.10                   0.08
+ Picks 1-16 carry share  low 11       0.34   0.82   0.64      956.90                   0.09
+ Picks 1-16       PPR/g high 12      16.48   0.83   0.83     1472.00                   0.08
+ Picks 1-16       PPR/g  low 11       8.67   0.82   0.55      956.90                   0.09
+Picks 17-32 carry share high 12       0.52   0.58   0.42      587.00                   0.08
+Picks 17-32 carry share  low 12       0.20   0.75   0.58     1026.38                   0.25
+Picks 17-32       PPR/g high 12      11.43   0.58   0.42      591.30                   0.08
+Picks 17-32       PPR/g  low 12       2.30   0.75   0.58     1026.38                   0.25
+
+   slope of log yr-2+ PPR on f3_carry_share (per 1 SD), by group: Picks 1-16 +0.04, Picks 17-32 -0.09
+     do slopes differ? F-test p = 0.80, permutation p = 0.80
+   slope of log yr-2+ PPR on f3_ppr_pg (per 1 SD), by group: Picks 1-16 +0.24, Picks 17-32 -0.17
+     do slopes differ? F-test p = 0.13, permutation p = 0.13
+
+3b. Round 1 split into three groups
+              n  top24  top12  med_y2_ppr  f3_carry_share  f3_ppr_pg
+grp                                                                 
+Picks 1-10   16   0.88   0.75     1388.65            0.68      14.25
+Picks 11-24  17   0.76   0.65     1188.70            0.39       8.67
+Picks 25-32  14   0.57   0.36      537.45            0.42       8.45
+
+   Picks 1-10: Spearman rho with career
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 16     +0.00 [-0.60, +0.69] +0.99       -0.13         +0.05
+      Carries / game 16     +0.13 [-0.45, +0.71] +0.62       +0.10         +0.25
+   Receptions / game 16     +0.13 [-0.43, +0.62] +0.64       +0.16         +0.22
+      Touches / game 16     +0.15 [-0.42, +0.70] +0.59       +0.13         +0.28
+      PPR pts / game 16     +0.18 [-0.42, +0.68] +0.51       +0.31         +0.34
+Scrimmage yds / game 16     +0.28 [-0.30, +0.80] +0.29       +0.37         +0.36
+      Yards / carry* 16     +0.02 [-0.48, +0.55] +0.95       +0.11         -0.07
+   Rush EPA / carry* 16     -0.11 [-0.64, +0.41] +0.69       +0.12         +0.02
+  Rush success rate* 16     +0.38 [-0.20, +0.75] +0.14       +0.35         +0.45
+
+   Picks 11-24: Spearman rho with career
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 17     -0.02 [-0.53, +0.53] +0.94       -0.08         +0.04
+      Carries / game 17     -0.12 [-0.56, +0.46] +0.64       -0.17         -0.06
+   Receptions / game 17     +0.11 [-0.41, +0.65] +0.67       +0.06         +0.23
+      Touches / game 17     -0.12 [-0.58, +0.47] +0.64       -0.19         -0.07
+      PPR pts / game 17     +0.09 [-0.49, +0.60] +0.74       -0.04         +0.02
+Scrimmage yds / game 17     +0.06 [-0.47, +0.64] +0.82       +0.01         +0.09
+      Yards / carry* 16     +0.42 [-0.13, +0.81] +0.11       +0.32         +0.27
+   Rush EPA / carry* 16     +0.19 [-0.42, +0.71] +0.49       +0.14         +0.05
+  Rush success rate* 16     +0.07 [-0.56, +0.62] +0.79       +0.08         -0.11
+
+   Picks 25-32: Spearman rho with career
+              metric  n  yr2+ PPR         95% CI     p  yr2+ PPR/g  # top-12 yrs
+         Carry share 14     +0.01 [-0.63, +0.64] +0.98       -0.12         -0.18
+      Carries / game 14     +0.07 [-0.56, +0.64] +0.81       -0.15         -0.14
+   Receptions / game 14     +0.01 [-0.60, +0.65] +0.98       +0.09         -0.08
+      Touches / game 14     +0.07 [-0.53, +0.68] +0.81       -0.02         -0.07
+      PPR pts / game 14     +0.05 [-0.64, +0.67] +0.88       +0.05         -0.12
+Scrimmage yds / game 14     -0.02 [-0.70, +0.61] +0.96       -0.05         -0.22
+      Yards / carry* 12     +0.29 [-0.46, +0.76] +0.37       -0.13         +0.28
+   Rush EPA / carry* 12     +0.03 [-0.66, +0.67] +0.91       +0.08         +0.11
+  Rush success rate* 12     +0.22 [-0.49, +0.74] +0.48       +0.48         +0.44
+
+   High vs low half of first-3 usage, within each group (three groups)
+      group    split on half  n  median_f3  top24  top12  med_y2_ppr  busts (<300 yr2+ PPR)
+ Picks 1-10 carry share high  8       0.70   0.75   0.62     1419.55                   0.12
+ Picks 1-10 carry share  low  8       0.31   1.00   0.88     1246.87                   0.00
+ Picks 1-10       PPR/g high  8      18.23   0.75   0.75     1472.00                   0.12
+ Picks 1-10       PPR/g  low  8      11.12   1.00   0.75     1194.42                   0.00
+Picks 11-24 carry share high  9       0.49   0.67   0.56     1188.70                   0.11
+Picks 11-24 carry share  low  8       0.20   0.88   0.75     1093.60                   0.00
+Picks 11-24       PPR/g high  9      11.33   0.78   0.56      919.90                   0.00
+Picks 11-24       PPR/g  low  8       2.30   0.75   0.75     1306.45                   0.12
+Picks 25-32 carry share high  7       0.58   0.57   0.29      517.40                   0.14
+Picks 25-32 carry share  low  7       0.26   0.57   0.43      557.50                   0.43
+Picks 25-32       PPR/g high  7      11.50   0.43   0.29      557.50                   0.14
+Picks 25-32       PPR/g  low  7       3.93   0.71   0.43      517.40                   0.43
+
+   slope of log yr-2+ PPR on f3_carry_share (per 1 SD), by group: Picks 1-10 -0.03, Picks 11-24 -0.06, Picks 25-32 +0.17
+     do slopes differ? F-test p = 0.65, permutation p = 0.67
+   slope of log yr-2+ PPR on f3_ppr_pg (per 1 SD), by group: Picks 1-10 +0.07, Picks 11-24 +0.08, Picks 25-32 -0.01
+     do slopes differ? F-test p = 0.92, permutation p = 0.94
+
+4. Every first-round RB, sorted by pick
+                 name  rookie_year  draft_pick         grp  f3_carry_share  f3_ppr_pg  f3_rush_sr  y2_ppr  y2_top12  y2_top24
+         Ronnie Brown         2005        2.00  Picks 1-10            0.70      11.93        0.35 1041.62         0         3
+          Reggie Bush         2006        2.00  Picks 1-10            0.34      15.47        0.33 1441.10         1         5
+       Saquon Barkley         2018        2.00  Picks 1-10            0.69      22.77        0.41 1502.90         3         5
+     Trent Richardson         2012        3.00  Picks 1-10            0.86      17.67        0.30  262.70         0         0
+      Ezekiel Elliott         2016        4.00  Picks 1-10            0.70      14.97        0.44 1737.56         5         6
+    Leonard Fournette         2017        4.00  Picks 1-10            0.58      17.50        0.39  997.50         3         3
+      Darren McFadden         2008        4.00  Picks 1-10            0.41      12.27        0.45 1052.64         1         2
+        Cedric Benson         2005        4.00  Picks 1-10            0.27       1.50        0.25  956.90         0         2
+    Cadillac Williams         2005        5.00  Picks 1-10            0.79      18.80        0.41  606.60         0         0
+  LaDainian Tomlinson         2001        5.00  Picks 1-10            0.71      22.13        0.42 3179.72         7         8
+          Jamal Lewis         2000        5.00  Picks 1-10            0.26       4.70        0.26 1566.20         2         4
+         Thomas Jones         2000        7.00  Picks 1-10            0.68       7.37        0.33 1870.64         4         6
+      Adrian Peterson         2007        7.00  Picks 1-10            0.72      20.37        0.45 2492.60         6         8
+  Christian McCaffrey         2017        8.00  Picks 1-10            0.28      13.53        0.32 2286.66         5         5
+         C.J. Spiller         2010        9.00  Picks 1-10            0.16      10.30        0.25  739.50         1         1
+          Todd Gurley         2015       10.00  Picks 1-10            0.69      12.13        0.36 1336.20         2         4
+            Ron Dayne         2000       11.00 Picks 11-24            0.52       8.83        0.29  518.10         0         0
+       Marshawn Lynch         2007       12.00 Picks 11-24            0.76      14.47        0.32 1898.90         5         6
+         Ryan Mathews         2010       12.00 Picks 11-24            0.34       8.67        0.39  919.90         1         2
+      Knowshon Moreno         2009       12.00 Picks 11-24            0.45       9.53        0.48  670.50         1         2
+     Jonathan Stewart         2008       13.00 Picks 11-24            0.39      10.83        0.52 1188.70         0         3
+        Melvin Gordon         2015       15.00 Picks 11-24            0.52       7.87        0.41 1495.30         3         6
+        William Green         2002       16.00 Picks 11-24            0.49       1.80        0.24  177.60         0         0
+         T.J. Duckett         2002       18.00 Picks 11-24            0.30       4.93        0.66  508.90         0         0
+      Shaun Alexander         2000       19.00 Picks 11-24            0.14       2.77        0.30 1901.10         5         5
+     Laurence Maroney         2006       21.00 Picks 11-24            0.45      11.33        0.36  308.40         0         0
+          Felix Jones         2008       22.00 Picks 11-24            0.20      11.37        0.50  566.10         0         1
+     Deuce McAllister         2001       23.00 Picks 11-24            0.02       0.07        0.00 1267.30         2         4
+   Rashard Mendenhall         2008       23.00 Picks 11-24            0.11       1.63        0.30  804.60         1         3
+       Willis McGahee         2004       23.00 Picks 11-24            0.23       3.47        0.37 1345.60         1         3
+        Chris Johnson         2008       24.00 Picks 11-24            0.46      15.23        0.32 1601.80         4         5
+       Steven Jackson         2004       24.00 Picks 11-24            0.20       1.83        0.50 2289.08         5         8
+          Josh Jacobs         2019       24.00 Picks 11-24            0.67      12.87        0.47 1496.90         4         5
+        Rashaad Penny         2018       27.00 Picks 25-32            0.26       3.93        0.25  257.40         0         0
+         Donald Brown         2009       27.00 Picks 25-32            0.40      10.37        0.28  557.50         0         0
+      Michael Bennett         2001       27.00 Picks 25-32            0.53      11.50        0.28  616.50         0         1
+        Larry Johnson         2003       27.00 Picks 25-32            0.09       1.10        0.33 1248.16         2         2
+    DeAngelo Williams         2006       27.00 Picks 25-32            0.24       7.50        0.41 1533.30         2         3
+          Mark Ingram         2011       28.00 Picks 25-32            0.50       6.20        0.33 1669.60         4         5
+          Kevin Jones         2004       30.00 Picks 25-32            0.44       5.60        0.29  517.40         0         1
+          Jahvid Best         2010       30.00 Picks 25-32            0.58      25.57        0.34  112.70         0         0
+         Joseph Addai         2006       30.00 Picks 25-32            0.33      10.00        0.58  841.38         2         2
+          Chris Wells         2009       31.00 Picks 25-32            0.28       1.70        0.38  294.80         0         1
+          Doug Martin         2012       31.00 Picks 25-32            0.76      12.60        0.29  664.70         1         1
+          Sony Michel         2018       31.00 Picks 25-32            0.59       9.40        0.41  399.10         0         0
+         David Wilson         2012       32.00 Picks 25-32            0.08       0.03        0.00   19.40         0         0
+Clyde Edwards-Helaire         2020       32.00 Picks 25-32            0.63      17.07        0.33  300.20         0         0
+
+   2021+ first-rounders (careers incomplete; not used above)
+           name  rookie_year  draft_pick  f3_carry_share  f3_ppr_pg  f3_rush_sr  y2_ppr  y2_top12  y2_top24
+   Najee Harris         2021       24.00            0.80      17.73        0.15  637.16         0         3
+ Travis Etienne         2022       25.00            0.29       9.10        0.42  666.50         2         2
+ Bijan Robinson         2023        8.00            0.43      17.17        0.46  712.50         2         2
+   Jahmyr Gibbs         2023       12.00            0.34       9.93        0.29  729.80         2         2
+  Ashton Jeanty         2025        6.00            0.66       8.57        0.32    0.00         0         0
+Omarion Hampton         2025       22.00            0.53      12.17        0.36    0.00         0         0
+ Jeremiyah Love         2026        3.00            0.53      14.13        0.46    0.00         0         0
+ Jadarian Price         2026       32.00            0.35       4.67        0.36    0.00         0         0

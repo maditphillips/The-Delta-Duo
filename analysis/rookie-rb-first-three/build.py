@@ -68,13 +68,20 @@ rk = wk[wk.season == wk.rookie_year]
 rb_share = rk.assign(is_rb=rk.position == "RB").groupby("player_id").is_rb.mean()
 cand = rb_share[rb_share >= 0.5].index
 cand = [p for p in cand if p in info.index and info.loc[p, "position"] == "RB"]
+# players.csv carries the current position, so converts (e.g. a WR moved to RB later)
+# look like RBs. Drop anyone the draft table lists at another position.
+dp = pd.read_csv("data/draft_picks.csv").dropna(subset=["gsis_id"]).drop_duplicates("gsis_id")
+drafted_as = dp.set_index("gsis_id").position
+cand = [p for p in cand if drafted_as.get(p, "RB") in ("RB", "FB")]
 wk = wk[wk.player_id.isin(cand)]
 # 1999 is the first season of data, so a 1999 "debut" may be a veteran. Start at 2000,
 # and drop anyone players.csv says debuted earlier than their first box-score season.
 ri = info.loc[cand]
 ok = [p for p in cand
       if first_season[p] >= 2000
-      and not (pd.notna(ri.loc[p, "rookie_season"]) and ri.loc[p, "rookie_season"] < first_season[p])
+      # a back drafted the year before his debut (injured rookie year) is still a rookie
+      and not (pd.notna(ri.loc[p, "rookie_season"]) and ri.loc[p, "rookie_season"] < first_season[p]
+               and ri.loc[p, "draft_year"] != first_season[p] - 1)
       and not (pd.notna(ri.loc[p, "draft_year"]) and ri.loc[p, "draft_year"] < first_season[p] - 1)]
 wk = wk[wk.player_id.isin(ok)].copy()
 
