@@ -519,7 +519,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                "te": "about a third of the targets and snaps",
                "wr": "about 14% of the targets"}
     if "role_basis" in df:
-        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest"])]:
+        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
             names = ([src] if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
@@ -531,6 +531,14 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "ranked":
+                wt = df.at[i, "role_weight"] if "role_weight" in df else 1.0
+                kind = "backup" if (df.at[i, "role_absent"] if "role_absent" in df else "") == "no2" else "starter"
+                tail = (f", scaled down because {who} has already missed games and part of "
+                        f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out. He is priced on what a player in his spot in the room "
+                    f"has historically gained when a {kind} sat{tail}. ")
             elif df.at[i, "role_basis"] in ("next", "rest"):
                 wt = df.at[i, "role_weight"] if "role_weight" in df else 1.0
                 if pos == "wr":
