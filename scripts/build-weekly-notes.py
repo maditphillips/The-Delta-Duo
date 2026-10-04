@@ -519,8 +519,10 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                "te": "about a third of the targets and snaps",
                "wr": "about 14% of the targets"}
     if "role_basis" in df:
-        for i in df.index[df.role_basis.isin(["last_season", "inherit"])]:
-            names = sorted(out[out.team.eq(df.at[i, "team"])].player)
+        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split"])]:
+            src = df.at[i, "role_from"] if "role_from" in df else None
+            names = ([src] if isinstance(src, str) and src
+                     else sorted(out[out.team.eq(df.at[i, "team"])].player))
             if not names:
                 continue
             who = names[0] if len(names) == 1 else " and ".join(names)
@@ -529,6 +531,12 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "inherit_split":
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out, and his work is split across the room by how much "
+                    f"of each kind each man was already getting. In past seasons the rest "
+                    f"of a {'backfield' if pos == 'rb' else 'position room'} has taken about "
+                    f"70% of a sidelined starter's work. ")
             else:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on the share of a starter's work "
