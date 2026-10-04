@@ -495,6 +495,29 @@ SPLIT = {
 }
 
 
+# dd/absence.py, 2019-2025, same-position rooms: the share of an absent
+# man's per-game work taken by the next man below him and by the rest of the
+# room, by position and by whether he was the starter (top of the room by
+# snaps) or a backup.
+_C, _T, _S = "b_carries", "b_targets", "b_snap_share"
+NEXT = {("RB", "starter"): [(_C, "sd_carries", .45), (_T, "sd_targets", .37), (_S, "sd_snap_share", .41)],
+        ("RB", "no2"):     [(_C, "sd_carries", .21), (_T, "sd_targets", .28), (_S, "sd_snap_share", .22)],
+        ("TE", "starter"): [(_T, "sd_targets", .33), (_S, "sd_snap_share", .33)],
+        ("TE", "no2"):     [(_T, "sd_targets", .19), (_S, "sd_snap_share", .26)],
+        ("WR", "starter"): [(_T, "sd_targets", .14), (_S, "sd_snap_share", .04)],
+        ("WR", "no2"):     [(_T, "sd_targets", .11), (_S, "sd_snap_share", .15)]}
+REST = {("RB", "starter"): [(_C, "sd_carries", .26), (_T, "sd_targets", .33), (_S, "sd_snap_share", .32)],
+        ("RB", "no2"):     [(_C, "sd_carries", .44), (_T, "sd_targets", .19), (_S, "sd_snap_share", .31)],
+        ("TE", "starter"): [(_T, "sd_targets", .24), (_S, "sd_snap_share", .32)],
+        ("TE", "no2"):     [(_T, "sd_targets", .30), (_S, "sd_snap_share", .25)],
+        # Receivers have no heir: the next man by snaps is usually already on
+        # the field every play, so his measured share is small and the third
+        # receiver would out-inherit the second. The whole room is treated as
+        # one committee instead, splitting next and rest together by targets.
+        ("WR", "starter"): [(_T, "sd_targets", .72), (_S, "sd_snap_share", .76)],
+        ("WR", "no2"):     [(_T, "sd_targets", .56), (_S, "sd_snap_share", .67)]}
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -516,6 +539,35 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if kind == "role" and col in te and prior in te:
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
+        elif row.basis in ("next", "rest"):
+            # The measured structure: the next man below the absent one takes
+            # one share, everyone else in the room splits another by how much
+            # of each kind they were already getting. Rates depend on whether
+            # the absent man was the starter or a backup, and the weight scales
+            # the boost down when he has already missed games this season and
+            # the heir's own numbers carry part of the change already.
+            src = te[te.player_name == row.from_player]
+            if src.empty:
+                print(f"  role.csv: {row.from_player} is not in the {position} rows")
+                continue
+            s = src.iloc[0]
+            role = row.get("absent_role") if isinstance(row.get("absent_role"), str) else "starter"
+            rates = (NEXT if row.basis == "next" else REST).get((position.upper(), role), [])
+            wt = float(row.weight) if pd.notna(row.get("weight")) else 1.0
+            te.loc[hit, "role_weight"] = wt
+            peers = r[(r.basis == "rest") & (r.from_player == row.from_player)].player
+            mates = te[te.player_name.isin(peers)].set_index("player_name")
+            for col, sd, share in rates:
+                frac = 1.0
+                if row.basis == "rest":
+                    w = mates[sd].fillna(0)
+                    frac = (w / w.sum()).get(row.player, 0) if w.sum() > 0 else 1 / max(len(w), 1)
+                old = te.loc[hit, col].fillna(0)
+                te.loc[hit, col] = old + wt * share * frac * (s[sd] if pd.notna(s[sd]) else 0)
+                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
+                if ratio and ratio in te:
+                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+            te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis == "inherit_split":
             # A committee: the starter's work goes to the whole room, each stat
             # split by how much of it each heir was already getting.
@@ -548,12 +600,14 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if ratio and ratio in te:
                     te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
-        te.loc[hit, "depth_rank"] = float(row.depth_rank)
+        if pd.notna(row.depth_rank):
+            te.loc[hit, "depth_rank"] = float(row.depth_rank)
         # Carried to the published lists so the note can say why he is priced
         # the way he is, instead of "his teammate's work is not priced in".
         te.loc[hit, "role_basis"] = row.basis
         te.loc[hit, "role_from"] = row.get("from_player") if isinstance(row.get("from_player"), str) else None
-        print(f"  {position}: pricing {row.player} on {row.basis}, depth {int(row.depth_rank)}")
+        print(f"  {position}: pricing {row.player} on {row.basis}"
+              + (f", depth {int(row.depth_rank)}" if pd.notna(row.depth_rank) else ""))
     return te
 
 
