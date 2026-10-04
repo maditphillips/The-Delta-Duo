@@ -1,0 +1,40 @@
+First-round RBs 2000-2020: n = 47
+
+1. Clustering on draft pick alone
+   k=1: within-SS     4972  silhouette   nan  gap -0.37 (se 0.12)  centers [17]
+   k=2: within-SS      815  silhouette  0.71  gap -0.03 (se 0.13)  centers [7, 26]
+   k=3: within-SS      413  silhouette  0.64  gap -0.20 (se 0.13)  centers [5, 14, 27]
+   k=4: within-SS      181  silhouette  0.64  gap  0.03 (se 0.13)  centers [4, 12, 22, 29]
+   k=5: within-SS      125  silhouette  0.63  gap -0.12 (se 0.13)  centers [4, 11, 17, 23, 29]
+   k=6: within-SS       78  silhouette  0.68  gap -0.10 (se 0.14)  centers [4, 11, 17, 23, 27, 31]
+   gap-statistic choice (first k with gap(k) >= gap(k+1) - se): k = 2
+   Picks are spread evenly 1-32, so any 'clusters' here are just equal slices.
+
+2. Groups chosen to explain career outcome (lower BIC / CV loss = better)
+   CV loss: squared error per player (PPR) or log-loss per player (top-12/24);
+   cut points re-optimized inside every training fold, 20x repeated 5-fold
+
+   log yr-2+ PPR   (best BIC: k=2, best CV: k=2)
+   k     best cuts (pick)     BIC  CV loss  CV se
+   1                 none  -4.443    0.887  0.040
+   2                 29.0 -14.039    0.710  0.064
+   3            8.5, 29.0  -8.359    0.739  0.077
+   4       4.5, 8.5, 29.0  -2.736    0.774  0.062
+line log(pick), no groups  -6.582    0.827  0.051
+
+   any top-12 season   (best BIC: k=1, best CV: k=1)
+   k     best cuts (pick)    BIC  CV loss  CV se
+   1                 none 67.272    0.708  0.026
+   2                 29.0 70.196    0.756  0.048
+   3           22.5, 25.5 73.337    0.880  0.094
+   4     12.5, 22.5, 25.5 76.312    0.889  0.098
+line log(pick), no groups 69.772    0.736  0.038
+
+   any top-24 season   (best BIC: k=1, best CV: k=1)
+   k     best cuts (pick)    BIC  CV loss  CV se
+   1                 none 57.252    0.599  0.030
+   2                 15.5 61.747    0.670  0.043
+   3           21.5, 25.5 66.746    0.754  0.086
+   4     12.5, 21.5, 25.5 71.581    0.748  0.091
+line log(pick), no groups 59.194    0.617  0.042
+

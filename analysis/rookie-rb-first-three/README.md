@@ -6,7 +6,7 @@ Efficiency in those games mostly doesn't repeat. A full rookie season is worth a
 times as much as the first three games. Among first-round picks alone, the first three
 games predict nothing (see `analyze_round1.py`).
 
-Full output: `results.txt` and `results_round1.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
+Full output: `results.txt`, `results_round1.txt` and `results_groups.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
 
 ## Running it
 
@@ -15,6 +15,7 @@ Full output: `results.txt` and `results_round1.txt`. `analyze.py` also writes `r
 python3 build.py      # -> rbs.csv  (one row per rookie RB)
 python3 analyze.py    # all tables to stdout, -> report_data.json
 python3 analyze_round1.py   # first-round-only version, split into pick groups
+python3 choose_groups.py    # how many round-1 groups the data supports
 ```
 
 Needs pandas, numpy, scipy, scikit-learn, statsmodels, pyarrow.
@@ -168,6 +169,35 @@ Rd 1-3 67% vs 57%; Rd 4+/UDFA 27% vs 20%.
   for picks 1-16 and not 17-32, isn't significant.
 - With 14-24 players per group, only a large effect would show up. "No evidence of an
   effect" here is not the same as "proven no effect," but there is nothing to act on.
+
+### 6. How many groups should round 1 have?
+
+`choose_groups.py` scores 1-4 groups two ways.
+
+- **Clustering on pick number alone** (elbow, silhouette, gap statistic) picks 2 groups
+  (silhouette 0.71 for k=2, about 0.64 for k=3). It means little: picks run evenly from
+  1 to 32, so the "clusters" are just equal slices of the round, chosen without looking
+  at careers.
+- **Groups chosen to explain careers.** For each k, every set of contiguous cut points
+  is tried (6+ players per group) and the best is kept. Each k is scored by BIC and by
+  cross-validation, with the cut points re-chosen inside each training fold.
+
+  | Outcome | Best by BIC | Best by CV | Best cut |
+  |---|---|---|---|
+  | Year-2+ PPR points | 2 groups | 2 groups | picks 1-29 vs 30-32 |
+  | Any top-12 season | 1 group | 1 group | none |
+  | Any top-24 season | 1 group | 1 group | none |
+
+  3 groups never wins. For PPR points, the 2-group split doesn't land at the middle of
+  the round. It cuts off the last three picks: 8 backs (Kevin Jones, Joseph Addai,
+  Chris Wells, Jahvid Best, David Wilson, Doug Martin, Sony Michel, Clyde Edwards-Helaire)
+  with a median 350 year-2+ PPR points vs 1,248 for picks 1-29. That is probably a cluster
+  of busts more than a real cliff at pick 30. For top-12 and top-24 hit rates, splitting
+  round 1 at all does worse out of sample than treating it as one group.
+
+So 2 groups beats 3, but the honest answer is that the data barely supports splitting
+round 1. The 1-16 / 17-32 and 1-10 / 11-24 / 25-32 splits above were set by hand, and
+neither changes the main finding: early usage doesn't predict career within round 1.
 
 ## Caveats
 
