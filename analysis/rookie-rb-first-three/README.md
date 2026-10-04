@@ -6,7 +6,7 @@ Efficiency in those games mostly doesn't repeat. A full rookie season is worth a
 times as much as the first three games. Among first-round picks alone, the first three
 games predict nothing (see `analyze_round1.py`).
 
-Full output: `results.txt`, `results_round1.txt`, `results_groups.txt` and `results_ppg_groups.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
+Full output: `results.txt`, `results_round1.txt`, `results_groups.txt`, `results_ppg_groups.txt` and `results_cut30.txt`. `analyze.py` also writes `report_data.json` (gitignored, like other analysis JSON).
 
 ## Running it
 
@@ -17,6 +17,7 @@ python3 analyze.py    # all tables to stdout, -> report_data.json
 python3 analyze_round1.py   # first-round-only version, split into pick groups
 python3 choose_groups.py    # how many round-1 groups the data supports
 python3 test_ppg_groups.py  # is the PPG drop across round-1 groups significant?
+python3 test_cut30.py       # tests the data-chosen picks 1-29 vs 30-32 split
 ```
 
 Needs pandas, numpy, scipy, scikit-learn, statsmodels, pyarrow.
@@ -228,6 +229,31 @@ need to be about 4.2 PPG to be detected reliably; the observed 3.4 is just under
 
 Read it as: earlier first-round backs probably score a bit more per game, by roughly
 1-2 PPG per tier, but the data can't pin down where (or whether) the steps are.
+
+### 8. The data-chosen split: picks 1-29 vs 30-32
+
+No back in the sample went 29th, so this is the same as 1-28 vs 30-32. Picks 30-32 are
+8 backs: Kevin Jones, Jahvid Best, Joseph Addai, Chris Wells, Doug Martin, Sony Michel,
+David Wilson, Clyde Edwards-Helaire.
+
+The split was found by searching every possible cut, so a plain test overstates it. The
+search-adjusted p repeats that whole search on shuffled data and asks how often the best
+split of pure noise does as well.
+
+| Outcome (yr 2+) | Picks 1-29 | Picks 30-32 | Plain p | Search-adjusted p |
+|---|---|---|---|---|
+| PPR per game | 12.5 | 10.1 | 0.19 | 0.64 |
+| Total PPR (geometric mean) | 1,022 | 264 | 0.015 | 0.048 |
+| Any top-12 season | 67% | 25% | 0.04 | 0.21 |
+| Any top-24 season | 79% | 50% | 0.18 | 0.61 |
+
+- For **PPG** this split means nothing, not even before adjusting.
+- It only holds up for **total career PPR**, and only barely (0.048). Those 8 backs had
+  short careers (Best, Wilson, Wells, Michel, Edwards-Helaire) more than low per-game
+  output. With 8 players, that is as likely bad luck with injuries as anything about
+  picks 30-32.
+- Taking those 8 out, PPG barely moves with pick across picks 1-29 (rho -0.13, p = 0.44).
+  Much of the 1-10 / 11-24 / 25-32 slide in section 7 comes from this one cluster.
 
 ## Caveats
 

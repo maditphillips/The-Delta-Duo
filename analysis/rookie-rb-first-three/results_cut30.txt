@@ -1,0 +1,10 @@
+Picks 1-29: n = 39   Picks 30-32: n = 8  (Kevin Jones, Jahvid Best, Joseph Addai, Chris Wells, Doug Martin, Sony Michel, David Wilson, Clyde Edwards-Helaire)
+
+               outcome      picks 1-29    picks 30-32  naive p  search-adjusted p
+   PPR per game, yr 2+            12.5           10.1    0.189              0.643
+total PPR, yr 2+ (log) 1022 (geo mean) 264 (geo mean)    0.015              0.048
+     any top-12 season             67%            25%    0.043              0.212
+     any top-24 season             79%            50%    0.175              0.611
+
+PPG medians: picks 1-29 12.0, picks 30-32 9.1
+Without the 30-32 group, picks 1-29 vs pick number: Spearman rho = -0.13 (p = 0.44)
