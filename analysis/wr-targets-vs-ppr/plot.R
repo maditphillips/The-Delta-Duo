@@ -33,8 +33,10 @@ wr <- stats |>
     ppr_pg = fantasy_points_ppr / games
   )
 
+# Only name the always-include players who didn't make the top N on their own
+extras <- wr$player_display_name[-seq_len(N_PLAYERS)]
 group_text <- paste0("Top ", N_PLAYERS, " WRs by total PPR points",
-                     if (length(ALWAYS_INCLUDE)) paste0(" + ", paste(ALWAYS_INCLUDE, collapse = ", ")) else "")
+                     if (length(extras)) paste0(" + ", paste(extras, collapse = ", ")) else "")
 
 quadrant_plot <- function(data, x, y, x_label, y_label, title, x_unit, y_unit, digits) {
   xv <- data[[x]]
