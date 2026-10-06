@@ -78,8 +78,8 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
     labs(
       title = title,
       subtitle = paste0(subtitle_lead, ". Dashed lines = median of the group (",
-                        round(x_mid, x_digits), " ", x_unit, ", ",
-                        round(y_mid, y_digits), " ", y_unit, ")."),
+                        format(round(x_mid, x_digits), nsmall = x_digits), " ", x_unit, ", ",
+                        format(round(y_mid, y_digits), nsmall = y_digits), " ", y_unit, ")."),
       x = x_label,
       y = y_label,
       caption = caption

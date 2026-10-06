@@ -1,4 +1,4 @@
-# Top 40 RBs of the 2026 season by total PPR points (plus any extra names in
+# Top 50 RBs of the 2026 season by total PPR points (plus any extra names in
 # ALWAYS_INCLUDE), plotted three ways, all per game played:
 #   1. targets (x) vs. PPR points (y)
 #   2. carries (x) vs. PPR points (y)
@@ -16,7 +16,7 @@ library(ggrepel)
 source("../lib/quadrant_plot.R")
 
 SEASON <- 2026
-N_PLAYERS <- 40
+N_PLAYERS <- 50
 # Players to plot even if they fall outside the top N (full display name)
 ALWAYS_INCLUDE <- character(0)
 
