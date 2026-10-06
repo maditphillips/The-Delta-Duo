@@ -10,6 +10,8 @@ POINTS_QUADRANTS <- c(
   bottom_right = "TRADE TARGETS\nOpportunity not yet cashed in"
 )
 
+MARK_COLOUR <- "#C2410C"
+
 # "Amon-Ra St. Brown" -> "A. St. Brown". When two players would get the same
 # short name (Bijan and Brian Robinson), both keep their full names.
 short_name <- function(full_name) {
@@ -21,7 +23,15 @@ short_name <- function(full_name) {
 quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
                           x_unit, y_unit, x_digits = 1, y_digits = 1,
                           quadrant_text = POINTS_QUADRANTS,
-                          caption = "Data: nflverse via nflreadr | Plot: nflplotR") {
+                          caption = "Data: nflverse via nflreadr | Plot: nflplotR",
+                          rank_col = NULL, top_n = 10,
+                          mark_top = c("none", "number", "circle")) {
+  # mark_top: flag the players ranked 1..top_n in rank_col with a big rank
+  # number beside the logo, or a ring around it
+  mark_top <- match.arg(mark_top)
+  is_top <- if (mark_top == "none") rep(FALSE, nrow(data)) else data[[rank_col]] <= top_n
+  top <- data[is_top, ]
+
   xv <- data[[x]]
   yv <- data[[y]]
   x_mid <- median(xv)
@@ -50,6 +60,17 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
     x_lim[2], y_lim[1], 1,      0,      quadrant_text[["bottom_right"]]
   )
 
+  top_layer <- switch(mark_top,
+    none = NULL,
+    number = geom_text(
+      data = top, aes(label = .data[[rank_col]]),
+      hjust = 1, nudge_x = -diff(x_lim) * 0.018,
+      size = 7, fontface = "bold", colour = MARK_COLOUR
+    ),
+    circle = geom_point(data = top, shape = 21, size = 13, stroke = 1.2,
+                        colour = MARK_COLOUR, fill = NA)
+  )
+
   ggplot(data, aes(x = .data[[x]], y = .data[[y]])) +
     geom_rect(
       data = quadrants, inherit.aes = FALSE,
@@ -66,10 +87,12 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
       nudge_y = c(-1, -1, 1, 1) * y_pad * 0.15
     ) +
     geom_nfl_logos(aes(team_abbr = recent_team), width = 0.026, alpha = 0.95) +
+    top_layer +
     geom_text_repel(
       aes(label = label),
       size = 2.7, colour = "grey15", force = 2,
-      point.size = 7, box.padding = 0.3, min.segment.length = 0,
+      # Keep name labels clear of the rank numbers / rings too
+      point.size = ifelse(is_top, 12, 7), box.padding = 0.3, min.segment.length = 0,
       segment.colour = "grey60", segment.size = 0.25,
       max.overlaps = Inf, seed = 2026
     ) +
