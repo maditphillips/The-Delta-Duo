@@ -6,10 +6,9 @@
 # Quadrants split at the median of the plotted players on each axis.
 #
 # install.packages(c("nflreadr", "nflplotR", "ggplot2", "dplyr", "ggrepel"))
-# Each chart is also saved with the top TOP_N RBs in total PPR marked two
-# ways: a big rank number beside the logo (_ranked) and a ring (_circled).
+# The top TOP_N RBs in total PPR get a big rank number beside their logo.
 #
-# Run from this folder: Rscript plot.R   -> writes the nine PNGs here
+# Run from this folder: Rscript plot.R   -> writes the three PNGs here
 
 library(nflreadr)
 library(nflplotR)
@@ -22,7 +21,7 @@ SEASON <- 2026
 N_PLAYERS <- 50
 # Players to plot even if they fall outside the top N (full display name)
 ALWAYS_INCLUDE <- character(0)
-# How many of the top RBs (by total PPR) get a rank number or ring
+# How many of the top RBs (by total PPR) get a rank number (0 = none)
 TOP_N <- 10
 
 stats <- load_player_stats(seasons = SEASON, summary_level = "reg")
@@ -75,24 +74,18 @@ charts <- list(
   )
 )
 
-marks <- list(
-  list(mark = "none",   suffix = "",          note = NULL),
-  list(mark = "number", suffix = "_ranked",   note = paste0("Big numbers = RB rank in total PPR (top ", TOP_N, ").")),
-  list(mark = "circle", suffix = "_circled",  note = paste0("Circled = top ", TOP_N, " RBs in total PPR."))
-)
+rank_note <- if (TOP_N > 0) paste0("Big numbers = RB rank in total PPR (top ", TOP_N, ").")
 
 for (ch in charts) {
-  for (m in marks) {
-    p <- quadrant_plot(
-      rb, ch$x, ch$y,
-      x_label = ch$x_label, y_label = ch$y_label,
-      title = paste(SEASON, ch$title),
-      subtitle_lead = group_text,
-      x_unit = ch$x_unit, y_unit = ch$y_unit,
-      quadrant_text = ch$quadrant_text,
-      caption = paste(c(m$note, data_credit), collapse = " "),
-      rank_col = "ppr_rank", top_n = TOP_N, mark_top = m$mark
-    )
-    save_quadrant_plot(p, paste0(ch$file, m$suffix, ".png"))
-  }
+  p <- quadrant_plot(
+    rb, ch$x, ch$y,
+    x_label = ch$x_label, y_label = ch$y_label,
+    title = paste(SEASON, ch$title),
+    subtitle_lead = group_text,
+    x_unit = ch$x_unit, y_unit = ch$y_unit,
+    quadrant_text = ch$quadrant_text,
+    caption = paste(c(rank_note, data_credit), collapse = " "),
+    rank_col = "ppr_rank", top_n = TOP_N, mark_top = "number"
+  )
+  save_quadrant_plot(p, paste0(ch$file, ".png"))
 }

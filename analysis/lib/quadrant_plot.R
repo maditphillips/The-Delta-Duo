@@ -64,7 +64,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
     none = NULL,
     number = geom_text(
       data = top, aes(label = .data[[rank_col]]),
-      hjust = 1, nudge_x = -diff(x_lim) * 0.018,
+      hjust = 1, vjust = 0, nudge_x = -diff(x_lim) * 0.008, nudge_y = diff(y_lim) * 0.008,
       size = 7, fontface = "bold", colour = MARK_COLOUR
     ),
     circle = geom_point(data = top, shape = 21, size = 13, stroke = 1.2,
