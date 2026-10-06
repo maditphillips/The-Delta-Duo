@@ -509,6 +509,9 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     df["_vacated"] = ""
     for _, g in gone.iterrows():
         mates = df.team == g["team"]
+        if pos == "qb":
+            # A backup quarterback being out takes nothing from the starter.
+            mates &= df["proj"] < g["proj"]
         df.loc[mates, "_vacated"] += (
             f"{g['player_name']} is out; his work is not yet priced in here. ")
     # A man the model priced on another role (model/data/role.csv) HAS had the
@@ -521,7 +524,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     if "role_basis" in df:
         for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
-            names = ([src] if isinstance(src, str) and src
+            names = (src.split(" and ") if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
             if not names:
                 continue
@@ -531,10 +534,14 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "ranked" and pd.notna(df.at[i, "role_weight"]) and df.at[i, "role_weight"] == 0:
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out, but he has only played without "
+                    f"{'him' if len(names) == 1 else 'them'} this season, so that is already in his numbers. ")
             elif df.at[i, "role_basis"] == "ranked":
                 wt = df.at[i, "role_weight"] if "role_weight" in df else 1.0
                 kind = "backup" if (df.at[i, "role_absent"] if "role_absent" in df else "") == "no2" else "starter"
-                tail = (f", scaled down because {who} has already missed games and part of "
+                tail = (f", scaled down because {who} {'has' if len(names) == 1 else 'have'} already missed games and part of "
                         f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out. He is priced on what a player in his spot in the room "
@@ -549,7 +556,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 else:
                     how = ("He is priced on his part of the share the rest of the room has "
                            "taken in past seasons, split by how much each was already getting")
-                tail = (f", scaled down because {who} has already missed games and part of "
+                tail = (f", scaled down because {who} {'has' if len(names) == 1 else 'have'} already missed games and part of "
                         f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
                 df.at[i, "_vacated"] = f"{who} {verb} out. {how}{tail}. "
             elif df.at[i, "role_basis"] == "inherit_split":
