@@ -558,6 +558,8 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
     te = te.copy()
     for _, row in r.iterrows():
         hit = te.player_name == row.player
+        if isinstance(row.get("team"), str) and row.team:
+            hit &= te.team == row.team
         if not hit.any():
             print(f"  role.csv: {row.player} is not in the {position} rows")
             continue
@@ -573,16 +575,24 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
             # Ranked per stat on this season's usage among everyone listed
             # for the same absent player.
             src = te[te.player_name == row.from_player]
+            if isinstance(row.get("team"), str) and row.team:
+                src = src[src.team == row.team]
             if src.empty:
                 print(f"  role.csv: {row.from_player} is not in the {position} rows")
                 continue
             s = src.iloc[0]
             role = row.get("absent_role") if isinstance(row.get("absent_role"), str) else "starter"
             wt = float(row.weight) if pd.notna(row.get("weight")) else 1.0
-            te.loc[hit, "role_weight"] = wt
-            te.loc[hit, "role_absent"] = role
-            peers = r[(r.basis == "ranked") & (r.from_player == row.from_player)].player
-            mates = te[te.player_name.isin(peers)].set_index("player_name")
+            prev_wt = te.loc[hit, "role_weight"] if "role_weight" in te else pd.Series(float("nan"), index=te.index[hit])
+            te.loc[hit, "role_weight"] = [wt if pd.isna(x) else max(x, wt) for x in prev_wt]
+            prev_role = te.loc[hit, "role_absent"] if "role_absent" in te else pd.Series(None, index=te.index[hit])
+            te.loc[hit, "role_absent"] = ["starter" if "starter" in (str(x), role) else role for x in prev_role]
+            same = (r.basis == "ranked") & (r.from_player == row.from_player)
+            if isinstance(row.get("team"), str) and row.team:
+                same &= r.team == row.team
+            peers = r[same].player.unique()
+            mates = (te[te.player_name.isin(peers)].drop_duplicates("player_name")
+                     .set_index("player_name"))
             for col, sd, stat in RANKED_COLS.get(position.upper(), []):
                 rk = int(mates[sd].fillna(0).rank(ascending=False, method="first").get(row.player, 3))
                 rate = RANK_RATES.get((position.upper(), role, stat), {}).get(min(rk, 3), 0.0)
@@ -658,7 +668,17 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
         # Carried to the published lists so the note can say why he is priced
         # the way he is, instead of "his teammate's work is not priced in".
         te.loc[hit, "role_basis"] = row.basis
-        te.loc[hit, "role_from"] = row.get("from_player") if isinstance(row.get("from_player"), str) else None
+        src_name = row.get("from_player") if isinstance(row.get("from_player"), str) else None
+        if src_name:
+            # A man inheriting from two absent teammates names both of them.
+            if "role_from" not in te:
+                te["role_from"] = ""
+            prev = te.loc[hit, "role_from"].astype(object)
+            te.loc[hit, "role_from"] = [src_name if not isinstance(x, str) or x in ("", "nan", "None")
+                                        else (x if src_name in x.split(" and ") else f"{x} and {src_name}")
+                                        for x in prev]
+        else:
+            te.loc[hit, "role_from"] = None
         print(f"  {position}: pricing {row.player} on {row.basis}"
               + (f", depth {int(row.depth_rank)}" if pd.notna(row.depth_rank) else ""))
     return te
