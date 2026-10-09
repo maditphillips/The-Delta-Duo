@@ -148,6 +148,7 @@ PLAYERS_MAX_AGE = 6 * 3600
 
 def _players() -> pd.DataFrame:
     """Sleeper's roster: position, team, and today's injury status."""
+    STORE.mkdir(parents=True, exist_ok=True)
     path = STORE / "players.json"
     stale = (not path.exists()
              or time.time() - path.stat().st_mtime > PLAYERS_MAX_AGE)

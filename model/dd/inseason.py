@@ -185,6 +185,33 @@ TEAM_PAIRS = {
 }
 
 
+PANEL = CACHE / "inseason_panel.parquet"
+
+
+def training_panel(seasons=range(2017, 2026), refresh: bool = False) -> pd.DataFrame:
+    """The in-season model's training set: every week of every season, posed
+    with the preseason features, plus each player's season-to-date usage
+    BEFORE that week.
+
+    This file was once built by hand and only ever lived in the cache, and the
+    day the container was reclaimed there was no way to make another. It is
+    built here now, from the all-weeks panel and build(), and cached.
+    """
+    if PANEL.exists() and not refresh:
+        return pd.read_parquet(PANEL)
+    from .pipeline import build_panel
+    base = build_panel(seasons, refresh=refresh, weeks=range(1, 19),
+                       path="panel_allweeks.parquet")
+    ins = build()
+    sd = [c for c in ins.columns if c.startswith("sd_")]
+    keys = ["season", "week", "player_id"]
+    panel = base.drop(columns=[c for c in sd if c in base.columns]).merge(
+        ins[keys + sd].drop_duplicates(keys), on=keys, how="left")
+    panel.to_parquet(PANEL)
+    print(f"  in-season panel: {len(panel)} rows, seasons {panel.season.min()}-{panel.season.max()}")
+    return panel
+
+
 def usable(panel: pd.DataFrame) -> pd.DataFrame:
     """The rows that actually carry this-season evidence."""
     return panel[panel.season >= FIRST_IN_SEASON]
@@ -691,7 +718,7 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
     from .features import rankable
     from .model import PositionModel, rank_frame
     if panel is None:
-        panel = pd.read_parquet(CACHE / "inseason_panel.parquet")
+        panel = training_panel()
     panel = usable(panel) if train_seasons is None \
         else panel[panel.season.isin(list(train_seasons))]
     rows = target_rows(season, week)
