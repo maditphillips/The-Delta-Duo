@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react";
 import ChalkCard from "@/components/ChalkCard";
+import InjuryTag from "@/components/InjuryTag";
 import {
   WEEKLY_POSITIONS,
   MC_COLOR,
@@ -89,6 +90,7 @@ function RankList({
                     </td>
                     <td data-primary="" style={{ overflowWrap: "anywhere" }}>
                       {r.player}
+                      <InjuryTag injury={r.injury} />
                       <span aria-hidden="true" style={{ color: "var(--ink-faint)", marginLeft: 6, fontSize: "0.8em" }}>
                         {isOpen ? "▾" : "▸"}
                       </span>

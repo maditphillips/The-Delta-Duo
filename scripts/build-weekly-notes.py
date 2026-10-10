@@ -475,6 +475,17 @@ from sleeper import NOT_PLAYING, status as sleeper_status   # noqa: E402
 INJURIES = pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
 
 
+def tag(player: str, pos: str) -> str:
+    """Sleeper's designation for a man who is still on the board, for display
+    only: "Questionable (Knee)". Nothing in the ranking reads it."""
+    t = INJURIES[(INJURIES.pos == pos) & (INJURIES.player == player)
+                 & ~INJURIES.status.isin(NOT_PLAYING)]
+    if t.empty:
+        return ""
+    r = t.iloc[0]
+    return f"{r.status} ({r.part})" if r.part else str(r.status)
+
+
 def ruled_out(pos: str) -> pd.DataFrame:
     """This week's scratches for one position: the hand-written ones, plus
     anyone Sleeper has tagged with a status that means he is not playing."""
@@ -808,13 +819,14 @@ def main() -> None:
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),
                 "note_vibes": r.get("note_vibes") or "",
+                "injury": tag(r["player_name"], pos),
             })
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
                                                "opponent", "is_home", "proj", "proj_vibes",
                                                "floor", "median", "ceiling", "p_top12",
-                                               "note_data", "note_vibes"])
+                                               "note_data", "note_vibes", "injury"])
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")
