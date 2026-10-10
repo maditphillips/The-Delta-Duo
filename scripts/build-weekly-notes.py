@@ -522,7 +522,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                "te": "about a third of the targets and snaps",
                "wr": "about 14% of the targets"}
     if "role_basis" in df:
-        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked"])]:
+        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked", "qb_starts"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
             names = (src.split(" and ") if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
@@ -534,6 +534,13 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "qb_starts":
+                n = int(df.at[i, "role_starts"]) if pd.notna(df.at[i, "role_starts"]) else 0
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out. He is priced on his {n} career start{'s' if n != 1 else ''} "
+                    f"({df.at[i, 'role_start_att']:.0f} pass attempts and {df.at[i, 'role_start_car']:.1f} carries a game), "
+                    f"with {df.at[i, 'role_lambda']:.0%} of that applied, because backups have historically "
+                    f"scored less than a starter's workload implies. ")
             elif df.at[i, "role_basis"] == "ranked" and pd.notna(df.at[i, "role_weight"]) and df.at[i, "role_weight"] == 0:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, but he has only played without "
