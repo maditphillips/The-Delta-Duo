@@ -573,6 +573,42 @@ RANKED_COLS = {
 }
 
 
+# Backup quarterbacks. The QB model reads volume and context only, nothing on
+# efficiency, so a backup priced on his games as a backup projects like one,
+# and given a starter's workload he projects like a starter. Neither is right.
+# He is priced on his own career starts (a start: 15+ attempts or 70%+ of the
+# snaps), blended towards a typical fill-in's workload when he has few, and
+# only part of that boost is applied: starts / (starts + QB_START_K). Tested
+# on 143 spot starts 2021-2025: miss 6.17 -> 5.37 points a game, bias +3.75
+# -> +0.79, and the same on either half of the games when fitted on the other.
+QB_START_K = 6.0
+QB_FILL_PRIOR = {"attempts": 29.9, "carries": 3.9, "snap_share": 0.89}
+QB_HISTORY = CACHE / "qb_weekly.parquet"
+
+
+def qb_history(refresh: bool = False) -> pd.DataFrame:
+    """Every quarterback game since 2016, flagged when it was a start."""
+    src = CACHE / "stats_player" / "stats_player_week_2026.parquet"
+    stale = (not QB_HISTORY.exists() or refresh
+             or (src.exists() and src.stat().st_mtime > QB_HISTORY.stat().st_mtime))
+    if not stale:
+        return pd.read_parquet(QB_HISTORY)
+    w = _weekly(range(2016, 2027))
+    q = w[w.position == "QB"].copy()
+    q["start"] = (q.attempts >= 15) | (q.snap_share.fillna(0) >= 0.7)
+    q.to_parquet(QB_HISTORY)
+    return q
+
+
+def career_starts(player_id: str, season: int, week: int) -> tuple[int, dict]:
+    q = qb_history()
+    s = q[(q.player_id == player_id) & q.start
+          & ((q.season < season) | ((q.season == season) & (q.week < week)))]
+    n = len(s)
+    k = QB_START_K
+    return n, {c: (s[c].sum() + k * v) / (n + k) for c, v in QB_FILL_PRIOR.items()}
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -596,6 +632,16 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if kind == "role" and col in te and prior in te:
                     val = te.loc[hit, prior]
                     te.loc[hit & val.notna(), col] = val
+        elif row.basis == "qb_starts":
+            pid = te.loc[hit, "player_id"].iloc[0]
+            n, v = career_starts(pid, season, week)
+            te.loc[hit, "b_attempts"] = v["attempts"]
+            te.loc[hit, "b_carries"] = v["carries"]
+            te.loc[hit, "b_snap_share"] = v["snap_share"]
+            te.loc[hit, "role_lambda"] = n / (n + QB_START_K)
+            te.loc[hit, "role_starts"] = n
+            te.loc[hit, "role_start_att"] = v["attempts"]
+            te.loc[hit, "role_start_car"] = v["carries"]
         elif row.basis == "ranked":
             # Each heir is priced on what a player in his spot in the room has
             # historically gained: the busiest one left, the second, the rest.
@@ -726,14 +772,24 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
     for pos in POSITIONS:
         feats = features_final(pos)
         tr_all = blend(rankable(panel, pos), K_ROLE, K_EFF)
-        te = role_overrides(blend(rankable(rows, pos), K_ROLE, K_EFF),
-                            season, week, pos)
+        raw = blend(rankable(rows, pos), K_ROLE, K_EFF)
+        te = role_overrides(raw, season, week, pos)
         for scoring in LISTS[pos]:
             col = f"actual_{scoring}"
             tr = tr_all[tr_all[col].notna()].copy()
             m = PositionModel(pos, scoring, features=feats)
             m.fit(tr)
             preds = m.predict(te)
+            if "role_lambda" in te and te.role_lambda.notna().any():
+                # Only part of a backup quarterback's career-start boost.
+                lam = te.role_lambda.to_numpy()
+                hit = ~np.isnan(lam)
+                base = m.predict(raw.loc[te.index])
+                num = [c for c in preds.columns if pd.api.types.is_numeric_dtype(preds[c])]
+                preds = preds.copy()
+                for c in num:
+                    preds.loc[hit, c] = (base.loc[hit, c].to_numpy()
+                                         + lam[hit] * (preds.loc[hit, c].to_numpy() - base.loc[hit, c].to_numpy()))
             back = returning(season, week, pos)
             if back:
                 hit = te.player_name.isin(back).to_numpy()

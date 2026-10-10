@@ -15,8 +15,10 @@ so nobody has to spot them one at a time.
                              from his teammates' numbers, and pricing him in
                              again would count the change twice.
 
-Quarterbacks are left alone: a backup who has already started is priced as a
-starter by his own numbers, and one who has not is a call for a person.
+Quarterbacks: when a team's starter (half the snaps or more this season) is
+ruled out, the next healthy quarterback on the depth chart is priced on his
+career starts ("qb_starts" basis, inseason.career_starts), unless he has
+already taken over and his own numbers show it (80% of the snaps).
 """
 from __future__ import annotations
 
@@ -42,7 +44,7 @@ def bare(name: str) -> str:
 def ruled_out() -> pd.DataFrame:
     from .rebound import _players
     p = _players()
-    p = p[p.position.isin(POSITIONS) & p.injury_status.isin(OUT)].copy()
+    p = p[p.position.isin(POSITIONS + ("QB",)) & p.injury_status.isin(OUT)].copy()
     p["team"] = p.team.replace(TEAM_FIX)
     p["key"] = p.player.map(bare)
     return p
@@ -88,6 +90,28 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
                               + (", no boost: he has only played without him" if wt == 0 else
                                  f", scaled to {wt:.0%} because {a.player_name} has already missed games" if wt < 1 else "")
                               + ". Written by dd/heirs.py from Sleeper's injury list."})
+    # Quarterbacks: one fill-in per team whose starter is out.
+    qb = ins.blend(rankable(rows, "QB"), ins.K_ROLE, ins.K_EFF).copy()
+    qb["key"] = qb.player_name.map(bare)
+    gone = set(zip(out.key, out.team))
+    qb["is_out"] = [(k, t) in gone for k, t in zip(qb.key, qb.team)]
+    for a in qb[qb.is_out & (qb.b_snap_share.fillna(0) >= 0.5)].itertuples():
+        room = qb[(qb.team == a.team) & ~qb.is_out].sort_values(
+            ["depth_rank", "b_snap_share"], ascending=[True, False], na_position="last")
+        if room.empty:
+            continue
+        h = room.iloc[0]
+        # Skip him only when his own numbers already look like a starter's. A
+        # relief appearance in the game the starter got hurt (Tyler Huntley,
+        # 48% of the snaps in week 4) is not that.
+        if (h.b_snap_share if pd.notna(h.b_snap_share) else 0) >= 0.8:
+            continue
+        entries.append({
+            "season": season, "week": week, "position": "QB", "team": a.team,
+            "player": h.player_name, "basis": "qb_starts", "from_player": a.player_name,
+            "absent_role": "starter", "weight": 1.0, "depth_rank": 1,
+            "reason": f"{a.player_name} is out. Priced on his own career starts, part of the boost "
+                      f"applied by how many he has made. Written by dd/heirs.py from Sleeper's injury list."})
     e = pd.DataFrame(entries)
     if verbose and len(e):
         for (pos, frm), g in e.groupby(["position", "from_player"]):
