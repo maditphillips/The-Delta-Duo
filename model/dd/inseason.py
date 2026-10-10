@@ -609,6 +609,57 @@ def career_starts(player_id: str, season: int, week: int) -> tuple[int, dict]:
     return n, {c: (s[c].sum() + k * v) / (n + k) for c, v in QB_FILL_PRIOR.items()}
 
 
+# Weather, entered by hand per game in model/data/weather.csv (season, week,
+# team, wind_mph, precip) until forecasts can be fetched. Betting lines
+# already move with a bad forecast; these are what is left after them, in
+# points, measured on 2020-2025 against the model's own out-of-sample
+# projections. Strong wind is 15 mph sustained or more; rain or snow is
+# precipitation expected during the game. Left out of every season in turn,
+# the adjustment improved the bad-weather games in all six (miss 5.51 ->
+# 5.34) and never changed direction. Light wind and cold did nothing
+# measurable. Indoor games are never adjusted.
+WEATHER_FILE = Path(__file__).resolve().parent.parent / "data" / "weather.csv"
+WIND_15 = {"QB": -1.28, "WR": -0.58, "TE": -0.96, "RB": -0.39}
+WET = {"QB": -0.86, "WR": -1.07, "TE": -0.71, "RB": -0.49}
+
+
+def weather(season: int, week: int) -> pd.DataFrame:
+    """This week's entries, one row per team (both teams in a game)."""
+    if not WEATHER_FILE.exists():
+        return pd.DataFrame(columns=["team", "wind_mph", "precip"])
+    w = pd.read_csv(WEATHER_FILE)
+    return w[(w.season == season) & (w.week == week)]
+
+
+def apply_weather(te: pd.DataFrame, preds: pd.DataFrame, season: int, week: int,
+                  position: str) -> pd.DataFrame:
+    w = weather(season, week)
+    if w.empty:
+        return preds
+    preds = preds.copy()
+    adj = np.zeros(len(te)); desc = [""] * len(te)
+    for _, r in w.iterrows():
+        hit = (te.team == r.team).to_numpy()
+        windy = pd.notna(r.wind_mph) and float(r.wind_mph) >= 15
+        wet = str(r.precip).strip().lower() in ("1", "true", "yes", "rain", "snow")
+        a = (WIND_15[position] if windy else 0.0) + (WET[position] if wet else 0.0)
+        if not a:
+            continue
+        kind = "snow" if "snow" in (str(r.precip) + " " + str(r.get("note", ""))).lower() else "rain"
+        bits = ([f"{float(r.wind_mph):.0f} mph wind"] if windy else []) + ([kind] if wet else [])
+        adj[hit] = a
+        for i in np.flatnonzero(hit):
+            desc[i] = " and ".join(bits)
+    moved = adj != 0
+    for c in ["proj", "cond_points"] + [c for c in preds.columns
+                                        if c.startswith(("q", "cq")) and c[1:].lstrip("q").isdigit()]:
+        if c in preds:
+            preds.loc[moved, c] = (preds.loc[moved, c] + adj[moved]).clip(lower=0)
+    te["weather_adj"] = adj
+    te["weather_desc"] = desc
+    return preds
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -790,6 +841,7 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                 for c in num:
                     preds.loc[hit, c] = (base.loc[hit, c].to_numpy()
                                          + lam[hit] * (preds.loc[hit, c].to_numpy() - base.loc[hit, c].to_numpy()))
+            preds = apply_weather(te, preds, season, week, pos)
             back = returning(season, week, pos)
             if back:
                 hit = te.player_name.isin(back).to_numpy()
