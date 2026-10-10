@@ -475,6 +475,15 @@ from sleeper import NOT_PLAYING, status as sleeper_status   # noqa: E402
 INJURIES = pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
 
 
+def weather_line(r) -> str:
+    """One sentence when the model lowered him for the forecast."""
+    adj = num(r.get("weather_adj"), 0.0)
+    if not adj:
+        return ""
+    return (f"Forecast: {r.get('weather_desc')} during the game; projection lowered "
+            f"{abs(adj):.1f} points for it, on top of what the betting line already prices in. ")
+
+
 def tag(player: str, pos: str) -> str:
     """Sleeper's designation for a man who is still on the board, for display
     only: "Questionable (Knee)". Nothing in the ranking reads it."""
@@ -815,7 +824,8 @@ def main() -> None:
                 "median": round(num(r.get("median_q50"), 0.0), 3),
                 "ceiling": round(num(r.get("ceiling_q90"), 0.0), 3),
                 "p_top12": round(num(r.get("p_top12"), 0.0), 4),
-                "note_data": (str(r.get("_vacated") or "").strip()
+                "note_data": (weather_line(r)
+                              + str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),
                 "note_vibes": r.get("note_vibes") or "",
