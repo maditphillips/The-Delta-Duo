@@ -39,6 +39,22 @@ Held out on 2023-2025, ranking every kicker within each week:
 Scoring is Sleeper standard, which is also every other site's: FG under 40 = 3,
 40-49 = 4, 50+ = 5, XP = 1, missed FG = -1, missed XP = -1.
 
+WIND is optional and hand-fed, because nflverse only records weather AFTER a
+game is played - the temp and wind columns are empty for every upcoming week.
+Drop a wind.csv next to the week's board with columns team,wind (mph) and it
+is applied to outdoor venues only, measured against the 8.2 mph an average
+outdoor game carries. Three effects were fit on 2012-2025, each holding the
+betting line fixed, so none of this double counts what the market already
+knows:
+
+    accuracy   -0.0137 log-odds per mph   p=0.024   (survives the venue term)
+    E[XPA]     -0.0147 attempts per mph   p=0.0001  (wind suppresses touchdowns)
+    E[FGA]     -0.0032 attempts per mph   p=0.38    (not significant, not used)
+
+A 20 mph game costs a kicker about 0.86 points against a calm one, which is a
+third of the spread of a whole week's board. It is rare though: 18% of outdoor
+games run 13 mph or more, 6% run 17 or more.
+
     python3 kicker_points.py --week 4
     python3 kicker_points.py --week 4 --publish
     python3 kicker_points.py --backtest 2026        # grade it against a season
@@ -81,6 +97,11 @@ FIT_FROM = 2012                      # first season with a full set of betting l
 K_SHRINK = float(os.environ.get("K_SHRINK", 100))
 W_VENUE = float(os.environ.get("W_VENUE", 0.50))
 ACTIVE = "A01"
+# Wind, fit on 2012-2025 outdoor games with the betting line held fixed.
+WIND_BASE = 8.2          # mph, the average outdoor game; adjustments are against this
+WIND_ACC = -0.0137       # log-odds of a make, per mph
+WIND_XPA = -0.01467      # expected extra-point attempts, per mph
+
 SCHED = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 ROSTER = ("https://github.com/nflverse/nflverse-data/releases/download/"
           f"rosters/roster_{SEASON}.parquet")
@@ -223,6 +244,21 @@ def venues():
         re.search(r"export const stadiums[^=]*=\s*(\[.*?\]);", ts, re.S).group(1))}
 
 
+def read_wind(week):
+    """Optional hand-entered wind, mph by team, for the week's outdoor games."""
+    p = os.path.join(ROOT, "data", "weekly", str(SEASON), f"week-{week:02d}", "wind.csv")
+    if not os.path.exists(p):
+        return {}
+    out = {}
+    with open(p) as fh:
+        for r in csv.DictReader(fh):
+            try:
+                out[r["team"].strip().upper()] = float(r["wind"])
+            except (KeyError, ValueError, TypeError):
+                continue
+    return out
+
+
 def venue_rate(V, stadium_id, home, league, season=None):
     v = None if rebuilt(stadium_id, season or SEASON) else V.get(stadium_id)
     if v is None:
@@ -236,7 +272,8 @@ def venue_rate(V, stadium_id, home, league, season=None):
 
 def pick_kickers(ros, week, season):
     """A01 first; then whoever last attempted a kick for the team this season."""
-    k = ros[ros.position.eq("K")]
+    allk = ros[ros.position.eq("K")]
+    k = allk
     if "week" in k.columns and k.week.notna().any():
         wks = sorted(k.week.dropna().unique())
         k = k[k.week.eq(week if week in wks else max(wks))]
@@ -256,7 +293,10 @@ def pick_kickers(ros, week, season):
             out[team] = (a.iloc[0].full_name, a.iloc[0].gsis_id)
         elif team in last.index:
             kid = last.loc[team, "kid"]
+            # a man can kick in a week he is not on that week's roster slice
             row = k[k.gsis_id.eq(kid)]
+            if not len(row):
+                row = allk[allk.gsis_id.eq(kid)]
             name = row.iloc[0].full_name if len(row) else str(kid)
             tag = (f"{row.iloc[0].status}/{row.iloc[0].status_description_abbr}"
                    if len(row) else "not on the roster file")
@@ -294,8 +334,8 @@ def pairwise(rank, val):
     return right, total
 
 
-def build(week, t, fg, mx, mf, ppa, league, V, g, ks=None):
-    """One row per kicker on the week's slate, with expected points."""
+def build(week, t, fg, mx, mf, ppa, league, V, g, ks=None, wind=None):
+    wind = wind or {}
     wk = g[(g.season == SEASON) & (g.week == week)]
     car = career_rates(fg, upto=SEASON * 100 + week)
     rows = []
@@ -307,10 +347,16 @@ def build(week, t, fg, mx, mf, ppa, league, V, g, ks=None):
             sh, w = shrink(np.array([raw]), np.array([n]), league)
             vr, vsrc = venue_rate(V, m.stadium_id, home, league)
             make = W_VENUE * vr + (1 - W_VENUE) * sh[0]
+            roof = str(m.roof) if "roof" in m.index else ""
+            mph = wind.get(team) if roof == "outdoors" else None
+            gust = (mph - WIND_BASE) if mph is not None else 0.0
+            if gust:
+                lo = np.log(make / (1 - make)) + WIND_ACC * gust
+                make = 1 / (1 + np.exp(-lo))
             implied = m.total_line / 2 + (m.spread_line / 2 if home else -m.spread_line / 2)
             x = pd.DataFrame([{"implied": implied, "total_line": m.total_line,
                                "abs_spread": abs(m.spread_line)}])
-            exp_xpa = float(mx.predict(x).iloc[0])
+            exp_xpa = float(mx.predict(x).iloc[0]) + WIND_XPA * gust
             exp_fga = float(mf.predict(x).iloc[0])
             rows.append({
                 "team": team, "kicker": name, "role": "home" if home else "visitor",
@@ -319,6 +365,7 @@ def build(week, t, fg, mx, mf, ppa, league, V, g, ks=None):
                 "venue_id": m.stadium_id, "venue_rate": vr, "venue_src": vsrc,
                 "k_att": n, "raw_rate": raw, "shrunk": sh[0], "shrink_w": w[0],
                 "make": make, "implied": implied, "total": m.total_line,
+                "wind": mph if mph is not None else np.nan,
                 "spread": m.spread_line, "exp_xpa": exp_xpa, "exp_fga": exp_fga,
                 "ppa": ppa(make),
             })
@@ -408,7 +455,15 @@ def main():
     week = args.week
     ros = pd.read_parquet(grab(ROSTER, f"roster_{SEASON}.parquet", refresh=True))
     ks, notes = pick_kickers(ros, week, SEASON)
-    r = build(week, t, fg, mx, mf, ppa, league, V, g, ks)
+    wind = read_wind(week)
+    r = build(week, t, fg, mx, mf, ppa, league, V, g, ks, wind)
+    if wind:
+        sub(f"wind applied to {sum(1 for _, x in r.iterrows() if not pd.isna(x.wind))} "
+            f"outdoor slots, against a {WIND_BASE} mph baseline")
+        for _, x in r[r.wind.notna()].sort_values("wind", ascending=False).iterrows():
+            print(f"  {x.kicker:20} {x.team:4} {x.wind:4.0f} mph")
+    else:
+        sub("no wind.csv for this week - every game priced at neutral weather")
     sub("who is kicking, where the roster needed a second look")
     print("\n".join(notes) if notes else "  every team has exactly one active (A01) kicker")
 
