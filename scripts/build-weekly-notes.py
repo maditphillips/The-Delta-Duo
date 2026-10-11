@@ -475,6 +475,26 @@ from sleeper import NOT_PLAYING, status as sleeper_status   # noqa: E402
 INJURIES = pd.DataFrame(columns=["player", "team", "pos", "status", "part"])
 
 
+def weather_line(r) -> str:
+    """One sentence when the model lowered him for the forecast."""
+    adj = num(r.get("weather_adj"), 0.0)
+    if not adj:
+        return ""
+    return (f"Forecast: {r.get('weather_desc')} during the game; projection lowered "
+            f"{abs(adj):.1f} points for it, on top of what the betting line already prices in. ")
+
+
+def tag(player: str, pos: str) -> str:
+    """Sleeper's designation for a man who is still on the board, for display
+    only: "Questionable (Knee)". Nothing in the ranking reads it."""
+    t = INJURIES[(INJURIES.pos == pos) & (INJURIES.player == player)
+                 & ~INJURIES.status.isin(NOT_PLAYING)]
+    if t.empty:
+        return ""
+    r = t.iloc[0]
+    return f"{r.status} ({r.part})" if r.part else str(r.status)
+
+
 def ruled_out(pos: str) -> pd.DataFrame:
     """This week's scratches for one position: the hand-written ones, plus
     anyone Sleeper has tagged with a status that means he is not playing."""
@@ -509,6 +529,9 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     df["_vacated"] = ""
     for _, g in gone.iterrows():
         mates = df.team == g["team"]
+        if pos == "qb":
+            # A backup quarterback being out takes nothing from the starter.
+            mates &= df["proj"] < g["proj"]
         df.loc[mates, "_vacated"] += (
             f"{g['player_name']} is out; his work is not yet priced in here. ")
     # A man the model priced on another role (model/data/role.csv) HAS had the
@@ -519,9 +542,9 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                "te": "about a third of the targets and snaps",
                "wr": "about 14% of the targets"}
     if "role_basis" in df:
-        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked"])]:
+        for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked", "qb_starts"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
-            names = ([src] if isinstance(src, str) and src
+            names = (src.split(" and ") if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
             if not names:
                 continue
@@ -531,10 +554,21 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "qb_starts":
+                n = int(df.at[i, "role_starts"]) if pd.notna(df.at[i, "role_starts"]) else 0
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out. He is priced on his {n} career start{'s' if n != 1 else ''} "
+                    f"({df.at[i, 'role_start_att']:.0f} pass attempts and {df.at[i, 'role_start_car']:.1f} carries a game), "
+                    f"with {df.at[i, 'role_lambda']:.0%} of that applied, because backups have historically "
+                    f"scored less than a starter's workload implies. ")
+            elif df.at[i, "role_basis"] == "ranked" and pd.notna(df.at[i, "role_weight"]) and df.at[i, "role_weight"] == 0:
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out, but he has only played without "
+                    f"{'him' if len(names) == 1 else 'them'} this season, so that is already in his numbers. ")
             elif df.at[i, "role_basis"] == "ranked":
                 wt = df.at[i, "role_weight"] if "role_weight" in df else 1.0
                 kind = "backup" if (df.at[i, "role_absent"] if "role_absent" in df else "") == "no2" else "starter"
-                tail = (f", scaled down because {who} has already missed games and part of "
+                tail = (f", scaled down because {who} {'has' if len(names) == 1 else 'have'} already missed games and part of "
                         f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out. He is priced on what a player in his spot in the room "
@@ -549,7 +583,7 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 else:
                     how = ("He is priced on his part of the share the rest of the room has "
                            "taken in past seasons, split by how much each was already getting")
-                tail = (f", scaled down because {who} has already missed games and part of "
+                tail = (f", scaled down because {who} {'has' if len(names) == 1 else 'have'} already missed games and part of "
                         f"the change is in his numbers" if pd.notna(wt) and wt < 1 else "")
                 df.at[i, "_vacated"] = f"{who} {verb} out. {how}{tail}. "
             elif df.at[i, "role_basis"] == "inherit_split":
@@ -790,17 +824,19 @@ def main() -> None:
                 "median": round(num(r.get("median_q50"), 0.0), 3),
                 "ceiling": round(num(r.get("ceiling_q90"), 0.0), 3),
                 "p_top12": round(num(r.get("p_top12"), 0.0), 4),
-                "note_data": (str(r.get("_vacated") or "").strip()
+                "note_data": (weather_line(r)
+                              + str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
                               + build_note(r, pos)).strip(),
                 "note_vibes": r.get("note_vibes") or "",
+                "injury": tag(r["player_name"], pos),
             })
         path = OUT / f"{pos}-{variant}.csv"
         with path.open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=["rank_data", "rank_vibes", "player", "team",
                                                "opponent", "is_home", "proj", "proj_vibes",
                                                "floor", "median", "ceiling", "p_top12",
-                                               "note_data", "note_vibes"])
+                                               "note_data", "note_vibes", "injury"])
             w.writeheader()
             w.writerows(rows)
         print(f"  {path}  ({len(rows)} players)")

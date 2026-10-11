@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ChalkCard from "@/components/ChalkCard";
+import InjuryTag from "@/components/InjuryTag";
 import {
   MC_COLOR,
   WILSON_COLOR,
@@ -113,6 +114,7 @@ function Slot({
           <div className="min-w-0 flex-1">
             <div className="truncate" style={{ color: "var(--ink)" }}>
               {r.player}
+              <InjuryTag injury={r.injury} />
             </div>
             <div className="text-xs" style={{ color: "var(--ink-dim)" }}>
               {pick.pos} · {r.team}
@@ -160,7 +162,7 @@ function Slot({
                 style={{ color: "var(--ink)" }}
               >
                 <Face row={e.row} size={26} />
-                <span className="truncate">{e.row.player}</span>
+                <span className="truncate">{e.row.player}<InjuryTag injury={e.row.injury} /></span>
                 <span className="ml-auto text-xs" style={{ color: "var(--ink-faint)" }}>
                   {e.pos} · {e.row.team}
                 </span>
@@ -344,7 +346,7 @@ export default function StartSit() {
                   <div className="flex items-center gap-3">
                     <Face row={p.row} size={44} />
                     <div className="min-w-0">
-                      <div className="truncate" style={{ color: "var(--ink)" }}>{p.row.player}</div>
+                      <div className="truncate" style={{ color: "var(--ink)" }}>{p.row.player}<InjuryTag injury={p.row.injury} /></div>
                       <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
                         {p.pos} ·{" "}
                         <strong style={{ color: "var(--ink)", fontWeight: 600 }}>{p.row.team}</strong>

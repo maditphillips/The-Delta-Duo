@@ -127,6 +127,7 @@ for (const season of fs.readdirSync(SRC).filter((d) => /^\d{4}$/.test(d)).sort()
               rankVibes: rv,
               noteData: pick(r, ["note_data", "note_wilson", "wilson_note"]),
               noteVibes: pick(r, ["note_vibes", "note_mc", "mc_note"]),
+              injury: pick(r, ["injury"]) || null,
             }
           : null;
       }).filter(Boolean);

@@ -17,6 +17,9 @@ export type WeeklyRow = {
   median?: number | null;
   ceiling?: number | null;
   pTop12?: number | null;
+  /** Sleeper's designation while he is still on the board, "Questionable
+   *  (Knee)". Shown next to his name; nothing in the ranking reads it. */
+  injury?: string | null;
   /** Sleeper's id for him, resolved offline; see scripts/build-sleeper-ids.py. */
   photo?: string | null;
   rankData: number;
