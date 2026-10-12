@@ -12,6 +12,37 @@ POINTS_QUADRANTS <- c(
 
 MARK_COLOUR <- "#C2410C"
 
+# Remove specific player-weeks (e.g. a game a player left early injured) from
+# season totals. `exclude` has player_display_name, week and reason columns;
+# `weekly` is load_player_stats(summary_level = "week") for the same season.
+drop_excluded_games <- function(stats, exclude, weekly) {
+  removed <- weekly |>
+    dplyr::inner_join(exclude, by = c("player_display_name", "week")) |>
+    dplyr::group_by(player_id) |>
+    dplyr::summarise(
+      drop_games = dplyr::n(),
+      drop_targets = sum(targets),
+      drop_carries = sum(carries),
+      drop_ppr = sum(fantasy_points_ppr)
+    )
+  stats |>
+    dplyr::left_join(removed, by = "player_id") |>
+    dplyr::mutate(
+      games = games - dplyr::coalesce(drop_games, 0L),
+      targets = targets - dplyr::coalesce(drop_targets, 0L),
+      carries = carries - dplyr::coalesce(drop_carries, 0L),
+      fantasy_points_ppr = fantasy_points_ppr - dplyr::coalesce(drop_ppr, 0)
+    ) |>
+    dplyr::select(-starts_with("drop_"))
+}
+
+# "Left out: KC Concepcion Week 5 (injured)." or NULL when nothing is excluded
+excluded_note <- function(exclude) {
+  if (nrow(exclude) == 0) return(NULL)
+  paste0("Left out: ", paste0(exclude$player_display_name, " Week ", exclude$week,
+                              " (", exclude$reason, ")", collapse = "; "), ".")
+}
+
 # "Amon-Ra St. Brown" -> "A. St. Brown". When two players would get the same
 # short name (Bijan and Brian Robinson), both keep their full names.
 short_name <- function(full_name) {

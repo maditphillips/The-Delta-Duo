@@ -29,21 +29,7 @@ stats <- load_player_stats(seasons = SEASON, summary_level = "reg")
 
 if (nrow(EXCLUDE_GAMES)) {
   weekly <- load_player_stats(seasons = SEASON, summary_level = "week")
-  removed <- weekly |>
-    inner_join(EXCLUDE_GAMES, by = c("player_display_name", "week")) |>
-    group_by(player_id) |>
-    summarise(
-      drop_games = n(),
-      drop_targets = sum(targets),
-      drop_ppr = sum(fantasy_points_ppr)
-    )
-  stats <- stats |>
-    left_join(removed, by = "player_id") |>
-    mutate(
-      games = games - coalesce(drop_games, 0L),
-      targets = targets - coalesce(drop_targets, 0L),
-      fantasy_points_ppr = fantasy_points_ppr - coalesce(drop_ppr, 0)
-    )
+  stats <- drop_excluded_games(stats, EXCLUDE_GAMES, weekly)
 }
 
 # The group is picked by total PPR points so both charts show the same players
@@ -61,11 +47,7 @@ wr <- stats |>
 extras <- wr$player_display_name[-seq_len(N_PLAYERS)]
 group_text <- paste0("Top ", N_PLAYERS, " WRs by total PPR points",
                      if (length(extras)) paste0(" + ", paste(extras, collapse = ", ")) else "")
-# e.g. "Left out: KC Concepcion Week 5 (injured)."
-exclude_note <- if (nrow(EXCLUDE_GAMES)) {
-  paste0("Left out: ", paste0(EXCLUDE_GAMES$player_display_name, " Week ", EXCLUDE_GAMES$week,
-                              " (", EXCLUDE_GAMES$reason, ")", collapse = "; "), ".")
-}
+exclude_note <- excluded_note(EXCLUDE_GAMES)
 
 totals <- quadrant_plot(
   wr, "targets", "fantasy_points_ppr",
