@@ -51,7 +51,7 @@ short_name <- function(full_name) {
   ifelse(dup, full_name, short)
 }
 
-quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
+quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = NULL,
                           x_unit, y_unit, x_digits = 1, y_digits = 1,
                           quadrant_text = POINTS_QUADRANTS,
                           caption = "Data: nflverse via nflreadr | Plot: nflplotR",
@@ -131,7 +131,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead,
     scale_y_continuous(limits = y_lim, expand = c(0, 0)) +
     labs(
       title = title,
-      subtitle = paste0(subtitle_lead, ". Dashed lines = median of the group (",
+      subtitle = paste0(if (length(subtitle_lead)) paste0(subtitle_lead, ". "), "Dashed lines = median of the group (",
                         format(round(x_mid, x_digits), nsmall = x_digits), " ", x_unit, ", ",
                         format(round(y_mid, y_digits), nsmall = y_digits), " ", y_unit, ")."),
       x = x_label,

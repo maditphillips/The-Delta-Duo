@@ -43,17 +43,12 @@ wr <- stats |>
     ppr_pg = fantasy_points_ppr / games
   )
 
-# Only name the always-include players who didn't make the top N on their own
-extras <- wr$player_display_name[-seq_len(N_PLAYERS)]
-group_text <- paste0("Top ", N_PLAYERS, " WRs by total PPR points",
-                     if (length(extras)) paste0(" + ", paste(extras, collapse = ", ")) else "")
 exclude_note <- excluded_note(EXCLUDE_GAMES)
 
 totals <- quadrant_plot(
   wr, "targets", "fantasy_points_ppr",
   x_label = "Total targets", y_label = "Total PPR points",
   title = paste(SEASON, "Wide Receivers: Targets vs. PPR Points"),
-  subtitle_lead = group_text,
   x_unit = "targets", y_unit = "PPR pts", x_digits = 0,
   caption = paste(c(exclude_note, "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
 )
@@ -62,7 +57,6 @@ per_game <- quadrant_plot(
   wr, "targets_pg", "ppr_pg",
   x_label = "Targets per game", y_label = "PPR points per game",
   title = paste(SEASON, "Wide Receivers: Targets vs. PPR Points, Per Game"),
-  subtitle_lead = group_text,
   x_unit = "targets/game", y_unit = "PPR pts/game",
   caption = paste(c(exclude_note, "Per game = season total divided by games played.",
                     "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
