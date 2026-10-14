@@ -73,19 +73,14 @@ catches <- quadrant_plot(
   x_label = "Targets per game", y_label = "Receptions per game",
   title = paste(SEASON, "Wide Receivers: Targets vs. Receptions, Per Game"),
   x_unit = "targets/game", y_unit = "receptions/game",
-  quadrant_text = c(
-    top_left     = "SURE HANDS\nCatches without heavy volume",
-    top_right    = "VOLUME CATCHERS\nTargets and catches",
-    bottom_left  = "LIMITED ROLES\nFew targets, few catches",
-    bottom_right = "LEAKY VOLUME\nTargets not turning into catches"
-  ),
+  split = "ref_line",
+  ref_text = c(above = "ABOVE THE GROUP CATCH RATE", below = "BELOW THE GROUP CATCH RATE"),
+  subtitle = paste0("Green = catches more of their targets than the group (", round(100 * catch_rate),
+                    "% of targets caught); red = fewer."),
   ref_slope = catch_rate, label_force = 6,
   ref_label = paste0("Group catch rate: ", round(100 * catch_rate), "%"),
-  caption = paste0(
-    "Above the orange line = catches more of their targets than the group; below = fewer.\n",
-    paste(c(exclude_note, "Per game = season total divided by games played.",
-            "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
-  )
+  caption = paste(c(exclude_note, "Per game = season total divided by games played.",
+                    "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
 )
 
 save_quadrant_plot(totals, "wr_targets_vs_ppr_2026.png")

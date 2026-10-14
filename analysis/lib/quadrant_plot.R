@@ -11,6 +11,9 @@ POINTS_QUADRANTS <- c(
 )
 
 MARK_COLOUR <- "#C2410C"
+# Light green / red bands for split = "ref_line"
+ABOVE_FILL <- "#DFF1E4"
+BELOW_FILL <- "#F9DEDC"
 
 # Remove specific player-weeks (e.g. a game a player left early injured) from
 # season totals. `exclude` has player_display_name, week and reason columns;
@@ -59,7 +62,13 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
                           caption = "Data: nflverse via nflreadr | Plot: nflplotR",
                           rank_col = NULL, top_n = 10,
                           ref_slope = NULL, ref_label = NULL, label_force = 2,
+                          split = c("median", "ref_line"),
+                          ref_text = c(above = "ABOVE THE LINE", below = "BELOW THE LINE"),
+                          subtitle = NULL,
                           mark_top = c("none", "number", "circle")) {
+  # split: "median" shades four boxes split at the group medians; "ref_line"
+  # shades green above the ref_slope line and red below it instead
+  split <- match.arg(split)
   # mark_top: flag the players ranked 1..top_n in rank_col with a big rank
   # number beside the logo, or a ring around it
   mark_top <- match.arg(mark_top)
@@ -107,6 +116,50 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
     )
   }
 
+  background <- if (split == "median") {
+    list(
+      geom_rect(
+        data = quadrants, inherit.aes = FALSE,
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill)
+      ),
+      scale_fill_identity(),
+      geom_vline(xintercept = x_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4),
+      geom_hline(yintercept = y_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4),
+      ref_layer,
+      geom_text(
+        data = quadrant_labels, inherit.aes = FALSE,
+        aes(x = x, y = y, label = text, hjust = hjust, vjust = vjust),
+        size = 3.2, fontface = "bold", colour = "grey30", lineheight = 0.95,
+        nudge_x = c(1, -1, 1, -1) * x_pad * 0.15,
+        nudge_y = c(-1, -1, 1, 1) * y_pad * 0.15
+      )
+    )
+  } else {
+    # Line clamped to the panel so the two bands meet exactly along it
+    band <- tibble::tibble(bx = seq(x_lim[1], x_lim[2], length.out = 200)) |>
+      dplyr::mutate(line = pmin(pmax(ref_slope * bx, y_lim[1]), y_lim[2]))
+    list(
+      geom_ribbon(data = band, inherit.aes = FALSE,
+                  aes(x = bx, ymin = line, ymax = y_lim[2]), fill = ABOVE_FILL),
+      geom_ribbon(data = band, inherit.aes = FALSE,
+                  aes(x = bx, ymin = y_lim[1], ymax = line), fill = BELOW_FILL),
+      ref_layer,
+      annotate("text", x = x_lim[1] + x_pad * 0.15, y = y_lim[2] - y_pad * 0.15,
+               label = ref_text[["above"]], hjust = 0, vjust = 1,
+               size = 3.2, fontface = "bold", colour = "grey30", lineheight = 0.95),
+      annotate("text", x = x_lim[2] - x_pad * 0.15, y = y_lim[1] + y_pad * 0.15,
+               label = ref_text[["below"]], hjust = 1, vjust = 0,
+               size = 3.2, fontface = "bold", colour = "grey30", lineheight = 0.95)
+    )
+  }
+
+  median_text <- paste0("Dashed lines = median of the group (",
+                        format(round(x_mid, x_digits), nsmall = x_digits), " ", x_unit, ", ",
+                        format(round(y_mid, y_digits), nsmall = y_digits), " ", y_unit, ").")
+  if (is.null(subtitle)) {
+    subtitle <- paste0(if (length(subtitle_lead)) paste0(subtitle_lead, ". "), median_text)
+  }
+
   top_layer <- switch(mark_top,
     none = NULL,
     number = geom_text(
@@ -119,21 +172,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
   )
 
   ggplot(data, aes(x = .data[[x]], y = .data[[y]])) +
-    geom_rect(
-      data = quadrants, inherit.aes = FALSE,
-      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill)
-    ) +
-    scale_fill_identity() +
-    geom_vline(xintercept = x_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
-    geom_hline(yintercept = y_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
-    ref_layer +
-    geom_text(
-      data = quadrant_labels, inherit.aes = FALSE,
-      aes(x = x, y = y, label = text, hjust = hjust, vjust = vjust),
-      size = 3.2, fontface = "bold", colour = "grey30", lineheight = 0.95,
-      nudge_x = c(1, -1, 1, -1) * x_pad * 0.15,
-      nudge_y = c(-1, -1, 1, 1) * y_pad * 0.15
-    ) +
+    background +
     geom_nfl_logos(aes(team_abbr = recent_team), width = 0.026, alpha = 0.95) +
     top_layer +
     geom_text_repel(
@@ -148,9 +187,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
     scale_y_continuous(limits = y_lim, expand = c(0, 0)) +
     labs(
       title = title,
-      subtitle = paste0(if (length(subtitle_lead)) paste0(subtitle_lead, ". "), "Dashed lines = median of the group (",
-                        format(round(x_mid, x_digits), nsmall = x_digits), " ", x_unit, ", ",
-                        format(round(y_mid, y_digits), nsmall = y_digits), " ", y_unit, ")."),
+      subtitle = subtitle,
       x = x_label,
       y = y_label,
       caption = caption
