@@ -39,6 +39,11 @@ Held out on 2023-2025, ranking every kicker within each week:
 Scoring is Sleeper standard, which is also every other site's: FG under 40 = 3,
 40-49 = 4, 50+ = 5, XP = 1, missed FG = -1, missed XP = -1.
 
+KICKERS can be overridden by hand. The roster release lags a mid-week signing
+by days, so data/weekly/<season>/week-NN/kickers.csv with columns
+team,player,gsis_id wins over whatever nflverse says. A kicker the roster has
+already marked CUT is flagged loudly when no override covers him.
+
 WIND is optional and hand-fed, because nflverse only records weather AFTER a
 game is played - the temp and wind columns are empty for every upcoming week.
 Drop a wind.csv next to the week's board with columns team,wind (mph) and it
@@ -242,6 +247,26 @@ def venues():
     ts = open(STADIUMS).read()
     return {v["id"]: v for v in json.loads(
         re.search(r"export const stadiums[^=]*=\s*(\[.*?\]);", ts, re.S).group(1))}
+
+
+def read_kicker_overrides(week):
+    """Hand-entered team -> kicker, for signings nflverse has not caught up with.
+
+    The roster release lags a mid-week move by days. When the Rams cut Harrison
+    Mevis in week 6 the file still listed him as their kicker and nothing listed
+    Blake Grupe, who had signed. A row here wins over whatever the roster says.
+    """
+    p = os.path.join(ROOT, "data", "weekly", str(SEASON), f"week-{week:02d}", "kickers.csv")
+    if not os.path.exists(p):
+        return {}
+    out = {}
+    with open(p) as fh:
+        for r in csv.DictReader(fh):
+            team = (r.get("team") or "").strip().upper()
+            gsis = (r.get("gsis_id") or "").strip()
+            if team and gsis:
+                out[team] = (r.get("player", "").strip() or gsis, gsis)
+    return out
 
 
 def read_wind(week):
@@ -455,6 +480,17 @@ def main():
     week = args.week
     ros = pd.read_parquet(grab(ROSTER, f"roster_{SEASON}.parquet", refresh=True))
     ks, notes = pick_kickers(ros, week, SEASON)
+    over = read_kicker_overrides(week)
+    for team, (name, kid) in over.items():
+        was = ks.get(team, ("nobody", None))[0]
+        ks[team] = (name, kid)
+        notes.append(f"  {team}: overridden by hand - {name} in place of {was}")
+    # a man the roster has already cut should never carry a team's ranking
+    cut = ros[ros.position.eq("K") & ros.status.eq("CUT")].set_index("gsis_id")
+    for team, (name, kid) in list(ks.items()):
+        if kid in cut.index and team not in over:
+            notes.append(f"  {team}: ! {name} is listed CUT and has no replacement on file "
+                         f"- add a kickers.csv row before trusting this team's line")
     wind = read_wind(week)
     r = build(week, t, fg, mx, mf, ppa, league, V, g, ks, wind)
     if wind:
