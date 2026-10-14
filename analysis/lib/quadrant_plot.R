@@ -59,12 +59,14 @@ short_name <- function(full_name) {
 quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = NULL,
                           x_unit, y_unit, x_digits = 1, y_digits = 1,
                           quadrant_text = POINTS_QUADRANTS,
+                          quadrant_fill = c(top_left = "#FCE9DC", top_right = "#DFF1E4",
+                                            bottom_left = "#EEEEEE", bottom_right = "#DDEAF7"),
                           caption = "Data: nflverse via nflreadr | Plot: nflplotR",
                           rank_col = NULL, top_n = 10,
                           ref_slope = NULL, ref_label = NULL, label_force = 2,
                           split = c("median", "ref_line"),
                           ref_text = c(above = "ABOVE THE LINE", below = "BELOW THE LINE"),
-                          subtitle = NULL,
+                          subtitle = NULL, x_split = NULL, y_split = NULL,
                           mark_top = c("none", "number", "circle")) {
   # split: "median" shades four boxes split at the group medians; "ref_line"
   # shades green above the ref_slope line and red below it instead
@@ -77,8 +79,9 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
 
   xv <- data[[x]]
   yv <- data[[y]]
-  x_mid <- median(xv)
-  y_mid <- median(yv)
+  # Quadrant split points: group medians unless given
+  x_mid <- if (is.null(x_split)) median(xv) else x_split
+  y_mid <- if (is.null(y_split)) median(yv) else y_split
 
   # Pad the axes so logos and labels at the edges aren't clipped
   x_pad <- diff(range(xv)) * 0.08
@@ -89,10 +92,10 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
 
   quadrants <- tibble::tribble(
     ~xmin,    ~xmax,    ~ymin,    ~ymax,    ~fill,
-    x_lim[1], x_mid,    y_mid,    y_lim[2], "#FCE9DC",  # top left
-    x_mid,    x_lim[2], y_mid,    y_lim[2], "#DFF1E4",  # top right
-    x_lim[1], x_mid,    y_lim[1], y_mid,    "#EEEEEE",  # bottom left
-    x_mid,    x_lim[2], y_lim[1], y_mid,    "#DDEAF7"   # bottom right
+    x_lim[1], x_mid,    y_mid,    y_lim[2], quadrant_fill[["top_left"]],
+    x_mid,    x_lim[2], y_mid,    y_lim[2], quadrant_fill[["top_right"]],
+    x_lim[1], x_mid,    y_lim[1], y_mid,    quadrant_fill[["bottom_left"]],
+    x_mid,    x_lim[2], y_lim[1], y_mid,    quadrant_fill[["bottom_right"]]
   )
 
   quadrant_labels <- tibble::tribble(
