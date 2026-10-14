@@ -2,10 +2,12 @@
 # plotted two ways:
 #   1. total targets (x) vs. total PPR points (y)
 #   2. targets per game (x) vs. PPR points per game (y), using games played
+#   3. targets per game (x) vs. receptions per game (y), with the group's
+#      overall catch rate drawn as a diagonal
 # Quadrants split at the median of the plotted players on each axis.
 #
 # install.packages(c("nflreadr", "nflplotR", "ggplot2", "dplyr", "ggrepel"))
-# Run from this folder: Rscript plot.R   -> writes both PNGs here
+# Run from this folder: Rscript plot.R   -> writes the three PNGs here
 
 library(nflreadr)
 library(nflplotR)
@@ -40,7 +42,8 @@ wr <- stats |>
   mutate(
     label = short_name(player_display_name),
     targets_pg = targets / games,
-    ppr_pg = fantasy_points_ppr / games
+    ppr_pg = fantasy_points_ppr / games,
+    receptions_pg = receptions / games
   )
 
 exclude_note <- excluded_note(EXCLUDE_GAMES)
@@ -62,5 +65,29 @@ per_game <- quadrant_plot(
                     "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
 )
 
+# Group catch rate: all receptions / all targets across the plotted players
+catch_rate <- sum(wr$receptions) / sum(wr$targets)
+
+catches <- quadrant_plot(
+  wr, "targets_pg", "receptions_pg",
+  x_label = "Targets per game", y_label = "Receptions per game",
+  title = paste(SEASON, "Wide Receivers: Targets vs. Receptions, Per Game"),
+  x_unit = "targets/game", y_unit = "receptions/game",
+  quadrant_text = c(
+    top_left     = "SURE HANDS\nCatches without heavy volume",
+    top_right    = "VOLUME CATCHERS\nTargets and catches",
+    bottom_left  = "LIMITED ROLES\nFew targets, few catches",
+    bottom_right = "LEAKY VOLUME\nTargets not turning into catches"
+  ),
+  ref_slope = catch_rate, label_force = 6,
+  ref_label = paste0("Group catch rate: ", round(100 * catch_rate), "%"),
+  caption = paste0(
+    "Above the orange line = catches more of their targets than the group; below = fewer.\n",
+    paste(c(exclude_note, "Per game = season total divided by games played.",
+            "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
+  )
+)
+
 save_quadrant_plot(totals, "wr_targets_vs_ppr_2026.png")
 save_quadrant_plot(per_game, "wr_targets_vs_ppr_per_game_2026.png")
+save_quadrant_plot(catches, "wr_targets_vs_receptions_per_game_2026.png")

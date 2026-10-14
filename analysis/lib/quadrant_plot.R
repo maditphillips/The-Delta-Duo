@@ -23,6 +23,7 @@ drop_excluded_games <- function(stats, exclude, weekly) {
       drop_games = dplyr::n(),
       drop_targets = sum(targets),
       drop_carries = sum(carries),
+      drop_receptions = sum(receptions),
       drop_ppr = sum(fantasy_points_ppr)
     )
   stats |>
@@ -31,6 +32,7 @@ drop_excluded_games <- function(stats, exclude, weekly) {
       games = games - dplyr::coalesce(drop_games, 0L),
       targets = targets - dplyr::coalesce(drop_targets, 0L),
       carries = carries - dplyr::coalesce(drop_carries, 0L),
+      receptions = receptions - dplyr::coalesce(drop_receptions, 0L),
       fantasy_points_ppr = fantasy_points_ppr - dplyr::coalesce(drop_ppr, 0)
     ) |>
     dplyr::select(-starts_with("drop_"))
@@ -56,6 +58,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
                           quadrant_text = POINTS_QUADRANTS,
                           caption = "Data: nflverse via nflreadr | Plot: nflplotR",
                           rank_col = NULL, top_n = 10,
+                          ref_slope = NULL, ref_label = NULL, label_force = 2,
                           mark_top = c("none", "number", "circle")) {
   # mark_top: flag the players ranked 1..top_n in rank_col with a big rank
   # number beside the logo, or a ring around it
@@ -91,6 +94,19 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
     x_lim[2], y_lim[1], 1,      0,      quadrant_text[["bottom_right"]]
   )
 
+  # Optional dashed reference line through the origin (y = ref_slope * x),
+  # labelled near the right edge
+  ref_layer <- if (!is.null(ref_slope)) {
+    label_x <- min(x_lim[2], y_lim[2] / ref_slope) - diff(x_lim) * 0.02
+    list(
+      geom_abline(slope = ref_slope, intercept = 0, linetype = "longdash",
+                  colour = MARK_COLOUR, linewidth = 0.5),
+      annotate("text", x = label_x, y = ref_slope * label_x, label = ref_label,
+               hjust = 1, vjust = -0.6, size = 3.2, fontface = "bold",
+               colour = MARK_COLOUR, angle = 0)
+    )
+  }
+
   top_layer <- switch(mark_top,
     none = NULL,
     number = geom_text(
@@ -110,6 +126,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
     scale_fill_identity() +
     geom_vline(xintercept = x_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
     geom_hline(yintercept = y_mid, linetype = "dashed", colour = "grey55", linewidth = 0.4) +
+    ref_layer +
     geom_text(
       data = quadrant_labels, inherit.aes = FALSE,
       aes(x = x, y = y, label = text, hjust = hjust, vjust = vjust),
@@ -121,7 +138,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
     top_layer +
     geom_text_repel(
       aes(label = label),
-      size = 2.7, colour = "grey15", force = 2,
+      size = 2.7, colour = "grey15", force = label_force,
       # Keep name labels clear of the rank numbers / rings too
       point.size = ifelse(is_top, 12, 7), box.padding = 0.3, min.segment.length = 0,
       segment.colour = "grey60", segment.size = 0.25,
