@@ -52,7 +52,7 @@ Needs pandas, numpy, scipy, statsmodels, pyarrow, matplotlib.
 | File | What it is |
 |---|---|
 | `team_games.csv` | one row per team per game: first play, totals, pass rates, score |
-| `games.csv` | one row per game: both teams' first plays and the score |
+| `games.csv` | one row per game: both teams' first plays and the score (gitignored, rebuilt by `analyze.py`) |
 | `by_first_yds.csv`, `by_type_and_yds.csv`, `by_first_down.csv` | win %, other yards, points, pass rate by first-play result |
 | `head_to_head_gap.csv` | win % of the team with the bigger first play, by size of gap |
 | `by_first_type.csv`, `win_by_both_types.csv`, `combos.csv` | the run/pass splits and the four game combos |
