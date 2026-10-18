@@ -1,0 +1,3 @@
+first_type,n,win_pct,win_pct_ci,rest_yds,rest_yds_ci,pts,pass_rate,neutral_pass_rate
+pass,2346,0.507,0.02,339.079,3.392,23.128,0.59,0.576
+run,2932,0.494,0.018,335.965,3.066,22.521,0.582,0.573

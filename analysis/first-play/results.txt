@@ -1,0 +1,122 @@
+5278 team-games, 2639 games, 2016-2025 regular season
+
+First play: 44.4% pass, 55.6% run, mean 5.56 yds, median 4
+
+====================================================================== 
+PART 1: FIRST-PLAY YARDS
+
+First-play yards vs rest-of-game yards: r = 0.011 (p = 0.41), Spearman = 0.022 (p = 0.11)
+  -> first play explains 0.0% of the spread in a team's other yards
+  each extra first-play yard = +0.12 other yards (95% CI -0.16 to +0.40)
+
+Win vs first-play yards (logit): 1.113x odds per 10 yds, p = 0.0016
+  holding the opening drive points fixed: 1.016x odds per 10 yds, p = 0.64
+  opening drive scored: 39.2% overall; 67.9% after a 20+ yd first play, 29.5% after 0 or a loss
+
+By first-play yards:
+            n  win_pct  win_pct_ci  rest_yds  rest_yds_ci     pts  pass_rate  neutral_pass_rate
+yds_bin                                                                                        
+loss      329    0.457       0.054   333.802        8.735  21.818      0.598              0.584
+0         892    0.489       0.033   338.068        5.596  22.660      0.589              0.579
+1-3      1320    0.492       0.027   332.710        4.635  22.210      0.585              0.578
+4-6      1162    0.506       0.029   338.641        4.788  22.824      0.584              0.571
+7-9       694    0.496       0.037   342.043        6.165  23.341      0.583              0.562
+10-19     638    0.520       0.039   336.149        6.492  22.882      0.585              0.576
+20+       243    0.572       0.062   348.276       10.868  25.778      0.573              0.569 
+
+By first-play yards, split by type:
+                       n  win_pct  win_pct_ci  rest_yds  rest_yds_ci     pts  pass_rate  neutral_pass_rate
+first_type yds_bin                                                                                        
+pass       loss      116    0.522       0.091   330.284       14.256  22.397      0.581              0.563
+           0         679    0.500       0.038   340.884        6.417  23.280      0.589              0.578
+           1-3       203    0.490       0.069   333.670       11.417  22.079      0.595              0.586
+           4-6       348    0.536       0.052   342.874        8.780  23.454      0.594              0.583
+           7-9       383    0.480       0.050   340.196        8.309  22.971      0.585              0.561
+           10-19     434    0.508       0.047   335.134        7.815  22.465      0.593              0.583
+           20+       183    0.546       0.072   343.760       12.578  25.475      0.586              0.574
+run        loss      213    0.423       0.066   335.718       11.050  21.502      0.608              0.595
+           0         213    0.453       0.067   329.094       11.373  20.685      0.589              0.585
+           1-3      1117    0.492       0.029   332.535        5.071  22.234      0.583              0.577
+           4-6       814    0.493       0.034   336.832        5.711  22.555      0.579              0.566
+           7-9       311    0.514       0.056   344.318        9.206  23.797      0.580              0.564
+           10-19     204    0.547       0.068   338.309       11.676  23.770      0.568              0.561
+           20+        60    0.650       0.122   362.050       21.382  26.700      0.536              0.556 
+
+First play gained a first down?
+                     n  win_pct  win_pct_ci  rest_yds  rest_yds_ci     pts  pass_rate  neutral_pass_rate
+first_first_down                                                                                        
+0                 4384    0.492       0.015   337.009        2.493  22.590      0.586              0.574
+1                  894    0.541       0.033   339.016        5.555  23.777      0.581              0.574 
+
+HEAD TO HEAD: did the team with the bigger first play win?
+  2456 games with a gap, 183 games with equal first plays
+  Bigger first play won 52.1% (95% CI 50.1%-54.1%), p = 0.037
+  ...and outgained the other team 52.4% of the time
+
+Win % for the team with the bigger first play, by size of gap:
+              n  win_pct  win_pct_ci  rest_yds  rest_yds_ci     pts  pass_rate  neutral_pass_rate
+gap_bin                                                                                          
+0 (equal)   183    0.486       0.072   339.066       11.462  22.683      0.580              0.579
+1-4        1109    0.505       0.029   335.720        4.976  22.951      0.578              0.567
+5-9         764    0.542       0.035   342.797        5.755  23.474      0.586              0.574
+10-19       408    0.496       0.048   336.218        8.387  23.042      0.579              0.567
+20+         175    0.594       0.073   342.429       12.651  25.971      0.570              0.567 
+
+Win vs first-play yard gap (logit): 1.114x odds per 10-yd gap, p = 0.0016
+
+====================================================================== 
+PART 2: FIRST-PLAY TYPE (scramble = run, sack = pass)
+
+               n  win_pct  win_pct_ci  rest_yds  rest_yds_ci     pts  pass_rate  neutral_pass_rate
+first_type                                                                                        
+pass        2346    0.507       0.020   339.079        3.392  23.128      0.590              0.576
+run         2932    0.494       0.018   335.965        3.066  22.521      0.582              0.573 
+
+  pass_rate: pass-first 0.590 vs run-first 0.582, diff +0.008, t-test p = 0.008
+  neutral_pass_rate: pass-first 0.576 vs run-first 0.573, diff +0.004, t-test p = 0.27
+  rest_yds: pass-first 339.079 vs run-first 335.965, diff +3.114, t-test p = 0.18
+  pf: pass-first 23.128 vs run-first 22.521, diff +0.607, t-test p = 0.028
+  win: pass-first 50.7% vs run-first 49.4%, p = 0.32
+
+Pass rate vs the team's own season average (this game left out):
+              mean  count
+first_type               
+pass        0.0029   2346
+run        -0.0029   2932
+  t-test p = 0.045
+  season pass rate of pass-first teams 0.587 vs run-first 0.585
+
+Share of first plays that are passes, by team season pass-rate quartile:
+season_pass_rate_ex
+lowest     0.423
+2nd        0.444
+3rd        0.466
+highest    0.445 
+
+First play type vs whether the team mostly passed (>50%) that game:
+            mostly run  mostly pass
+first_type                         
+pass             0.215        0.785
+run              0.241        0.759
+  baseline: 77.0% of team-games are mostly pass
+
+GAME COMBOS (both teams' first plays):
+           games  share  total_pts  total_yds  abs_margin  one_score_pct
+combo                                                                   
+both pass    550  0.208     46.276    691.336      11.145          0.529
+both run     843  0.319     44.858    678.026      11.372          0.521
+one each    1246  0.472     45.766    688.633      10.967          0.538
+  total_pts: ANOVA p = 0.14
+  total_yds_both: ANOVA p = 0.066
+  abs_margin: ANOVA p = 0.6
+  expected share if independent: both pass 0.198, both run 0.309, one each 0.494
+
+ONE EACH (1246 games): pass-first team won 51.4% (95% CI 48.6%-54.2%), p = 0.33
+  pass-first team outgained the run-first team 50.6%; avg yds 346 vs 342
+
+Win % by own first play and opponent first play:
+opp first play   pass    run
+own first play              
+pass            0.500  0.514
+run             0.486  0.500 
+
