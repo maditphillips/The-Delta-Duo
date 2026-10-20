@@ -1,0 +1,62 @@
+544 alpha-WR seasons, 2009-2025 (WR with most targets per game on his team, min 6 games)
+
+Overall: 1.41 injury games missed per 17, 44% missed at least one, 13% missed 4+
+
+=== Team quality by final win %, split in thirds ===
+win_pct                 bad   middle     good
+n                   182.000  181.000  181.000
+team_win_pct          0.283    0.503    0.715
+games_missed_per17    1.750    1.402    1.068
+missed_any            0.489    0.442    0.403
+missed_4plus          0.176    0.133    0.094
+on_ir                 0.093    0.072    0.022
+injury_spells         0.659    0.575    0.492
+missed_wk1_12         0.874    0.818    0.552
+missed_wk13plus       0.797    0.536    0.470
+tgt_per_game          8.186    8.056    8.410
+age                  26.508   26.210   26.973
+bad minus good, games missed per 17: +0.68 (95% CI +0.22 to +1.15); Mann-Whitney p = 0.02; missed-any Fisher p = 0.11
+
+=== Team quality by Vegas spread, weeks 1-4 (set before most injuries), split in thirds ===
+early_spread            bad   middle     good
+n                   182.000  181.000  181.000
+team_win_pct          0.376    0.516    0.609
+games_missed_per17    1.595    1.532    1.094
+missed_any            0.484    0.459    0.392
+missed_4plus          0.154    0.144    0.105
+on_ir                 0.082    0.061    0.044
+injury_spells         0.654    0.597    0.475
+missed_wk1_12         0.841    0.779    0.624
+missed_wk13plus       0.687    0.691    0.425
+tgt_per_game          7.900    8.278    8.476
+age                  26.049   26.478   27.166
+bad minus good, games missed per 17: +0.50 (95% CI +0.06 to +0.96); Mann-Whitney p = 0.03; missed-any Fisher p = 0.09
+
+=== Team quality by prior-season win %, split in thirds ===
+prior_win_pct           bad   middle     good
+n                   182.000  181.000  181.000
+team_win_pct          0.423    0.497    0.581
+games_missed_per17    1.526    1.436    1.260
+missed_any            0.467    0.459    0.409
+missed_4plus          0.148    0.133    0.122
+on_ir                 0.071    0.055    0.061
+injury_spells         0.615    0.597    0.514
+missed_wk1_12         0.791    0.757    0.696
+missed_wk13plus       0.659    0.630    0.514
+tgt_per_game          8.003    8.146    8.503
+age                  26.240   26.330   27.122
+bad minus good, games missed per 17: +0.27 (95% CI -0.20 to +0.73); Mann-Whitney p = 0.23; missed-any Fisher p = 0.29
+
+=== Negative binomial: injury games missed ~ team quality (+ age, targets/game) ===
+inj_missed ~ z_spread                         rate ratio per +1 SD better team = 0.88 (95% CI 0.78-1.00), p = 0.05
+inj_missed ~ z_spread + age + tgt_per_game    rate ratio per +1 SD better team = 0.90 (95% CI 0.80-1.02), p = 0.11
+inj_missed ~ z_win + age + tgt_per_game       rate ratio per +1 SD better team = 0.81 (95% CI 0.71-0.93), p = 0.00
+
+Extremes by early spread: worst quarter 1.58 vs best quarter 1.26 games missed per 17 (Mann-Whitney p = 0.15)
+
+=== Bad vs good by early spread: where the gap comes from ===
+games missed, weeks 1-12     bad 0.84  good 0.62  p = 0.07
+games missed, weeks 13+      bad 0.69  good 0.43  p = 0.14
+separate injury absences     bad 0.65  good 0.48  p = 0.04
+missed 4+ games              bad 0.15  good 0.10  p = 0.17
+avg games per absence:  bad 2.38  good 2.20
