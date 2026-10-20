@@ -26,7 +26,8 @@ N_PLAYERS <- 60
 ALWAYS_INCLUDE <- c("KC Concepcion")
 EXCLUDE_GAMES <- tibble::tribble(
   ~player_display_name, ~week, ~reason,
-  "KC Concepcion",      5,     "injured"
+  "KC Concepcion",      5,     "injured",
+  "Terry McLaurin",     6,     "injured"
 )
 
 stats <- load_player_stats(seasons = SEASON, summary_level = "reg")
