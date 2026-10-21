@@ -67,6 +67,7 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
                           split = c("median", "ref_line"),
                           ref_text = c(above = "ABOVE THE LINE", below = "BELOW THE LINE"),
                           subtitle = NULL, x_split = NULL, y_split = NULL,
+                          extra_x = NULL, extra_y = NULL, extra_colour = "#C62828",
                           mark_top = c("none", "number", "circle")) {
   # split: "median" shades four boxes split at the group medians; "ref_line"
   # shades green above the ref_slope line and red below it instead
@@ -174,11 +175,20 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
                         colour = MARK_COLOUR, fill = NA)
   )
 
+  # Optional second set of dashed lines (e.g. another position's medians)
+  extra_layer <- list(
+    if (!is.null(extra_x)) geom_vline(xintercept = extra_x, linetype = "dashed",
+                                      colour = extra_colour, linewidth = 0.5),
+    if (!is.null(extra_y)) geom_hline(yintercept = extra_y, linetype = "dashed",
+                                      colour = extra_colour, linewidth = 0.5)
+  )
+
   if (!"label_colour" %in% names(data)) data$label_colour <- "grey15"
   data$label_colour[is.na(data$label_colour)] <- "grey15"
 
   ggplot(data, aes(x = .data[[x]], y = .data[[y]])) +
     background +
+    extra_layer +
     geom_nfl_logos(aes(team_abbr = recent_team), width = 0.026, alpha = 0.95) +
     top_layer +
     geom_text_repel(
