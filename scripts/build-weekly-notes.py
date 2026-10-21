@@ -484,6 +484,33 @@ def weather_line(r) -> str:
             f"{abs(adj):.1f} points for it, on top of what the betting line already prices in. ")
 
 
+def name_key(name) -> str:
+    """A name with punctuation and suffixes taken off, for matching across
+    sources: Sleeper writes "Marvin Harrison", "Deebo Samuel" and "Tre' Harris"
+    where the board writes "Marvin Harrison Jr.", "Deebo Samuel Sr." and
+    "Tre Harris". Matched on the exact string, all three stayed on the board
+    while ruled out."""
+    words = str(name or "").lower().replace("'", "").replace(".", "").split()
+    while words and words[-1] in {w.strip(".") for w in SUFFIXES}:
+        words.pop()
+    return " ".join(words)
+
+
+def board_spelling(inj: pd.DataFrame) -> pd.DataFrame:
+    """Rewrite Sleeper's names in the board's spelling, matched on the name
+    key and the team, so every check below can compare names exactly."""
+    spell = {}
+    for stem in FILES.values():
+        path = pool_csv(stem) if pool_csv(stem).exists() else model_csv(stem)
+        if path.exists():
+            for n, t in pd.read_csv(path, usecols=["player_name", "team"]).itertuples(index=False):
+                spell.setdefault((name_key(n), t), n)
+    inj = inj.copy()
+    team = inj.team.fillna("").replace({"LAR": "LA"})
+    inj["player"] = [spell.get((name_key(n), t), n) for n, t in zip(inj.player, team)]
+    return inj
+
+
 def tag(player: str, pos: str) -> str:
     """Sleeper's designation for a man who is still on the board, for display
     only: "Questionable (Knee)". Nothing in the ranking reads it."""
@@ -736,7 +763,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     global DEF_TO_DATE
     DEF_TO_DATE = defense_to_date()
-    INJURIES = sleeper_status()
+    INJURIES = board_spelling(sleeper_status())
     hard = INJURIES[INJURIES.status.isin(NOT_PLAYING)]
     soft = INJURIES[~INJURIES.status.isin(NOT_PLAYING)]
     print(f"  injuries: {len(hard)} not playing, {len(soft)} questionable or worse "
