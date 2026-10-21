@@ -4,7 +4,7 @@
 #   2. targets per game (x) vs. PPR points per game (y), using games played
 #   3. targets per game (x) vs. receptions per game (y), with the group's
 #      overall catch rate drawn as a diagonal
-#   4. chart 2 with the top N_TE tight ends added (ringed), quadrants still
+#   4. chart 2 with the top N_TE tight ends added (starred), quadrants still
 #      split at the WR medians
 # Quadrants split at the median of the plotted players on each axis.
 #
@@ -95,13 +95,12 @@ te <- stats |>
   arrange(desc(fantasy_points_ppr)) |>
   slice_head(n = N_TE) |>
   mutate(
-    label = paste(short_name(player_display_name), "(TE)"),
+    label = paste("\u2605", short_name(player_display_name)),
     targets_pg = targets / games,
     ppr_pg = fantasy_points_ppr / games,
     receptions_pg = receptions / games
   )
-# te_mark: 1 = tight end (ringed), 2 = receiver; rings go on te_mark <= 1
-wr_te <- bind_rows(mutate(wr, te_mark = 2L), mutate(te, te_mark = 1L))
+wr_te <- bind_rows(wr, te)
 wr_x_mid <- median(wr$targets_pg)
 wr_y_mid <- median(wr$ppr_pg)
 
@@ -110,11 +109,10 @@ with_tes <- quadrant_plot(
   x_label = "Targets per game", y_label = "PPR points per game",
   title = paste(SEASON, "Wide Receivers + Top", N_TE, "Tight Ends: Targets vs. PPR Points, Per Game"),
   x_unit = "targets/game", y_unit = "PPR pts/game",
-  x_split = wr_x_mid, y_split = wr_y_mid,
-  subtitle = paste0("Ringed = tight end (top ", N_TE, " by total PPR). Dashed lines = WR median (",
+  x_split = wr_x_mid, y_split = wr_y_mid, label_force = 5,
+  subtitle = paste0("\u2605 = tight end (top ", N_TE, " by total PPR). Dashed lines = WR median (",
                     format(round(wr_x_mid, 1), nsmall = 1), " targets/game, ",
                     format(round(wr_y_mid, 1), nsmall = 1), " PPR pts/game)."),
-  rank_col = "te_mark", top_n = 1, mark_top = "circle",
   caption = paste(c(exclude_note, "Per game = season total divided by games played.",
                     "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
 )
