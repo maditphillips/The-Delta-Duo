@@ -24,6 +24,7 @@ N_PLAYERS <- 60
 ALWAYS_INCLUDE <- c("KC Concepcion")
 # Top tight ends (by total PPR) to add to the WR + TE version of chart 2
 N_TE <- 12
+TE_COLOUR <- "#C62828"  # red for tight-end names on that chart
 # Games to leave out of a player's season (e.g. left early with an injury).
 # Their targets, PPR points and the game itself are removed from the totals.
 EXCLUDE_GAMES <- tibble::tribble(
@@ -96,6 +97,7 @@ te <- stats |>
   slice_head(n = N_TE) |>
   mutate(
     label = paste("\u2605", short_name(player_display_name)),
+    label_colour = TE_COLOUR,
     targets_pg = targets / games,
     ppr_pg = fantasy_points_ppr / games,
     receptions_pg = receptions / games
@@ -110,7 +112,7 @@ with_tes <- quadrant_plot(
   title = paste(SEASON, "Wide Receivers + Top", N_TE, "Tight Ends: Targets vs. PPR Points, Per Game"),
   x_unit = "targets/game", y_unit = "PPR pts/game",
   x_split = wr_x_mid, y_split = wr_y_mid, label_force = 5,
-  subtitle = paste0("\u2605 = tight end (top ", N_TE, " by total PPR). Dashed lines = WR median (",
+  subtitle = paste0("Red \u2605 = tight end (top ", N_TE, " by total PPR). Dashed lines = WR median (",
                     format(round(wr_x_mid, 1), nsmall = 1), " targets/game, ",
                     format(round(wr_y_mid, 1), nsmall = 1), " PPR pts/game)."),
   caption = paste(c(exclude_note, "Per game = season total divided by games played.",

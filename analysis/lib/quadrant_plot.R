@@ -174,18 +174,23 @@ quadrant_plot <- function(data, x, y, x_label, y_label, title, subtitle_lead = N
                         colour = MARK_COLOUR, fill = NA)
   )
 
+  if (!"label_colour" %in% names(data)) data$label_colour <- "grey15"
+  data$label_colour[is.na(data$label_colour)] <- "grey15"
+
   ggplot(data, aes(x = .data[[x]], y = .data[[y]])) +
     background +
     geom_nfl_logos(aes(team_abbr = recent_team), width = 0.026, alpha = 0.95) +
     top_layer +
     geom_text_repel(
-      aes(label = label),
-      size = 2.7, colour = "grey15", force = label_force,
+      # Name colour comes from a label_colour column when the data has one
+      aes(label = label, colour = label_colour),
+      size = 2.7, force = label_force,
       # Keep name labels clear of the rank numbers / rings too
       point.size = ifelse(is_top, 12, 7), box.padding = 0.3, min.segment.length = 0,
       segment.colour = "grey60", segment.size = 0.25,
       max.overlaps = Inf, seed = 2026
     ) +
+    scale_colour_identity() +
     scale_x_continuous(limits = x_lim, expand = c(0, 0)) +
     scale_y_continuous(limits = y_lim, expand = c(0, 0)) +
     labs(
