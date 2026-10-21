@@ -843,6 +843,12 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                                          + lam[hit] * (preds.loc[hit, c].to_numpy() - base.loc[hit, c].to_numpy()))
             preds = apply_weather(te, preds, season, week, pos)
             back = returning(season, week, pos)
+            if "role_basis" in te:
+                # A backup handed the job is playing: that is the premise of
+                # pricing him on his career starts. Without this the hurdle
+                # read his empty season as a scratch and Tanner McKee, starting
+                # for an injured Jalen Hurts, projected at zero.
+                back = set(back) | set(te.player_name[te.role_basis.eq("qb_starts")])
             if back:
                 hit = te.player_name.isin(back).to_numpy()
                 if hit.any():

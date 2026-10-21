@@ -149,8 +149,16 @@ def cmd_week():
     one: trained on weeks 2 through 18 rather than on week ones, and fed this
     season's usage as well as last season's.
     """
-    from . import benchmark, inseason
+    from . import benchmark, ingest, inseason
     week = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+    # The lines move all week. A rebuild for an injury on Friday once kept
+    # Wednesday's, so Jalen Hurts being ruled out never reached Philadelphia's
+    # implied total. Every run takes the current schedule and lines first.
+    try:
+        ingest.fetch("schedules", refresh=True)
+        print("  betting lines refreshed")
+    except Exception as exc:
+        print(f"  ! could not refresh the betting lines ({exc}); using the cached schedule")
     lists = inseason.predict_week(TARGET_SEASON, week)
     # Consensus is not a feature of this model and never will be: a model
     # handed the market's answer learns to repeat it. It rides along as a

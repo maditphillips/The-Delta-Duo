@@ -54,8 +54,13 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
     rows = ins.target_rows(season, week)
     weekly = ins.build()
     weekly = weekly[(weekly.season == season) & (weekly.week < week)]
-    present = (weekly[weekly.snap_share.fillna(0) > 0]
-               .groupby("player_id").week.apply(set).to_dict())
+    played = weekly[weekly.snap_share.fillna(0) > 0]
+    present = played.groupby("player_id").week.apply(set).to_dict()
+    # The weeks each man played for each team. A player traded mid-season
+    # (Marvin Harrison Jr., Kaytron Allen) carries his old team's games in the
+    # rows above, and pricing his new room for his absence would hand them a
+    # boost for losing a teammate they never had.
+    with_team = played.groupby(["player_id", "team"]).week.apply(set).to_dict()
     out = ruled_out()
     entries = []
     for pos in POSITIONS:
@@ -71,9 +76,14 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
                       & ((te.sd_snap_share >= 0.10) | (te.touches >= 2))]
             if room.empty:
                 continue
+            a_weeks = with_team.get((a.player_id, a.team), set())
+            if not a_weeks:
+                if verbose:
+                    print(f"  {pos} {a.player_name} ({a.team}): no games for this team this season, "
+                          f"so nobody in the room is priced for his absence")
+                continue
             lead = (room.sd_snap_share.max() if len(room) else 0) <= a.sd_snap_share
             role = "starter" if lead else "no2"
-            a_weeks = present.get(a.player_id, set())
             for h in room.itertuples():
                 hw = present.get(h.player_id, set())
                 # Weight 0 is kept: no boost, but the board then knows he has
