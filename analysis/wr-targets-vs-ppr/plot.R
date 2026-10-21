@@ -4,10 +4,12 @@
 #   2. targets per game (x) vs. PPR points per game (y), using games played
 #   3. targets per game (x) vs. receptions per game (y), with the group's
 #      overall catch rate drawn as a diagonal
+#   4. chart 2 with the top N_TE tight ends added (ringed), quadrants still
+#      split at the WR medians
 # Quadrants split at the median of the plotted players on each axis.
 #
 # install.packages(c("nflreadr", "nflplotR", "ggplot2", "dplyr", "ggrepel"))
-# Run from this folder: Rscript plot.R   -> writes the three PNGs here
+# Run from this folder: Rscript plot.R   -> writes the four PNGs here
 
 library(nflreadr)
 library(nflplotR)
@@ -20,6 +22,8 @@ SEASON <- 2026
 N_PLAYERS <- 60
 # Players to plot even if they fall outside the top N (full display name)
 ALWAYS_INCLUDE <- c("KC Concepcion")
+# Top tight ends (by total PPR) to add to the WR + TE version of chart 2
+N_TE <- 12
 # Games to leave out of a player's season (e.g. left early with an injury).
 # Their targets, PPR points and the game itself are removed from the totals.
 EXCLUDE_GAMES <- tibble::tribble(
@@ -84,6 +88,38 @@ catches <- quadrant_plot(
                     "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
 )
 
+# WR + TE: the WR group plus the top N_TE tight ends. Quadrant lines stay at
+# the WR medians so each TE reads as "where would he rank as a receiver".
+te <- stats |>
+  filter(position == "TE") |>
+  arrange(desc(fantasy_points_ppr)) |>
+  slice_head(n = N_TE) |>
+  mutate(
+    label = paste(short_name(player_display_name), "(TE)"),
+    targets_pg = targets / games,
+    ppr_pg = fantasy_points_ppr / games,
+    receptions_pg = receptions / games
+  )
+# te_mark: 1 = tight end (ringed), 2 = receiver; rings go on te_mark <= 1
+wr_te <- bind_rows(mutate(wr, te_mark = 2L), mutate(te, te_mark = 1L))
+wr_x_mid <- median(wr$targets_pg)
+wr_y_mid <- median(wr$ppr_pg)
+
+with_tes <- quadrant_plot(
+  wr_te, "targets_pg", "ppr_pg",
+  x_label = "Targets per game", y_label = "PPR points per game",
+  title = paste(SEASON, "Wide Receivers + Top", N_TE, "Tight Ends: Targets vs. PPR Points, Per Game"),
+  x_unit = "targets/game", y_unit = "PPR pts/game",
+  x_split = wr_x_mid, y_split = wr_y_mid,
+  subtitle = paste0("Ringed = tight end (top ", N_TE, " by total PPR). Dashed lines = WR median (",
+                    format(round(wr_x_mid, 1), nsmall = 1), " targets/game, ",
+                    format(round(wr_y_mid, 1), nsmall = 1), " PPR pts/game)."),
+  rank_col = "te_mark", top_n = 1, mark_top = "circle",
+  caption = paste(c(exclude_note, "Per game = season total divided by games played.",
+                    "Data: nflverse via nflreadr | Plot: nflplotR"), collapse = " ")
+)
+
 save_quadrant_plot(totals, "wr_targets_vs_ppr_2026.png")
 save_quadrant_plot(per_game, "wr_targets_vs_ppr_per_game_2026.png")
 save_quadrant_plot(catches, "wr_targets_vs_receptions_per_game_2026.png")
+save_quadrant_plot(with_tes, "wr_te_targets_vs_ppr_per_game_2026.png")
