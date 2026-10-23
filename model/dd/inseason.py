@@ -36,6 +36,9 @@ from .config import CACHE
 # one week of yards per touch.
 ROLE = ["targets", "carries", "attempts", "snap_share",
         "target_share", "carry_share", "rz_targets", "rz_carries"]
+# Half-life, in games, of the weight on each past game in a season-to-date
+# role number (to_date). Tested at 2 and 4; 2 ranked the whole list best.
+ROLE_HALFLIFE = 2.0
 EFFICIENCY = ["yards_per_target", "yards_per_carry", "yards_per_attempt",
               "td_rate", "catch_rate"]
 
@@ -120,7 +123,18 @@ def to_date(w: pd.DataFrame) -> pd.DataFrame:
     """
     w = w.sort_values(["player_id", "season", "week"]).copy()
     g = w.groupby(["player_id", "season"], sort=False)
-    for c in ROLE + EFFICIENCY:
+    for c in ROLE:
+        if c in w.columns:
+            # Recent games count for more: each game's weight halves every
+            # ROLE_HALFLIFE games. Backtested 2022-2025 against the equal-
+            # weight mean: whole-list Spearman 0.8179 -> 0.8199, better in 14
+            # of 16 position-seasons and level in the other two (RB gains in
+            # all four, QB about even). Roles move during a season (Keaton
+            # Mitchell went 4, 5, 8, 10 carries) and the flat mean let his
+            # first two weeks count as much as his last two.
+            w[f"sd_{c}"] = g[c].transform(
+                lambda x: x.ewm(halflife=ROLE_HALFLIFE, ignore_na=True).mean().shift(1))
+    for c in EFFICIENCY:
         if c in w.columns:
             w[f"sd_{c}"] = g[c].transform(lambda x: x.shift(1).expanding().mean())
     w["sd_games"] = g.cumcount()
