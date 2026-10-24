@@ -162,6 +162,36 @@ def defense_to_date() -> dict:
             for t, x in g.iterrows()}
 
 
+WORKLOAD = {}
+
+
+def workload_cuts() -> dict:
+    """Hand-set usage cuts from model/data/role.csv (basis scale*), by player."""
+    path = Path(os.environ.get("DD_MODEL", "model")) / "data" / "role.csv"
+    if not path.exists():
+        return {}
+    r = pd.read_csv(path)
+    r = r[(r.season == SEASON) & (r.week == WEEK) & r.basis.astype(str).str.startswith("scale")]
+    return {(p, pos.lower()): g for (p, pos), g in r.groupby(["player", "position"])}
+
+
+def workload_line(player: str, pos: str) -> str:
+    """Say so when a projection carries a hand-set workload cut."""
+    g = WORKLOAD.get((player, pos))
+    if g is None:
+        return ""
+    whole = g[g.basis == "scale"]
+    if len(whole):
+        return (f"Priced on {float(whole.weight.iloc[0]):.0%} of his normal workload, "
+                f"a limit set by hand while he is eased back in. ")
+    kinds = {"scale_carries": "carries", "scale_targets": "targets", "scale_snaps": "snaps"}
+    parts = [f"{float(x.weight):.0%} of his {kinds[x.basis]}" for x in g.itertuples() if x.basis in kinds]
+    src = g.from_player.dropna()
+    who = f"{src.iloc[0]} is back, so he" if len(src) else "He"
+    body = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
+    return f"{who} keeps {body}, set by hand. "
+
+
 def rank_words(rk: float, unit: str, when: str) -> str:
     """The same ladder for either season, so the two halves read alike."""
     if rk is None:
@@ -532,6 +562,12 @@ def ruled_out(pos: str) -> pd.DataFrame:
         hand = r[(r.season == SEASON) & (r.week == WEEK)
                  & (r.pos.str.lower() == pos)][cols]
     inj = INJURIES[(INJURIES.pos == pos) & INJURIES.status.isin(NOT_PLAYING)]
+    if ADDED.exists():
+        # Added by hand ahead of Sleeper: a man coming off IR who is set to
+        # play still carries the IR tag until the move is processed.
+        a = pd.read_csv(ADDED)
+        a = a[(a.season == SEASON) & (a.week == WEEK) & (a.position.str.lower() == pos)]
+        inj = inj[~inj.player.isin(a.player)]
     if inj.empty:
         return hand
     auto = inj.assign(reason=lambda d: d.status + " on Sleeper"
@@ -763,6 +799,8 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     global DEF_TO_DATE
     DEF_TO_DATE = defense_to_date()
+    global WORKLOAD
+    WORKLOAD = workload_cuts()
     INJURIES = board_spelling(sleeper_status())
     hard = INJURIES[INJURIES.status.isin(NOT_PLAYING)]
     soft = INJURIES[~INJURIES.status.isin(NOT_PLAYING)]
@@ -854,6 +892,7 @@ def main() -> None:
                 "note_data": (weather_line(r)
                               + str(r.get("_vacated") or "").strip()
                               + (" " if str(r.get("_vacated") or "").strip() else "")
+                              + workload_line(r["player_name"], pos)
                               + build_note(r, pos)).strip(),
                 "note_vibes": r.get("note_vibes") or "",
                 "injury": tag(r["player_name"], pos),
