@@ -64,7 +64,11 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
     out = ruled_out()
     entries = []
     for pos in POSITIONS:
-        te = ins.blend(rankable(rows, pos), ins.K_ROLE, ins.K_EFF)
+        # rankable() drops anyone the official report has marked out, which is
+        # exactly who this function is looking for. From Friday's final report
+        # on, Mike Evans, Rashee Rice and the rest vanished here and their
+        # teammates got nothing. Sleeper's list decides who is out below.
+        te = ins.blend(rankable(rows.assign(is_out=0), pos), ins.K_ROLE, ins.K_EFF)
         te = te[te.sd_games.fillna(0) > 0].copy()
         te["key"] = te.player_name.map(bare)
         te["touches"] = te.sd_targets.fillna(0) + te.sd_carries.fillna(0)
@@ -101,7 +105,7 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
                                  f", scaled to {wt:.0%} because {a.player_name} has already missed games" if wt < 1 else "")
                               + ". Written by dd/heirs.py from Sleeper's injury list."})
     # Quarterbacks: one fill-in per team whose starter is out.
-    qb = ins.blend(rankable(rows, "QB"), ins.K_ROLE, ins.K_EFF).copy()
+    qb = ins.blend(rankable(rows.assign(is_out=0), "QB"), ins.K_ROLE, ins.K_EFF).copy()
     qb["key"] = qb.player_name.map(bare)
     gone = set(zip(out.key, out.team))
     qb["is_out"] = [(k, t) in gone for k, t in zip(qb.key, qb.team)]

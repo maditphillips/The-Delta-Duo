@@ -675,9 +675,13 @@ def apply_weather(te: pd.DataFrame, preds: pd.DataFrame, season: int, week: int,
 
 
 def role_overrides(te: pd.DataFrame, season: int, week: int,
-                   position: str) -> pd.DataFrame:
+                   position: str, sources: pd.DataFrame | None = None) -> pd.DataFrame:
     if not ROLE_FILE.exists():
         return te
+    # The absent man is looked up here, not in te: te is the rankable pool, and
+    # once the official report marks him out he is dropped from it, which used
+    # to skip every entry pricing his teammates for his absence.
+    src_pool = sources if sources is not None else te
     r = pd.read_csv(ROLE_FILE)
     r = r[(r.season == season) & (r.week == week)
           & (r.position.str.upper() == position.upper())]
@@ -712,7 +716,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
             # historically gained: the busiest one left, the second, the rest.
             # Ranked per stat on this season's usage among everyone listed
             # for the same absent player.
-            src = te[te.player_name == row.from_player]
+            src = src_pool[src_pool.player_name == row.from_player]
             if isinstance(row.get("team"), str) and row.team:
                 src = src[src.team == row.team]
             if src.empty:
@@ -747,7 +751,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
             # the absent man was the starter or a backup, and the weight scales
             # the boost down when he has already missed games this season and
             # the heir's own numbers carry part of the change already.
-            src = te[te.player_name == row.from_player]
+            src = src_pool[src_pool.player_name == row.from_player]
             if src.empty:
                 print(f"  role.csv: {row.from_player} is not in the {position} rows")
                 continue
@@ -772,7 +776,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
         elif row.basis == "inherit_split":
             # A committee: the starter's work goes to the whole room, each stat
             # split by how much of it each heir was already getting.
-            src = te[te.player_name == row.from_player]
+            src = src_pool[src_pool.player_name == row.from_player]
             heirs = r[(r.basis == "inherit_split") & (r.from_player == row.from_player)].player
             mates = te[te.player_name.isin(heirs)]
             if src.empty or mates.empty:
@@ -789,7 +793,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                     te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis == "inherit":
-            src = te[te.player_name == row.from_player]
+            src = src_pool[src_pool.player_name == row.from_player]
             if src.empty:
                 print(f"  role.csv: {row.from_player} is not in the {position} rows")
                 continue
@@ -838,7 +842,8 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
         feats = features_final(pos)
         tr_all = blend(rankable(panel, pos), K_ROLE, K_EFF)
         raw = blend(rankable(rows, pos), K_ROLE, K_EFF)
-        te = role_overrides(raw, season, week, pos)
+        everyone = blend(rankable(rows.assign(is_out=0), pos), K_ROLE, K_EFF)
+        te = role_overrides(raw, season, week, pos, sources=everyone)
         for scoring in LISTS[pos]:
             col = f"actual_{scoring}"
             tr = tr_all[tr_all[col].notna()].copy()
