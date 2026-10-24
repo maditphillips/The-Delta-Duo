@@ -41,12 +41,19 @@ def bare(name: str) -> str:
     return n
 
 
-def ruled_out() -> pd.DataFrame:
+def ruled_out(season: int | None = None, week: int | None = None) -> pd.DataFrame:
     from .rebound import _players
     p = _players()
     p = p[p.position.isin(POSITIONS + ("QB",)) & p.injury_status.isin(OUT)].copy()
     p["team"] = p.team.replace(TEAM_FIX)
     p["key"] = p.player.map(bare)
+    # A man in returning.csv is playing whatever Sleeper still says: Jordan
+    # Mason sat on IR with his thumb after practicing in full, and pricing his
+    # backfield for his absence boosted the backs he is about to take work from.
+    if ins.RETURNING.exists():
+        back = pd.read_csv(ins.RETURNING)
+        back = back[(back.season == season) & (back.week == week)]
+        p = p[~p.key.isin(set(back.player.map(bare)))]
     return p
 
 
@@ -61,7 +68,7 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
     # rows above, and pricing his new room for his absence would hand them a
     # boost for losing a teammate they never had.
     with_team = played.groupby(["player_id", "team"]).week.apply(set).to_dict()
-    out = ruled_out()
+    out = ruled_out(season, week)
     entries = []
     for pos in POSITIONS:
         # rankable() drops anyone the official report has marked out, which is

@@ -29,6 +29,12 @@ POSITIONS = ("QB", "RB", "WR", "TE")
 
 # How deep each published list goes.
 LIST_DEPTH = {"QB": 36, "RB": 60, "WR": 80, "TE": 36}
+# How deep the weekly lists are published. Deeper than LIST_DEPTH, which the
+# backtest still scores against, so fringe adds don't need a hand entry. QB and
+# TE run out of real players first: below 1 projected point is a man not
+# expected to see the field, so those lists stop there.
+PUBLISH_DEPTH = {"QB": 100, "RB": 100, "WR": 100, "TE": 100}
+PUBLISH_MIN_PROJ = {"QB": 1.0, "TE": 1.0}
 
 # ---------------------------------------------------------------------------
 # Scoring

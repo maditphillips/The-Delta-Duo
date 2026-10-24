@@ -20,6 +20,7 @@ warnings.filterwarnings("ignore")
 
 from . import benchmark, dataset, evaluate, ingest, pipeline, playcaller as pc, scheme
 from .config import (BACKTEST_SEASONS, CACHE, LIST_DEPTH, LISTS, OUTPUTS, POSITIONS,
+                     PUBLISH_DEPTH, PUBLISH_MIN_PROJ,
                      SCHEME_FIRST_SEASON, TARGET_SEASON, TARGET_WEEK)
 from .scheme import DEF_DIMS, OFF_DIMS
 
@@ -135,11 +136,18 @@ def cmd_predict():
         out["delta_vs_consensus"] = out["consensus_rank"] - out["rank_data"]
         out = out.round(3)
         path = outdir / f"{pos.lower()}_{scoring}.csv"
-        out.head(LIST_DEPTH[pos]).to_csv(path, index=False)
+        pub = published(out, pos)
+        pub.to_csv(path, index=False)
         pool = outdir / f"{pos.lower()}_{scoring}_pool.csv"
         out.to_csv(pool, index=False)
         print(f"  wrote {path.relative_to(OUTPUTS.parent)}  "
-              f"({min(len(out), LIST_DEPTH[pos])} players, {len(out)} in the pool)")
+              f"({len(pub)} players, {len(out)} in the pool)")
+
+
+def published(out: pd.DataFrame, pos: str) -> pd.DataFrame:
+    """The published list: best projection first, cut at the publish depth."""
+    out = out.sort_values("proj", ascending=False)
+    return out[out.proj >= PUBLISH_MIN_PROJ.get(pos, 0.0)].head(PUBLISH_DEPTH[pos])
 
 
 def cmd_week():
@@ -196,10 +204,11 @@ def cmd_week():
         cols = [c for c in keep if c in df.columns]
         out = df[cols].round(3)
         path = outdir / f"{pos.lower()}_{scoring}.csv"
-        out.head(LIST_DEPTH[pos]).to_csv(path, index=False)
+        pub = published(out, pos)
+        pub.to_csv(path, index=False)
         out.to_csv(outdir / f"{pos.lower()}_{scoring}_pool.csv", index=False)
         print(f"  wrote {path.relative_to(OUTPUTS.parent)}  "
-              f"({min(len(out), LIST_DEPTH[pos])} players, {len(out)} in the pool)")
+              f"({len(pub)} players, {len(out)} in the pool)")
 
 
 def cmd_skeleton():
