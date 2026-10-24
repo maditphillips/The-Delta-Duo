@@ -689,6 +689,24 @@ def league_ranks(frames: list[pd.DataFrame]) -> tuple[dict, dict, dict]:
     return total, ranks[0], ranks[1]
 
 
+# How deep each published list goes, counted after the scratches come off so a
+# week with a dozen backs out still shows 100. QB and TE run out of real players
+# first: under a point projected is a man not expected to see the field.
+DEPTH = 100
+MIN_PROJ = {"qb": 1.0, "te": 1.0}
+
+
+def board_source(stem: str, pos: str) -> pd.DataFrame:
+    """The model's whole pool, so the list can fill past its scratches."""
+    path = pool_csv(stem) if pool_csv(stem).exists() else model_csv(stem)
+    df = pd.read_csv(path)
+    return df[df.proj >= MIN_PROJ.get(pos, 0.0)]
+
+
+def deep(df: pd.DataFrame, pos: str) -> pd.DataFrame:
+    return df.sort_values("proj", ascending=False).head(DEPTH).reset_index(drop=True)
+
+
 def promote(df: pd.DataFrame, pos: str, fname: str) -> pd.DataFrame:
     """Splice in anyone named in added.csv, taken from the model's pool."""
     if not ADDED.exists():
@@ -807,7 +825,7 @@ def main() -> None:
     print(f"  injuries: {len(hard)} not playing, {len(soft)} questionable or worse "
           f"but expected to play")
     mc = pd.read_csv(MC) if MC.exists() else None
-    loaded = {k: scratch(promote(pd.read_csv(model_csv(v)), k[0], v), k[0])
+    loaded = {k: deep(scratch(promote(board_source(v, k[0]), k[0], v), k[0]), k[0])
               for k, v in FILES.items()}
     rk_total, rk_pass, rk_rush = league_ranks(list(loaded.values()))
     for (pos, variant), fname in FILES.items():
