@@ -3,3 +3,5 @@ season,week,position,player,reason
 2026,2,RB,Alvin Kamara,"Missed week 1, no injury tag on Sleeper, depth chart RB2 in New Orleans."
 2026,6,QB,Tanner McKee,"Starting for Philadelphia with Jalen Hurts out (calf); has not played this season, so the playing-time model would zero him. Confirmed by hand."
 2026,6,WR,A.J. Brown,"Activated from injured reserve (ankle) on game day and expected to play. Confirmed by hand."
+2026,7,RB,Josh Jacobs,"Removed from the Commissioner Exempt List Oct 19; LaFleur says he is on track to play. No games this season, so the playing-time model would zero him. Confirmed by hand."
+2026,7,WR,Christian Kirk,"Expected off injured reserve (calf) Oct 24; Shanahan says he is set to play. No games this season, so the playing-time model would zero him. Confirmed by hand."

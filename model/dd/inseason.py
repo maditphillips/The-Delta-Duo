@@ -674,6 +674,20 @@ def apply_weather(te: pd.DataFrame, preds: pd.DataFrame, season: int, week: int,
     return preds
 
 
+SCALE = {"scale": {"carries", "targets", "snaps"}, "scale_carries": {"carries"},
+         "scale_targets": {"targets"}, "scale_snaps": {"snaps"}}
+USAGE_KINDS = [("carries", ["carries", "carry_share", "rz_carries", "gl_carries"]),
+               ("targets", ["targets", "target_share", "rz_targets"]),
+               ("snaps", ["snap_share"])]
+
+
+def usage_kind(col: str) -> str | None:
+    for kind, stems in USAGE_KINDS:
+        if any(col.endswith(s) or f"_{s}" in col for s in stems):
+            return kind
+    return None
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str, sources: pd.DataFrame | None = None) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -744,6 +758,20 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 if ratio and ratio in te:
                     te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
+        elif row.basis in SCALE:
+            # A hand-set cut to a player's own usage: a starter eased back in
+            # on a limited workload, or the backs who lose touches to him.
+            # weight is the share kept. "scale" cuts all of it; the others cut
+            # one kind. Only the blended b_ columns the model reads are cut, so
+            # the season-to-date figures a note quotes stay what he did.
+            wt = float(row.weight) if pd.notna(row.get("weight")) else 1.0
+            for c in te.columns:
+                if c.startswith("b_") and usage_kind(c) in SCALE[row.basis]:
+                    te.loc[hit, c] = te.loc[hit, c] * wt
+            # A cut does not change why he is priced the way he is, so any
+            # basis set by an earlier row (an heir's) stays for the note.
+            print(f"  {position}: {row.player} keeps {wt:.0%} of his {row.basis} usage")
+            continue
         elif row.basis in ("next", "rest"):
             # The measured structure: the next man below the absent one takes
             # one share, everyone else in the room splits another by how much
