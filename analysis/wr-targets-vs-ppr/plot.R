@@ -54,7 +54,8 @@ wr <- stats |>
     receptions_pg = receptions / games
   )
 
-exclude_note <- excluded_note(EXCLUDE_GAMES)
+# Only mention left-out games for players who are on the charts
+exclude_note <- excluded_note(filter(EXCLUDE_GAMES, player_display_name %in% wr$player_display_name))
 
 totals <- quadrant_plot(
   wr, "targets", "fantasy_points_ppr",
