@@ -152,9 +152,15 @@ def defense_to_date() -> dict:
     d = d[(d.season == SEASON) & (d.week < WEEK)]
     if d.empty:
         return {}
-    g = d.groupby("team").agg(pass_epa=("def_epa_pass", "mean"),
-                              rush_epa=("def_epa_rush", "mean"),
+    # Every play counts once. Averaging each week's figure first gave a week
+    # of 3 neutral-script runs the same say as a week of 20: Tampa Bay's 3
+    # runs in week 1 dragged a top-7 run defence to 15th.
+    d = d.assign(pw=d.def_epa_pass * d.def_plays_pass, rw=d.def_epa_rush * d.def_plays_rush)
+    g = d.groupby("team").agg(pw=("pw", "sum"), pn=("def_plays_pass", "sum"),
+                              rw=("rw", "sum"), rn=("def_plays_rush", "sum"),
                               games=("week", "nunique"))
+    g["pass_epa"] = g.pw / g.pn
+    g["rush_epa"] = g.rw / g.rn
     g["rk_pass"] = g.pass_epa.rank(method="first")
     g["rk_rush"] = g.rush_epa.rank(method="first")
     print(f"  in-season defence: {len(g)} teams over {int(g.games.max())} week(s)")
