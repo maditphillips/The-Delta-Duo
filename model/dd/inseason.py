@@ -57,6 +57,43 @@ TEAM = ["team_plays", "team_pass_rate", "team_sec_per_play",
 FIRST_IN_SEASON = 2019
 
 
+# A player who takes offensive snaps and never touches the ball has no row in
+# the weekly stats file, so the game used to vanish from his season-to-date
+# numbers instead of counting as the zero it was. Pierre Strong played 12% of
+# Green Bay's snaps in week 7 with no carries or targets once Josh Jacobs was
+# back; his projection kept reading weeks 5 and 6, when he was the lead back.
+# A man on that week's injury report is left out (ZERO_TOUCH_REPORT_LAG adds
+# the following week's report too), since a quiet game may be an injury.
+ZERO_TOUCH_GAMES = False
+ZERO_TOUCH_REPORT_LAG = 0
+
+
+def _zero_touch_rows(s: pd.DataFrame, sn: pd.DataFrame, seasons) -> pd.DataFrame:
+    """Zero-stat rows for skill players who logged snaps but no stats."""
+    played = sn[(pd.to_numeric(sn.offense_snaps, errors="coerce").fillna(0) > 0)
+                & sn.position.isin(["QB", "RB", "WR", "TE", "FB"])]
+    played = played.drop_duplicates(["season", "week", "gsis_id"])
+    have = set(zip(s.season, s.week, s.player_id))
+    miss = played[[k not in have for k in zip(played.season, played.week, played.gsis_id)]]
+    inj = ingest.load("injuries", seasons)
+    if len(inj):
+        rep = set(zip(inj.season, inj.week, inj.gsis_id))
+        lags = range(ZERO_TOUCH_REPORT_LAG + 1)
+        miss = miss[[not any((a, b + k, c) in rep for k in lags)
+                     for a, b, c in zip(miss.season, miss.week, miss.gsis_id)]]
+    names = s.sort_values(["season", "week"]).drop_duplicates("player_id", keep="last") \
+        .set_index("player_id").player_name
+    z = pd.DataFrame({"player_id": miss.gsis_id.to_numpy(), "season": miss.season.to_numpy(),
+                      "week": miss.week.to_numpy(), "team": miss.team.to_numpy(),
+                      "opponent_team": miss.opponent.to_numpy(),
+                      "position": miss.position.replace({"FB": "RB"}).to_numpy()})
+    z["player_name"] = z.player_id.map(names).fillna(pd.Series(miss.player.to_numpy()))
+    for c in s.columns:
+        if c not in z.columns:
+            z[c] = 0.0
+    return z[s.columns]
+
+
 def _weekly(seasons) -> pd.DataFrame:
     """One row per player-week: the raw counting stats, plus his team's."""
     s = ingest.load("stats_player", seasons)
@@ -86,6 +123,8 @@ def _weekly(seasons) -> pd.DataFrame:
         bridge = (ingest.load("players")[["gsis_id", "pfr_id"]]
                   .dropna().drop_duplicates("pfr_id"))
         sn = snaps.merge(bridge, left_on="pfr_player_id", right_on="pfr_id", how="inner")
+        if ZERO_TOUCH_GAMES:
+            s = pd.concat([s, _zero_touch_rows(s, sn, seasons)], ignore_index=True)
         sn = sn.groupby(["season", "week", "gsis_id"], as_index=False).agg(
             off_snaps=("offense_snaps", "sum"), off_pct=("offense_pct", "max"))
         s = s.merge(sn.rename(columns={"gsis_id": "player_id"}),
