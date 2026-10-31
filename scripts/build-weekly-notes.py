@@ -193,6 +193,9 @@ def workload_line(player: str, pos: str) -> str:
     kinds = {"scale_carries": "carries", "scale_targets": "targets", "scale_snaps": "snaps"}
     parts = [f"{float(x.weight):.0%} of his {kinds[x.basis]}" for x in g.itertuples() if x.basis in kinds]
     src = g.from_player.dropna()
+    if len(src) and (g.weight.astype(float) > 1).any():
+        return (f"Priced by hand on his role in the last game he shared with {src.iloc[0]}, "
+                f"when he was the lead back. ")
     who = f"{src.iloc[0]} is back, so he" if len(src) else "He"
     body = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
     return f"{who} keeps {body}, set by hand. "
