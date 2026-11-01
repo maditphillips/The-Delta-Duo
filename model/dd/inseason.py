@@ -497,6 +497,14 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
     raw = [c.removeprefix("sd_") for c in sd
            if c.removeprefix("sd_") in prior.columns]
     latest = prior.groupby("player_id")[raw].mean()
+    # Role numbers take the same recency weighting as to_date gives training
+    # rows. Without this the live board read a plain season average while the
+    # model was fitted on the weighted one: Germie Bernard's 9, 12 and 5
+    # targets on 92% of the snaps counted no more than his 1 and 2 on 27-40%.
+    role = [c for c in ROLE if c in raw]
+    prior = prior.sort_values(["player_id", "week"])
+    latest[role] = prior.groupby("player_id")[role].agg(
+        lambda x: x.ewm(halflife=ROLE_HALFLIFE, ignore_na=True).mean().iloc[-1])
     latest.columns = [f"sd_{c}" for c in latest.columns]
     latest["sd_games"] = prior.groupby("player_id").week.count()
     # The offence around him, rebuilt at the boundary for the same reason the
