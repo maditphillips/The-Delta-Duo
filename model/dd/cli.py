@@ -210,6 +210,13 @@ def cmd_week():
         print(f"  wrote {path.relative_to(OUTPUTS.parent)}  "
               f"({len(pub)} players, {len(out)} in the pool)")
 
+    # Players who may be back and that the board likely underprices. Listed
+    # for a human decision; see dd/returners.py for why it is not automatic.
+    from . import returners
+    r = returners.check(TARGET_SEASON, week)
+    r.to_csv(outdir / "returners.csv", index=False)
+    print(f"  returners to review ({len(r)}): wrote {(outdir / 'returners.csv').relative_to(OUTPUTS.parent)}")
+
 
 def cmd_skeleton():
     sk = pc.write_overlay_skeleton()
