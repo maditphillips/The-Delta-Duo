@@ -169,6 +169,16 @@ def defense_to_date() -> dict:
 
 
 WORKLOAD = {}
+STARTING = set()
+
+
+def starting_qbs() -> set:
+    """Quarterbacks marked as playing by hand this week (returning.csv)."""
+    path = Path(os.environ.get("DD_MODEL", "model")) / "data" / "returning.csv"
+    if not path.exists():
+        return set()
+    r = pd.read_csv(path)
+    return set(r[(r.season == SEASON) & (r.week == WEEK) & r.position.str.upper().eq("QB")].player)
 
 
 def workload_cuts() -> dict:
@@ -604,6 +614,12 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
         if pos == "qb":
             # A backup quarterback being out takes nothing from the starter.
             mates &= df["proj"] < g["proj"]
+            # The man taking his job is priced as the starter, by hand
+            # (returning.csv) or on his career starts (role.csv), so say that.
+            start = mates & df.player_name.isin(STARTING)
+            df.loc[start, "_vacated"] += (
+                f"{g['player_name']} is out, so he starts and is priced as the starter. ")
+            mates &= ~start
         df.loc[mates, "_vacated"] += (
             f"{g['player_name']} is out; his work is not yet priced in here. ")
     # A man the model priced on another role (model/data/role.csv) HAS had the
@@ -826,8 +842,9 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     global DEF_TO_DATE
     DEF_TO_DATE = defense_to_date()
-    global WORKLOAD
+    global WORKLOAD, STARTING
     WORKLOAD = workload_cuts()
+    STARTING = starting_qbs()
     INJURIES = board_spelling(sleeper_status())
     hard = INJURIES[INJURIES.status.isin(NOT_PLAYING)]
     soft = INJURIES[~INJURIES.status.isin(NOT_PLAYING)]
