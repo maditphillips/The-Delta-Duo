@@ -541,6 +541,27 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
 RETURNING = Path(__file__).resolve().parent.parent / "data" / "returning.csv"
 
 
+# A questionable player is priced as playing. Most of them do, and the hurdle
+# shaving a third off a starter who suits up cost more on the board than
+# leaving one in who sits; anyone ruled out comes off the list when his status
+# changes. Questionable on the official report or on Sleeper, either one.
+ASSUME_QUESTIONABLE_PLAY = True
+
+
+def questionable(te: pd.DataFrame) -> set[str]:
+    names = set(te.player_name[te.get("is_questionable", pd.Series(0, index=te.index)).eq(1)])
+    try:
+        from .heirs import TEAM_FIX, bare
+        from .rebound import _players
+        sl = _players()
+        sl = sl[sl.injury_status.eq("Questionable")]
+        q = set(zip(sl.player.map(bare), sl.team.replace(TEAM_FIX)))
+        names |= {n for n, t in zip(te.player_name, te.team) if (bare(n), t) in q}
+    except Exception as exc:
+        print(f"  ! Sleeper questionable list unavailable ({exc}); official report only")
+    return names
+
+
 def returning(season: int, week: int, position: str) -> set[str]:
     if not RETURNING.exists():
         return set()
@@ -943,6 +964,8 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                 # read his empty season as a scratch and Tanner McKee, starting
                 # for an injured Jalen Hurts, projected at zero.
                 back = set(back) | set(te.player_name[te.role_basis.eq("qb_starts")])
+            if ASSUME_QUESTIONABLE_PLAY:
+                back = set(back) | questionable(te)
             if back:
                 hit = te.player_name.isin(back).to_numpy()
                 if hit.any():
