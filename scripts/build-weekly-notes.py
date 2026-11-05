@@ -196,7 +196,7 @@ def workload_line(player: str, pos: str) -> str:
     if len(src) and (g.weight.astype(float) > 1).any():
         return (f"Priced by hand on his role in the last game he shared with {src.iloc[0]}, "
                 f"when he was the lead back. ")
-    who = f"{src.iloc[0]} is back, so he" if len(src) else "He"
+    who = f"{src.iloc[0]} is back, so he" if len(src) else "Back from a long absence, so he"
     body = parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
     return f"{who} keeps {body}, set by hand. "
 
