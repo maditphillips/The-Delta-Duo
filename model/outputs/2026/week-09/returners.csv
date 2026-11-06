@@ -2,13 +2,10 @@ player_name,position,team,sleeper,games,last_game,missed,role_basis,snaps,attemp
 Tua Tagovailoa,QB,ATL,,1,5.0,3,last season,0.9435866572551533,27.428571428571427,1.4285714285714286,0.0,False
 Marcus Mariota,QB,WAS,,3,4.0,3,last season,0.751610660601118,22.7,5.0,0.0,False
 Dillon Gabriel,QB,CLE,,0,,8,last season,0.6112382288379389,20.555555555555557,1.5555555555555556,0.0,False
-Breece Hall,RB,NYJ,Questionable,3,3.0,5,this season,0.5571182229389956,0.0,16.0,3.414213562373095,False
+Breece Hall,RB,NYJ,,3,3.0,5,this season,0.5571182229389956,0.0,16.0,3.414213562373095,False
 Kyle Monangai,RB,CHI,Questionable,4,4.0,4,this season,0.42224699397398496,0.0,17.8104858350254,1.0571909584179366,False
 Devin Neal,RB,WAS,,0,,7,last season,0.4111995735610061,0.0,6.333333333333333,2.111111111111111,True
-Brian Robinson,RB,ATL,Questionable,6,6.0,2,this season,0.2695344259888507,0.0,7.306019374818708,1.24089878585932,False
 Theo Johnson,TE,NYG,,4,5.0,2,last season,0.8486307306808027,0.0,0.0,4.933333333333334,False
-Emeka Egbuka,WR,TB,,6,6.0,2,this season,0.866288600362219,0.0,0.32037724101704074,9.994052777093911,False
-DeVonta Smith,WR,PHI,Questionable,4,6.0,2,this season,0.836886723926607,0.0,0.0,11.0433141049704,False
-Dontayvion Wicks,WR,PHI,Questionable,6,6.0,2,this season,0.7702132547123821,0.0,0.0,5.399855696174762,False
+Emeka Egbuka,WR,TB,Questionable,6,6.0,2,this season,0.866288600362219,0.0,0.32037724101704074,9.994052777093911,False
 Deebo Samuel Sr.,WR,SF,Questionable,5,5.0,2,last season,0.6289255610391162,0.0,1.0625,6.1875,False
 Christian Kirk,WR,SF,Questionable,0,,7,last season,0.49944285144414524,0.0,0.0,4.7272727272727275,True
