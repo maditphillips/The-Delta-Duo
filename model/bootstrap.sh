@@ -32,7 +32,13 @@ python3 -m dd.cli ingest
 python3 - <<'EOF'
 import sys
 sys.path.insert(0, ".")
-from dd import defense, inseason
+from dd import defense, ingest, inseason
+from dd.config import TARGET_SEASON
+# warm_cache stops at the last complete season; this one is fetched fresh.
+for kind in ("stats_player", "snap_counts", "pbp", "depth_charts", "rosters", "injuries"):
+    ingest.fetch(kind, TARGET_SEASON, refresh=True)
+for kind in ("schedules", "players"):
+    ingest.fetch(kind, refresh=True)
 inseason.build(refresh=True)
 defense.build(refresh=True)
 inseason.training_panel()
