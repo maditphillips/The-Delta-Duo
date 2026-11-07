@@ -44,6 +44,10 @@ player about 60% of the time. Weekly scoring is very random, so every edge is sm
 - 3+ above norm = good spot (RB +9%, QB +7%, WR +3%); 3+ below = bad spot
   (RB -8%, QB -11%, WR -5%).
 
+Tested inside the weekly model: it already accounts for this (no accuracy gain from
+adding it). Use it on the site as the *explanation* for a projection, e.g. in the
+weekly note: "implied for 27.5, 3.5 above their usual 24.0".
+
 ## Display options
 
 **Player cards** (fits best with the weekly boards): one matchup chip per player.

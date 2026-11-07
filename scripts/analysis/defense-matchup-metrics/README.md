@@ -121,6 +121,29 @@ the team's average implied total so far this season:
 Rule of thumb: 3+ points above the team's norm is a good matchup, 3+ below is
 a bad one. The break-even has not moved between 2012-17 and 2018-25.
 
+### Does the weekly model already use this? (`IMPLIED_IN_MODEL.txt`)
+
+The in-season model (`model/dd/inseason.py`, weekly-rankings branch) reads the
+raw implied team total, spread and game total. It has no "vs team norm" column.
+`implied_in_model.py` tests that without changing the model: it reruns the
+model's own 2022-2025 backtest three ways.
+
+| | QB | RB | WR | TE |
+|---|---|---|---|---|
+| A. model as shipped (ranking accuracy) | 0.8191 | 0.8514 | 0.8115 | 0.7976 |
+| B. + implied vs team norm as an input | -0.0001 | +0.0001 | -0.0001 | -0.0006 |
+| C. A x percentage adjustment | -0.0000 | -0.0001 | -0.0001 | -0.0004 |
+
+**No gain.** The model already prices it. Its misses do not follow the
+implied-vs-norm gap, and the fitted adjustment is under 1% per point and points
+the wrong way for QB and WR. The reason: the model sees each player's own usage
+and production, which already encodes his team's usual scoring level, plus
+this week's raw implied total. The gradient-boosted model learns the
+difference itself.
+
+So the implied-vs-norm finding is worth *showing* (it explains why a projection
+moved), not adding to the model.
+
 ## Method
 
 **Target.** For each player-game, PPR points minus that player's average in
@@ -158,6 +181,7 @@ python3 analyze.py > FINDINGS.txt
 python3 board.py > BOARD.txt   # current-season matchup board
 python3 matchup_size.py > MATCHUP_SIZE.txt
 python3 implied.py > IMPLIED.txt
+DD_MODEL=/path/to/model python3 implied_in_model.py > IMPLIED_IN_MODEL.txt   # needs the weekly model's data built
 ```
 
 Data lands in `.data/` (gitignored, ~30 MB). `DMM_DATA=/some/path` moves it.
