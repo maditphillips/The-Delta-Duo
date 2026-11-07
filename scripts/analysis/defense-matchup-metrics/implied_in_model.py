@@ -11,8 +11,9 @@ rebuilds its backtest exactly, and compares:
   A  shipped     the model as it runs today (features_final)
   B  +relative   same model, plus implied_norm (team's average implied total in its
                  earlier games this season) and implied_rel (this week minus that)
-  C  multiplier  A's projection times (1 + beta * implied_rel), beta fitted on the
-                 training seasons only. No retraining: a layer on top of the model.
+  C  multiplier  A's projection times (1 + beta * implied_rel). No retraining: a layer
+                 on top of the model. beta is fitted on A's out-of-sample misses in the
+                 OTHER test seasons (leave-one-season-out), never on the season scored.
 
 Scored the way the model is scored: Spearman of projection vs actual within each
 week, averaged; plus mean absolute error in points. Seasons 2022-2025, each
@@ -62,7 +63,7 @@ def main():
     print('each season predicted by a model trained on the seasons before it.')
     print('rho = Spearman of projection vs actual within each week, averaged (the model\'s own score).')
     print('MAE = mean absolute error in fantasy points, players who played.')
-    rows, weeks = [], []
+    rows, weeks, preds = [], [], []
     for pos, col in POS:
         d = inseason.blend(rankable(panel, pos), inseason.K_ROLE, inseason.K_EFF)
         base = inseason.features_final(pos)
@@ -71,22 +72,35 @@ def main():
             tr, te = d[d.season < s], d[d.season == s].copy()
             if len(tr) < 500 or len(te) < 200:
                 continue
-            te['A'], trA = fit_predict(tr, te, pos, col, base)
+            te['A'], _ = fit_predict(tr, te, pos, col, base)
             te['B'], _ = fit_predict(tr, te, pos, col, plus)
-            # C: proportional tilt fitted on the training seasons' own residuals
-            # (in-sample A predictions there; the tilt is one number, so overfit is negligible)
-            trp = tr.assign(A=trA).dropna(subset=['implied_rel', col])
-            trp = trp[trp.A > 1]
-            beta = np.polyfit(trp.implied_rel, trp[col] / trp.A - 1, 1)[0]
-            te['C'] = te.A * (1 + beta * te.implied_rel.fillna(0))
-            for v in ('A', 'B', 'C'):
-                r = weekly_rho(te, v, col)
-                played = te[te[col].notna() & (te[col] != 0)]
-                rows.append({'pos': pos, 'season': s, 'variant': v, 'rho': r.mean(),
-                             'mae': (played[v] - played[col]).abs().mean(), 'beta': beta})
-                weeks.append(pd.DataFrame({'pos': pos, 'season': s, 'week': r.index,
-                                           'variant': v, 'rho': r.values}))
-            print(f'  done {pos} {s}  beta={beta:+.4f}', file=sys.stderr, flush=True)
+            te['pos_'], te['target'] = pos, te[col]
+            preds.append(te[['pos_', 'season', 'week', 'player_id', 'team', 'implied_team_total',
+                             'implied_norm', 'implied_rel', 'target', 'A', 'B']])
+            print(f'  done {pos} {s}', file=sys.stderr, flush=True)
+    P = pd.concat(preds, ignore_index=True)
+    P.to_parquet(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.data', 'implied_in_model_preds.parquet'))
+
+    # beta: proportional miss of A per point of implied_rel, from the other test seasons
+    def beta_from(q):
+        q = q.dropna(subset=['implied_rel', 'target'])
+        q = q[q.A > 3]
+        return np.polyfit(q.implied_rel, q.target / q.A - 1, 1)[0]
+    P['C'] = np.nan
+    for pos in P.pos_.unique():
+        for s in SEASONS:
+            m = (P.pos_ == pos) & (P.season == s)
+            b = beta_from(P[(P.pos_ == pos) & (P.season != s)])
+            P.loc[m, 'C'] = P.loc[m, 'A'] * (1 + b * P.loc[m, 'implied_rel'].fillna(0))
+            P.loc[m, 'beta'] = b
+    for (pos, s), te in P.groupby(['pos_', 'season']):
+        for v in ('A', 'B', 'C'):
+            r = weekly_rho(te, v, 'target')
+            played = te[te.target.notna() & (te.target != 0)]
+            rows.append({'pos': pos, 'season': s, 'variant': v, 'rho': r.mean(),
+                         'mae': (played[v] - played.target).abs().mean(), 'beta': te.beta.iloc[0]})
+            weeks.append(pd.DataFrame({'pos': pos, 'season': s, 'week': r.index,
+                                       'variant': v, 'rho': r.values}))
     r = pd.DataFrame(rows); w = pd.concat(weeks)
 
     print('\nRanking accuracy (rho, higher is better)')
@@ -105,6 +119,14 @@ def main():
 
     print('\nPoint accuracy (MAE, lower is better)')
     print(r.pivot_table(index='pos', columns='variant', values='mae').round(3).to_string())
+
+    print('\nIs the shipped model already pricing it? A\'s out-of-sample miss by implied vs team norm')
+    print('(actual / projection - 1, players projected 3+ points; 0% everywhere = already priced in)')
+    q = P[(P.A > 3)].dropna(subset=['implied_rel', 'target']).copy()
+    q['bin'] = pd.cut(q.implied_rel, [-99, -3, -1, 1, 3, 99], labels=['3+ below', '1-3 below', 'within 1', '1-3 above', '3+ above'])
+    q['miss'] = q.target / q.A - 1
+    print(q.pivot_table(index='pos_', columns='bin', values='miss', aggfunc='mean', observed=True)
+           .map(lambda v: f'{100 * v:+.1f}%').to_string())
 
     print('\nMultiplier C: projection change per +1 point of implied total vs team norm')
     b = r[r.variant == 'C'].groupby('pos').beta.mean()
