@@ -1,0 +1,131 @@
+HOW BIG IS A MATCHUP? — other ways to measure it
+Regular season 2012-2025, weeks 5+. Same players and over/under as FINDINGS.txt.
+Matchup metric = BOARD.txt metric: RB scrimmage yds allowed, WR / QB fantasy pts allowed;
+opponent-adjusted, blended with last season as 8 games. Everything is PPR.
+boom = scored 1.5x his baseline or more;  bust = half his baseline or less.
+
+================================================
+RB  (7,912 player-games, mean baseline 12.4 PPR)
+================================================
+
+1. True size of the defense effect (variance components, defense-season level)
+   sd of a single game over/under                      7.54 PPR
+   sd of the TRUE defense effect                       1.14 PPR   (9% of the average baseline)
+   => a defense at the 90th pct vs 10th pct of true softness:  2.9 PPR apart
+   => best any defensive metric could ever do: r = 0.152 (knowing each defense perfectly)
+   board metric achieves r = 0.097, i.e. 64% of that ceiling
+
+2. By matchup decile (10 = softest defenses that week)
+   decile      n over/under % of base   boom   bust  top-12
+        1    692      -1.95    -15.3%  13.7%  32.4%   21.5%
+        2    783      -0.92     -7.4%  15.5%  25.0%   23.2%
+        3    782      -0.86     -6.9%  17.6%  29.8%   23.9%
+        4    778      -0.17     -1.4%  19.3%  22.5%   23.9%
+        5    775      -0.56     -4.6%  17.3%  24.8%   23.6%
+        6    840      -0.04     -0.4%  19.9%  23.2%   25.8%
+        7    788      +0.09     +0.7%  18.4%  21.4%   26.4%
+        8    793      +0.39     +3.3%  21.7%  21.6%   28.1%
+        9    784      +0.55     +4.3%  20.9%  20.5%   29.7%
+       10    897      +0.84     +6.9%  23.2%  20.0%   29.2%
+      all   7912      -0.22     -1.8%  18.9%  24.0%   25.7%
+   extremes, ranked each week:
+   3 soft    841      +0.78     +6.4%  22.8%  20.1%   29.0%
+   3 tough    848      -1.61    -12.9%  14.5%  31.5%   21.6%
+
+3. Start/sit: two players at this position, same week
+   How often the higher-BASELINE player outscores the other (matchup ignored):
+     baseline gap 0.5-1 pts                53.7%   (n=13,035)
+     baseline gap 1-2 pts                56.0%   (n=23,986)
+     baseline gap 2-3 pts                59.4%   (n=20,816)
+     baseline gap 3-4 pts                62.4%   (n=17,989)
+   How often the SOFTER-MATCHUP player outscores the other (baselines within 1 pt):
+     any matchup difference                   53.3%   (n=25,697)
+     largest quarter of matchup gaps          55.9%   (n=6,468)
+     largest 5% of matchup gaps               57.6%   (n=1,308)
+   Exchange rate (linear probability model on both gaps):
+     soft-quarter vs tough-quarter matchup is worth  1.1 pts of baseline
+     softest-tenth vs toughest-tenth matchup is worth  2.6 pts of baseline
+
+=================================================
+WR  (12,043 player-games, mean baseline 12.1 PPR)
+=================================================
+
+1. True size of the defense effect (variance components, defense-season level)
+   sd of a single game over/under                      7.65 PPR
+   sd of the TRUE defense effect                       0.68 PPR   (6% of the average baseline)
+   => a defense at the 90th pct vs 10th pct of true softness:  1.7 PPR apart
+   => best any defensive metric could ever do: r = 0.089 (knowing each defense perfectly)
+   board metric achieves r = 0.050, i.e. 56% of that ceiling
+
+2. By matchup decile (10 = softest defenses that week)
+   decile      n over/under % of base   boom   bust  top-12
+        1   1095      -1.34    -11.1%  15.5%  30.0%   14.4%
+        2   1202      -0.81     -6.6%  17.2%  28.6%   16.3%
+        3   1208      -0.60     -4.9%  17.6%  25.7%   15.6%
+        4   1201      -1.15     -9.4%  16.2%  28.9%   15.2%
+        5   1192      +0.16     +1.3%  20.7%  23.3%   19.1%
+        6   1229      -0.34     -2.8%  18.4%  24.8%   18.6%
+        7   1198      -0.37     -3.1%  21.8%  26.9%   17.9%
+        8   1206      -0.09     -0.7%  20.4%  24.5%   17.8%
+        9   1183      +0.00     +0.0%  20.7%  25.4%   17.6%
+       10   1329      +0.08     +0.6%  22.1%  25.3%   19.3%
+      all  12043      -0.43     -3.6%  19.1%  26.3%   17.2%
+   extremes, ranked each week:
+   3 soft   1266      -0.03     -0.2%  21.1%  25.3%   18.6%
+   3 tough   1232      -1.27    -10.5%  15.7%  29.5%   14.3%
+
+3. Start/sit: two players at this position, same week
+   How often the higher-BASELINE player outscores the other (matchup ignored):
+     baseline gap 0.5-1 pts                53.1%   (n=30,748)
+     baseline gap 1-2 pts                55.8%   (n=56,447)
+     baseline gap 2-3 pts                59.5%   (n=50,840)
+     baseline gap 3-4 pts                61.6%   (n=45,073)
+   How often the SOFTER-MATCHUP player outscores the other (baselines within 1 pt):
+     any matchup difference                   51.7%   (n=61,743)
+     largest quarter of matchup gaps          52.9%   (n=15,911)
+     largest 5% of matchup gaps               53.8%   (n=3,144)
+   Exchange rate (linear probability model on both gaps):
+     soft-quarter vs tough-quarter matchup is worth  0.5 pts of baseline
+     softest-tenth vs toughest-tenth matchup is worth  1.4 pts of baseline
+
+================================================
+QB  (4,905 player-games, mean baseline 16.7 PPR)
+================================================
+
+1. True size of the defense effect (variance components, defense-season level)
+   sd of a single game over/under                      7.66 PPR
+   sd of the TRUE defense effect                       1.52 PPR   (9% of the average baseline)
+   => a defense at the 90th pct vs 10th pct of true softness:  3.9 PPR apart
+   => best any defensive metric could ever do: r = 0.199 (knowing each defense perfectly)
+   board metric achieves r = 0.124, i.e. 62% of that ceiling
+
+2. By matchup decile (10 = softest defenses that week)
+   decile      n over/under % of base   boom   bust  top-12
+        1    374      -2.06    -12.2%   8.3%  21.4%   37.2%
+        2    484      -1.99    -11.7%   8.1%  18.8%   33.9%
+        3    506      -0.82     -4.8%  12.6%  17.0%   42.9%
+        4    485      -0.71     -4.2%  13.4%  16.3%   40.0%
+        5    463      -0.31     -1.8%  11.9%  13.8%   41.5%
+        6    507      +0.18     +1.1%  16.8%  14.0%   44.2%
+        7    518      +0.69     +4.1%  17.6%  11.4%   47.7%
+        8    473      +0.64     +3.9%  15.2%   9.9%   46.9%
+        9    517      +0.53     +3.2%  15.7%  11.6%   44.9%
+       10    578      +1.01     +6.1%  19.0%  12.5%   50.0%
+      all   4905      -0.21     -1.3%  14.1%  14.5%   43.2%
+   extremes, ranked each week:
+   3 soft    561      +1.03     +6.2%  19.3%  12.5%   50.3%
+   3 tough    561      -2.28    -13.6%   8.2%  21.7%   35.3%
+
+3. Start/sit: two players at this position, same week
+   How often the higher-BASELINE player outscores the other (matchup ignored):
+     baseline gap 0.5-1 pts                53.7%   (n=5,030)
+     baseline gap 1-2 pts                53.0%   (n=9,698)
+     baseline gap 2-3 pts                56.0%   (n=8,964)
+     baseline gap 3-4 pts                58.3%   (n=7,581)
+   How often the SOFTER-MATCHUP player outscores the other (baselines within 1 pt):
+     any matchup difference                   53.6%   (n=10,108)
+     largest quarter of matchup gaps          57.0%   (n=2,599)
+     largest 5% of matchup gaps               57.5%   (n=532)
+   Exchange rate (linear probability model on both gaps):
+     soft-quarter vs tough-quarter matchup is worth  2.0 pts of baseline
+     softest-tenth vs toughest-tenth matchup is worth  5.0 pts of baseline

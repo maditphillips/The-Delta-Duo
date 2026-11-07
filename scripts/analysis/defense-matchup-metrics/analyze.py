@@ -291,26 +291,38 @@ def hdr(s, ch='='):
 
 
 # ---------------------------------------------------------------- main
-def main():
-    tg = pd.read_parquet(os.path.join(DATA, 'team_games.parquet'))
-    pg = pd.read_parquet(os.path.join(DATA, 'player_games.parquet'))
+def features(tg):
+    """Every defensive feature plus Vegas columns; returns a function that attaches them to a target table."""
     N, D = num_den(tg)
-
     std   = season_to_date(tg, N, D)
     prior = full_season(tg, N, D)
     loo   = leave_one_out(tg, N, D)
-    rel   = split_half(tg, N, D)
 
     # Vegas, relative to what the same offense is usually implied for
-    v = tg[['game_id', 'off', 'season', 'implied', 'total_line', 'spread']].copy()
+    v = tg[['game_id', 'off', 'season', 'week', 'implied', 'total_line', 'spread']].copy()
     gv = v.groupby(['off', 'season']).implied
     v['implied_rel'] = v.implied - (gv.transform('sum') - v.implied) / (gv.transform('count') - 1)
+    # same idea using only the team's earlier games this season (usable on game day)
+    v = v.sort_values(['off', 'season', 'week'])
+    g = v.groupby(['off', 'season']).implied
+    prev_n = g.cumcount()
+    v['implied_trail'] = v.implied - (g.cumsum() - v.implied) / prev_n.replace(0, np.nan)
+    v = v.drop(columns='week')
 
     def attach(t):
         t = t.merge(std, on=['season', 'week', 'def'], how='left')
         t = t.merge(prior, on=['season', 'def'], how='left')
         t = t.merge(loo, on=['game_id', 'def'], how='left')
         return t.merge(v.drop(columns='season'), on=['game_id', 'off'], how='left')
+    return attach
+
+
+def main():
+    tg = pd.read_parquet(os.path.join(DATA, 'team_games.parquet'))
+    pg = pd.read_parquet(os.path.join(DATA, 'player_games.parquet'))
+    N, D = num_den(tg)
+    rel = split_half(tg, N, D)
+    attach = features(tg)
 
     STD = ['std_' + k for k in NAMES]; ADJ = ['adj_' + k for k in NAMES]
     LOO = ['loo_' + k for k in NAMES]; VEG = ['implied', 'implied_rel', 'total_line', 'spread']

@@ -68,6 +68,59 @@ Full numbers: `FINDINGS.txt`. Current-season board built from these picks: `BOAR
    metric to it lifts out-of-sample R² from ~1.0% to ~1.35% for RB and QB, so
    both are worth checking.
 
+## How big is a matchup, really? (`MATCHUP_SIZE.txt`)
+
+Correlation understates it, because one game's score is so noisy. Measured other ways:
+
+| | RB | WR | QB |
+|---|---|---|---|
+| True spread of defenses (sd, noise removed) | 1.1 PPR | 0.7 PPR | 1.5 PPR |
+| Softest 10% vs toughest 10% of defenses, true gap | 2.9 PPR | 1.7 PPR | 3.9 PPR |
+| 3 toughest defenses that week, vs baseline | -12.9% | -10.5% | -13.6% |
+| 3 softest defenses that week, vs baseline | +6.4% | -0.2% | +6.2% |
+| Best-vs-worst-tenth matchup is worth this much baseline | 2.6 pts | 1.4 pts | 5.0 pts |
+| Similar players: softer matchup outscores the other (largest 5% of gaps) | 57.6% | 53.8% | 57.5% |
+
+- **Matchups are real but modest.** The true difference between the softest
+  and toughest defenses is about 3 PPR for an RB and 4 for a QB — 10-15% of a
+  typical baseline. Correlations look tiny only because a single game swings
+  by ~7.5 points either way. For scale: a 3-4 point gap in season average
+  only picks the higher scorer 58-62% of the time.
+- **Tough matchups hurt more than soft ones help.** The 3 toughest defenses
+  cost RBs and QBs ~13%; the 3 softest add ~6%. For WRs the soft side adds
+  nothing. Use matchups mainly to *avoid* bad spots, not to chase good ones.
+- **The board metric captures ~60% of the true signal.** The rest is lost to
+  measuring defenses on small samples. No defensive stat can get much better.
+
+## Vegas implied totals (`IMPLIED.txt`)
+
+**Short answer: the threshold is the player's own team's usual implied total,
+not one fixed number.** If you need one number, it's **~23 points** (the league
+average): players on teams implied above 23 beat their average slightly, below
+23 they miss it. But that hides the real pattern:
+
+| Team's usual implied total | Break-even (RB / WR / QB) |
+|---|---|
+| under 21 (avg 19.5) | 18.0 / 19.9 / 19.0 |
+| 21 to 24 (avg 22.6) | 22.2 / 21.8 / 22.3 |
+| 24+ (avg 25.9) | 27.1 / 27.2 / 27.4 |
+
+So a 24-point total is a good spot for a player on a weak offense and a bad
+one for a player on an elite offense. Compare this week's implied total with
+the team's average implied total so far this season:
+
+| Implied vs team norm | RB | WR | QB |
+|---|---|---|---|
+| 5+ below | -15.7% | -9.3% | -17.2% |
+| 3 to 5 below | -8.4% | -5.1% | -11.0% |
+| within 1 | -0.6% | +1.1% | -0.3% |
+| 3 to 5 above | +9.2% | +3.1% | +7.3% |
+| 5+ above | +12.8% | +3.7% | +10.3% |
+| **PPR per +1 point vs norm** | **+0.27** | **+0.13** | **+0.37** |
+
+Rule of thumb: 3+ points above the team's norm is a good matchup, 3+ below is
+a bad one. The break-even has not moved between 2012-17 and 2018-25.
+
 ## Method
 
 **Target.** For each player-game, PPR points minus that player's average in
@@ -103,6 +156,8 @@ python3 fetch.py               # nflverse pbp, weekly player stats, schedules wi
 python3 build.py               # -> team_games.parquet, player_games.parquet
 python3 analyze.py > FINDINGS.txt
 python3 board.py > BOARD.txt   # current-season matchup board
+python3 matchup_size.py > MATCHUP_SIZE.txt
+python3 implied.py > IMPLIED.txt
 ```
 
 Data lands in `.data/` (gitignored, ~30 MB). `DMM_DATA=/some/path` moves it.
