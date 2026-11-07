@@ -541,11 +541,12 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
 RETURNING = Path(__file__).resolve().parent.parent / "data" / "returning.csv"
 
 
-# A questionable player is priced as playing. Most of them do, and the hurdle
-# shaving a third off a starter who suits up cost more on the board than
-# leaving one in who sits; anyone ruled out comes off the list when his status
-# changes. Questionable on the official report or on Sleeper, either one.
-ASSUME_QUESTIONABLE_PLAY = True
+# Off. Pricing questionable players at 100% made a cleared tag LOWER a man's
+# projection: Saquon Barkley read 11.1 while questionable and 9.2 the day the
+# tag came off, when the playing-time model took over again. Questionable
+# players stay on the board, priced by the playing-time model like everyone
+# else, so a tag lowers a projection and clearing it raises it.
+ASSUME_QUESTIONABLE_PLAY = False
 
 
 def questionable(te: pd.DataFrame) -> set[str]:
