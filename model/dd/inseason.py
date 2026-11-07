@@ -756,6 +756,28 @@ def usage_kind(col: str) -> str | None:
     return None
 
 
+def bump_share(te: pd.DataFrame, hit, col: str, old: pd.Series) -> None:
+    """Move a share by the volume an heir just gained, as a share of the team.
+
+    This used to scale the share by how far the volume grew, which is right
+    for a back already carrying the ball and absurd for one who was not:
+    Patrick Ricard, a fullback at 0.4 carries a game, inherited about 3.7 from
+    Cam Skattebo, his carry share went from 0.44 to 4.17, and the model read
+    him as a workhorse at 13.4 points. Added volume over the team's projected
+    plays, capped at the whole of it, cannot do that.
+    """
+    share, team = {"b_carries": ("b_carry_share", "proj_team_rush_att"),
+                   "b_targets": ("b_target_share", "proj_team_pass_att")}.get(col, (None, None))
+    if share is None or share not in te:
+        return
+    added = te.loc[hit, col] - old
+    if team in te:
+        per = te.loc[hit, team].replace(0, np.nan)
+        te.loc[hit, share] = (te.loc[hit, share].fillna(0) + (added / per).fillna(0)).clip(0, 1)
+    else:
+        te.loc[hit, share] = te.loc[hit, share].clip(0, 1)
+
+
 def role_overrides(te: pd.DataFrame, season: int, week: int,
                    position: str, sources: pd.DataFrame | None = None) -> pd.DataFrame:
     if not ROLE_FILE.exists():
@@ -822,9 +844,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 rate = RANK_RATES.get((position.upper(), role, stat), {}).get(min(rk, 3), 0.0)
                 old = te.loc[hit, col].fillna(0)
                 te.loc[hit, col] = old + wt * rate * (s[sd] if pd.notna(s[sd]) else 0)
-                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
-                if ratio and ratio in te:
-                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+                bump_share(te, hit, col, old)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis in SCALE:
             # A hand-set cut to a player's own usage: a starter eased back in
@@ -865,9 +885,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                     frac = (w / w.sum()).get(row.player, 0) if w.sum() > 0 else 1 / max(len(w), 1)
                 old = te.loc[hit, col].fillna(0)
                 te.loc[hit, col] = old + wt * share * frac * (s[sd] if pd.notna(s[sd]) else 0)
-                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
-                if ratio and ratio in te:
-                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+                bump_share(te, hit, col, old)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis == "inherit_split":
             # A committee: the starter's work goes to the whole room, each stat
@@ -884,9 +902,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
                 frac = (w / w.sum()).get(row.player, 0) if w.sum() > 0 else 1 / len(w)
                 old = te.loc[hit, col].fillna(0)
                 te.loc[hit, col] = old + share * frac * (s[sd] if pd.notna(s[sd]) else 0)
-                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
-                if ratio and ratio in te:
-                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+                bump_share(te, hit, col, old)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         elif row.basis == "inherit":
             src = src_pool[src_pool.player_name == row.from_player]
@@ -897,9 +913,7 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
             for col, sd, share in INHERIT.get(position.upper(), []):
                 old = te.loc[hit, col].fillna(0)
                 te.loc[hit, col] = old + share * (s[sd] if pd.notna(s[sd]) else 0)
-                ratio = {"b_carries": "b_carry_share", "b_targets": "b_target_share"}.get(col)
-                if ratio and ratio in te:
-                    te.loc[hit, ratio] = te.loc[hit, ratio] * (te.loc[hit, col] / old.replace(0, np.nan)).fillna(1)
+                bump_share(te, hit, col, old)
             te.loc[hit, "b_snap_share"] = te.loc[hit, "b_snap_share"].clip(upper=1.0)
         if pd.notna(row.depth_rank):
             te.loc[hit, "depth_rank"] = float(row.depth_rank)

@@ -41,6 +41,17 @@ def bare(name: str) -> str:
     return n
 
 
+def fullbacks() -> set:
+    """Sleeper's fullbacks, by name key; the roster store keeps only QB-TE."""
+    import json
+    from .rebound import STORE
+    path = STORE / "players.json"
+    if not path.exists():
+        return set()
+    d = json.loads(path.read_text())
+    return {bare(v.get("full_name")) for v in d.values() if v.get("position") == "FB" and v.get("full_name")}
+
+
 def ruled_out(season: int | None = None, week: int | None = None) -> pd.DataFrame:
     from .rebound import _players
     p = _players()
@@ -84,7 +95,11 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
         absent = te[te.is_out & ((te.touches >= 2) | (te.sd_snap_share >= 0.30))]
         for a in absent.itertuples():
             room = te[(te.team == a.team) & ~te.is_out & (te.touches >= 0.5)
-                      & ((te.sd_snap_share >= 0.10) | (te.touches >= 2))]
+                      & ((te.sd_snap_share >= 0.10) | (te.touches >= 2))
+                      # A fullback blocks on most of his snaps and does not
+                      # take a back's carries: Patrick Ricard's 77% of the
+                      # snaps ranked him first in Cam Skattebo's room.
+                      & ~te.key.isin(fullbacks())]
             if room.empty:
                 continue
             a_weeks = with_team.get((a.player_id, a.team), set())
