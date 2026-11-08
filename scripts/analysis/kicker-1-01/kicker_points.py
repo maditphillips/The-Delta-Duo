@@ -302,10 +302,12 @@ def pick_kickers(ros, week, season):
     if "week" in k.columns and k.week.notna().any():
         wks = sorted(k.week.dropna().unique())
         k = k[k.week.eq(week if week in wks else max(wks))]
-    # A01 alone is not enough: a released kicker keeps his old A01 code for a
-    # while, so Riley Patterson read as Miami's active kicker the week they cut
-    # him. The status column is the one that moves.
-    active = k[k.status_description_abbr.eq(ACTIVE) & ~k.status.eq("CUT")]
+    # Picking the man is three rules, in order, because every shortcut has
+    # bitten: A01 alone let a released Riley Patterson read as Miami's kicker
+    # (a cut man keeps the code a while), and "whoever kicked most recently"
+    # kept Daniel Carlson on New Orleans after they moved on, because he was
+    # never marked CUT - he was simply gone from the roster.
+    # the man who last attempted a kick for each team this season
     try:
         cur = pd.read_parquet(os.path.join(TMP, f"pbp_{season}.parquet"),
                               columns=["posteam", "week", "play_type", "kicker_player_id"])
@@ -314,43 +316,43 @@ def pick_kickers(ros, week, season):
         last = cur.sort_values("week").groupby("posteam").agg(kid=("kicker_player_id", "last"))
     except Exception:
         last = pd.DataFrame(columns=["kid"])
+
+    GONE = {"CUT", "RES", "RET", "EXE"}      # released, injured reserve, retired
+    avail = k[~k.status.isin(GONE)]
+    active = avail[avail.status_description_abbr.eq(ACTIVE)]
+
     out, notes = {}, []
-    cut_ids = set(k[k.status.eq("CUT")].gsis_id)
     for team in sorted(set(ros.team.dropna())):
         a = active[active.team.eq(team)]
+        pool = avail[avail.team.eq(team)]
+        kid = last.loc[team, "kid"] if team in last.index else None
         if len(a) == 1:
             out[team] = (a.iloc[0].full_name, a.iloc[0].gsis_id)
-        elif team in last.index and last.loc[team, "kid"] not in cut_ids:
-            kid = last.loc[team, "kid"]
-            # a man can kick in a week he is not on that week's roster slice
-            row = k[k.gsis_id.eq(kid)]
-            if not len(row):
-                row = allk[allk.gsis_id.eq(kid)]
-            name = row.iloc[0].full_name if len(row) else str(kid)
-            tag = (f"{row.iloc[0].status}/{row.iloc[0].status_description_abbr}"
-                   if len(row) else "not on the roster file")
-            out[team] = (name, kid)
-            notes.append(f"  {team}: no active (A01) kicker listed - using {name} [{tag}], "
-                         f"who kicked most recently")
-        elif len(a) > 1:
-            out[team] = (a.iloc[0].full_name, a.iloc[0].gsis_id)
-            notes.append(f"  {team}: {len(a)} active kickers, took {a.iloc[0].full_name}")
+            continue
+        if len(a) > 1:                       # two active legs: keep the incumbent
+            hit = a[a.gsis_id.eq(kid)] if kid is not None else a.iloc[:0]
+            pick = hit.iloc[0] if len(hit) else a.iloc[0]
+            out[team] = (pick.full_name, pick.gsis_id)
+            notes.append(f"  {team}: {len(a)} active kickers, took {pick.full_name}"
+                         + (" (the incumbent)" if pick.gsis_id == kid else ""))
+            continue
+        # nobody carries the active code. The recent kicker counts only if he
+        # is still on the books at all.
+        if kid is not None and bool(pool.gsis_id.eq(kid).any()):
+            row = pool[pool.gsis_id.eq(kid)].iloc[0]
+            out[team] = (row.full_name, row.gsis_id)
+            notes.append(f"  {team}: no A01 kicker listed - using {row.full_name} "
+                         f"[{row.status}/{row.status_description_abbr}], still rostered "
+                         f"and kicked most recently")
+        elif len(pool):
+            row = pool.iloc[0]
+            out[team] = (row.full_name, row.gsis_id)
+            was = allk[allk.gsis_id.eq(kid)] if kid is not None else allk.iloc[:0]
+            gone = was.iloc[0].full_name if len(was) else "the last kicker"
+            notes.append(f"  {team}: {gone} is off the roster - using {row.full_name} "
+                         f"[{row.status}/{row.status_description_abbr}]")
         else:
-            # The recent kicker has been released, or there never was one. Anyone
-            # still on the books beats a man the team has let go - when a kicker
-            # is cut mid-week it is the practice-squad man who takes the snaps.
-            left = k[k.team.eq(team) & ~k.status.eq("CUT")]
-            if len(left):
-                pick = left.iloc[0]
-                out[team] = (pick.full_name, pick.gsis_id)
-                gone = last.loc[team, "kid"] if team in last.index else None
-                who = k[k.gsis_id.eq(gone)] if gone is not None else k.iloc[:0]
-                name = who.iloc[0].full_name if len(who) else "the last kicker"
-                notes.append(f"  {team}: {name} has been released - using "
-                             f"{pick.full_name} [{pick.status}/"
-                             f"{pick.status_description_abbr}], still on the roster")
-            else:
-                notes.append(f"  {team}: no kicker found at all")
+            notes.append(f"  {team}: no kicker found at all")
     return out, notes
 
 
