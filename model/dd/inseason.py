@@ -473,6 +473,29 @@ def backtest(panel: pd.DataFrame, seasons=range(2022, 2026), verbose: bool = Tru
     return r
 
 
+# Games a player left hurt early, struck from his season by hand. A stats row
+# with three snaps and no touches reads as a game played at zero and drags the
+# role down for weeks: Jonah Coleman's ankle in week 1 had him at 9.1 carries
+# when his healthy games say 10.5. model/data/excluded_games.csv names them.
+EXCLUDED = Path(__file__).resolve().parent.parent / "data" / "excluded_games.csv"
+
+
+def drop_excluded_games(prior: pd.DataFrame, season: int) -> pd.DataFrame:
+    if not EXCLUDED.exists():
+        return prior
+    x = pd.read_csv(EXCLUDED)
+    x = x[x.season == season]
+    if x.empty:
+        return prior
+    # Names as the weekly stats file writes them (J.Coleman), with the team.
+    drop = set(zip(x.player, x.team, x.week))
+    keep = [k not in drop for k in zip(prior.player_name, prior.team, prior.week)]
+    gone = len(prior) - sum(keep)
+    if gone:
+        print(f"  excluded {gone} game(s) a player left hurt: " + ", ".join(f"{n} ({t}) week {w}" for n, t, w in sorted(drop)))
+    return prior[keep]
+
+
 def target_rows(season: int, week: int) -> pd.DataFrame:
     """The board to be predicted, with this season's weeks so far attached.
 
@@ -486,6 +509,7 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
     ins = build()
     sd = [c for c in ins.columns if c.startswith("sd_")]
     prior = ins[(ins.season == season) & (ins.week < week)]
+    prior = drop_excluded_games(prior, season)
     if prior.empty:
         raise SystemExit(f"no {season} weeks before {week} to learn from")
     # Averaged over the weeks played, not lifted off the last row.
