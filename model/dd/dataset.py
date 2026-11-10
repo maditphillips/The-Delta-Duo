@@ -121,8 +121,16 @@ def depth_chart(season: int, week: int = 1, as_of: str | None = None) -> pd.Data
 def roster_at(season: int, week: int = 1) -> pd.DataFrame:
     r = pd.read_parquet(ingest.fetch("rosters", season))
     if "week" in r.columns:
-        wk = week if (r["week"] == week).any() else int(r["week"].min())
+        # A new week's rosters post a few days into the week. Until then the
+        # latest posted week stands in; falling back to week 1 put traded
+        # players on two teams and kept ~190 released players on the board.
+        posted = r.loc[r["week"] <= week, "week"]
+        wk = week if (r["week"] == week).any() else int(posted.max() if len(posted) else r["week"].min())
         r = r[r["week"] == wk]
+        # A player the team has cut is not on it; he only stays listed for
+        # the week he was let go (Brissett, cut by ARI and signed by BAL).
+        if "status" in r.columns:
+            r = r[r["status"] != "CUT"]
     r = r[r["position"].isin(["QB", "RB", "WR", "TE", "FB"])].copy()
     r["position"] = r["position"].replace({"FB": "RB"})
     r["team"] = _team_fix(r["team"])

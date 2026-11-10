@@ -1,0 +1,6 @@
+player_name,position,team,sleeper,games,last_game,missed,role_basis,snaps,attempts,carries,targets,marked_playing
+Tua Tagovailoa,QB,ATL,,1,5.0,4,last season,0.9435866572551533,27.428571428571427,1.4285714285714286,0.0,False
+Marcus Mariota,QB,WAS,,3,4.0,4,last season,0.751610660601118,22.7,5.0,0.0,False
+Dillon Gabriel,QB,CLE,,0,,9,last season,0.6112382288379389,20.555555555555557,1.5555555555555556,0.0,False
+Devin Neal,RB,WAS,,0,,8,last season,0.4111995735610061,0.0,6.333333333333333,2.111111111111111,False
+Theo Johnson,TE,NYG,,4,5.0,3,last season,0.8486307306808027,0.0,0.0,4.933333333333334,False
