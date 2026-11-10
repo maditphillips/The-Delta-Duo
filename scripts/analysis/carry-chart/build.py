@@ -100,7 +100,7 @@ def field(carries: pd.DataFrame) -> tuple[str, int]:
     fw, top, yd = W - 2 * PAD, 40, 12.6
     max_y = max(50, int(carries.yards_gained.max()) + 4)
     h = int(top + (max_y + 9) * yd + 96)
-    cx, lane_w, side = W / 2, 124, fw / 2 - 20
+    cx, lane_w, side = W / 2, 172, fw / 2 - 24
     y = lambda yards: top + (max_y - yards) * yd  # noqa: E731
     out = [f'<svg width="{W}" height="{h}" viewBox="0 0 {W} {h}">',
            f'<rect x="{PAD}" y="{top}" width="{fw}" height="{(max_y + 9) * yd}" rx="10" fill="{PANEL}"/>']
@@ -110,55 +110,64 @@ def field(carries: pd.DataFrame) -> tuple[str, int]:
         for x, anchor in ((PAD + 14, "start"), (W - PAD - 14, "end")):
             out.append(f'<text x="{x}" y="{y(mark) - 8}" text-anchor="{anchor}" class="tick">+{mark}</text>')
     out.append(f'<line x1="{PAD}" x2="{W - PAD}" y1="{y(0)}" y2="{y(0)}" stroke="{LOS}" stroke-width="3"/>')
-    out.append(f'<text x="{PAD + 14}" y="{y(0) - 10}" class="tick" fill="{INK2}">LINE OF SCRIMMAGE</text>')
+    out.append(f'<text x="{PAD + 14}" y="{y(0) + 28}" class="tick" fill="{INK2}">LINE OF SCRIMMAGE</text>')
 
     lane_of = {k: i for i, k in enumerate(LANES)}
     carries = carries.copy()
     carries["lane"] = [lane_of.get((loc, gap if loc != "middle" else None), 3) if isinstance(loc, str) else 3
                        for loc, gap in zip(carries.run_location, carries.run_gap.where(carries.run_gap.notna(), None))]
-    labels, ends = [], []
+    runs = []
     for lane, grp in carries.groupby("lane"):
         lx = cx + (lane - 3) * lane_w
         total = int(grp.yards_gained.sum())
         out.append(f'<text x="{lx}" y="{y(-9) + 34}" text-anchor="middle" class="lane">{LANE_NAMES[lane].upper()}</text>')
         out.append(f'<text x="{lx}" y="{y(-9) + 62}" text-anchor="middle" class="lanev">{len(grp)} for {total}</text>')
         for i, (_, r) in enumerate(grp.iterrows()):
-            fan = (i - (len(grp) - 1) / 2) * min(11, 84 / max(len(grp), 1))
+            fan = (i - (len(grp) - 1) / 2) * min(26, 150 / max(len(grp), 1))
             px, yards, col = lx + fan, float(r.yards_gained), outcome(float(r.yards_gained))
             sx, sy = cx + (lane - 3) * 6, y(-4.5 if r.shotgun else -7)
             drift = (lane - 3) * min(yards, 20) * 1.1 if yards > 0 else 0
             ex, ey = px + drift, y(yards)
             if r.out_of_bounds == 1:
                 ex = cx - side if lane < 3 else cx + side
-            if yards <= 0:  # never crossed the line: one bend, stopping short
-                d = f"M{sx:.1f},{sy:.1f} C{sx:.1f},{(sy + ey) / 2:.1f} {ex:.1f},{ey + 40:.1f} {ex:.1f},{ey:.1f}"
-            else:
-                reach = max(10, min(120, (y(0) - ey) * 0.55))
-                d = (f"M{sx:.1f},{sy:.1f} C{sx:.1f},{sy - 24:.1f} {px:.1f},{y(0) + 34:.1f} {px:.1f},{y(0):.1f} "
-                     f"C{px:.1f},{y(0) - reach:.1f} {ex - (ex - px) * 0.25:.1f},{ey + reach:.1f} {ex:.1f},{ey:.1f}")
-            dash = "" if isinstance(r.run_location, str) else ' stroke-dasharray="7 6"'
-            out.append(f'<path d="{d}" fill="none" stroke="{col}" stroke-width="3.5" stroke-linecap="round" opacity=".9"{dash}/>')
-            ends.append((ex, ey, col, r))
-            tags = []
-            if r.rush_touchdown == 1:
-                tags.append("TD")
-            if r.fumble_lost == 1:
-                tags.append("fumble lost")
-            if tags or yards >= 10 or yards < 0:
-                tail = f" · {', '.join(tags)}" if tags else ""
-                labels.append((ex, ey, f"#{int(r.n)} · {int(yards):+d}{tail}", lane))
-    for ex, ey, col, r in ends:
-        ring = INK if (r.rush_touchdown == 1 or r.fumble_lost == 1) else PANEL
-        out.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="7" fill="{col}" stroke="{ring}" stroke-width="2.5"/>')
-    placed = []
-    for ex, ey, text, lane in sorted(labels, key=lambda l: l[1]):
-        below = text.split(" · ")[1].startswith("-")
-        ty = ey + 30 if below else ey - 16
-        while any(abs(ty - py) < 26 and abs(ex - pxx) < 150 for pxx, py in placed):
-            ty += 26 if below else -26
-        placed.append((ex, ty))
-        anchor = "start" if ex < PAD + 120 else "end" if ex > W - PAD - 120 else "middle"
-        out.append(f'<text x="{ex:.1f}" y="{ty:.1f}" text-anchor="{anchor}" class="call">{esc(text)}</text>')
+            runs.append(dict(sx=sx, sy=sy, px=px, ex=ex, ey=ey, yards=yards, col=col, r=r,
+                             pinned=r.out_of_bounds == 1))
+    # Numbered end circles must not sit on top of each other: nudge sideways.
+    R = 14
+    for _ in range(200):
+        moved = False
+        for i, a in enumerate(runs):
+            for b in runs[i + 1:]:
+                dx, dy = b["ex"] - a["ex"], b["ey"] - a["ey"]
+                gap = 2 * R + 3
+                if dx * dx + dy * dy < gap * gap:
+                    need = (gap * gap - dy * dy) ** 0.5 - abs(dx)
+                    step = (need / 2 + 0.5) * (1 if dx >= 0 else -1)
+                    if not a["pinned"]:
+                        a["ex"] -= step
+                    if not b["pinned"]:
+                        b["ex"] += step
+                    moved = True
+        if not moved:
+            break
+    for q in runs:
+        sx, sy, px, ex, ey, yards, r = (q[k] for k in ("sx", "sy", "px", "ex", "ey", "yards", "r"))
+        if yards <= 0:  # never crossed the line: one bend, stopping short
+            d = f"M{sx:.1f},{sy:.1f} C{sx:.1f},{(sy + ey) / 2:.1f} {ex:.1f},{ey + 40:.1f} {ex:.1f},{ey:.1f}"
+        else:
+            reach = max(10, min(120, (y(0) - ey) * 0.55))
+            d = (f"M{sx:.1f},{sy:.1f} C{sx:.1f},{sy - 24:.1f} {px:.1f},{y(0) + 34:.1f} {px:.1f},{y(0):.1f} "
+                 f"C{px:.1f},{y(0) - reach:.1f} {ex - (ex - px) * 0.25:.1f},{ey + reach:.1f} {ex:.1f},{ey:.1f}")
+        dash = "" if isinstance(r.run_location, str) else ' stroke-dasharray="7 6"'
+        out.append(f'<path d="{d}" fill="none" stroke="{q["col"]}" stroke-width="3.5" stroke-linecap="round" opacity=".9"{dash}/>')
+    for q in runs:
+        r, ex, ey = q["r"], q["ex"], q["ey"]
+        tag = "TD" if r.rush_touchdown == 1 else "FUMBLE LOST" if r.fumble_lost == 1 else ""
+        ink = "#16181d" if q["col"] == SHORT else "#fff"
+        out.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="{R}" fill="{q["col"]}" stroke="{INK if tag else PANEL}" stroke-width="{3 if tag else 2}"/>')
+        out.append(f'<text x="{ex:.1f}" y="{ey + 5:.1f}" text-anchor="middle" class="num" fill="{ink}">{int(r.n)}</text>')
+        if tag:
+            out.append(f'<text x="{ex + R + 8:.1f}" y="{ey - R - 2:.1f}" class="call">{tag}</text>')
     out.append("</svg>")
     return "\n".join(out), h
 
@@ -226,7 +235,8 @@ svg text{{font-family:Inter,sans-serif}}
 .tick{{font-size:19px;font-weight:600;fill:{INK3};letter-spacing:1px}}
 .lane{{font-size:17px;font-weight:700;fill:{INK3};letter-spacing:1.5px}}
 .lanev{{font-size:22px;font-weight:700;fill:{INK}}}
-.call{{font-size:20px;font-weight:700;fill:{INK};paint-order:stroke;stroke:{PANEL};stroke-width:6px}}
+.num{{font-size:15px;font-weight:800}}
+.call{{font-size:18px;letter-spacing:1.5px;font-weight:700;fill:{INK};paint-order:stroke;stroke:{PANEL};stroke-width:6px}}
 .drive{{display:flex;align-items:center;border-bottom:1px solid {GRID};padding:18px 0 10px;min-height:96px}}
 .when{{width:176px;font:700 27px Inter;font-variant-numeric:tabular-nums}}
 .marks{{flex:1;display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 6px}}
@@ -283,7 +293,7 @@ come in any situation.</p>
 <div class="legend"><span><i class="sw" style="background:{LOSS}"></i>Loss</span>
 <span><i class="sw" style="background:{SHORT}"></i>0–4 yards</span>
 <span><i class="sw" style="background:{GOOD}"></i>5+ yards</span>
-<span>#n = carry number, matched in the drive strip below</span></div>
+<span>Number = carry number, matched in the drive strip below</span></div>
 <div class="fieldwrap">{field_svg}</div>
 <p class="note">Each line enters the lane the run was charted in and ends at the yards gained. The curve between
 is drawn, not tracked. Under each lane: carries for yards.{f" {unlocated} carries had no charted lane (dashed, shown in the middle)." if unlocated else ""}</p>
