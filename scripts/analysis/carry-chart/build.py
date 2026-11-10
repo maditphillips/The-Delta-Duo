@@ -110,7 +110,7 @@ def field(carries: pd.DataFrame) -> tuple[str, int]:
         for x, anchor in ((PAD + 14, "start"), (W - PAD - 14, "end")):
             out.append(f'<text x="{x}" y="{y(mark) - 8}" text-anchor="{anchor}" class="tick">+{mark}</text>')
     out.append(f'<line x1="{PAD}" x2="{W - PAD}" y1="{y(0)}" y2="{y(0)}" stroke="{LOS}" stroke-width="3"/>')
-    out.append(f'<text x="{PAD + 14}" y="{y(0) + 28}" class="tick" fill="{INK2}">LINE OF SCRIMMAGE</text>')
+    out.append(f'<text x="{PAD + 14}" y="{y(0) + 28}" class="tick" fill="{INK2}">LOS</text>')
 
     lane_of = {k: i for i, k in enumerate(LANES)}
     carries = carries.copy()
