@@ -1015,6 +1015,15 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                         preds.loc[hit, f"q{q}"] = preds.loc[hit, f"cq{q}"]
                     print(f"  {pos} {scoring}: assuming "
                           + ", ".join(te.player_name[hit]) + " plays")
+            if "role_basis" in te:
+                # A backup quarterback is assumed to take no snaps (heirs.py).
+                bk = te.role_basis.eq("backup").to_numpy()
+                if bk.any():
+                    preds = preds.copy()
+                    preds.loc[bk, "p_play"] = 0.0
+                    for c in ["proj"] + [f"q{q}" for q in range(10, 100, 10)]:
+                        if c in preds:
+                            preds.loc[bk, c] = 0.0
             ranked = rank_frame(te, preds, LIST_DEPTH[pos] * 3)
             ranked["learner"] = m.chosen_
             out[(pos, scoring)] = ranked

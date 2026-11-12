@@ -163,7 +163,7 @@ def _players() -> pd.DataFrame:
     return pd.DataFrame([
         {"sleeper_id": k, "player": v.get("full_name"), "position": v.get("position"),
          "team": v.get("team"), "injury_status": v.get("injury_status"),
-         "injury_part": v.get("injury_body_part")}
+         "injury_part": v.get("injury_body_part"), "depth": v.get("depth_chart_order")}
         for k, v in d.items() if v.get("position") in ("QB", "RB", "WR", "TE")
     ])
 

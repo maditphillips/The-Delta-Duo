@@ -15,10 +15,11 @@ so nobody has to spot them one at a time.
                              from his teammates' numbers, and pricing him in
                              again would count the change twice.
 
-Quarterbacks: when a team's starter (half the snaps or more this season) is
-ruled out, the next healthy quarterback on the depth chart is priced on his
-career starts ("qb_starts" basis, inseason.career_starts), unless he has
-already taken over and his own numbers show it (80% of the snaps).
+Quarterbacks: each team's starter is the top healthy name on Sleeper's depth
+chart (or a hand qb_starts row). If he has not been the starter (under 80% of
+the snaps), he is priced on his career starts ("qb_starts" basis,
+inseason.career_starts). Every other quarterback is a "backup" and is priced
+at zero: a backup is assumed to take no snaps.
 """
 from __future__ import annotations
 
@@ -126,28 +127,65 @@ def generate(season: int, week: int, verbose: bool = True) -> pd.DataFrame:
                               + (", no boost: he has only played without him" if wt == 0 else
                                  f", scaled to {wt:.0%} because {a.player_name} has already missed games" if wt < 1 else "")
                               + ". Written by dd/heirs.py from Sleeper's injury list."})
-    # Quarterbacks: one fill-in per team whose starter is out.
+    # Quarterbacks: one starter per team, and every other quarterback is a
+    # backup priced at zero. The starter is a hand qb_starts row if there is
+    # one, otherwise the healthiest top name on Sleeper's depth chart. A man
+    # who has not been the starter (his own numbers under 80% of the snaps)
+    # is priced on his career starts, whether the old starter is hurt, traded
+    # (Kirk Cousins out of Las Vegas) or benched. Backups were reaching the
+    # top 32 on their relief and spot-start games (Joe Fagnano, Shedeur
+    # Sanders) above starters with thin histories (Fernando Mendoza).
+    from .rebound import _players
     qb = ins.blend(rankable(rows.assign(is_out=0), "QB"), ins.K_ROLE, ins.K_EFF).copy()
     qb["key"] = qb.player_name.map(bare)
     gone = set(zip(out.key, out.team))
     qb["is_out"] = [(k, t) in gone for k, t in zip(qb.key, qb.team)]
-    for a in qb[qb.is_out & (qb.b_snap_share.fillna(0) >= 0.5)].itertuples():
-        room = qb[(qb.team == a.team) & ~qb.is_out].sort_values(
-            ["depth_rank", "b_snap_share"], ascending=[True, False], na_position="last")
-        if room.empty:
+    sl = _players()
+    sl = sl[sl.position.eq("QB") & sl.team.notna()].copy()
+    sl["team"] = sl.team.replace(TEAM_FIX)
+    sl["key"] = sl.player.map(bare)
+    sl = sl[~sl.injury_status.isin(OUT)]
+    hand = pd.read_csv(ins.ROLE_FILE) if ins.ROLE_FILE.exists() else pd.DataFrame()
+    if len(hand):
+        hand = hand[(hand.season == season) & (hand.week == week) & hand.basis.eq("qb_starts")
+                    & ~hand.reason.fillna("").str.contains("dd/heirs.py")]
+    for team, room in qb.groupby("team"):
+        pick = hand[hand.team.eq(team)].player.map(bare).tolist() if len(hand) else []
+        if not pick:
+            depth = sl[sl.team.eq(team) & sl.depth.notna()].sort_values("depth")
+            pick = depth.key.head(1).tolist()
+        if not pick:
+            if verbose:
+                print(f"  QB {team}: no starter on Sleeper's depth chart, nobody zeroed")
             continue
-        h = room.iloc[0]
-        # Skip him only when his own numbers already look like a starter's. A
-        # relief appearance in the game the starter got hurt (Tyler Huntley,
-        # 48% of the snaps in week 4) is not that.
-        if (h.b_snap_share if pd.notna(h.b_snap_share) else 0) >= 0.8:
+        top = room[room.key.eq(pick[0])]
+        if top.empty:
+            if verbose:
+                print(f"  QB {team}: starter {pick[0]} is not in the rows, nobody zeroed")
             continue
-        entries.append({
-            "season": season, "week": week, "position": "QB", "team": a.team,
-            "player": h.player_name, "basis": "qb_starts", "from_player": a.player_name,
-            "absent_role": "starter", "weight": 1.0, "depth_rank": 1,
-            "reason": f"{a.player_name} is out. Priced on his own career starts, part of the boost "
-                      f"applied by how many he has made. Written by dd/heirs.py from Sleeper's injury list."})
+        h = top.iloc[0]
+        others = room[room.key.ne(h.key)]
+        if verbose:
+            print(f"  QB {team}: {h.player_name} starts")
+        if (h.b_snap_share if pd.notna(h.b_snap_share) else 0) < 0.8 and not len(hand[hand.team.eq(team)] if len(hand) else []):
+            lead = others.sort_values("b_snap_share", ascending=False, na_position="last")
+            hurt = lead[lead.is_out]
+            a = hurt.iloc[0].player_name if len(hurt) and (hurt.iloc[0].b_snap_share or 0) >= 0.5 else ""
+            why = (f"{a} is out. " if a else
+                   f"He is the starter on the depth chart. ")
+            entries.append({
+                "season": season, "week": week, "position": "QB", "team": team,
+                "player": h.player_name, "basis": "qb_starts", "from_player": a,
+                "absent_role": "starter", "weight": 1.0, "depth_rank": 1,
+                "reason": why + "Priced on his own career starts, part of the boost applied by how many "
+                                "he has made. Written by dd/heirs.py from Sleeper's depth chart."})
+        for b in others.itertuples():
+            entries.append({
+                "season": season, "week": week, "position": "QB", "team": team,
+                "player": b.player_name, "basis": "backup", "from_player": h.player_name,
+                "absent_role": "", "weight": 0.0, "depth_rank": None,
+                "reason": f"Backup: {h.player_name} starts, and a backup is assumed to take no snaps. "
+                          f"Written by dd/heirs.py from Sleeper's depth chart."})
     e = pd.DataFrame(entries)
     if verbose and len(e):
         for (pos, frm), g in e.groupby(["position", "from_player"]):
