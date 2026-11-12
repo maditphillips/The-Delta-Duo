@@ -403,7 +403,9 @@ def blurb(r, pos: str) -> str:
     if pos == "qb":
         if att < 5:
             return no_history_clause(r, pos)
-        bits = [f"Projected {att:.0f} attempts for {pyd:.0f} yards"]
+        # A starter with no preseason line (Carson Beck, Fernando Mendoza)
+        # has no yards figure to scale, and "for 0 yards" reads as a forecast.
+        bits = [f"Projected {att:.0f} attempts for {pyd:.0f} yards" if pyd > 0 else f"Projected {att:.0f} attempts"]
         if ec >= 4:
             bits.append(f"plus {ec:.1f} carries of his own")
         elif ec >= 2:
@@ -602,12 +604,15 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     survivors with the scratch still on the field, so quietly promoting them
     would invent volume nobody has measured. Saying so is the honest version."""
     out = ruled_out(pos)
-    if out.empty:
+    # Nobody out still leaves the notes below to write: a quarterback who
+    # starts by the depth chart (his starter was traded) has no one out.
+    qb_start = pos == "qb" and "role_basis" in df and df.role_basis.eq("qb_starts").any()
+    if out.empty and not qb_start:
         return df
-    gone = df[df.player_name.isin(out.player)]
-    if gone.empty:
+    gone = df[df.player_name.isin(out.player)] if len(out) else df.iloc[0:0]
+    if gone.empty and not qb_start:
         return df
-    df = df[~df.player_name.isin(out.player)].copy()
+    df = df[~df.player_name.isin(out.player)].copy() if len(out) else df.copy()
     df["_vacated"] = ""
     for _, g in gone.iterrows():
         mates = df.team == g["team"]
@@ -632,6 +637,18 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     if "role_basis" in df:
         for i in df.index[df.role_basis.isin(["last_season", "inherit", "inherit_split", "next", "rest", "ranked", "qb_starts"])]:
             src = df.at[i, "role_from"] if "role_from" in df else None
+            if df.at[i, "role_basis"] == "qb_starts" and not (isinstance(src, str) and src):
+                # The starter by the depth chart, not because anyone got hurt
+                # (the old starter was traded, or he simply holds the job).
+                n = int(df.at[i, "role_starts"]) if pd.notna(df.at[i, "role_starts"]) else 0
+                df.at[i, "_vacated"] = (
+                    f"He starts. " + (
+                        f"He is priced on his {n} career start{'s' if n != 1 else ''} "
+                        f"({df.at[i, 'role_start_att']:.0f} pass attempts and {df.at[i, 'role_start_car']:.1f} carries a game), "
+                        f"with {df.at[i, 'role_lambda']:.0%} of that applied, because backups have historically "
+                        f"scored less than a starter's workload implies. " if n else
+                        "He has no career starts yet, so he is priced on his own games this season, assuming he plays. "))
+                continue
             names = (src.split(" and ") if isinstance(src, str) and src
                      else sorted(out[out.team.eq(df.at[i, "team"])].player))
             if not names:
@@ -642,6 +659,10 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
                 df.at[i, "_vacated"] = (
                     f"{who} {verb} out, so he is priced on his {SEASON - 1} role as the "
                     f"starter rather than on his games this season as a backup. ")
+            elif df.at[i, "role_basis"] == "qb_starts" and not (pd.notna(df.at[i, "role_starts"]) and int(df.at[i, "role_starts"])):
+                df.at[i, "_vacated"] = (
+                    f"{who} {verb} out. He has no career starts yet, so he is priced on his own games "
+                    f"this season, assuming he plays. ")
             elif df.at[i, "role_basis"] == "qb_starts":
                 n = int(df.at[i, "role_starts"]) if pd.notna(df.at[i, "role_starts"]) else 0
                 df.at[i, "_vacated"] = (
