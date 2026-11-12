@@ -331,6 +331,12 @@ def build_rows(season: int, week: int = 1, as_of: str | None = None) -> pd.DataF
 
     df = roster.merge(depth[["team", "player_id", "depth_rank"]], on=["team", "player_id"],
                       how="outer")
+    # A traded player can still sit on his old team's depth chart for a few
+    # days. The roster has the move first, so its team wins: a depth-chart
+    # row on another team is dropped (Cousins, Keenan Allen, Josh Downs).
+    on_roster = dict(zip(roster["player_id"], roster["team"]))
+    stale = df["player_id"].map(on_roster)
+    df = df[stale.isna() | (stale == df["team"])]
     df["season"] = season
     prior = prior.drop_duplicates("player_id")
     df = df.merge(prior, on="player_id", how="left", suffixes=("", "_prev"))
