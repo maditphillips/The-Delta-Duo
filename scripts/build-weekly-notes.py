@@ -198,6 +198,11 @@ def workload_line(player: str, pos: str) -> str:
         return ""
     whole = g[g.basis == "scale"]
     if len(whole):
+        # A player new to the team (Kendre Miller, signed by Dallas in week 10)
+        # is cut for a different reason than one coming back from injury.
+        if whole.reason.fillna("").str.contains("just joined").any():
+            return (f"Priced on {float(whole.weight.iloc[0]):.0%} of the workload his numbers imply, "
+                    f"a cut set by hand because he has just joined the team. ")
         return (f"Priced on {float(whole.weight.iloc[0]):.0%} of his normal workload, "
                 f"a limit set by hand while he is eased back in. ")
     kinds = {"scale_carries": "carries", "scale_targets": "targets", "scale_snaps": "snaps"}
