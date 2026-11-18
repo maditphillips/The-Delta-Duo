@@ -59,6 +59,11 @@ MANUAL = Path("data/weekly/manual-ranks.csv")
 # They are pulled from the model's own deeper pool rather than invented, so a
 # promoted player arrives with a real floor, median, ceiling and top-12 odds.
 ADDED = Path("data/weekly/added.csv")
+# Players kept off the board from a week on, until the row is deleted: a role
+# that has changed and that the numbers cannot see yet (Kendre Miller, signed
+# by Dallas, inactive in his first week and missing from their depth chart).
+# Unlike a scratch he is not "out", so teammates' notes do not say so.
+HELD = Path("data/weekly/held-out.csv")
 # Hand placements on MC's board. His own file is one list per position, because
 # a player's rank is his opinion of the player and that does not change with a
 # league's reception setting. Membership does though, and occasionally so does
@@ -578,6 +583,15 @@ def tag(player: str, pos: str) -> str:
     return f"{r.status} ({r.part})" if r.part else str(r.status)
 
 
+def held(pos: str) -> set:
+    """Players held off the board this week (held-out.csv)."""
+    if not HELD.exists():
+        return set()
+    h = pd.read_csv(HELD)
+    h = h[(h.season == SEASON) & (h.from_week <= WEEK) & (h.pos.str.lower() == pos)]
+    return set(h.player)
+
+
 def ruled_out(pos: str) -> pd.DataFrame:
     """This week's scratches for one position: the hand-written ones, plus
     anyone Sleeper has tagged with a status that means he is not playing."""
@@ -608,6 +622,11 @@ def scratch(df: pd.DataFrame, pos: str) -> pd.DataFrame:
     The vacated work is deliberately *not* redistributed: the model priced the
     survivors with the scratch still on the field, so quietly promoting them
     would invent volume nobody has measured. Saying so is the honest version."""
+    gone_held = held(pos)
+    if gone_held:
+        df = df[~df.player_name.isin(gone_held)].copy()
+        for n in sorted(gone_held):
+            print(f"  held off the board by hand: {n}")
     out = ruled_out(pos)
     # Nobody out still leaves the notes below to write: a quarterback who
     # starts by the depth chart (his starter was traded) has no one out.
