@@ -496,6 +496,29 @@ def drop_excluded_games(prior: pd.DataFrame, season: int) -> pd.DataFrame:
     return prior[keep]
 
 
+QB_RELIEF_SNAPS = 0.5
+
+
+def drop_relief_games(prior: pd.DataFrame) -> pd.DataFrame:
+    """A quarterback who started his team's last game is priced as a starter:
+    his earlier games under half the snaps (relief appearances, or games he
+    left early) are dropped. Fernando Mendoza's 8 attempts in relief in week 5
+    held his first start's 29 attempts down to 20 a game and sent him through
+    the backup-fill-in pricing, at 14% of a starter's workload, as Las Vegas'
+    starter."""
+    qb = prior[prior.position.eq("QB")]
+    if qb.empty:
+        return prior
+    last = qb.groupby("team").week.transform("max")
+    starters = set(qb.loc[qb.week.eq(last) & qb.snap_share.fillna(0).ge(QB_RELIEF_SNAPS), "player_id"])
+    drop = (prior.position.eq("QB") & prior.player_id.isin(starters)
+            & prior.snap_share.fillna(0).lt(QB_RELIEF_SNAPS))
+    if drop.any():
+        print(f"  dropped {int(drop.sum())} relief game(s) for quarterbacks who started their team's last game: "
+              + ", ".join(f"{n} week {w}" for n, w in prior.loc[drop, ["player_name", "week"]].itertuples(index=False)))
+    return prior[~drop]
+
+
 def target_rows(season: int, week: int) -> pd.DataFrame:
     """The board to be predicted, with this season's weeks so far attached.
 
@@ -510,6 +533,7 @@ def target_rows(season: int, week: int) -> pd.DataFrame:
     sd = [c for c in ins.columns if c.startswith("sd_")]
     prior = ins[(ins.season == season) & (ins.week < week)]
     prior = drop_excluded_games(prior, season)
+    prior = drop_relief_games(prior)
     if prior.empty:
         raise SystemExit(f"no {season} weeks before {week} to learn from")
     # Averaged over the weeks played, not lifted off the last row.

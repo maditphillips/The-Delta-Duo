@@ -1,5 +1,11 @@
 player_name,position,team,sleeper,games,last_game,missed,role_basis,snaps,attempts,carries,targets,marked_playing
 Marcus Mariota,QB,WAS,,3,4.0,5,last season,0.751610660601118,22.7,5.0,0.0,False
+Kyle Monangai,RB,CHI,,4,4.0,5,this season,0.42224699397398496,0.0,17.8104858350254,1.0571909584179366,False
+David Montgomery,RB,HOU,,5,5.0,4,this season,0.4117636035095994,0.0,8.785262766145408,0.8742098407544626,False
 Devin Neal,RB,WAS,,0,,9,last season,0.4111995735610061,0.0,6.333333333333333,2.111111111111111,False
 David Njoku,TE,LAC,,2,2.0,7,last season,0.6350339541694167,0.0,0.0,4.363636363636363,False
+DeVonta Smith,WR,PHI,,4,6.0,3,this season,0.836886723926607,0.0,0.0,11.0433141049704,False
+Carnell Tate,WR,TEN,Questionable,7,7.0,2,this season,0.8202018214900427,0.0,0.0,7.2535677336049575,False
+Jauan Jennings,WR,MIN,,6,8.0,2,last season,0.8099332368368121,0.0,0.0,6.0,False
 Xavier Legette,WR,CAR,,2,2.0,7,last season,0.6367750758598523,0.0,0.06666666666666667,4.266666666666667,False
+Mike Evans,WR,SF,Questionable,6,6.0,3,this season,0.5103814675782269,0.0,0.0,6.754895892494558,False
