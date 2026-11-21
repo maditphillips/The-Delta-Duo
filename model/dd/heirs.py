@@ -202,6 +202,13 @@ def write(season: int, week: int) -> pd.DataFrame:
     if len(r):
         auto = (r.week == week) & (r.season == season) & r.reason.fillna("").str.contains("dd/heirs.py")
         r = r[~auto]
+        # A hand row for the same player and absent teammate replaces the
+        # automatic one rather than stacking on it (Saquon Barkley priced on
+        # starter rates for Bigsby and Shipley in a committee backfield).
+        if len(e):
+            hand = r[(r.week == week) & (r.season == season)]
+            mine = set(zip(hand.player, hand.from_player.fillna("")))
+            e = e[[(p, f) not in mine for p, f in zip(e.player, e.from_player.fillna(""))]]
     r = pd.concat([r, e], ignore_index=True)
     r.to_csv(path, index=False)
     print(f"  role.csv: {len(e)} automatic rows for {season} week {week}")
