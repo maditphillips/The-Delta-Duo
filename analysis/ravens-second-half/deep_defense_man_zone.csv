@@ -1,0 +1,7 @@
+cell,man,n,epa,explosive,pressure,time_to_throw
+BAL 1H,False,533,0.063,0.075,0.27,2.69
+BAL 1H,True,401,-0.012,0.067,0.239,2.572
+BAL Q4,False,385,0.146,0.109,0.281,2.842
+BAL Q4,True,303,0.217,0.129,0.33,2.522
+NFL Q4,False,11043,0.049,0.082,0.315,2.853
+NFL Q4,True,5629,0.05,0.083,0.343,2.671

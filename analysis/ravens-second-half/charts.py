@@ -88,3 +88,45 @@ ax.set_title('Ravens pass defense in the 4th quarter with a 1–16 point lead\nW
              loc='left', fontsize=12)
 save(fig, 'chart_q4_pass_defense.png')
 print('charts written')
+
+# 5. Defensive calls in the 4th quarter with a lead (2020-2025 tracking data)
+dd = pd.read_csv(f'{out}/deep_defense.csv', index_col=0)
+mz = pd.read_csv(f'{out}/deep_defense_man_zone.csv')
+cv = pd.read_csv(f'{out}/deep_defense_coverage.csv', header=[0, 1], index_col=0)
+c0 = cv.loc['COVER_0']
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 4.6))
+labels = ['Man coverage', 'Cover 0\n(no deep safety)']
+bal = [dd.loc['man_rate', 'BAL Q4 lead'], c0[('share', 'BAL Q4')]]
+nfl = [dd.loc['man_rate', 'NFL Q4 lead'], c0[('share', 'NFL Q4')]]
+x = np.arange(2); w = .36
+a1.bar(x - w / 2 - .01, bal, w, color=BLUE, label='Ravens'); a1.bar(x + w / 2 + .01, nfl, w, color=GRAY, label='NFL average')
+for i in range(2):
+    a1.text(i - w / 2, bal[i] + .01, f'{bal[i]:.0%}', ha='center', fontsize=10); a1.text(i + w / 2, nfl[i] + .01, f'{nfl[i]:.0%}', ha='center', fontsize=10)
+a1.set_xticks(x, labels); a1.set_ylim(0, .55); a1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+a1.set_title('How often they call it\n(share of opponent dropbacks)', loc='left', fontsize=11); a1.legend(frameon=False)
+m = mz[mz.man == True].set_index('cell')
+cells = ['BAL 1H', 'BAL Q4', 'NFL Q4']
+vals = [m.loc[c, 'epa'] for c in cells]
+a2.bar(range(3), vals, .55, color=[BLUE, ORANGE, GRAY])
+for i, v in enumerate(vals):
+    a2.text(i, v + (.01 if v >= 0 else -.01), f'{v:+.2f}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=10)
+a2.axhline(0, color=INK2, lw=1)
+a2.set_xticks(range(3), ['Ravens\n1st half', 'Ravens\n4th quarter', 'NFL\n4th quarter']); a2.set_ylim(-.06, .27)
+a2.set_title('EPA allowed per dropback in man coverage\n(higher = worse)', loc='left', fontsize=11)
+fig.suptitle('Ravens 4th-quarter defense with a 1–16 point lead, 2020–2025: aggressive calls that stop working', x=.01, ha='left', fontsize=12.5)
+save(fig, 'chart_q4_defense_calls.png')
+
+# 6. Offense: pass rate over expected, 2nd half with a lead, by season
+ob = pd.read_csv(f'{out}/deep_offense_by_season.csv')
+fig, ax = plt.subplots(figsize=(9, 4.6))
+ax.bar(ob.season, ob.pass_over_expected, .6, color=BLUE)
+ax.axhline(0, color=INK2, lw=1)
+for r in ob.itertuples():
+    ax.text(r.season, r.pass_over_expected - .4, f'{r.pass_over_expected:+.1f}\n#{int(33 - r.proe_rank)} most\nrun-heavy', ha='center', va='top', fontsize=9)
+ax.set_ylim(-20, 2)
+ax.set_xticks(ob.season)
+ax.set_ylabel('Pass rate over expected (pct. points)')
+ax.set_title('Ravens pass rate vs. expected, 2nd half with a 1–16 point lead\nBelow expected every season. Rank among 32 teams; #1 = most run-heavy vs. expectation',
+             loc='left', fontsize=12)
+save(fig, 'chart_offense_proe.png')
+print('deep charts written')

@@ -94,16 +94,97 @@ stronger evidence.
 - Penalties: about league average on both sides.
 - Sacks: about league average on both sides.
 
+## 5. Deep dive: 4th-quarter pass defense — what are they calling?
+Tracking data: nflverse participation (coverage, man/zone, rushers, pressure, time to throw; 2020–2025)
+and FTN charting (blitzers; 2022–2026). Opponent dropbacks, Ravens up 1–16 in the 4th quarter (764 plays),
+vs. the same defense with a 1st-half lead and vs. the other 31 teams in the 4th with a lead.
+Files: `deep_defense*.csv`.
+
+**It is not a soft prevent defense. It's the opposite.**
+
+| 4th quarter, leading | Ravens | NFL | Ravens rank of 32 |
+|---|---|---|---|
+| Man coverage rate | **44%** | 34% | **2nd most** |
+| Cover 0 (all-out man, no deep safety) | **12%** | 4% | Top 3 in 5 of 6 seasons |
+| Prevent coverage | 0.4% | 0.6% | about average |
+| Rushers sent / blitz rate | 4.3 / 22% | 4.2 / 25% | about average |
+| Pressure rate | 30% | 32% | 25th |
+| Opponent time to throw | 2.70s | 2.79s | quickest in NFL |
+| EPA per dropback allowed | **+0.15** | +0.01 | **worst** |
+| 20+ yard completions allowed | **11.3%** | 8.0% | **worst** |
+| Completion % over expected allowed | +2.2 | −0.6 | 4th worst |
+| Interception rate | 1.6% | 2.7% | 30th |
+| Contested-catch rate | 16% | 14% | 6th |
+
+What it shows:
+- **The call stays the same, and opponents beat it.** Ravens man coverage allows −0.01 EPA per
+  dropback in the 1st half and **+0.22 in the 4th**. The NFL average in man in the 4th is +0.05. Cover 0
+  goes from −0.18 (1st half) to +0.32 (4th). Small samples per coverage (50–180 plays each), but the
+  direction is the same for every man-based call.
+- **Opponents answer it with quick throws.** Against Ravens man coverage in the 4th, the ball comes out in
+  2.52 seconds, so the pressure never gets home. The Ravens' pressure rate is 25th. Man coverage with no
+  pressure leaves corners alone on quick routes and occasionally deep.
+- Zone isn't a fix either: +0.15 EPA in the 4th, still worse than the league.
+- **Not fatigue or backups.** Ravens defenders have played about the same number of snaps by the 4th
+  quarter as the league (42 vs 44). Their top-11 defenders are on the field as often in the 4th as the
+  league norm.
+- **Why it survives coordinator changes:** man-heavy, blitz-and-Cover-0 has been the Ravens' defensive
+  identity for years, and each coordinator in this span (Martindale, Macdonald, Orr) was promoted from
+  inside the Ravens' own staff. Cover 0 in the 4th with a lead was top 3 in the NFL in 2020, 2021, 2023,
+  2024 and 2025. The data can't prove why the staff keeps calling it. It does show the same aggressive
+  approach carrying into situations where offenses are set up to beat it.
+
+![defense calls](chart_q4_defense_calls.png)
+
+## 6. Deep dive: the run-heavy offense — choice or situation?
+Files: `deep_offense*.csv`. Plays the Ravens run while up 1–16.
+
+**It's a choice.** nflverse's expected pass rate model accounts for down, distance, field position,
+score and time. In the 4th quarter with a lead the Ravens pass **9.2 points below expected, last in the NFL**.
+The league is at +0.7. They are below expected in every season 2020–2026, under both offensive
+coordinators in the Harbaugh years and in 2026. 2024 was the extreme: −14.7 in the 2nd half, most
+run-heavy in the league.
+
+| 4th quarter, leading | Ravens | NFL | Ravens rank of 32 |
+|---|---|---|---|
+| Pass rate | 32% | 44% | 32nd (lowest) |
+| Pass over expected | −9.2 | +0.7 | 32nd |
+| 1st-down pass rate | 21% | 27% | 30th |
+| Under center | 27% | 47% | 31st (they stay in the gun and run) |
+| 3+ WR personnel | 29% | 49% | 31st |
+| QB designed runs (share of runs) | 19% | — | 1st |
+| Defenders in the box | 6.9 | 6.7 | most in NFL |
+| 8+ man box | 27% | 20% | 4th most |
+
+**But the running works.** Run EPA in the 4th with a lead is +0.02 vs the NFL's −0.09 (**1st**).
+Run success 44% vs 36% (1st). Stuffs 15% vs 21%. They gain 5.0 yards a carry even against 8+ man boxes (NFL 3.6).
+Because of that, they face shorter 3rd downs (5.6 yards vs 6.8; 3rd-and-7+ only 34% of the time vs 46%).
+Their 4th-quarter EPA per play (+0.02) is still above the NFL's (−0.02).
+
+Where it arguably costs them: in 2020, 2024 and 2025 their early-down *passing* in 2nd halves with
+a lead was much better than their running (2024: +0.32 vs +0.15; 2025: +0.52 vs +0.01), and they still
+passed far less than expected. The offense isn't what's losing these games. It is choosing the
+lower-variance option even when passing is working, which keeps the score close and puts the game on
+the defense.
+
+![offense](chart_offense_proe.png)
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
-2. The clearest repeated weakness is **pass defense late in games with a lead**: worst in the league,
-   through three defensive coordinators and a new head coach. Opponents throw on 78% of plays (about the same as
-   vs. other leading teams), and the Ravens allow more explosive plays and 3rd-down conversions while forcing fewer turnovers. That
-   points to a soft, prevent-style approach or a late-game coverage problem, not a pass-rush problem.
-3. The offense turns very run-heavy with a lead (lowest pass rate in the NFL). It's efficient on
-   average, but it shortens the game and leaves little margin when the defense slips.
-4. 2026 is the most extreme season in this span. It's also only 10 games (34 Q4 dropbacks faced
-   with a lead), so expect some of it to even out.
+2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
+   three defensive coordinators and a new head coach.
+3. **It's a play-calling identity, not a soft defense.** The Ravens keep calling man coverage and Cover 0
+   at 2–3 times the league rate. Opponents trailing late throw quick, the pressure doesn't arrive, and the
+   Ravens give up the most 20+ yard completions in the league. The same calls work in the 1st half.
+4. **The offense turns the most run-heavy in the NFL with a lead, by choice** (last in pass rate over
+   expected). The running itself is the best in the league, so it isn't the cause. But it means fewer
+   points added late, and even when passing is working, the game is left on the defense.
+5. **Why it hasn't been fixed:** both habits run through every coordinator change, and the defensive
+   coordinators all came from the Ravens' own staff. That's the "culture" in measurable form: a
+   long-standing, aggressive defensive philosophy and a conservative clock-killing offense that the
+   organization keeps choosing.
+6. 2026 is the most extreme season in this span. It's also only 10 games (34 Q4 dropbacks faced with a
+   lead), so some of it should even out.
 
 ## Files
 - `halves.py` → `team_games.csv`, `ravens_by_season.csv` (all teams, 1999–2026)
@@ -111,7 +192,13 @@ stronger evidence.
 - `blown.py` → `game_flags.csv`, `blown_by_team.csv`
 - `behavior.py` → `behavior.csv`, `behavior_ranks.csv`
 - `extras.py` → `quarters.csv`, `drives.csv`, `fourth_downs.csv`, `pass_run_by_period.csv`, `q4_pass_defense_by_season.csv`
+- `deep_defense.py` → `deep_defense.csv`, `deep_defense_coverage.csv`, `deep_defense_by_season.csv`, `deep_defense_starters.csv`,
+  `deep_defense_cover0_by_season.csv`, `deep_defense_man_zone.csv`
+- `deep_offense.py` → `deep_offense.csv`, `deep_offense_by_season.csv`, `deep_offense_box.csv`
 - `charts.py` → `chart_*.png`
 
-Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`, `charts.py`,
-where `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`).
+Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
+`deep_defense.py DATA`, `deep_offense.py DATA`, `charts.py`.
+`DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
+`pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
+and `ftn_charting_2022`–`2026`).
