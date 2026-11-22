@@ -1,0 +1,5 @@
+metric,odds_ratio_psychologist,p_value,games
+blew_half,0.825,0.135,1331
+blew10,0.865,0.4,1238
+blew_q4,0.774,0.1,1353
+wp85_lost,0.991,0.949,1629

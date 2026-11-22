@@ -455,6 +455,7 @@ hire can be compared.
 | After leading by 10+ | 12% (30 of 243) | 17% (110 of 656) | −4 pts | 0.18 | 0.41 |
 | After an 85%+ win chance | 9% (28 of 301) | 11% (97 of 860) | −2 pts | 0.42 | 0.72 |
 | After leading entering the 4th | 13% (33 of 254) | 18% (132 of 719) | −5 pts | 0.12 | 0.16 |
+| **After leading at half (any margin)** | **15% (36 of 236)** | **25% (180 of 732)** | **−9 pts** | **0.02** | **0.01** |
 
 p (team-seasons) = permutation test on the pooled rate across team-seasons; p (teams) = Mann-Whitney on each team's
 rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.22–0.95).
@@ -470,8 +471,12 @@ rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.2
 | Chiefs (2022) | 15% → 8% | 8% → 6% | 12% → 10% |
 | **Paired test** | p = 0.23 | p = 0.51 | p = 0.37 |
 
-- **Psychologist teams lose leads somewhat less often on all three measures (2–5 points), but none of the gaps is
-  statistically significant**, across seasons or across teams.
+- **Psychologist teams lose leads less often on all four measures. Only one gap is statistically significant: losing
+  after leading at half (15% vs 25%, p = 0.02 across seasons, 0.01 across teams).** The other three are not.
+- **But that one doesn't survive a control for team strength.** Using the pregame Vegas spread and the halftime
+  margin as controls (logistic regression, errors clustered by team), the psychologist effect on halftime leads
+  shrinks to odds 0.77× and p = 0.11 — not significant. None of the four measures is significant after the control
+  (`psych_blown_controlled.csv`). Same team before vs after the hire for halftime leads: 4 of 5 improved, p = 0.14.
 - Same team before vs after: 4 of 5 improved on blown 10+ leads, but most of the average improvement is Detroit
   (50% → 10%, on only 18 chances before), which also turned from a 30% team into a 59% team. Not significant.
 - Part of the gap is team quality again: the psychologist teams win more (section 13), and winning teams blow fewer leads.
@@ -479,6 +484,35 @@ rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.2
   or from team quality. The Ravens (23% / 21% / 23%) are worse than both groups either way.
 
 ![psych blown](chart_psych_blown.png)
+
+## 15. Same tests, adding the "possible" psychologist teams
+Files: `*_expanded.csv`, `chart_psych_wins_expanded.png`, `chart_psych_blown_expanded.png`; groups in `psych_groups.py`.
+Adds Giants (2020–), Commanders (2021–), Panthers (2023–), Falcons (2024–) from their stated start years, and Rams,
+Buccaneers, Jaguars, Vikings, Cardinals for all of 2020–2026 (no date given, so no before/after for them).
+Has-psychologist group becomes 15 teams / 83 team-seasons; the no-psychologist group is unchanged (14 / 98).
+
+| | Has psychologist (confident 6) | Has psychologist (all 15) | No psychologist |
+|---|---|---|---|
+| Win % | 59.8% (p = 0.002–0.008 seasons; 0.15 teams) | **50.8% (p = 0.25 seasons; 0.91 teams)** | 47.8% |
+| Lost after leading at half | 15% (p = 0.02) | 20% (p = 0.08) | 25% |
+| Lost after leading by 10+ | 12% (p = 0.18) | 15% (p = 0.45) | 17% |
+| Lost after 85%+ win chance | 9% (p = 0.42) | 11% (p = 0.89) | 11% |
+| Lost after leading entering the 4th | 13% (p = 0.12) | 15% (p = 0.15) | 18% |
+
+p-values compare each psychologist group with the no-psychologist group (permutation test across team-seasons).
+Controlled for Vegas spread and halftime margin, none of the expanded-group differences is significant either
+(odds 0.77–0.99, p = 0.10–0.95; `psych_blown_controlled_expanded.csv`). Before vs after hire (9 teams with a
+known year): win % p = 0.21; lost after leading at half 4 of 9 clearly better, p = 0.09.
+
+- **Adding the possible teams shrinks every gap.** The win gap falls from 12 points to 3 and stops being significant.
+  The blown-lead gaps shrink to 0–5 points, none significant.
+- That fits the earlier reading: the confident group's edge came mostly from being better teams (Bills, Chiefs,
+  Packers, Lions). Once more average teams with psychology staff are included, the group looks like everyone else.
+- The direction still leans slightly toward psychologist teams blowing fewer halftime leads, but the data can't
+  separate it from chance or team quality.
+
+![wins expanded](chart_psych_wins_expanded.png)
+![blown expanded](chart_psych_blown_expanded.png)
 
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
@@ -518,13 +552,14 @@ rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.2
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `penalties.py` → `penalties_q4.csv`
 - `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`
-- `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`
-- `psych_blown.py` → `psych_blown.csv`, `psych_blown_teams.csv`, `psych_blown_before_after.csv`
+- `psych_groups.py` — team groups for the psychologist comparisons (confident vs expanded)
+- `psych_blown.py DATA [confident|expanded]` → `psych_blown*.csv`, `psych_blown_controlled*.csv` (needs nflverse `games.csv` in DATA)
+- `psych_wins.py [confident|expanded]` → `psych_wins*.csv`
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py`, `psych_blown.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py` and `psych_blown.py DATA` (each run with `confident` and `expanded`), `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
