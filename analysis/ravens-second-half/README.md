@@ -386,6 +386,45 @@ PFF's position (ED = edge), so edge rushers listed as "LB" on draft day count as
 - Several Newsome-era edge hits (Smith, Judon, McPhee) had their best years after leaving Baltimore in free
   agency, so even good edge picks often weren't kept.
 
+## 12. Teams with vs without a dedicated sports psychologist
+Files: `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`, `psych_compare_matched.csv`;
+team list in `sports_psychologists.md`. 2020–2026, regular season + playoffs.
+
+Groups (most confident only):
+- **Has a psychologist:** Packers 2020–26 (Chris Carr), Lions 2021–26 (Michelle Garvin), Bears 2022–26 (Mike Wiley Jr.),
+  Bills 2023–26 (Desaree Festa). Seasons before each hire are left out.
+- **No psychologist:** Steelers (only confirmed "no") plus 13 teams where a search found nobody (Bengals, Browns,
+  Texans, Colts, Raiders, Chargers, Cowboys, Patriots, Jets, Saints, 49ers, Broncos, Dolphins). "None found" is not proof.
+- **Ravens:** confirmed none.
+
+| Per game / rate | Ravens | Has psychologist | No psych, winning teams (PIT, SF) | No psych, all 14 |
+|---|---|---|---|---|
+| Win % | .585 | .580 | .593 | .477 |
+| 1st-half point diff | +3.9 | +1.5 | +0.7 | −0.4 |
+| 2nd-half point diff | +0.7 | +1.5 | +1.2 | −0.4 |
+| 2nd half minus 1st half | **−3.2** | 0.0 | +0.5 | 0.0 |
+| 4th-quarter point diff | **−0.7** | +0.5 | +0.7 | 0.0 |
+| Extra points allowed in 2nd half | **+2.4** | −0.1 | −0.1 | −0.4 |
+| Lost after leading by 10+ | **23%** | 12% | 15% | 17% |
+| Lost after 85%+ win chance | **21%** | 10% | 6% | 11% |
+| Lost after leading entering the 4th | **23%** | 14% | 12% | 18% |
+| Lost after leading by 7+ entering the 4th | **19%** | 9% | 5% | 9% |
+| Lost after leading at half | **26%** | 16% | 18% | 25% |
+
+- **The Ravens are worse than both groups on every blown-lead measure**, even though they win as often as the
+  psychologist teams. Among these 19 teams they are last in 2nd-half fade and extra 2nd-half points allowed, and 2nd
+  worst in losses after an 85% win chance.
+- **The psychologist teams look better than the no-psychologist group overall, but that's mostly team quality.**
+  They win 58% vs 48%, and better teams blow fewer leads. Against no-psychologist teams that win just as often
+  (Steelers, 49ers), the psychologist teams are about the same: better on some measures, worse on others.
+- **Inside the psychologist group it varies a lot.** The Bills and Lions rarely blow leads (about 5–10%). The Bears
+  blow them about as often as the Ravens (22% after leading by 10+, 19% after an 85% win chance).
+- **Bottom line:** with this little data (4 teams vs 2 comparable teams), there's no clear sign that having a
+  dedicated psychologist prevents blown leads. What the data does show is that the Ravens are an outlier against
+  both groups. Hiring one could still be worth trying, but these numbers can't promise it would fix the problem.
+
+![psych](chart_psych_compare.png)
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -423,11 +462,12 @@ PFF's position (ED = edge), so edge rushers listed as "LB" on draft day count as
 - `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `penalties.py` → `penalties_q4.csv`
+- `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`, `psych_compare_matched.csv`
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).

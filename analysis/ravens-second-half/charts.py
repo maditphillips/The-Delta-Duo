@@ -130,3 +130,28 @@ ax.set_title('Ravens pass rate vs. expected, 2nd half with a 1–16 point lead\n
              loc='left', fontsize=12)
 save(fig, 'chart_offense_proe.png')
 print('deep charts written')
+
+# 7. Ravens vs teams with / without a dedicated sports psychologist
+pc = pd.read_csv(f'{out}/psych_compare.csv', index_col=0)
+pm = pd.read_csv(f'{out}/psych_compare_matched.csv', index_col=0)
+cols = {'Ravens': (pc['Ravens'], BLUE), 'Has psychologist\n(GB, DET, CHI, BUF)': (pc['Has psychologist'], ORANGE),
+        'No psychologist,\nwinning teams (PIT, SF)': (pm['No psychologist, winning teams'], '#1baf7a'),
+        'No psychologist,\nall 14 teams': (pc['No psychologist: all (Steelers + none found)'], GRAY)}
+metrics = [('blew_10_rate', 'Lost after\nleading by 10+'), ('lost_after_85pct_rate', 'Lost after 85%+\nwin chance'),
+           ('blew_q4_lead_rate', 'Lost after leading\nentering the 4th'), ('led_half_lost_game_rate', 'Lost after\nleading at half')]
+fig, ax = plt.subplots(figsize=(11, 5.2))
+w = .2; x = np.arange(len(metrics))
+for j, (lab, (ser, col)) in enumerate(cols.items()):
+    vals = [ser[m] for m, _ in metrics]
+    xs = x + (j - 1.5) * (w + .01)
+    ax.bar(xs, vals, w, color=col, label=lab.replace('\n', ' '))
+    for xx, v in zip(xs, vals):
+        ax.text(xx, v + .005, f'{v:.0%}', ha='center', fontsize=8.5)
+ax.set_xticks(x, [l for _, l in metrics]); ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+ax.set_ylim(0, .32); ax.legend(frameon=False, ncol=2, loc='upper right', fontsize=9.5)
+ax.set_title('How often a lead turns into a loss, 2020–2026\nRavens vs teams with and without a dedicated sports psychologist (most confident teams only)',
+             loc='left', fontsize=12)
+fig.text(.01, .005, 'Ravens win pct .585; psychologist group .580; winning no-psychologist teams .593; all no-psychologist teams .477. '
+         'Psychologist teams counted only from their hire year.', fontsize=8.5, color=INK2)
+save(fig, 'chart_psych_compare.png')
+print('psych chart written')
