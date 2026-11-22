@@ -1,0 +1,51 @@
+sample,model,variable,odds_ratio,ci_low,ci_high,p_value
+Led entering the 4th,without Ravens dummy,Pregame spread (per point favored),0.911,0.888,0.935,0.0
+Led entering the 4th,without Ravens dummy,Lead entering the 4th (per point),0.841,0.81,0.873,0.0
+Led entering the 4th,without Ravens dummy,Home game,1.079,0.827,1.408,0.574
+Led entering the 4th,without Ravens dummy,Man coverage rate (+1 SD),1.006,0.877,1.154,0.937
+Led entering the 4th,without Ravens dummy,Cover 0 rate (+1 SD),0.916,0.766,1.096,0.339
+Led entering the 4th,without Ravens dummy,"Blitz rate, 5+ rushers (+1 SD)",1.041,0.875,1.238,0.653
+Led entering the 4th,without Ravens dummy,Pressure rate (+1 SD),0.821,0.681,0.99,0.038
+Led entering the 4th,without Ravens dummy,1st-half defensive EPA allowed (+1 SD = worse D),1.001,0.856,1.171,0.986
+Led entering the 4th,without Ravens dummy,Pass rate over expected when leading (+1 SD),0.956,0.813,1.124,0.588
+Led entering the 4th,without Ravens dummy,First season of new head coach,0.893,0.665,1.199,0.452
+Led entering the 4th,without Ravens dummy,Has psychologist (confident),0.939,0.623,1.417,0.766
+Led entering the 4th,without Ravens dummy,Has psychologist (possible),0.712,0.465,1.09,0.118
+Led entering the 4th,with Ravens dummy,Pregame spread (per point favored),0.908,0.886,0.931,0.0
+Led entering the 4th,with Ravens dummy,Lead entering the 4th (per point),0.841,0.809,0.873,0.0
+Led entering the 4th,with Ravens dummy,Home game,1.102,0.835,1.455,0.493
+Led entering the 4th,with Ravens dummy,Man coverage rate (+1 SD),1.005,0.876,1.153,0.942
+Led entering the 4th,with Ravens dummy,Cover 0 rate (+1 SD),0.867,0.721,1.042,0.128
+Led entering the 4th,with Ravens dummy,"Blitz rate, 5+ rushers (+1 SD)",1.048,0.88,1.249,0.597
+Led entering the 4th,with Ravens dummy,Pressure rate (+1 SD),0.852,0.705,1.028,0.095
+Led entering the 4th,with Ravens dummy,1st-half defensive EPA allowed (+1 SD = worse D),1.043,0.89,1.222,0.601
+Led entering the 4th,with Ravens dummy,Pass rate over expected when leading (+1 SD),0.983,0.825,1.171,0.848
+Led entering the 4th,with Ravens dummy,First season of new head coach,0.926,0.694,1.235,0.601
+Led entering the 4th,with Ravens dummy,Has psychologist (confident),0.971,0.662,1.423,0.879
+Led entering the 4th,with Ravens dummy,Has psychologist (possible),0.742,0.484,1.137,0.17
+Led entering the 4th,with Ravens dummy,Ravens,2.505,1.66,3.783,0.0
+Led at halftime,without Ravens dummy,Pregame spread (per point favored),0.885,0.864,0.906,0.0
+Led at halftime,without Ravens dummy,Halftime lead (per point),0.858,0.83,0.887,0.0
+Led at halftime,without Ravens dummy,Home game,1.241,0.932,1.652,0.139
+Led at halftime,without Ravens dummy,Man coverage rate (+1 SD),1.085,0.953,1.236,0.216
+Led at halftime,without Ravens dummy,Cover 0 rate (+1 SD),0.941,0.803,1.102,0.451
+Led at halftime,without Ravens dummy,"Blitz rate, 5+ rushers (+1 SD)",0.998,0.826,1.205,0.981
+Led at halftime,without Ravens dummy,Pressure rate (+1 SD),0.815,0.696,0.955,0.012
+Led at halftime,without Ravens dummy,1st-half defensive EPA allowed (+1 SD = worse D),0.947,0.814,1.102,0.48
+Led at halftime,without Ravens dummy,Pass rate over expected when leading (+1 SD),0.975,0.855,1.112,0.706
+Led at halftime,without Ravens dummy,First season of new head coach,0.935,0.66,1.324,0.703
+Led at halftime,without Ravens dummy,Has psychologist (confident),0.783,0.59,1.04,0.091
+Led at halftime,without Ravens dummy,Has psychologist (possible),0.781,0.573,1.066,0.119
+Led at halftime,with Ravens dummy,Pregame spread (per point favored),0.883,0.862,0.905,0.0
+Led at halftime,with Ravens dummy,Halftime lead (per point),0.858,0.829,0.887,0.0
+Led at halftime,with Ravens dummy,Home game,1.252,0.938,1.671,0.127
+Led at halftime,with Ravens dummy,Man coverage rate (+1 SD),1.085,0.951,1.237,0.225
+Led at halftime,with Ravens dummy,Cover 0 rate (+1 SD),0.921,0.784,1.082,0.317
+Led at halftime,with Ravens dummy,"Blitz rate, 5+ rushers (+1 SD)",1.002,0.828,1.213,0.98
+Led at halftime,with Ravens dummy,Pressure rate (+1 SD),0.828,0.706,0.972,0.021
+Led at halftime,with Ravens dummy,1st-half defensive EPA allowed (+1 SD = worse D),0.965,0.825,1.13,0.661
+Led at halftime,with Ravens dummy,Pass rate over expected when leading (+1 SD),0.989,0.866,1.129,0.868
+Led at halftime,with Ravens dummy,First season of new head coach,0.948,0.669,1.343,0.763
+Led at halftime,with Ravens dummy,Has psychologist (confident),0.791,0.598,1.047,0.101
+Led at halftime,with Ravens dummy,Has psychologist (possible),0.795,0.586,1.078,0.14
+Led at halftime,with Ravens dummy,Ravens,1.509,1.143,1.992,0.004

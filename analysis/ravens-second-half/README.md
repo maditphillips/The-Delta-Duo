@@ -514,6 +514,52 @@ known year): win % p = 0.21; lost after leading at half p = 0.09.
 ![wins expanded](chart_psych_wins_expanded.png)
 ![blown expanded](chart_psych_blown_expanded.png)
 
+## 16. One model with everything: what predicts blowing a lead?
+Files: `model.py` → `model_data.csv`, `model_results.csv`, `model_ravens.csv`; charts `chart_model_q4.png`, `chart_model_half.png`.
+Every game from 2020–2025 where a team led by 1–16 entering the 4th quarter (1,237 games), and separately at
+halftime (1,334 games). Outcome: lost the game. Logistic regression with every variable in at once, errors clustered
+by team. 2026 left out because its coverage data isn't published. All 32 teams are included; "psychologist" uses the
+confident and possible groups from `psych_groups.py`, with everyone else as the reference.
+
+| Variable | Led entering the 4th: odds of losing | p | Led at half: odds | p |
+|---|---|---|---|---|
+| Pregame spread (per point favored) | **0.91×** | <0.001 | **0.88×** | <0.001 |
+| Size of the lead (per point) | **0.84×** | <0.001 | **0.86×** | <0.001 |
+| Home game | 1.08× | 0.57 | 1.24× | 0.14 |
+| Man coverage rate (+1 SD) | 1.01× | 0.94 | 1.09× | 0.22 |
+| Cover 0 rate (+1 SD) | 0.92× | 0.34 | 0.94× | 0.45 |
+| Blitz rate, 5+ rushers (+1 SD) | 1.04× | 0.65 | 1.00× | 0.98 |
+| **Pressure rate (+1 SD)** | **0.82×** | **0.04** | **0.82×** | **0.01** |
+| 1st-half defense quality (EPA allowed, +1 SD) | 1.00× | 0.99 | 0.95× | 0.48 |
+| Pass rate over expected when leading (+1 SD) | 0.96× | 0.59 | 0.98× | 0.71 |
+| First season of a new head coach | 0.89× | 0.45 | 0.94× | 0.70 |
+| Has psychologist (confident) | 0.94× | 0.77 | 0.78× | 0.09 |
+| Has psychologist (possible) | 0.71× | 0.12 | 0.78× | 0.12 |
+| **Ravens (added after all of the above)** | **2.50×** | **<0.001** | **1.51×** | **0.004** |
+
+Below 1× = less likely to blow the lead. "+1 SD" = one standard deviation above the league average for that season-level stat.
+
+What it says:
+- **Team strength and lead size matter most**, as you'd expect.
+- **Pass rush is the one defensive trait that matters.** Teams that pressure the QB more often blow fewer leads: each
+  standard deviation of pressure rate (about 3 percentage points) cuts the odds by about 18%. The Ravens' pressure rate
+  ranked 13th, 21st, 29th, 18th, 22nd and 24th in 2020–2025, mostly bottom half. That ties back to the draft finding
+  (section 11): edge rusher is one of the positions the Ravens draft worst.
+- **Coverage scheme doesn't matter.** Man coverage, Cover 0 and blitz rate have no effect once pressure is in the model.
+  Calling aggressive coverage isn't the problem by itself; not getting home with the rush is.
+- **No effect from:** a new head coach, a run-heavy offense with a lead, 1st-half defense quality, or home field.
+- **Psychologist:** leans toward fewer blown leads (0.71–0.94×) but not significant in this model.
+- **The Ravens are still an outlier after all of this.** The model expected them to lose about 9 of their 47 games with a
+  1–16 point lead entering the 4th; they lost 14 (30% vs 19% expected). Their odds of blowing those leads are 2.5× what
+  the other variables predict (p < 0.001). At halftime the gap is smaller (15 lost vs 12 expected, 1.5×).
+- **So roughly:** weak pass rush explains part of the Ravens' problem, but most of their extra 4th-quarter collapses
+  aren't explained by anything measured here — scheme, staff changes, psychologist, offense or team strength. That
+  leftover is what earlier sections pointed at: late-game execution (missed tackles, lost one-on-ones, penalties)
+  and the "mindset" players describe, which this data can't measure directly.
+
+![model q4](chart_model_q4.png)
+![model half](chart_model_half.png)
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -555,11 +601,12 @@ known year): win % p = 0.21; lost after leading at half p = 0.09.
 - `psych_groups.py` — team groups for the psychologist comparisons (confident vs expanded)
 - `psych_blown.py DATA [confident|expanded]` → `psych_blown*.csv`, `psych_blown_controlled*.csv` (needs nflverse `games.csv` in DATA)
 - `psych_wins.py [confident|expanded]` → `psych_wins*.csv`
+- `model.py DATA` → `model_data.csv`, `model_results.csv`, `model_ravens.csv` (needs `pbp_deep.parquet`, `games.csv`)
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py` and `psych_blown.py DATA` (each run with `confident` and `expanded`), `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py` and `psych_blown.py DATA` (each run with `confident` and `expanded`), `model.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).

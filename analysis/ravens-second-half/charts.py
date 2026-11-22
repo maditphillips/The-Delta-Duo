@@ -238,3 +238,34 @@ psych_charts('', 'GB, DET, CHI, BUF, KC, TEN (from hire year)', '(confident team
 psych_charts('_expanded', 'confident 6 + NYG, WAS, CAR, ATL (from hire year) + LA, TB, JAX, MIN, ARI (undated, all seasons)',
              '(incl. possible teams)')
 print('psych charts written')
+
+# 10. Blown-lead model: odds ratios (led by 1-16 entering the 4th, 2020-2025)
+mr = pd.read_csv(f'{out}/model_results.csv')
+for sample, fname, ttl in (('Led entering the 4th', 'chart_model_q4.png', 'leading by 1–16 entering the 4th quarter'),
+                           ('Led at halftime', 'chart_model_half.png', 'leading by 1–16 at halftime')):
+    a = mr[(mr['sample'] == sample) & (mr.model == 'without Ravens dummy')]
+    r = mr[(mr['sample'] == sample) & (mr.model == 'with Ravens dummy') & (mr.variable == 'Ravens')]
+    a = pd.concat([a, r]).reset_index(drop=True)[::-1].reset_index(drop=True)
+    fig, ax = plt.subplots(figsize=(11, 6.6))
+    for i, row in a.iterrows():
+        sig = row.p_value < .05
+        col = BLUE if row.variable == 'Ravens' else (ORANGE if sig else GRAY)
+        ax.plot([row.ci_low, row.ci_high], [i, i], color=col, lw=2.2)
+        ax.scatter(row.odds_ratio, i, s=60, color=col, zorder=3)
+        ptxt = 'p < 0.001' if row.p_value < .001 else f'p = {row.p_value:.3f}'
+        ax.text(max(row.ci_high, 1.05) * 1.04, i, f'{row.odds_ratio:.2f}×  ({ptxt})',
+                va='center', fontsize=9, color=INK if sig else INK2)
+    ax.axvline(1, color=INK2, lw=1)
+    ax.set_yticks(range(len(a)), a.variable)
+    ax.set_xscale('log'); ax.set_xlim(.4, 7)
+    ax.set_xticks([.5, .75, 1, 1.5, 2, 3, 4], ['0.5×', '0.75×', '1×', '1.5×', '2×', '3×', '4×'])
+    ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
+    ax.grid(axis='y', visible=False)
+    ax.set_xlabel('Odds of losing the game (left of 1× = less likely to blow the lead)')
+    fig.suptitle(f'What predicts blowing a lead? Every NFL game {ttl}, 2020–2025\n'
+                 'Orange = significant (p < 0.05); gray = not; blue = Ravens after accounting for everything else',
+                 x=.01, ha='left', fontsize=12)
+    fig.text(.01, .005, 'Logistic regression, errors clustered by team. All variables in one model; "+1 SD" = one standard deviation higher than the '
+             'league average. 2026 left out (no coverage data).', fontsize=8.3, color=INK2)
+    save(fig, fname)
+print('model charts written')
