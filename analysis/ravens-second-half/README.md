@@ -322,6 +322,13 @@ https://www.si.com/nfl/ravens/onsi/jesse-minter-must-succeed-where-many-others-h
 - After NO (Ravens.com, Sep 22): Minter: "guys start pressing a little bit… searching for that big play."
   Hendrickson: "When we had good coverage, sometimes our rush was not there." No 4th-quarter sacks vs a quick-passing
   Saints offense. https://www.baltimoreravens.com/news/ravens-defensive-identity-jesse-minter-defense-fourth-quarter-trey-hendrickson-malaki-starks-jaylinn-hawkins-poor-tackling-coverage-mistakes-pass-rush
+- Mental health staff: every NFL team has had to retain a behavioral health clinician since 2019 (NFL–NFLPA
+  agreement; SI, Jul 18 2019, https://www.si.com/nfl/2019/07/18/mental-health-players-pain-management-marijuana-cbd).
+  The Ravens' is Dr. Tricia Bent-Goodley (Ravens.com front-office page). A *dedicated* sports psychologist or
+  mental-performance coach is separate; no league-wide count was found. Other teams named in search results (Packers,
+  Chiefs, Seahawks historically) were not verified. Banner, Oct 30 2026: "the Ravens do not employ a dedicated sports
+  psychologist or mental performance coach"; Minter said existing staff "offers similar coverage." No evidence the
+  Ravens ever had one, but their full history wasn't searched.
 - Psychology (Banner, Oct 25 & 30): players describe the history seeping "into the psyche" and the team being "too much
   of a momentum team." The Ravens have no dedicated sports psychologist.
   https://www.thebanner.com/sports/ravens-nfl/ravens-jesse-minter-momentum-problem-B5Y7N23QLND5LA4SHXMWKWN4HU/
