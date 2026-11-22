@@ -279,6 +279,46 @@ The one cost: opponents start their next drive about 4 yards closer than normal.
 gap in what happens on that drive: opponents score on 35% of them against the Ravens vs 27% league-wide,
 the worst in the NFL. The game situation isn't the main cause. The late defense is.
 
+## 10. Outside sources (unverified)
+These come from **search-result snippets only**. This session's network blocked the article pages, so none
+of these quotes or figures were read in context. Treat them as leads to check, not facts.
+
+**2026 coverage (no play-level data exists publicly yet):**
+- Ravens 2026 two-deep safety usage reported as 54.7% (8th) vs 32.6% in 2025 (2nd lowest). Likely Ravens.com.
+- Pressure-rate rank reported falling from 10th (Weeks 1–4) to 19th (Weeks 5–9) in 2026.
+- Man coverage 2024–25: Ravens under Orr about 30% (6th); Chargers under Minter about 14% (lowest in NFL) (SI / Banner, TruMedia).
+- If accurate, Minter brought his zone, two-safety style to Baltimore, and the late fade got *worse*. That
+  points away from play calls and toward something else in Baltimore.
+
+**Agrees with this study's data:**
+- SI (2026): Ravens had the 2nd-highest 4th-quarter Cover-0 share since 2020; Orr led the NFL in Cover-0 in
+  2024–25; Minter's Chargers were about league average in 4th-quarter Cover-0.
+- SI (2026): Orr called Cover-0 on 14% of third downs (2nd in NFL); Ravens allowed 14.3 yards per completion in Cover-0/1 (26th).
+- CBS Sports (~2025): Ravens 22nd in pressure rate when leading in the 4th quarter; opponents converted
+  nearly half of 3rd downs against a 4th-quarter Ravens lead. The writer blames mostly the defense.
+- AP (Sep 2025): Harbaugh's 17 blown double-digit 2nd-half leads were the most in the NFL since 1991.
+
+**Front office / roster:**
+- SI (~2026): Ravens 29th in pass defense two years running; first-round defensive backs two straight drafts.
+- 2026 offseason (ESPN): Maxx Crosby trade fell through on a failed physical; signed Trey Hendrickson (4 yr, $112M);
+  lost Dre'Mont Jones, Kyle Van Noy, Alohi Gilman, Ar'Darius Washington; 2026 draft had 3 defensive picks of 11.
+- DeCosta has said the Ravens find pass rushers in later rounds (2021); 2022 2nd-rounder David Ojabo is widely called a bust.
+- Humphrey (the one constant in the late-game secondary) turns 31 with his contract ending after 2026.
+- No source found that directly ties roster building to late-game pass defense.
+
+**2026 games, coach quotes:**
+- Week 2 vs NO (lost 24–17): led 17–9, outscored 15–0 in the 4th; coverage errors, missed tackles, no 4th-quarter sacks.
+  Minter: "Everybody is going to just say the same old thing of having a lead… So, we will own this."
+- Week 6 at CLE (lost 13–10): mostly offense — fumble at 10–3, missed 49-yard FG, scoreless on the last nine possessions.
+- Week 7 vs CIN (lost 35–13 after leading 13–0 at half; five straight Bengals TD drives). Minter: "Starting with
+  me, just a bad effort by the defense in the second half."
+- Week 8 at BUF (lost 36–10) was not a blown lead: Ravens trailed at half, with Jackson and Huntley both hurt.
+
+**Late-game offense:**
+- 2025 Week 1 at BUF: Harbaugh punted on 4th-and-3 up two with 1:33 left, later said the team must rethink
+  "play-calling, defensive play-calling, mindset." Analysts (Clark, Spears) blamed a conservative 4th quarter.
+- ESPN: cited the lack of a late-game run game as one reason the Ravens stopped being good closers.
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
