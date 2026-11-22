@@ -121,9 +121,13 @@ What it shows:
   dropback in the 1st half and **+0.22 in the 4th**. The NFL average in man in the 4th is +0.05. Cover 0
   goes from −0.18 (1st half) to +0.32 (4th). Small samples per coverage (50–180 plays each), but the
   direction is the same for every man-based call.
-- **Opponents answer it with quick throws.** Against Ravens man coverage in the 4th, the ball comes out in
-  2.52 seconds, so the pressure never gets home. The Ravens' pressure rate is 25th. Man coverage with no
-  pressure leaves corners alone on quick routes and occasionally deep.
+- **Correction on timing:** opponents do *not* throw much faster late. Against the Ravens, time to throw is
+  2.64s in the 1st half and 2.70s in the 4th. Across the league, QBs hold the ball about 0.09s longer in the
+  4th; against the Ravens they don't. So the Ravens rank quickest in the 4th mostly because everyone else
+  slows down. What actually changes is the result of the throws: air yards per completion rise from 5.8 to
+  7.4, completion % over expected goes from −0.6 to +2.2, and 20+ yard completions go from 6.9% to 11.3%.
+  Pressure actually goes *up* (26% → 30%). The man coverage is getting beaten in coverage, not just outrun
+  by the clock.
 - Zone isn't a fix either: +0.15 EPA in the 4th, still worse than the league.
 - **Not fatigue or backups.** Ravens defenders have played about the same number of snaps by the 4th
   quarter as the league (42 vs 44). Their top-11 defenders are on the field as often in the 4th as the
@@ -169,13 +173,59 @@ the defense.
 
 ![offense](chart_offense_proe.png)
 
+## 7. 2026: the first head-coach change in the span
+Files: `defense_2026.csv`, `defense_2026_games.csv`, `off_def_split.csv`. nflverse has no 2026 participation
+data yet, so **coverage (man/zone, Cover 0), pressure and time to throw can't be checked for 2026.** FTN
+charting (blitzers, rushers, contested balls) is available. 2026 is 10 games, so samples are small.
+
+**Is the 2nd-half drop the offense or the defense?** (`split_2026.py`)
+
+| Season | Offense: 2nd-half pts minus 1st-half pts | Rank (1 = biggest drop) | Defense: extra pts allowed in 2nd half | Rank (1 = biggest) |
+|---|---|---|---|---|
+| 2020 | −65 | 3rd | +31 | 7th |
+| 2021 | +38 | 28th | +33 | 10th |
+| 2022 | −21 | 15th | +57 | **1st** |
+| 2023 | −35 | 10th | +12 | 9th |
+| 2024 | +2 | 16th | +54 | 5th |
+| 2025 | +58 | 29th | +42 | 6th |
+| **2026** | **−74** | **1st** | **+53** | **1st** |
+
+- **The defense allowed more points after halftime in all 7 seasons, top 10 in the league every year.**
+  League average is close to zero. This is the most consistent part of the whole pattern.
+- The offense's 2nd-half drop comes and goes (big in 2020, absent in 2021, 2024, 2025).
+- **2026 is the first season where both sides are the worst in the NFL at once.** The offense scored 138
+  in 1st halves and 64 in 2nd halves (shut out after halftime in 3 of 10 games). The defense allowed 103 → 156.
+  So 2026's −92 is about 58% offense, 42% defense.
+
+**The 2026 defense, compared with past Ravens defenses and the 2026 NFL**
+
+| | 1st half 2026 | 2nd half 2026 | 2nd half, Ravens 2022–25 | 2nd half, NFL 2026 |
+|---|---|---|---|---|
+| Pass EPA allowed | **−0.09** (5th best) | **+0.20** (5th worst) | +0.02 | +0.04 |
+| Pass success allowed | 39% (2nd best) | **51%** (4th worst) | 43% | 45% |
+| Completion % over expected | −4.3 | **+7.1** (6th highest) | +1.3 | +1.1 |
+| 20+ yard completions | 8.7% | 7.8% (20th) | 9.2% | 8.4% |
+| Takeaways per dropback | 3.7% | **1.0%** (31st) | 2.7% | 3.1% |
+| Blitz rate | 30% | **36%** (11th) | 25% | 32% |
+| Sack rate | 5.6% | 5.2% (23rd) | 7.0% | 6.7% |
+
+What's the same and what's different in 2026:
+- **Same:** an excellent 1st-half pass defense that turns into one of the worst after halftime, with almost no
+  takeaways. Late-game aggression goes *up*, not down: blitz rate rises from 30% to 36% after halftime,
+  above the league, but sacks fall to 23rd.
+- **Different:** 2020–2025's problem was big plays. In 2026 big plays are about average. Instead, opponents
+  complete almost everything (+7.1% over expected) and move the chains steadily.
+- Run defense is about average in 2026 2nd halves. It's still the pass defense.
+- The 2026 2nd-half damage is lumpy: Cincinnati (35 points, +1.05 EPA per dropback) and Buffalo (20) make up
+  much of it. Jacksonville and the Chargers were held well below average.
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
    three defensive coordinators and a new head coach.
 3. **It's a play-calling identity, not a soft defense.** The Ravens keep calling man coverage and Cover 0
-   at 2–3 times the league rate. Opponents trailing late throw quick, the pressure doesn't arrive, and the
-   Ravens give up the most 20+ yard completions in the league. The same calls work in the 1st half.
+   at 2–3 times the league rate. Late in games those calls get beaten: bigger and more accurate completions,
+   the most 20+ yard completions in the league, few takeaways. The same calls work in the 1st half.
 4. **The offense turns the most run-heavy in the NFL with a lead, by choice** (last in pass rate over
    expected). The running itself is the best in the league, so it isn't the cause. But it means fewer
    points added late, and even when passing is working, the game is left on the defense.
@@ -183,8 +233,11 @@ the defense.
    coordinators all came from the Ravens' own staff. That's the "culture" in measurable form: a
    long-standing, aggressive defensive philosophy and a conservative clock-killing offense that the
    organization keeps choosing.
-6. 2026 is the most extreme season in this span. It's also only 10 games (34 Q4 dropbacks faced with a
-   lead), so some of it should even out.
+6. **The defense allowed more points after halftime in every season 2020–2026** (top 10 in the NFL each year).
+7. **2026 under the new head coach:** the same defensive shape (great 1st halves, bad 2nd halves, few
+   takeaways, more blitzing late), but it shows up as opponents completing everything rather than big plays.
+   2026 is also the first year the offense collapses after halftime as badly as the defense (worst in the
+   NFL on both). It's 10 games, and coverage data for 2026 isn't published yet.
 
 ## Files
 - `halves.py` → `team_games.csv`, `ravens_by_season.csv` (all teams, 1999–2026)
@@ -195,10 +248,12 @@ the defense.
 - `deep_defense.py` → `deep_defense.csv`, `deep_defense_coverage.csv`, `deep_defense_by_season.csv`, `deep_defense_starters.csv`,
   `deep_defense_cover0_by_season.csv`, `deep_defense_man_zone.csv`
 - `deep_offense.py` → `deep_offense.csv`, `deep_offense_by_season.csv`, `deep_offense_box.csv`
+- `defense_2026.py` → `defense_2026.csv`, `defense_2026_games.csv`
+- `split_2026.py` → `off_def_split.csv`
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
