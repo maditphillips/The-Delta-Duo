@@ -203,18 +203,22 @@ def psych_charts(suf, has_label, title_note):
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(13.5, 6), gridspec_kw={'width_ratios': [1.45, 1]})
     labels = ['Lost after leading at half', 'Lost after leading by 10+', 'Lost after 85%+ win chance', 'Lost after leading entering the 4th']
     x = np.arange(len(labels)); w = .36
-    for j, (grp_name, col) in enumerate((('Has psychologist', ORANGE), ('No psychologist', GRAY))):
+    groups_ = [('Has psychologist', ORANGE), ('No psychologist', GRAY)]
+    if suf == '':
+        groups_ = [('Ravens', BLUE)] + groups_
+    n_ = len(groups_); w = .8 / n_
+    for j, (grp_name, col) in enumerate(groups_):
         sub = pb[pb.group == grp_name].set_index('metric').loc[labels]
-        xs = x + (j - .5) * (w + .02)
+        xs = x + (j - (n_ - 1) / 2) * (w + .01)
         a1.bar(xs, sub.pooled_rate, w, color=col, label=grp_name)
         for xx, (_, r) in zip(xs, sub.iterrows()):
-            a1.plot([xx, xx], [r.ci_low, r.ci_high], color=INK, lw=1.3)
-            a1.text(xx + .04, r.pooled_rate + .004, f'{r.pooled_rate:.0%}', ha='left', fontsize=9.5)
+            a1.plot([xx, xx], [r.ci_low, r.ci_high], color=INK, lw=1.2)
+            a1.text(xx, r.ci_high + .005, f'{r.pooled_rate:.0%}', ha='center', fontsize=9)
     tests = pb[pb.group == 'TEST'].set_index('metric').loc[labels]
     a1.set_xticks(x, [f'{l.replace("Lost after ", "Lost after\n")}\np = {tests.loc[l, "p_perm_pooled"]:.2f}' for l in labels], fontsize=9.5)
-    a1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1)); a1.set_ylim(0, .32)
-    a1.legend(frameon=False, loc='upper right', fontsize=9.5)
-    a1.set_title('Share of leads lost, 2020–2026\nLines = 95% range; p-value under each (below 0.05 = significant)', loc='left', fontsize=11)
+    a1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1)); a1.set_ylim(0, .47 if suf == '' else .32)
+    a1.legend(frameon=False, loc='upper center', ncol=3, fontsize=9.5)
+    a1.set_title('Share of leads lost, 2020–2026\nLines = 95% range; p-value = psychologist vs no psychologist (below 0.05 = significant)', loc='left', fontsize=11)
     y = np.arange(len(bb))[::-1]
     for yy, r in zip(y, bb.itertuples()):
         a2.plot([r.blew_half_before, r.blew_half_after], [yy, yy], color=GRID, lw=3, zorder=1)
@@ -224,12 +228,13 @@ def psych_charts(suf, has_label, title_note):
     a2.set_yticks(y, [f'{t} (hired {h})' for t, h in zip(bb.team, bb.hire_season)])
     a2.set_xlim(0, .55); a2.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
     a2.scatter([], [], color=GRAY, s=50, label='3 seasons before hire'); a2.scatter([], [], color=ORANGE, s=50, label='Seasons after hire')
-    a2.legend(frameon=False, loc='lower left', fontsize=9.5)
+    a2.legend(frameon=False, loc='lower right' if suf == '' else 'lower left', fontsize=9.5)
     p_pair = _st.ttest_rel(bb.blew_half_after, bb.blew_half_before).pvalue
     a2.set_title(f'Same team, before vs after the hire\nLost after leading at half (p = {p_pair:.2f})', loc='left', fontsize=11)
     fig.suptitle(f'Blown leads: teams with vs without a dedicated sports psychologist {title_note}', x=.01, ha='left', fontsize=12.5)
-    fig.text(.01, .008, f'Has psychologist: {has_label}.\nNo psychologist: PIT + 13 teams where none was found. Ravens excluded. '
-             'p-values: permutation test across team-seasons.', fontsize=8.5, color=INK2)
+    fig.text(.01, .008, f'Has psychologist: {has_label}.\nNo psychologist: PIT + 13 teams where none was found. '
+             + ('Ravens shown for reference, not part of either group or the tests. ' if suf == '' else 'Ravens excluded. ')
+             + 'p-values: permutation test across team-seasons.', fontsize=8.5, color=INK2)
     fig.tight_layout(rect=[0, .06, 1, 1]); fig.savefig(f'{out}/chart_psych_blown{suf}.png', dpi=160); plt.close(fig)
 
 psych_charts('', 'GB, DET, CHI, BUF, KC, TEN (from hire year)', '(confident teams)')

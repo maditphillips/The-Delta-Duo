@@ -1,13 +1,17 @@
 metric,group,chances,blown,pooled_rate,season_avg_rate,ci_low,ci_high,team_seasons_used,diff_pooled,p_perm_pooled,diff_season_avg,p_ttest_seasons,p_perm_seasons,p_mannwhitney_teams
 Lost after leading by 10+,Has psychologist,582.0,87.0,0.149,0.193,0.116,0.187,83.0,,,,,,
 Lost after leading by 10+,No psychologist,656.0,110.0,0.168,0.188,0.138,0.2,98.0,,,,,,
-Lost after leading by 10+,TEST,,,,,,,,-0.018,0.451,0.005,0.878,0.875,0.844
+Lost after leading by 10+,Ravens,75.0,17.0,0.227,,0.152,0.327,7.0,,,,,,
+Lost after leading by 10+,TEST,,,,,,,,-0.018,0.452,0.005,0.878,0.875,0.844
 Lost after 85%+ win chance,Has psychologist,769.0,85.0,0.111,0.133,0.088,0.135,83.0,,,,,,
 Lost after 85%+ win chance,No psychologist,860.0,97.0,0.113,0.126,0.091,0.137,98.0,,,,,,
+Lost after 85%+ win chance,Ravens,87.0,18.0,0.207,,0.147,0.286,7.0,,,,,,
 Lost after 85%+ win chance,TEST,,,,,,,,-0.002,0.889,0.007,0.749,0.752,0.983
 Lost after leading entering the 4th,Has psychologist,634.0,95.0,0.15,0.163,0.121,0.181,80.0,,,,,,
 Lost after leading entering the 4th,No psychologist,719.0,132.0,0.184,0.198,0.152,0.219,98.0,,,,,,
+Lost after leading entering the 4th,Ravens,75.0,17.0,0.227,,0.138,0.345,7.0,,,,,,
 Lost after leading entering the 4th,TEST,,,,,,,,-0.034,0.153,-0.035,0.201,0.213,0.37
-Lost after leading at half,Has psychologist,599.0,118.0,0.197,0.236,0.162,0.236,82.0,,,,,,
-Lost after leading at half,No psychologist,732.0,180.0,0.246,0.269,0.209,0.284,98.0,,,,,,
-Lost after leading at half,TEST,,,,,,,,-0.049,0.076,-0.032,0.336,0.34,0.206
+Lost after leading at half,Has psychologist,599.0,118.0,0.197,0.236,0.161,0.235,82.0,,,,,,
+Lost after leading at half,No psychologist,732.0,180.0,0.246,0.269,0.209,0.285,98.0,,,,,,
+Lost after leading at half,Ravens,72.0,19.0,0.264,,0.182,0.373,7.0,,,,,,
+Lost after leading at half,TEST,,,,,,,,-0.049,0.077,-0.032,0.336,0.339,0.206

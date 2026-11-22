@@ -76,6 +76,11 @@ for k, (c, label) in M.items():
         rows.append({'metric': label, 'group': grp_name, 'chances': int(pooled.loc[grp_name, c]), 'blown': int(pooled.loc[grp_name, k]),
                      'pooled_rate': pooled.loc[grp_name, k] / pooled.loc[grp_name, c], 'season_avg_rate': v.mean(),
                      'ci_low': lo, 'ci_high': hi, 'team_seasons_used': len(v)})
+    # Ravens, same definitions, for reference (not part of either group or the tests)
+    bal = ts[ts.season.between(2020, 2026) & (ts.team == 'BAL')]
+    lo, hi = ci(bal)
+    rows.append({'metric': label, 'group': 'Ravens', 'chances': int(bal[c].sum()), 'blown': int(bal[k].sum()),
+                 'pooled_rate': bal[k].sum() / bal[c].sum(), 'ci_low': lo, 'ci_high': hi, 'team_seasons_used': len(bal)})
     # Permutation test on the pooled rate (shuffle group labels across team-seasons)
     chv, blv, isa = x[c].values, x[k].values, (x.grp == 'Has psychologist').values
     pooled_obs = blv[isa].sum() / chv[isa].sum() - blv[~isa].sum() / chv[~isa].sum()

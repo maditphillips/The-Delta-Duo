@@ -452,7 +452,7 @@ hire can be compared.
 
 | Share of leads lost | Has psychologist | No psychologist | Gap | p (team-seasons) | p (teams) |
 |---|---|---|---|---|---|
-| After leading by 10+ | 12% (30 of 243) | 17% (110 of 656) | −4 pts | 0.18 | 0.41 |
+| After leading by 10+ | 12% (30 of 243) | 17% (110 of 656) | −4 pts | 0.19 | 0.41 |
 | After an 85%+ win chance | 9% (28 of 301) | 11% (97 of 860) | −2 pts | 0.42 | 0.72 |
 | After leading entering the 4th | 13% (33 of 254) | 18% (132 of 719) | −5 pts | 0.12 | 0.16 |
 | **After leading at half (any margin)** | **15% (36 of 236)** | **25% (180 of 732)** | **−9 pts** | **0.02** | **0.01** |
@@ -495,7 +495,7 @@ Has-psychologist group becomes 15 teams / 83 team-seasons; the no-psychologist g
 |---|---|---|---|
 | Win % | 59.8% (p = 0.002–0.008 seasons; 0.15 teams) | **50.8% (p = 0.25 seasons; 0.91 teams)** | 47.8% |
 | Lost after leading at half | 15% (p = 0.02) | 20% (p = 0.08) | 25% |
-| Lost after leading by 10+ | 12% (p = 0.18) | 15% (p = 0.45) | 17% |
+| Lost after leading by 10+ | 12% (p = 0.19) | 15% (p = 0.45) | 17% |
 | Lost after 85%+ win chance | 9% (p = 0.42) | 11% (p = 0.89) | 11% |
 | Lost after leading entering the 4th | 13% (p = 0.12) | 15% (p = 0.15) | 18% |
 
