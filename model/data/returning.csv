@@ -1,16 +1,17 @@
 season,week,position,player,reason
-2026,2,RB,TreVeyon Henderson,"Missed week 1 and is active again. Confirmed by hand."
+2026,2,RB,TreVeyon Henderson,Missed week 1 and is active again. Confirmed by hand.
 2026,2,RB,Alvin Kamara,"Missed week 1, no injury tag on Sleeper, depth chart RB2 in New Orleans."
 2026,6,QB,Tanner McKee,"Starting for Philadelphia with Jalen Hurts out (calf); has not played this season, so the playing-time model would zero him. Confirmed by hand."
-2026,6,WR,A.J. Brown,"Activated from injured reserve (ankle) on game day and expected to play. Confirmed by hand."
+2026,6,WR,A.J. Brown,Activated from injured reserve (ankle) on game day and expected to play. Confirmed by hand.
 2026,7,RB,Josh Jacobs,"Removed from the Commissioner Exempt List Oct 19; LaFleur says he is on track to play. No games this season, so the playing-time model would zero him. Confirmed by hand."
 2026,7,WR,Christian Kirk,"Expected off injured reserve (calf) Oct 24; Shanahan says he is set to play. No games this season, so the playing-time model would zero him. Confirmed by hand."
-2026,7,RB,Jonah Coleman,"Designated to return from IR (ankle) and practiced in full all week. Assumed to play by hand."
-2026,7,RB,Jordan Mason,"On IR (thumb) in Sleeper but questionable on the official report after practicing in full; expected to play. Confirmed by hand."
+2026,7,RB,Jonah Coleman,Designated to return from IR (ankle) and practiced in full all week. Assumed to play by hand.
+2026,7,RB,Jordan Mason,On IR (thumb) in Sleeper but questionable on the official report after practicing in full; expected to play. Confirmed by hand.
 2026,9,WR,Christian Kirk,"No games this season (IR, calf); expected to play. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand."
 2026,9,RB,Devin Neal,No games this season after an injury stay; expected to play. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
-2026,9,QB,Carson Wentz,"Starting for Minnesota with Kyler Murray out (hamstring); started weeks 1 and 2. Confirmed by hand."
-2026,9,TE,Terrance Ferguson,"Reported to play after an IR stay (ankle); last played week 3. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand."
-2026,11,WR,Michael Pittman,Questionable (foot) after full practices; assumed to play though Sleeper still lists him on IR. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
+2026,9,QB,Carson Wentz,Starting for Minnesota with Kyler Murray out (hamstring); started weeks 1 and 2. Confirmed by hand.
+2026,9,TE,Terrance Ferguson,Reported to play after an IR stay (ankle); last played week 3. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
 2026,11,WR,Roman Wilson,Questionable (hand) after full practices; assumed to play though Sleeper still lists him on IR. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
 2026,11,RB,Jonathon Brooks,Questionable (groin) after full practices; assumed to play though Sleeper still lists him on IR. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
+2026,11,WR,Andrei Iosivas,Full practices all week coming off IR (thumb); assumed to play though Sleeper still lists him on IR. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
+2026,11,RB,Jacory Croskey-Merritt,Full practices all week coming off IR (groin); assumed to play though Sleeper still lists him on IR. Eased in at 81% of his usual opportunities and 86% of his snaps. Confirmed by hand.
