@@ -3,7 +3,7 @@
 Usage: python3 psych_wins.py [confident|expanded]  (team_games.csv, psych_compare.py groups)  ->  writes psych_wins.csv, psych_wins_teams.csv,
        psych_wins_before_after.csv
 Ties count as half a win. Games within a team-season aren't independent, so tests use team-seasons (and teams),
-not single games. Same groups as psych_compare.py; Ravens left out of both.
+not single games. Groups from psych_groups.py (Ravens are in the no-psychologist group).
 """
 import os, sys
 import numpy as np

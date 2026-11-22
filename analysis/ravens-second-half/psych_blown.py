@@ -2,7 +2,7 @@
 
 Usage: python3 psych_blown.py DATA_DIR [confident|expanded]  (pbp_slim.parquet, games.csv, team_games.csv)  ->  writes psych_blown.csv, psych_blown_teams.csv,
        psych_blown_before_after.csv
-Same groups as psych_compare.py / psych_wins.py (Ravens left out). Flags rebuilt from play-by-play for 2017-2026 so
+Groups from psych_groups.py (Ravens are in the no-psychologist group). Flags rebuilt from play-by-play for 2017-2026 so
 the 3 seasons before each hire are available:
   blew10   - led by 10+ at any point and did not win
   wp85     - win probability reached 85%+ and did not win

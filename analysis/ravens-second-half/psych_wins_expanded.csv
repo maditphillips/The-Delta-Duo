@@ -1,3 +1,3 @@
 grp,team_seasons,games,wins,win_pct,ci_low,ci_high
-Has psychologist,83,1352,687.0,0.508,0.46,0.549
-No psychologist,98,1600,765.5,0.478,0.437,0.507
+Has psychologist,83,1352,687.0,0.508,0.46,0.55
+No psychologist,105,1718,834.5,0.486,0.445,0.511

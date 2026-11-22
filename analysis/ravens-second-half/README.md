@@ -426,17 +426,17 @@ Groups:
 ![psych](chart_psych_compare.png)
 
 ## 13. Do teams with a psychologist win more? Is it significant?
-Files: `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`. Same groups as
-section 12, Ravens left out. Ties = half a win. Tests use team-seasons or teams, not single games, because games
-within a season aren't independent.
+Files: `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`. Groups from
+`psych_groups.py`. **The Ravens are in the no-psychologist group** (confirmed none, like the Steelers). Ties = half a
+win. Tests use team-seasons or teams, not single games, because games within a season aren't independent.
 
-| | Has psychologist | No psychologist |
+| | Has psychologist | No psychologist (incl. Ravens) |
 |---|---|---|
-| Teams / team-seasons | 6 / 28 | 14 / 98 |
-| Win % | **59.8%** (95% range 51–68%) | **47.8%** (44–51%) |
+| Teams / team-seasons | 6 / 28 | 15 / 105 |
+| Win % | **59.8%** (95% range 52–67%) | **48.6%** (45–51%) |
 
-- **Across team-seasons the +12-point gap is statistically significant** (t-test p = 0.008, permutation test p = 0.002).
-- **Across teams it is not** (6 vs 14 teams, p = 0.15). The group average leans on Buffalo and Kansas City.
+- **Across team-seasons the +11-point gap is statistically significant** (t-test p = 0.011, permutation test p = 0.003).
+- **Across teams it is not** (6 vs 15 teams, p = 0.15). The group average leans on Buffalo and Kansas City.
 - **Before vs after the hire, same team: no significant change** (p = 0.46). Detroit went from 30% to 59%; Green Bay
   +6 points; Chicago, Buffalo and Kansas City were flat or slightly down. Buffalo and Kansas City were already
   winning 73–78% before hiring.
@@ -446,42 +446,42 @@ within a season aren't independent.
 ![psych wins](chart_psych_wins.png)
 
 ## 14. Do teams with a psychologist blow fewer leads? Is it significant?
-Files: `psych_blown.py` → `psych_blown.csv`, `psych_blown_teams.csv`, `psych_blown_before_after.csv`. Same groups as
-sections 12–13, Ravens left out. Blown-lead flags rebuilt from play-by-play for 2017–2026 so the 3 seasons before each
-hire can be compared.
+Files: `psych_blown.py` → `psych_blown.csv`, `psych_blown_teams.csv`, `psych_blown_before_after.csv`,
+`psych_blown_controlled.csv`. Same groups as section 13 (Ravens in the no-psychologist group). Blown-lead flags
+rebuilt from play-by-play for 2017–2026 so the 3 seasons before each hire can be compared.
 
-| Share of leads lost | Has psychologist | No psychologist | Gap | p (team-seasons) | p (teams) |
-|---|---|---|---|---|---|
-| After leading by 10+ | 12% (30 of 243) | 17% (110 of 656) | −4 pts | 0.19 | 0.41 |
-| After an 85%+ win chance | 9% (28 of 301) | 11% (97 of 860) | −2 pts | 0.42 | 0.72 |
-| After leading entering the 4th | 13% (33 of 254) | 18% (132 of 719) | −5 pts | 0.12 | 0.16 |
-| **After leading at half (any margin)** | **15% (36 of 236)** | **25% (180 of 732)** | **−9 pts** | **0.02** | **0.01** |
+| Share of leads lost | Has psychologist | No psychologist (incl. Ravens) | Gap | p (team-seasons) | p (teams) | p (controlled) |
+|---|---|---|---|---|---|---|
+| **After leading at half (any margin)** | **15% (36 of 236)** | **25% (199 of 804)** | **−9 pts** | **0.01** | **0.01** | **0.046** |
+| After leading by 10+ | 12% (30 of 243) | 17% (127 of 731) | −5 pts | 0.13 | 0.35 | 0.19 |
+| After an 85%+ win chance | 9% (28 of 301) | 12% (115 of 947) | −3 pts | 0.25 | 0.62 | 0.50 |
+| After leading entering the 4th | 13% (33 of 254) | 19% (149 of 794) | −6 pts | 0.10 | 0.14 | 0.15 |
 
-p (team-seasons) = permutation test on the pooled rate across team-seasons; p (teams) = Mann-Whitney on each team's
-rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.22–0.95).
+p (team-seasons) = permutation test on the pooled rate across team-seasons. p (teams) = Mann-Whitney on each team's
+rate (6 vs 15 teams). p (controlled) = logistic regression with the pregame Vegas spread and halftime margin as
+controls for team strength, errors clustered by team.
 
 **Before vs after the hire, same team** (3 seasons before vs seasons after):
 
-| Team | Lost after leading by 10+ | Lost after 85%+ | Lost after leading entering the 4th |
-|---|---|---|---|
-| Packers (2020) | 17% → 15% | 7% → 10% | 10% → 15% |
-| Lions (2021) | 50% → 10% | 26% → 7% | 44% → 9% |
-| Bears (2022) | 20% → 22% | 12% → 19% | 27% → 24% |
-| Bills (2023) | 10% → 5% | 9% → 4% | 10% → 9% |
-| Chiefs (2022) | 15% → 8% | 8% → 6% | 12% → 10% |
-| **Paired test** | p = 0.23 | p = 0.51 | p = 0.37 |
+| Team | Lost after leading at half | Lost after leading by 10+ | Lost after 85%+ | Lost after leading entering the 4th |
+|---|---|---|---|---|
+| Packers (2020) | 27% → 20% | 17% → 15% | 7% → 10% | 10% → 15% |
+| Lions (2021) | 35% → 13% | 50% → 10% | 26% → 7% | 44% → 9% |
+| Bears (2022) | 26% → 19% | 20% → 22% | 12% → 19% | 27% → 24% |
+| Bills (2023) | 14% → 10% | 10% → 5% | 9% → 4% | 10% → 9% |
+| Chiefs (2022) | 11% → 14% | 15% → 8% | 8% → 6% | 12% → 10% |
+| **Paired test** | p = 0.14 | p = 0.23 | p = 0.51 | p = 0.37 |
 
-- **Psychologist teams lose leads less often on all four measures. Only one gap is statistically significant: losing
-  after leading at half (15% vs 25%, p = 0.02 across seasons, 0.01 across teams).** The other three are not.
-- **But that one doesn't survive a control for team strength.** Using the pregame Vegas spread and the halftime
-  margin as controls (logistic regression, errors clustered by team), the psychologist effect on halftime leads
-  shrinks to odds 0.77× and p = 0.11 — not significant. None of the four measures is significant after the control
-  (`psych_blown_controlled.csv`). Same team before vs after the hire for halftime leads: 4 of 5 improved, p = 0.14.
-- Same team before vs after: 4 of 5 improved on blown 10+ leads, but most of the average improvement is Detroit
-  (50% → 10%, on only 18 chances before), which also turned from a 30% team into a 59% team. Not significant.
-- Part of the gap is team quality again: the psychologist teams win more (section 13), and winning teams blow fewer leads.
-- **Bottom line:** the direction favors having a psychologist, but with 6 teams the data can't separate it from chance
-  or from team quality. The Ravens (23% / 21% / 23%) are worse than both groups either way.
+- **Psychologist teams lose leads less often on all four measures.** Only losing after leading at half is
+  significant: 15% vs 25%, p = 0.01 across seasons and teams, and it holds just barely (p = 0.046, odds 0.71×) after
+  controlling for team strength. The other three gaps are not significant.
+- **Including the Ravens matters here.** With the Ravens left out, the controlled halftime result was p = 0.11. One
+  team with a lot of blown leads moves it across the line, so treat it as fragile. With four measures tested, one
+  landing near 0.05 can also happen by chance.
+- Same team before vs after: 4 of 5 improved on halftime leads (p = 0.14), driven mostly by Detroit, which also
+  turned from a 30% team into a 59% team. Not significant.
+- **Bottom line:** the direction favors having a psychologist, and the halftime-lead result is borderline
+  significant, but with 6 teams it's not strong evidence.
 
 ![psych blown](chart_psych_blown.png)
 
@@ -489,27 +489,27 @@ rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.2
 Files: `*_expanded.csv`, `chart_psych_wins_expanded.png`, `chart_psych_blown_expanded.png`; groups in `psych_groups.py`.
 Adds Giants (2020–), Commanders (2021–), Panthers (2023–), Falcons (2024–) from their stated start years, and Rams,
 Buccaneers, Jaguars, Vikings, Cardinals for all of 2020–2026 (no date given, so no before/after for them).
-Has-psychologist group becomes 15 teams / 83 team-seasons; the no-psychologist group is unchanged (14 / 98).
+Has-psychologist group becomes 15 teams / 83 team-seasons; the no-psychologist group (incl. Ravens) is 15 / 105.
 
-| | Has psychologist (confident 6) | Has psychologist (all 15) | No psychologist |
+| | Has psychologist (confident 6) | Has psychologist (all 15) | No psychologist (incl. Ravens) |
 |---|---|---|---|
-| Win % | 59.8% (p = 0.002–0.008 seasons; 0.15 teams) | **50.8% (p = 0.25 seasons; 0.91 teams)** | 47.8% |
-| Lost after leading at half | 15% (p = 0.02) | 20% (p = 0.08) | 25% |
-| Lost after leading by 10+ | 12% (p = 0.19) | 15% (p = 0.45) | 17% |
-| Lost after 85%+ win chance | 9% (p = 0.42) | 11% (p = 0.89) | 11% |
-| Lost after leading entering the 4th | 13% (p = 0.12) | 15% (p = 0.15) | 18% |
+| Win % | 59.8% (p = 0.003 seasons; 0.15 teams) | **50.8% (p = 0.34 seasons; 0.97 teams)** | 48.6% |
+| Lost after leading at half | 15% (p = 0.01) | 20% (p = 0.06) | 25% |
+| Lost after leading by 10+ | 12% (p = 0.13) | 15% (p = 0.30) | 17% |
+| Lost after 85%+ win chance | 9% (p = 0.25) | 11% (p = 0.53) | 12% |
+| Lost after leading entering the 4th | 13% (p = 0.10) | 15% (p = 0.10) | 19% |
 
 p-values compare each psychologist group with the no-psychologist group (permutation test across team-seasons).
-Controlled for Vegas spread and halftime margin, none of the expanded-group differences is significant either
-(odds 0.77–0.99, p = 0.10–0.95; `psych_blown_controlled_expanded.csv`). Before vs after hire (9 teams with a
-known year): win % p = 0.21; lost after leading at half 4 of 9 clearly better, p = 0.09.
+Controlled for Vegas spread and halftime margin (`psych_blown_controlled_expanded.csv`): leading entering the 4th
+p = 0.04 (odds 0.72×), leading at half p = 0.06, the other two p = 0.18–0.46. Before vs after hire (9 teams with a
+known year): win % p = 0.21; lost after leading at half p = 0.09.
 
-- **Adding the possible teams shrinks every gap.** The win gap falls from 12 points to 3 and stops being significant.
-  The blown-lead gaps shrink to 0–5 points, none significant.
-- That fits the earlier reading: the confident group's edge came mostly from being better teams (Bills, Chiefs,
-  Packers, Lions). Once more average teams with psychology staff are included, the group looks like everyone else.
-- The direction still leans slightly toward psychologist teams blowing fewer halftime leads, but the data can't
-  separate it from chance or team quality.
+- **Adding the possible teams shrinks the gaps.** The win gap falls from 11 points to 2 and stops being significant.
+  The blown-lead gaps shrink to 1–5 points; none is significant in the simple comparison.
+- After the team-strength control, one of four measures (leading entering the 4th) lands just under 0.05. Like the
+  halftime result above, it's borderline and could be chance with this many tests.
+- **Overall:** there's a consistent lean toward psychologist teams blowing fewer leads, and a couple of borderline
+  results, but no strong, clear evidence.
 
 ![wins expanded](chart_psych_wins_expanded.png)
 ![blown expanded](chart_psych_blown_expanded.png)

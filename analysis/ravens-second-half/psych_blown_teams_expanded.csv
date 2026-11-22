@@ -14,6 +14,7 @@ Has psychologist,NYG,34.0,9.0,0.265,Lost after leading by 10+,,,,,,
 Has psychologist,TB,56.0,7.0,0.125,Lost after leading by 10+,,,,,,
 Has psychologist,TEN,2.0,2.0,1.0,Lost after leading by 10+,,,,,,
 Has psychologist,WAS,32.0,8.0,0.25,Lost after leading by 10+,,,,,,
+No psychologist,BAL,75.0,17.0,0.227,Lost after leading by 10+,,,,,,
 No psychologist,CIN,54.0,8.0,0.148,Lost after leading by 10+,,,,,,
 No psychologist,CLE,44.0,7.0,0.159,Lost after leading by 10+,,,,,,
 No psychologist,DAL,52.0,5.0,0.096,Lost after leading by 10+,,,,,,
@@ -43,6 +44,7 @@ Has psychologist,NYG,,,0.224,Lost after 85%+ win chance,49.0,11.0,,,,
 Has psychologist,TB,,,0.105,Lost after 85%+ win chance,76.0,8.0,,,,
 Has psychologist,TEN,,,0.667,Lost after 85%+ win chance,3.0,2.0,,,,
 Has psychologist,WAS,,,0.109,Lost after 85%+ win chance,46.0,5.0,,,,
+No psychologist,BAL,,,0.207,Lost after 85%+ win chance,87.0,18.0,,,,
 No psychologist,CIN,,,0.114,Lost after 85%+ win chance,70.0,8.0,,,,
 No psychologist,CLE,,,0.055,Lost after 85%+ win chance,55.0,3.0,,,,
 No psychologist,DAL,,,0.076,Lost after 85%+ win chance,66.0,5.0,,,,
@@ -72,6 +74,7 @@ Has psychologist,NYG,,,0.256,Lost after leading entering the 4th,,,39.0,10.0,,
 Has psychologist,TB,,,0.125,Lost after leading entering the 4th,,,64.0,8.0,,
 Has psychologist,TEN,,,,Lost after leading entering the 4th,,,0.0,0.0,,
 Has psychologist,WAS,,,0.2,Lost after leading entering the 4th,,,40.0,8.0,,
+No psychologist,BAL,,,0.227,Lost after leading entering the 4th,,,75.0,17.0,,
 No psychologist,CIN,,,0.203,Lost after leading entering the 4th,,,59.0,12.0,,
 No psychologist,CLE,,,0.185,Lost after leading entering the 4th,,,54.0,10.0,,
 No psychologist,DAL,,,0.111,Lost after leading entering the 4th,,,54.0,6.0,,
@@ -101,6 +104,7 @@ Has psychologist,NYG,,,0.242,Lost after leading at half,,,,,33.0,8.0
 Has psychologist,TB,,,0.143,Lost after leading at half,,,,,56.0,8.0
 Has psychologist,TEN,,,,Lost after leading at half,,,,,0.0,0.0
 Has psychologist,WAS,,,0.27,Lost after leading at half,,,,,37.0,10.0
+No psychologist,BAL,,,0.264,Lost after leading at half,,,,,72.0,19.0
 No psychologist,CIN,,,0.233,Lost after leading at half,,,,,60.0,14.0
 No psychologist,CLE,,,0.152,Lost after leading at half,,,,,46.0,7.0
 No psychologist,DAL,,,0.186,Lost after leading at half,,,,,59.0,11.0
