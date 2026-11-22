@@ -91,7 +91,7 @@ stronger evidence.
 
 ### Not the cause
 - 4th-down decisions: go-for-it rate when leading in the 2nd half is 11% vs NFL 11%. They convert 89% vs the NFL's 60% (small sample: about 18 attempts).
-- Penalties: about league average on both sides.
+- Penalties: about league average *when leading* (but see section 10: across all 4th quarters, the Ravens commit the 4th-most defensive penalties and 2nd-most pass interference).
 - Sacks: about league average on both sides.
 
 ## 5. Deep dive: 4th-quarter pass defense — what are they calling?
@@ -279,45 +279,72 @@ The one cost: opponents start their next drive about 4 yards closer than normal.
 gap in what happens on that drive: opponents score on 35% of them against the Ravens vs 27% league-wide,
 the worst in the NFL. The game situation isn't the main cause. The late defense is.
 
-## 10. Outside sources (unverified)
-These come from **search-result snippets only**. This session's network blocked the article pages, so none
-of these quotes or figures were read in context. Treat them as leads to check, not facts.
+## 10. Outside sources (verified by reading the pages)
+Read in full unless noted. CBS and AP pages would not load; those items are marked.
 
-**2026 coverage (no play-level data exists publicly yet):**
-- Ravens 2026 two-deep safety usage reported as 54.7% (8th) vs 32.6% in 2025 (2nd lowest). Likely Ravens.com.
-- Pressure-rate rank reported falling from 10th (Weeks 1–4) to 19th (Weeks 5–9) in 2026.
-- Man coverage 2024–25: Ravens under Orr about 30% (6th); Chargers under Minter about 14% (lowest in NFL) (SI / Banner, TruMedia).
-- If accurate, Minter brought his zone, two-safety style to Baltimore, and the late fade got *worse*. That
-  points away from play calls and toward something else in Baltimore.
+**2026: Minter changed the scheme, and the late fade stayed**
+- Minter's 2025 Chargers (Ravens.com, Jan 23 2026, NGS): 80.7% zone (5th most), 21.4% blitz (3rd fewest),
+  49.6% two-high safety (4th most). https://www.baltimoreravens.com/news/jesse-minter-defensive-scheme-film-ravens-head-coach-hire
+- Man coverage over 2024–25 (SI, Jun 7 2026, TruMedia): Ravens under Orr 30.3% (7th), Minter's Chargers 14.4%
+  (lowest in NFL), league 24%. https://www.si.com/nfl/ravens/onsi/a-change-of-coaches-and-scheme-should-prompt-a-breakout-for-one-young-ravens-corner-01kthe7568vs
+- 2026 Ravens through Week 3 (Banner, Sep 30 2026, NGS): two-high safety 54.7% (8th) vs 32.6% in 2025 (2nd lowest).
+  "Minter has opted to try to stop the run without pushing a safety toward the box." Only 5 throws of 20+ air
+  yards allowed (2nd fewest). https://www.thebanner.com/sports/ravens-nfl/ravens-september-statistics-lamar-jackson-jesse-minter-UPHAT5NLAFCSJMK3ORYRWLMYIM/
+- 2026 pressure-rate rank fell from 10th (Weeks 1–4) to 19th (Weeks 5–9) (Ravens.com, Nov 10 2026, source not named).
+  https://www.baltimoreravens.com/news/ravens-first-half-stats-2026-season-lamar-jackson-zay-flowers-defense
+- **2026 defense EPA per play by quarter (Banner, Oct 26 2026, through Week 7): 3rd in Q1, 3rd in Q2, 22nd in Q3,
+  32nd in Q4.** Opponent QBs: 59.4% completions, 1 TD, 2 INT in 1st halves; 71.3%, 8 TD, 0 INT in 2nd halves.
+  https://www.thebanner.com/sports/ravens-nfl/ravens-bengals-first-half-second-half-lamar-jackson-joe-burrow-jesse-minter-defense-WQX4OAUQEFB37KTWITAV6FYAAI/
+- Ravens.com, Nov 10 2026: most 4th-quarter points allowed in the NFL (11.4 per game), a 4th-quarter TD allowed in
+  8 of 9 games. Minter on explosive plays: "major concern No. 1… It's all lip service right now." A lineup and
+  scheme shake-up is being considered. https://www.baltimoreravens.com/news/jesse-minter-ravens-defense-shake-up-marlon-humphrey-fourth-quarter-woes-explosive-plays-jaguars
+- No public source has 2026 man/zone, Cover 0–6 rates, or any 4th-quarter / leading split. SumerSports keeps
+  situational splits behind a paid tier; the NGS data API needs a login.
 
-**Agrees with this study's data:**
-- SI (2026): Ravens had the 2nd-highest 4th-quarter Cover-0 share since 2020; Orr led the NFL in Cover-0 in
-  2024–25; Minter's Chargers were about league average in 4th-quarter Cover-0.
-- SI (2026): Orr called Cover-0 on 14% of third downs (2nd in NFL); Ravens allowed 14.3 yards per completion in Cover-0/1 (26th).
-- CBS Sports (~2025): Ravens 22nd in pressure rate when leading in the 4th quarter; opponents converted
-  nearly half of 3rd downs against a 4th-quarter Ravens lead. The writer blames mostly the defense.
-- AP (Sep 2025): Harbaugh's 17 blown double-digit 2nd-half leads were the most in the NFL since 1991.
+**2020–2025 4th-quarter record (SI, May 29 2026, La Canfora)**
+https://www.si.com/nfl/ravens/onsi/jesse-minter-must-succeed-where-many-others-have-failed-fixing-ravens-fourth-quarter-defense-01ksr6ez3x22
+- Through three quarters: 1st in points allowed, +609 point differential. In 4th quarters since 2020: 29th in yards
+  per play, 28th in points allowed, 30th in defensive EPA, 30th in 15+ yard completions allowed (185 vs league
+  average 139), 20th in pressure rate, 28th in interception rate.
+- 2nd-highest 4th-quarter Cover-0 rate; Orr led the NFL in Cover-0 in 2024–25; Minter's Chargers ran 50% more
+  4th-quarter Cover-4 than average.
+- Worst 4th-quarter penalty margin (−35) and 2nd-most DPI flags. The author: "a collective mindset and mentality that was hardwired to collapse."
+- **Checked in our data (`penalties.py` → `penalties_q4.csv`):** Ravens defensive penalties per game are below
+  average in quarters 1–3 (24th) but 4th most in the 4th quarter. Defensive pass interference in the 4th: 0.25 per
+  game vs 0.15 league (**2nd most**). This corrects section 4, which found penalties about average using only
+  plays where the Ravens led.
 
-**Front office / roster:**
-- SI (~2026): Ravens 29th in pass defense two years running; first-round defensive backs two straight drafts.
-- 2026 offseason (ESPN): Maxx Crosby trade fell through on a failed physical; signed Trey Hendrickson (4 yr, $112M);
-  lost Dre'Mont Jones, Kyle Van Noy, Alohi Gilman, Ar'Darius Washington; 2026 draft had 3 defensive picks of 11.
-- DeCosta has said the Ravens find pass rushers in later rounds (2021); 2022 2nd-rounder David Ojabo is widely called a bust.
-- Humphrey (the one constant in the late-game secondary) turns 31 with his contract ending after 2026.
-- No source found that directly ties roster building to late-game pass defense.
+**What players and coaches say happens late (2026)**
+- After CIN (Banner, Oct 26): Minter: "We're missing some tackles… plays that were maybe third-and-5… in the first
+  half are now second-and-1… starting with me — it was just a bad effort by the defense in the second half."
+  11 missed tackles (PFF). Burrow got the ball out faster: "Which we figured they would."
+  https://www.thebanner.com/sports/ravens-nfl/things-we-learned-ravens-bengals-7Y7VMFXKHVGCVDXDMIFGV4E7YY/
+- After NO (Ravens.com, Sep 22): Minter: "guys start pressing a little bit… searching for that big play."
+  Hendrickson: "When we had good coverage, sometimes our rush was not there." No 4th-quarter sacks vs a quick-passing
+  Saints offense. https://www.baltimoreravens.com/news/ravens-defensive-identity-jesse-minter-defense-fourth-quarter-trey-hendrickson-malaki-starks-jaylinn-hawkins-poor-tackling-coverage-mistakes-pass-rush
+- Psychology (Banner, Oct 25 & 30): players describe the history seeping "into the psyche" and the team being "too much
+  of a momentum team." The Ravens have no dedicated sports psychologist.
+  https://www.thebanner.com/sports/ravens-nfl/ravens-jesse-minter-momentum-problem-B5Y7N23QLND5LA4SHXMWKWN4HU/
+- Ravens.com Sep 20: 15th loss after a double-digit lead since 2019 (per ESPN). Minter: "Everybody is going to just
+  say the same old thing of having a lead… So, we will own this." https://www.baltimoreravens.com/news/ravens-react-blown-fourth-quarter-lead-saints-2026
 
-**2026 games, coach quotes:**
-- Week 2 vs NO (lost 24–17): led 17–9, outscored 15–0 in the 4th; coverage errors, missed tackles, no 4th-quarter sacks.
-  Minter: "Everybody is going to just say the same old thing of having a lead… So, we will own this."
-- Week 6 at CLE (lost 13–10): mostly offense — fumble at 10–3, missed 49-yard FG, scoreless on the last nine possessions.
-- Week 7 vs CIN (lost 35–13 after leading 13–0 at half; five straight Bengals TD drives). Minter: "Starting with
-  me, just a bad effort by the defense in the second half."
-- Week 8 at BUF (lost 36–10) was not a blown lead: Ravens trailed at half, with Jackson and Huntley both hurt.
+**Front office and roster**
+- SI, Apr 3 2026: Ravens 29th in pass defense two straight seasons (246 yards per game); first-round DBs in 2024
+  (Nate Wiggins) and 2025 (Malaki Starks). https://www.si.com/nfl/ravens/onsi/news/three-reasons-why-ravens-could-draft-a-defensive-back-in-third-straight-nfl-draft-01kn884r4pwj
+- SI, Jul 29 2026: criticizes "the naivety of… DeCosta's roster construction" and "whiffing systematically… on
+  'projectable pass rushers'"; a backup led the 2025 team in third-down sacks with 1.5.
+  https://www.si.com/nfl/ravens/onsi/four-metrics-jesse-minter-must-correct-for-ravens-defense-01kynh6wbwm4
+- 2026 offseason: backed out of the Maxx Crosby trade after a failed physical (knee); signed Trey Hendrickson
+  (4 yr, $112M, NFL.com snippet); lost Alohi Gilman, Dre'Mont Jones, Ar'Darius Washington (Kyle Van Noy unsigned).
+  Draft defense picks: Zion Young (R2), Chandler Rivers (R5), Rayshaun Benny (R7).
+  https://www.baltimoreravens.com/news/free-agency-tracker/ , https://www.baltimoreravens.com/draft/draft-tracker/2026/
+- Banner, Oct 30 2024: of 59 explosive passes allowed, only about a dozen came from disguise breakdowns; the rest were
+  "one-on-one battles lost, zone holes punctured, open-field tackles missed."
+  https://www.thebanner.com/sports/ravens-nfl/ravens-defense-zach-orr-mike-macdonald-dean-pees-disguised-coverages-XU35W74AEFB3HBIM7HEOQJ7KXE/
 
-**Late-game offense:**
-- 2025 Week 1 at BUF: Harbaugh punted on 4th-and-3 up two with 1:33 left, later said the team must rethink
-  "play-calling, defensive play-calling, mindset." Analysts (Clark, Spears) blamed a conservative 4th quarter.
-- ESPN: cited the lack of a late-game run game as one reason the Ravens stopped being good closers.
+**Not verified at the source (pages blocked):** CBS "Ravens and blown leads" (snippets: last in EPA per play when
+leading in the 4th, 22nd in pressure rate; appears to be from 2022–23); AP's count of 17 blown double-digit 2nd-half
+leads under Harbaugh, most since 1991 (seen only as a Steelers Depot citation).
 
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
@@ -330,10 +357,12 @@ of these quotes or figures were read in context. Treat them as leads to check, n
    expected). The running itself is the best in the league, so it isn't the cause. But it means fewer
    points added late, and even when passing is working, the game is left on the defense.
 5. **Why it hasn't been fixed:** the fade stays in Baltimore and doesn't follow coaches out. Ravens defenses
-   faded in 7 of 7 seasons. The same coaches' defenses elsewhere faded in 3 of 9, about chance. Minter's
-   Chargers defense did not fade much; his 2026 Ravens defense fades the most in the NFL. So the cause is
-   something constant in Baltimore (front office and roster building, an inherited defensive identity, or game
-   situations), not one coordinator's habits.
+   faded in 7 of 7 seasons; the same coaches elsewhere in 3 of 9 (about chance). In 2026 Minter replaced the
+   man-heavy, Cover-0 scheme with zone and two-high safeties, and the defense is still 32nd in the 4th quarter.
+   **So the play calls aren't the root cause.** What stays constant is how the late plays are lost: deep
+   completions and missed tackles, a pass rush that disappears late (20th in 4th-quarter pressure since 2020),
+   late pass-interference flags (2nd most), and, by the players' own account, pressing and a "momentum" mindset.
+   Outside critics point at the front office's record finding pass rushers and cover players.
 6. **The defense allowed more points after halftime in every season 2020–2026** (top 10 in the NFL each year).
 7. **2026 under the new head coach:** the same defensive shape (great 1st halves, bad 2nd halves, few
    takeaways, more blitzing late), but it shows up as opponents completing everything rather than big plays.
@@ -353,10 +382,11 @@ of these quotes or figures were read in context. Treat them as leads to check, n
 - `split_2026.py` → `off_def_split.csv`
 - `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
+- `penalties.py` → `penalties_q4.csv`
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
