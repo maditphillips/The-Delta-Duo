@@ -133,25 +133,25 @@ print('deep charts written')
 
 # 7. Ravens vs teams with / without a dedicated sports psychologist
 pc = pd.read_csv(f'{out}/psych_compare.csv', index_col=0)
-pm = pd.read_csv(f'{out}/psych_compare_matched.csv', index_col=0)
-cols = {'Ravens': (pc['Ravens'], BLUE), 'Has psychologist\n(GB, DET, CHI, BUF)': (pc['Has psychologist'], ORANGE),
-        'No psychologist,\nwinning teams (PIT, SF)': (pm['No psychologist, winning teams'], '#1baf7a'),
-        'No psychologist,\nall 14 teams': (pc['No psychologist: all (Steelers + none found)'], GRAY)}
+cols = {'Ravens': (pc['Ravens'], BLUE), 'Has psychologist (GB, DET, CHI, BUF, KC, TEN)': (pc['Has psychologist'], ORANGE),
+        'No psychologist (PIT + 13 teams where none was found)': (pc['No psychologist: all (Steelers + none found)'], GRAY)}
 metrics = [('blew_10_rate', 'Lost after\nleading by 10+'), ('lost_after_85pct_rate', 'Lost after 85%+\nwin chance'),
-           ('blew_q4_lead_rate', 'Lost after leading\nentering the 4th'), ('led_half_lost_game_rate', 'Lost after\nleading at half')]
-fig, ax = plt.subplots(figsize=(11, 5.2))
-w = .2; x = np.arange(len(metrics))
+           ('blew_q4_lead_rate', 'Lost after leading\nentering the 4th'), ('blew_q4_7plus_rate', 'Lost after leading\nby 7+ entering the 4th'),
+           ('led_half_lost_game_rate', 'Lost after\nleading at half')]
+fig, ax = plt.subplots(figsize=(11.5, 5.2))
+w = .26; x = np.arange(len(metrics))
 for j, (lab, (ser, col)) in enumerate(cols.items()):
     vals = [ser[m] for m, _ in metrics]
-    xs = x + (j - 1.5) * (w + .01)
-    ax.bar(xs, vals, w, color=col, label=lab.replace('\n', ' '))
+    xs = x + (j - 1) * (w + .01)
+    ax.bar(xs, vals, w, color=col, label=lab)
     for xx, v in zip(xs, vals):
-        ax.text(xx, v + .005, f'{v:.0%}', ha='center', fontsize=8.5)
+        ax.text(xx, v + .005, f'{v:.0%}', ha='center', fontsize=9)
 ax.set_xticks(x, [l for _, l in metrics]); ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
-ax.set_ylim(0, .32); ax.legend(frameon=False, ncol=2, loc='upper right', fontsize=9.5)
-ax.set_title('How often a lead turns into a loss, 2020–2026\nRavens vs teams with and without a dedicated sports psychologist (most confident teams only)',
+ax.set_ylim(0, .34); ax.legend(frameon=False, loc='upper right', fontsize=9.5)
+ax.set_title('How often a lead turns into a loss, 2020–2026\nRavens vs teams with and without a dedicated sports psychologist',
              loc='left', fontsize=12)
-fig.text(.01, .005, 'Ravens win pct .585; psychologist group .580; winning no-psychologist teams .593; all no-psychologist teams .477. '
-         'Psychologist teams counted only from their hire year.', fontsize=8.5, color=INK2)
+fig.text(.01, .005, f"Win pct: Ravens {pc.loc['win_pct', 'Ravens']:.3f}, psychologist teams {pc.loc['win_pct', 'Has psychologist']:.3f}, "
+         f"no-psychologist teams {pc.loc['win_pct', 'No psychologist: all (Steelers + none found)']:.3f}. Psychologist teams counted only from their hire year.",
+         fontsize=8.5, color=INK2)
 save(fig, 'chart_psych_compare.png')
 print('psych chart written')

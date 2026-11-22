@@ -5,13 +5,15 @@ Usage: python3 psych_compare.py DATA_DIR  (pbp_slim.parquet, game_flags.csv, tea
 
 Groups (team-seasons, 2020-2026), from sports_psychologists.md -- only the most confident entries:
   HAS: Packers 2020-26 (Chris Carr, full-time Apr 2020), Lions 2021-26 (Michelle Garvin, Jun 2021),
-       Bears 2022-26 (Mike Wiley Jr., Jul 2022), Bills 2023-26 (Desaree Festa, 2023 article).
+       Bears 2022-26 (Mike Wiley Jr., Jul 2022), Bills 2023-26 (Desaree Festa, 2023 article),
+       Chiefs 2022-26 (Shaun Tyrance, VP role covering performance psychology from May 2022; Tyler Bradstreet,
+       VP of Performance Psychology, likely 2026), Titans 2026 (Charron Sumler, hired before 2026; single source).
        Their seasons before the hire are dropped (not counted in either group).
   NO (confirmed): Steelers (2022 Post-Gazette column; assumed for all seasons).
   NO (none found): Bengals, Browns, Texans, Colts, Raiders, Chargers, Cowboys, Patriots, Jets, Saints, 49ers, Broncos,
        Dolphins -- searched, nobody named. Not proof of absence.
   BAL: Ravens (confirmed none, 2026 Banner).
-Left out as uncertain: Chiefs, Titans, Giants, Commanders, Rams, Bucs, Panthers, Falcons, Jaguars, Vikings, Cardinals,
+Left out as uncertain: Giants, Commanders, Rams, Bucs, Panthers, Falcons, Jaguars, Vikings, Cardinals,
 Seahawks, Eagles.
 """
 import sys, os
@@ -21,7 +23,7 @@ import pandas as pd
 d = sys.argv[1]
 out = os.path.dirname(os.path.abspath(__file__))
 pd.set_option('display.width', 250); pd.set_option('display.max_columns', 30)
-HAS = {'GB': 2020, 'DET': 2021, 'CHI': 2022, 'BUF': 2023}
+HAS = {'GB': 2020, 'DET': 2021, 'CHI': 2022, 'BUF': 2023, 'KC': 2022, 'TEN': 2026}
 NO_CONF = ['PIT']
 NO_FOUND = ['CIN', 'CLE', 'HOU', 'IND', 'LV', 'LAC', 'DAL', 'NE', 'NYJ', 'NO', 'SF', 'DEN', 'MIA']
 
@@ -72,8 +74,7 @@ def summ(x):
         'led_half_lost_game_rate': x.led_half_lost.sum() / x.led_half.sum(),
         'led_entering_q4': x.led_q4.sum(), 'blew_q4_lead_rate': x.blew_q4.sum() / x.led_q4.sum(),
         'led_by_7_entering_q4': x.led_q4_7.sum(), 'blew_q4_7plus_rate': x.blew_q4_7.sum() / x.led_q4_7.sum()})
-order = ['Ravens', 'Has psychologist', 'No psychologist: all (Steelers + none found)', 'No psychologist: Steelers (confirmed)',
-         'No psychologist: none found']
+order = ['Ravens', 'Has psychologist', 'No psychologist: all (Steelers + none found)']
 res = g.groupby('grp').apply(summ).T[order]
 lg = f[f.grp != 'Ravens']
 res['NFL (all other teams)'] = summ(f[f.team != 'BAL'])
@@ -93,12 +94,3 @@ for c in ['gap_2h_minus_1h_pg', 'q4_diff_pg', 'def_extra_2h_pts_pg', 'blew_10_ra
     asc = c in ['gap_2h_minus_1h_pg', 'q4_diff_pg']
     print(f'BAL rank of {len(allt)} on {c} (1 = worst):', int(allt[c].rank(ascending=asc, method="min")['BAL']))
 
-# Team quality check: better teams blow fewer leads, and the psychologist group wins more. Compare like with like:
-# "no psychologist" teams with a .550+ win pct over the span vs the psychologist group vs the Ravens.
-wp = f[f.grp.notna()].groupby('team').won.mean()
-good_no = [t for t in NO_CONF + NO_FOUND if wp[t] >= .55]
-print('\nNo-psychologist teams with .550+ win pct:', {t: round(wp[t], 3) for t in good_no})
-m = pd.DataFrame({'Ravens': summ(f[f.team == 'BAL']), 'Has psychologist': summ(f[f.grp == 'Has psychologist']),
-                  'No psychologist, winning teams': summ(f[f.team.isin(good_no)])})
-m.round(3).to_csv(f'{out}/psych_compare_matched.csv')
-print(m.round(3).to_string())

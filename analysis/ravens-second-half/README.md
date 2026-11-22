@@ -387,41 +387,41 @@ PFF's position (ED = edge), so edge rushers listed as "LB" on draft day count as
   agency, so even good edge picks often weren't kept.
 
 ## 12. Teams with vs without a dedicated sports psychologist
-Files: `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`, `psych_compare_matched.csv`;
-team list in `sports_psychologists.md`. 2020–2026, regular season + playoffs.
+Files: `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`; team list in `sports_psychologists.md`.
+2020–2026, regular season + playoffs.
 
-Groups (most confident only):
-- **Has a psychologist:** Packers 2020–26 (Chris Carr), Lions 2021–26 (Michelle Garvin), Bears 2022–26 (Mike Wiley Jr.),
-  Bills 2023–26 (Desaree Festa). Seasons before each hire are left out.
-- **No psychologist:** Steelers (only confirmed "no") plus 13 teams where a search found nobody (Bengals, Browns,
-  Texans, Colts, Raiders, Chargers, Cowboys, Patriots, Jets, Saints, 49ers, Broncos, Dolphins). "None found" is not proof.
+Groups:
+- **Has a psychologist (6 teams):** Packers 2020–26 (Chris Carr), Lions 2021–26 (Michelle Garvin), Bears 2022–26
+  (Mike Wiley Jr.), Bills 2023–26 (Desaree Festa), Chiefs 2022–26 (Shaun Tyrance's VP role covering performance
+  psychology from 2022; Tyler Bradstreet, VP of Performance Psychology, likely 2026), Titans 2026 only (Charron
+  Sumler; single source, 9 games). Seasons before each hire are left out.
+- **No psychologist (14 teams):** Steelers (only confirmed "no") plus 13 teams where a search found nobody (Bengals,
+  Browns, Texans, Colts, Raiders, Chargers, Cowboys, Patriots, Jets, Saints, 49ers, Broncos, Dolphins). "None found" is not proof.
 - **Ravens:** confirmed none.
 
-| Per game / rate | Ravens | Has psychologist | No psych, winning teams (PIT, SF) | No psych, all 14 |
-|---|---|---|---|---|
-| Win % | .585 | .580 | .593 | .477 |
-| 1st-half point diff | +3.9 | +1.5 | +0.7 | −0.4 |
-| 2nd-half point diff | +0.7 | +1.5 | +1.2 | −0.4 |
-| 2nd half minus 1st half | **−3.2** | 0.0 | +0.5 | 0.0 |
-| 4th-quarter point diff | **−0.7** | +0.5 | +0.7 | 0.0 |
-| Extra points allowed in 2nd half | **+2.4** | −0.1 | −0.1 | −0.4 |
-| Lost after leading by 10+ | **23%** | 12% | 15% | 17% |
-| Lost after 85%+ win chance | **21%** | 10% | 6% | 11% |
-| Lost after leading entering the 4th | **23%** | 14% | 12% | 18% |
-| Lost after leading by 7+ entering the 4th | **19%** | 9% | 5% | 9% |
-| Lost after leading at half | **26%** | 16% | 18% | 25% |
+| Per game / rate | Ravens | Has psychologist | No psychologist |
+|---|---|---|---|
+| Win % | .585 | .596 | .477 |
+| 1st-half point diff | +3.9 | +1.6 | −0.4 |
+| 2nd-half point diff | +0.7 | +1.6 | −0.4 |
+| 2nd half minus 1st half | **−3.2** | 0.0 | 0.0 |
+| 4th-quarter point diff | **−0.7** | +0.6 | 0.0 |
+| Extra points allowed in 2nd half | **+2.4** | −0.4 | −0.4 |
+| Lost after leading by 10+ | **23%** | 12% | 17% |
+| Lost after 85%+ win chance | **21%** | 9% | 11% |
+| Lost after leading entering the 4th | **23%** | 13% | 18% |
+| Lost after leading by 7+ entering the 4th | **19%** | 9% | 9% |
+| Lost after leading at half | **26%** | 15% | 25% |
 
-- **The Ravens are worse than both groups on every blown-lead measure**, even though they win as often as the
-  psychologist teams. Among these 19 teams they are last in 2nd-half fade and extra 2nd-half points allowed, and 2nd
-  worst in losses after an 85% win chance.
-- **The psychologist teams look better than the no-psychologist group overall, but that's mostly team quality.**
-  They win 58% vs 48%, and better teams blow fewer leads. Against no-psychologist teams that win just as often
-  (Steelers, 49ers), the psychologist teams are about the same: better on some measures, worse on others.
-- **Inside the psychologist group it varies a lot.** The Bills and Lions rarely blow leads (about 5–10%). The Bears
-  blow them about as often as the Ravens (22% after leading by 10+, 19% after an 85% win chance).
-- **Bottom line:** with this little data (4 teams vs 2 comparable teams), there's no clear sign that having a
-  dedicated psychologist prevents blown leads. What the data does show is that the Ravens are an outlier against
-  both groups. Hiring one could still be worth trying, but these numbers can't promise it would fix the problem.
+- **The Ravens are worse than both groups on every measure.** Among these 21 teams they rank last in 2nd-half
+  fade and extra 2nd-half points allowed, 3rd worst in losses after an 85% win chance, and 5th worst after leading by 10+.
+- **The psychologist teams blow fewer leads than the no-psychologist teams on most measures.** But they also win far
+  more (60% vs 48%), and better teams naturally blow fewer leads, so this can't be credited to the psychologist.
+  On the cleanest late-game measure, losing a 7+ point lead in the 4th quarter, the two groups are identical (9%).
+- **Inside the psychologist group it varies a lot.** Bills, Chiefs and Lions rarely blow leads (about 5–10%); the
+  Bears blow them about as often as the Ravens (22% after leading by 10+). The Titans have only 9 games.
+- **Bottom line:** the data shows no clear effect of having a dedicated psychologist, but it confirms the Ravens are
+  an outlier against both groups. A hire could still be worth trying; these numbers just can't promise it would help.
 
 ![psych](chart_psych_compare.png)
 
@@ -462,7 +462,7 @@ Groups (most confident only):
 - `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `penalties.py` → `penalties_q4.csv`
-- `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`, `psych_compare_matched.csv`
+- `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
