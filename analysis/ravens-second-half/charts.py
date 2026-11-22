@@ -196,3 +196,39 @@ fig.text(.01, .005, 'Group gap +12 pts: significant across team-seasons (p≈0.0
          'or before vs after hire (p=0.46). Ties = half a win.', fontsize=8.5, color=INK2)
 save(fig, 'chart_psych_wins.png')
 print('psych wins chart written')
+
+# 9. Blown leads with vs without a dedicated sports psychologist
+pb = pd.read_csv(f'{out}/psych_blown.csv')
+bb = pd.read_csv(f'{out}/psych_blown_before_after.csv')
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(12.5, 5.6), gridspec_kw={'width_ratios': [1.25, 1]})
+labels = ['Lost after leading by 10+', 'Lost after 85%+ win chance', 'Lost after leading entering the 4th']
+x = np.arange(3); w = .36
+for j, (grp_name, col) in enumerate((('Has psychologist', ORANGE), ('No psychologist', GRAY))):
+    sub = pb[pb.group == grp_name].set_index('metric').loc[labels]
+    xs = x + (j - .5) * (w + .02)
+    a1.bar(xs, sub.pooled_rate, w, color=col, label=grp_name)
+    for xx, (_, r) in zip(xs, sub.iterrows()):
+        a1.plot([xx, xx], [r.ci_low, r.ci_high], color=INK, lw=1.3)
+        a1.text(xx + .04, r.pooled_rate + .004, f'{r.pooled_rate:.0%}', ha='left', fontsize=9.5)
+tests = pb[pb.group == 'TEST'].set_index('metric').loc[labels]
+a1.set_xticks(x, [f'{l.replace("Lost after ", "Lost after\n")}\np = {tests.loc[l, "p_perm_pooled"]:.2f}' for l in labels])
+a1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1)); a1.set_ylim(0, .27)
+a1.legend(frameon=False, loc='upper left', fontsize=9.5)
+a1.set_title('Share of leads lost, 2020–2026\nLines = 95% range; p-value under each (none significant)', loc='left', fontsize=11)
+y = np.arange(len(bb))[::-1]
+for yy, r in zip(y, bb.itertuples()):
+    a2.plot([r.blew10_before, r.blew10_after], [yy, yy], color=GRID, lw=3, zorder=1)
+    a2.scatter(r.blew10_before, yy, s=70, color=GRAY, zorder=2)
+    a2.scatter(r.blew10_after, yy, s=70, color=ORANGE, zorder=3)
+    a2.text(max(r.blew10_before, r.blew10_after) + .02, yy, f'{(r.blew10_after - r.blew10_before) * 100:+.0f} pts', va='center', fontsize=10)
+a2.set_yticks(y, [f'{t} (hired {h})' for t, h in zip(bb.team, bb.hire_season)])
+a2.set_xlim(0, .65); a2.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+a2.scatter([], [], color=GRAY, s=50, label='3 seasons before hire'); a2.scatter([], [], color=ORANGE, s=50, label='Seasons after hire')
+a2.legend(frameon=False, loc='lower right', fontsize=9.5)
+a2.set_title('Same team, before vs after the hire\nLost after leading by 10+ (4 of 5 improved; p = 0.23)', loc='left', fontsize=11)
+fig.suptitle('Teams with a dedicated sports psychologist blow somewhat fewer leads, but the gap is not statistically significant',
+             x=.01, ha='left', fontsize=12.5)
+fig.text(.01, .005, 'Has psychologist: GB, DET, CHI, BUF, KC, TEN (from hire year). No psychologist: PIT + 13 teams where none was found. '
+         'Ravens excluded. p-values: permutation test across team-seasons.', fontsize=8.5, color=INK2)
+save(fig, 'chart_psych_blown.png')
+print('psych blown chart written')

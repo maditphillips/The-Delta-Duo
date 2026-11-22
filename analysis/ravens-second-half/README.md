@@ -445,6 +445,41 @@ within a season aren't independent.
 
 ![psych wins](chart_psych_wins.png)
 
+## 14. Do teams with a psychologist blow fewer leads? Is it significant?
+Files: `psych_blown.py` → `psych_blown.csv`, `psych_blown_teams.csv`, `psych_blown_before_after.csv`. Same groups as
+sections 12–13, Ravens left out. Blown-lead flags rebuilt from play-by-play for 2017–2026 so the 3 seasons before each
+hire can be compared.
+
+| Share of leads lost | Has psychologist | No psychologist | Gap | p (team-seasons) | p (teams) |
+|---|---|---|---|---|---|
+| After leading by 10+ | 12% (30 of 243) | 17% (110 of 656) | −4 pts | 0.18 | 0.41 |
+| After an 85%+ win chance | 9% (28 of 301) | 11% (97 of 860) | −2 pts | 0.42 | 0.72 |
+| After leading entering the 4th | 13% (33 of 254) | 18% (132 of 719) | −5 pts | 0.12 | 0.16 |
+
+p (team-seasons) = permutation test on the pooled rate across team-seasons; p (teams) = Mann-Whitney on each team's
+rate (6 vs 14 teams). A t-test on season averages gives the same answer (p = 0.22–0.95).
+
+**Before vs after the hire, same team** (3 seasons before vs seasons after):
+
+| Team | Lost after leading by 10+ | Lost after 85%+ | Lost after leading entering the 4th |
+|---|---|---|---|
+| Packers (2020) | 17% → 15% | 7% → 10% | 10% → 15% |
+| Lions (2021) | 50% → 10% | 26% → 7% | 44% → 9% |
+| Bears (2022) | 20% → 22% | 12% → 19% | 27% → 24% |
+| Bills (2023) | 10% → 5% | 9% → 4% | 10% → 9% |
+| Chiefs (2022) | 15% → 8% | 8% → 6% | 12% → 10% |
+| **Paired test** | p = 0.23 | p = 0.51 | p = 0.37 |
+
+- **Psychologist teams lose leads somewhat less often on all three measures (2–5 points), but none of the gaps is
+  statistically significant**, across seasons or across teams.
+- Same team before vs after: 4 of 5 improved on blown 10+ leads, but most of the average improvement is Detroit
+  (50% → 10%, on only 18 chances before), which also turned from a 30% team into a 59% team. Not significant.
+- Part of the gap is team quality again: the psychologist teams win more (section 13), and winning teams blow fewer leads.
+- **Bottom line:** the direction favors having a psychologist, but with 6 teams the data can't separate it from chance
+  or from team quality. The Ravens (23% / 21% / 23%) are worse than both groups either way.
+
+![psych blown](chart_psych_blown.png)
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -484,11 +519,12 @@ within a season aren't independent.
 - `penalties.py` → `penalties_q4.csv`
 - `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`
 - `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`
+- `psych_blown.py` → `psych_blown.csv`, `psych_blown_teams.csv`, `psych_blown_before_after.csv`
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py`, `psych_blown.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).

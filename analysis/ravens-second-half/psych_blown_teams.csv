@@ -1,0 +1,61 @@
+grp,team,led10,blew10,rate,metric,wp85,wp85_lost,led_q4,blew_q4
+Has psychologist,BUF,41.0,2.0,0.049,Lost after leading by 10+,,,,
+Has psychologist,CHI,32.0,7.0,0.219,Lost after leading by 10+,,,,
+Has psychologist,DET,52.0,5.0,0.096,Lost after leading by 10+,,,,
+Has psychologist,GB,67.0,10.0,0.149,Lost after leading by 10+,,,,
+Has psychologist,KC,49.0,4.0,0.082,Lost after leading by 10+,,,,
+Has psychologist,TEN,2.0,2.0,1.0,Lost after leading by 10+,,,,
+No psychologist,CIN,54.0,8.0,0.148,Lost after leading by 10+,,,,
+No psychologist,CLE,44.0,7.0,0.159,Lost after leading by 10+,,,,
+No psychologist,DAL,52.0,5.0,0.096,Lost after leading by 10+,,,,
+No psychologist,DEN,40.0,6.0,0.15,Lost after leading by 10+,,,,
+No psychologist,HOU,46.0,7.0,0.152,Lost after leading by 10+,,,,
+No psychologist,IND,47.0,12.0,0.255,Lost after leading by 10+,,,,
+No psychologist,LAC,53.0,14.0,0.264,Lost after leading by 10+,,,,
+No psychologist,LV,35.0,7.0,0.2,Lost after leading by 10+,,,,
+No psychologist,MIA,49.0,9.0,0.184,Lost after leading by 10+,,,,
+No psychologist,NE,47.0,4.0,0.085,Lost after leading by 10+,,,,
+No psychologist,NO,46.0,7.0,0.152,Lost after leading by 10+,,,,
+No psychologist,NYJ,21.0,6.0,0.286,Lost after leading by 10+,,,,
+No psychologist,PIT,46.0,4.0,0.087,Lost after leading by 10+,,,,
+No psychologist,SF,76.0,14.0,0.184,Lost after leading by 10+,,,,
+Has psychologist,BUF,,,0.04,Lost after 85%+ win chance,50.0,2.0,,
+Has psychologist,CHI,,,0.19,Lost after 85%+ win chance,42.0,8.0,,
+Has psychologist,DET,,,0.066,Lost after 85%+ win chance,61.0,4.0,,
+Has psychologist,GB,,,0.101,Lost after 85%+ win chance,79.0,8.0,,
+Has psychologist,KC,,,0.061,Lost after 85%+ win chance,66.0,4.0,,
+Has psychologist,TEN,,,0.667,Lost after 85%+ win chance,3.0,2.0,,
+No psychologist,CIN,,,0.114,Lost after 85%+ win chance,70.0,8.0,,
+No psychologist,CLE,,,0.055,Lost after 85%+ win chance,55.0,3.0,,
+No psychologist,DAL,,,0.076,Lost after 85%+ win chance,66.0,5.0,,
+No psychologist,DEN,,,0.136,Lost after 85%+ win chance,66.0,9.0,,
+No psychologist,HOU,,,0.153,Lost after 85%+ win chance,59.0,9.0,,
+No psychologist,IND,,,0.188,Lost after 85%+ win chance,64.0,12.0,,
+No psychologist,LAC,,,0.156,Lost after 85%+ win chance,64.0,10.0,,
+No psychologist,LV,,,0.14,Lost after 85%+ win chance,50.0,7.0,,
+No psychologist,MIA,,,0.113,Lost after 85%+ win chance,62.0,7.0,,
+No psychologist,NE,,,0.083,Lost after 85%+ win chance,60.0,5.0,,
+No psychologist,NO,,,0.088,Lost after 85%+ win chance,57.0,5.0,,
+No psychologist,NYJ,,,0.211,Lost after 85%+ win chance,38.0,8.0,,
+No psychologist,PIT,,,0.043,Lost after 85%+ win chance,69.0,3.0,,
+No psychologist,SF,,,0.075,Lost after 85%+ win chance,80.0,6.0,,
+Has psychologist,BUF,,,0.089,Lost after leading entering the 4th,,,45.0,4.0
+Has psychologist,CHI,,,0.235,Lost after leading entering the 4th,,,34.0,8.0
+Has psychologist,DET,,,0.093,Lost after leading entering the 4th,,,54.0,5.0
+Has psychologist,GB,,,0.155,Lost after leading entering the 4th,,,71.0,11.0
+Has psychologist,KC,,,0.1,Lost after leading entering the 4th,,,50.0,5.0
+Has psychologist,TEN,,,,Lost after leading entering the 4th,,,0.0,0.0
+No psychologist,CIN,,,0.203,Lost after leading entering the 4th,,,59.0,12.0
+No psychologist,CLE,,,0.185,Lost after leading entering the 4th,,,54.0,10.0
+No psychologist,DAL,,,0.111,Lost after leading entering the 4th,,,54.0,6.0
+No psychologist,DEN,,,0.204,Lost after leading entering the 4th,,,49.0,10.0
+No psychologist,HOU,,,0.268,Lost after leading entering the 4th,,,56.0,15.0
+No psychologist,IND,,,0.259,Lost after leading entering the 4th,,,54.0,14.0
+No psychologist,LAC,,,0.255,Lost after leading entering the 4th,,,55.0,14.0
+No psychologist,LV,,,0.243,Lost after leading entering the 4th,,,37.0,9.0
+No psychologist,MIA,,,0.102,Lost after leading entering the 4th,,,49.0,5.0
+No psychologist,NE,,,0.094,Lost after leading entering the 4th,,,53.0,5.0
+No psychologist,NO,,,0.146,Lost after leading entering the 4th,,,48.0,7.0
+No psychologist,NYJ,,,0.367,Lost after leading entering the 4th,,,30.0,11.0
+No psychologist,PIT,,,0.082,Lost after leading entering the 4th,,,49.0,4.0
+No psychologist,SF,,,0.139,Lost after leading entering the 4th,,,72.0,10.0
