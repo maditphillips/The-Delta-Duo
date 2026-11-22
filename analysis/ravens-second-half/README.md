@@ -257,6 +257,28 @@ game situations the Ravens offense creates. When nflverse publishes 2026 coverag
 Ravens are calling the Ravens' man-heavy style or his low-man Chargers style. That would separate
 "coaches adopt the Ravens identity" from "same calls, different results in Baltimore."
 
+## 9. Does the run-heavy offense put the defense in bad spots?
+Files: `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`. Every 4th-quarter Ravens drive
+that starts with a 1–16 point lead (135 drives), and the opponent drive that follows it.
+
+| 4th quarter, leading | Ravens | NFL | Ravens rank of 32 |
+|---|---|---|---|
+| Run share of plays | **69%** | 59% | **1st** |
+| Minutes used per drive | 2.46 | 2.27 | 7th most |
+| Points per drive | 1.57 | 1.44 | 9th |
+| 3-and-out rate | 19% | 21% | 23rd (fewer than most) |
+| Punt rate | 31% | 35% | 25th (fewer than most) |
+| Ran out the clock (last 5 min) | 63% | 54% | — |
+| Opponent's next drive starts (yards from end zone) | 54 | 58 | 4th shortest field |
+| **Opponent's next drive scores** | **35%** | 27% | **1st (worst)** |
+
+**Mostly no.** The run-heavy offense does its job late: it uses more clock, punts less, goes three-and-out
+less, and closes out games in the last 5 minutes more often than the league. The defense doesn't face more
+late dropbacks than normal either (10.8 per game vs 10.3).
+The one cost: opponents start their next drive about 4 yards closer than normal. That's small next to the
+gap in what happens on that drive: opponents score on 35% of them against the Ravens vs 27% league-wide,
+the worst in the NFL. The game situation isn't the main cause. The late defense is.
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -290,10 +312,11 @@ Ravens are calling the Ravens' man-heavy style or his low-man Chargers style. Th
 - `defense_2026.py` → `defense_2026.csv`, `defense_2026_games.csv`
 - `split_2026.py` → `off_def_split.csv`
 - `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
+- `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
