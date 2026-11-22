@@ -155,3 +155,44 @@ fig.text(.01, .005, f"Win pct: Ravens {pc.loc['win_pct', 'Ravens']:.3f}, psychol
          fontsize=8.5, color=INK2)
 save(fig, 'chart_psych_compare.png')
 print('psych chart written')
+
+# 8. Win % with vs without a dedicated sports psychologist
+pw = pd.read_csv(f'{out}/psych_wins.csv', index_col=0)
+pt = pd.read_csv(f'{out}/psych_wins_teams.csv')
+ba = pd.read_csv(f'{out}/psych_wins_before_after.csv')
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 5.4), gridspec_kw={'width_ratios': [1, 1.15]})
+names = ['Has psychologist', 'No psychologist']
+cols_ = [ORANGE, GRAY]
+for i, (n, c) in enumerate(zip(names, cols_)):
+    r = pw.loc[n]
+    a1.bar(i, r.win_pct, .55, color=c)
+    a1.plot([i, i], [r.ci_low, r.ci_high], color=INK, lw=1.5)
+    a1.plot([i - .06, i + .06], [r.ci_low] * 2, color=INK, lw=1.5); a1.plot([i - .06, i + .06], [r.ci_high] * 2, color=INK, lw=1.5)
+    a1.text(i + .3, r.win_pct, f'{r.win_pct:.1%}', va='center', fontsize=11)
+    dots = pt[pt.grp == n]
+    a1.scatter(np.full(len(dots), i) + np.linspace(-.18, .18, len(dots)), dots.win_pct, s=26, color=INK2, zorder=3)
+    for _, d in dots.iterrows():
+        if d.team in ('BUF', 'KC', 'TEN', 'CHI', 'SF', 'NYJ', 'PIT'):
+            a1.text(i + np.linspace(-.18, .18, len(dots))[list(dots.team).index(d.team)] - .04, d.win_pct, d.team, ha='right', va='center', fontsize=8, color=INK2)
+a1.axhline(.5, color=INK2, lw=1, ls=':')
+a1.set_xticks([0, 1], [f'Has psychologist\n6 teams\n{int(pw.loc[names[0], "team_seasons"])} team-seasons',
+                       f'No psychologist\n14 teams\n{int(pw.loc[names[1], "team_seasons"])} team-seasons'])
+a1.set_xlim(-.6, 1.7); a1.set_ylim(0, .85); a1.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+a1.set_title('Win %, 2020–2026\nBars = group, lines = 95% range, dots = each team', loc='left', fontsize=11)
+y = np.arange(len(ba))[::-1]
+for yy, r in zip(y, ba.itertuples()):
+    a2.plot([r.win_pct_3yrs_before, r.win_pct_after], [yy, yy], color=GRID, lw=3, zorder=1)
+    a2.scatter(r.win_pct_3yrs_before, yy, s=70, color=GRAY, zorder=2)
+    a2.scatter(r.win_pct_after, yy, s=70, color=ORANGE, zorder=3)
+    a2.text(max(r.win_pct_3yrs_before, r.win_pct_after) + .03, yy, f'{r.change * 100:+.0f} pts', va='center', fontsize=10)
+a2.set_yticks(y, [f'{t} (hired {h})' for t, h in zip(ba.team, ba.hire_season)])
+a2.set_xlim(.2, .95); a2.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
+a2.scatter([], [], color=GRAY, s=50, label='3 seasons before hire'); a2.scatter([], [], color=ORANGE, s=50, label='Seasons after hire')
+a2.legend(frameon=False, loc='lower left', fontsize=9.5)
+a2.set_title('Same team, before vs after the hire\nOnly Detroit improved much', loc='left', fontsize=11)
+fig.suptitle('Teams with a dedicated sports psychologist win more, but they were mostly good before hiring one',
+             x=.01, ha='left', fontsize=12.5)
+fig.text(.01, .005, 'Group gap +12 pts: significant across team-seasons (p≈0.002–0.008) but not across teams (p=0.15) '
+         'or before vs after hire (p=0.46). Ties = half a win.', fontsize=8.5, color=INK2)
+save(fig, 'chart_psych_wins.png')
+print('psych wins chart written')

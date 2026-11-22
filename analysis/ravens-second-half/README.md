@@ -425,6 +425,26 @@ Groups:
 
 ![psych](chart_psych_compare.png)
 
+## 13. Do teams with a psychologist win more? Is it significant?
+Files: `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`. Same groups as
+section 12, Ravens left out. Ties = half a win. Tests use team-seasons or teams, not single games, because games
+within a season aren't independent.
+
+| | Has psychologist | No psychologist |
+|---|---|---|
+| Teams / team-seasons | 6 / 28 | 14 / 98 |
+| Win % | **59.8%** (95% range 51–68%) | **47.8%** (44–51%) |
+
+- **Across team-seasons the +12-point gap is statistically significant** (t-test p = 0.008, permutation test p = 0.002).
+- **Across teams it is not** (6 vs 14 teams, p = 0.15). The group average leans on Buffalo and Kansas City.
+- **Before vs after the hire, same team: no significant change** (p = 0.46). Detroit went from 30% to 59%; Green Bay
+  +6 points; Chicago, Buffalo and Kansas City were flat or slightly down. Buffalo and Kansas City were already
+  winning 73–78% before hiring.
+- **Reading:** teams with a psychologist do win more, but mostly because good, well-run teams are the ones that hire
+  one. The data doesn't show the hire itself causing more wins.
+
+![psych wins](chart_psych_wins.png)
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -463,11 +483,12 @@ Groups:
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `penalties.py` → `penalties_q4.csv`
 - `psych_compare.py` → `psych_compare.csv`, `psych_compare_teams.csv`
+- `psych_wins.py` → `psych_wins.csv`, `psych_wins_teams.csv`, `psych_wins_before_after.csv`
 - `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `psych_compare.py DATA`, `psych_wins.py`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
