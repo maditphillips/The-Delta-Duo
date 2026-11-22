@@ -147,7 +147,7 @@ for j, (lab, (ser, col)) in enumerate(cols.items()):
     for xx, v in zip(xs, vals):
         ax.text(xx, v + .005, f'{v:.0%}', ha='center', fontsize=9)
 ax.set_xticks(x, [l for _, l in metrics]); ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1))
-ax.set_ylim(0, .34); ax.legend(frameon=False, loc='upper right', fontsize=9.5)
+ax.set_ylim(0, .40); ax.legend(frameon=False, loc='upper right', fontsize=9.5)
 ax.set_title('How often a lead turns into a loss, 2020–2026\nRavens vs teams with and without a dedicated sports psychologist',
              loc='left', fontsize=12)
 fig.text(.01, .005, f"Win pct: Ravens {pc.loc['win_pct', 'Ravens']:.3f}, psychologist teams {pc.loc['win_pct', 'Has psychologist']:.3f}, "

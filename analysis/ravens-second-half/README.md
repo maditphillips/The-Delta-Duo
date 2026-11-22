@@ -410,14 +410,14 @@ Groups:
 | Lost after leading by 10+ | **23%** | 12% | 17% |
 | Lost after 85%+ win chance | **21%** | 9% | 11% |
 | Lost after leading entering the 4th | **23%** | 13% | 18% |
-| Lost after leading by 7+ entering the 4th | **19%** | 9% | 9% |
+| Lost after leading by 7+ entering the 4th | **19%** | 8.5% | 8.5% |
 | Lost after leading at half | **26%** | 15% | 25% |
 
 - **The Ravens are worse than both groups on every measure.** Among these 21 teams they rank last in 2nd-half
   fade and extra 2nd-half points allowed, 3rd worst in losses after an 85% win chance, and 5th worst after leading by 10+.
 - **The psychologist teams blow fewer leads than the no-psychologist teams on most measures.** But they also win far
   more (60% vs 48%), and better teams naturally blow fewer leads, so this can't be credited to the psychologist.
-  On the cleanest late-game measure, losing a 7+ point lead in the 4th quarter, the two groups are identical (9%).
+  On the cleanest late-game measure, losing a 7+ point lead in the 4th quarter, the two groups are identical (8.5%).
 - **Inside the psychologist group it varies a lot.** Bills, Chiefs and Lions rarely blow leads (about 5–10%); the
   Bears blow them about as often as the Ravens (22% after leading by 10+). The Titans have only 9 games.
 - **Bottom line:** the data shows no clear effect of having a dedicated psychologist, but it confirms the Ravens are
