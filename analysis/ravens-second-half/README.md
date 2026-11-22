@@ -219,6 +219,44 @@ What's the same and what's different in 2026:
 - The 2026 2nd-half damage is lumpy: Cincinnati (35 points, +1.05 EPA per dropback) and Buffalo (20) make up
   much of it. Jacksonville and the Chargers were held well below average.
 
+## 8. Does the fade follow Ravens coaches to other teams?
+Files: `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`. Ranks are within each season,
+1 = worst of 32. "2nd-half extra points" = points allowed in 2nd halves minus 1st halves.
+Coaching history as supplied by the user: Jesse Minter (Ravens assistant / DBs coach 2017–2020, Chargers DC
+2024–2025, Ravens HC and defensive play caller 2026); Anthony Weaver (Ravens 2021–2023, Dolphins DC 2024–2025,
+not the play caller; Ravens DC 2026, not the play caller).
+
+| Defense | Seasons | 2nd-half extra points allowed (rank) | Q4-with-lead pass EPA (rank) | Man rate Q4 lead (rank) |
+|---|---|---|---|---|
+| Ravens, Martindale | 2020, 2021 | 7th, 10th | 13th, 1st | 3rd, 8th |
+| Ravens, Macdonald | 2022, 2023 | **1st**, 9th | 2nd, 23rd | 15th, 5th |
+| Ravens, Orr | 2024, 2025 | 5th, 6th | 16th, 6th | 1st, 11th |
+| **Ravens, Minter (play caller)** | 2026 | **1st** | 4th | no data yet |
+| Giants, Martindale | 2022, 2023 | 15th, 18th | 21st, 15th | 2nd, 9th |
+| Seahawks, Macdonald | 2024, 2025, 2026 | 22nd, 5th, 28th | 23rd, 15th, 19th | 9th, 12th |
+| **Chargers, Minter** | 2024, 2025 | 8th, 22nd | 11th, 23rd | 31st, 27th |
+| Dolphins, Weaver (not play caller) | 2024, 2025 | 14th, 2nd | 25th, 7th | 23rd, 30th |
+
+- **In Baltimore, the defense ranked top 10 in 2nd-half extra points allowed in 7 of 7 seasons.**
+- **The same coaches elsewhere did it in 3 of 9 seasons**, about what you'd expect by chance (10 of 32
+  teams land in the top 10 every year).
+- **Minter is the cleanest test.** Calling plays for the Chargers, his defenses played very little man
+  (31st, 27th) and faded only mildly (8th, then 22nd). Calling plays for the Ravens in 2026, the defense has the
+  worst 2nd-half fade in the NFL.
+- Martindale kept calling heavy man and Cover 0 late with the Giants (2nd in both in 2022), and the Giants'
+  late pass defense was fine. So the aggressive call isn't doomed by itself. It fails in Baltimore.
+- Roster: only Marlon Humphrey was a regular in the Q4-with-a-lead defense in at least 5 of the 6 seasons
+  with tracking data (Kyle Hamilton since 2022, Roquan Smith since late 2022). The roster has turned over a lot,
+  so it isn't one or two players.
+
+**What this means:** the fade doesn't travel with the coaches. It stays in Baltimore across three
+defensive coordinators, a new head coach, a new defensive play caller and a mostly new roster. The data
+can't say exactly what the Baltimore constant is. Candidates: the front office and how it builds the
+roster (especially the secondary), a defensive identity that new staffs adopt when they arrive, or the
+game situations the Ravens offense creates. When nflverse publishes 2026 coverage data, check whether Minter's
+Ravens are calling the Ravens' man-heavy style or his low-man Chargers style. That would separate
+"coaches adopt the Ravens identity" from "same calls, different results in Baltimore."
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -229,10 +267,11 @@ What's the same and what's different in 2026:
 4. **The offense turns the most run-heavy in the NFL with a lead, by choice** (last in pass rate over
    expected). The running itself is the best in the league, so it isn't the cause. But it means fewer
    points added late, and even when passing is working, the game is left on the defense.
-5. **Why it hasn't been fixed:** both habits run through every coordinator change, and the defensive
-   coordinators all came from the Ravens' own staff. That's the "culture" in measurable form: a
-   long-standing, aggressive defensive philosophy and a conservative clock-killing offense that the
-   organization keeps choosing.
+5. **Why it hasn't been fixed:** the fade stays in Baltimore and doesn't follow coaches out. Ravens defenses
+   faded in 7 of 7 seasons. The same coaches' defenses elsewhere faded in 3 of 9, about chance. Minter's
+   Chargers defense did not fade much; his 2026 Ravens defense fades the most in the NFL. So the cause is
+   something constant in Baltimore (front office and roster building, an inherited defensive identity, or game
+   situations), not one coordinator's habits.
 6. **The defense allowed more points after halftime in every season 2020–2026** (top 10 in the NFL each year).
 7. **2026 under the new head coach:** the same defensive shape (great 1st halves, bad 2nd halves, few
    takeaways, more blitzing late), but it shows up as opponents completing everything rather than big plays.
@@ -250,10 +289,11 @@ What's the same and what's different in 2026:
 - `deep_offense.py` → `deep_offense.csv`, `deep_offense_by_season.csv`, `deep_offense_box.csv`
 - `defense_2026.py` → `defense_2026.csv`, `defense_2026_games.csv`
 - `split_2026.py` → `off_def_split.csv`
+- `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
