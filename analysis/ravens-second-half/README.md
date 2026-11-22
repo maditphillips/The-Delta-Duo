@@ -346,6 +346,39 @@ https://www.si.com/nfl/ravens/onsi/jesse-minter-must-succeed-where-many-others-h
 leading in the 4th, 22nd in pressure rate; appears to be from 2022–23); AP's count of 17 blown double-digit 2nd-half
 leads under Harbaugh, most since 1991 (seen only as a Steelers Depot citation).
 
+## 11. Are the Ravens good at drafting except pass rushers?
+Files: `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv`. nflverse draft picks,
+2010–2025 drafts. Value = Pro Football Reference weighted career Approximate Value (AV). Expected = the average
+AV of picks within 6 slots in the same draft, so a 2024 pick is only compared to other 2024 picks. Positions use
+PFF's position (ED = edge), so edge rushers listed as "LB" on draft day count as edge.
+
+| Position | Newsome 2010–18: AV vs expected / hit rate | DeCosta 2019–25: AV vs expected / hit rate |
+|---|---|---|
+| All picks | +2.5 / 40% | +0.7 / 37% (14th of 32) |
+| Edge | +10.6 / 62% | **−2.4 / 29%** (20th) |
+| Cornerback | −4.3 / 12% | **−3.1 / 11%** (22nd) |
+| Safety | −0.6 / 50% | +5.9 / 75% |
+| Off-ball LB | −4.2 / 50% | +7.3 / 67% |
+| Interior DL | +3.5 / 55% | +1.6 / 50% |
+| Offensive line | +7.8 / 47% | +4.0 / 54% |
+
+"Hit" = the player has beaten the expected AV for his draft slot. Recent picks (2024–25) have had little time, so treat them loosely.
+
+- **Partly right: the pass-rusher problem is a DeCosta-era problem.** Under Newsome the Ravens were among the
+  best at finding edge rushers in the middle rounds: Pernell McPhee (R5), John Simon (R4), Za'Darius Smith (R4),
+  Matt Judon (R5). Their misses were the early picks (Courtney Upshaw, Kamalei Correa). Under DeCosta it flipped:
+  6 of 7 edge picks came in rounds 1–3 (Jaylon Ferguson, Odafe Oweh, David Ojabo, Adisa Isaac, Mike Green, plus
+  Malik Harrison, who moved to edge), and only 2 of 7 beat their slot.
+- **The bigger blind spot is cornerback, under both GMs.** Of 20 corners drafted since 2010, only **two** beat their
+  slot: Marlon Humphrey (2017) and Brandon Stephens (2021). That's an 11–12% hit rate, the worst position group in
+  both eras. Humphrey is also the one defender who has been a regular in late-game defense every year.
+- **The rest is genuinely good:** safeties (Kyle Hamilton, Geno Stone), linebackers (Roquan Smith came by trade;
+  drafted: Patrick Queen, Trenton Simpson), offensive line and interior DL beat expectation.
+- **Overall, DeCosta is about league average (14th of 32), not elite.** The positions he misses on, edge and
+  corner, are exactly the two jobs that fail late in games: rushing the passer and covering one-on-one.
+- Several Newsome-era edge hits (Smith, Judon, McPhee) had their best years after leaving Baltimore in free
+  agency, so even good edge picks often weren't kept.
+
 ## Bottom line
 1. The Ravens are the best 1st-quarter and 2nd-quarter team in the NFL since 2020 and 24th in the 4th quarter.
 2. The main repeated weakness is **pass defense late in games with a lead**: worst in the NFL, across
@@ -383,10 +416,11 @@ leads under Harbaugh, most since 1991 (seen only as a Steelers Depot citation).
 - `coaching_tree.py` → `coaching_tree.csv`, `team_season_defense.csv`
 - `game_situation.py` → `situation_offense.csv`, `situation_handoff.csv`
 - `penalties.py` → `penalties_q4.csv`
+- `draft.py` → `draft_value.csv`, `draft_ravens_edge.csv`, `draft_ravens_cb.csv` (needs nflverse `draft_picks.csv` and `players.csv` in DATA)
 - `charts.py` → `chart_*.png`
 
 Run order: `halves.py DATA`, `fade.py`, `blown.py DATA`, `behavior.py DATA`, `extras.py DATA`,
-`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `charts.py`.
+`deep_defense.py DATA`, `deep_offense.py DATA`, `defense_2026.py DATA`, `split_2026.py`, `coaching_tree.py DATA`, `game_situation.py DATA`, `penalties.py DATA`, `draft.py DATA`, `charts.py`.
 `DATA` holds `pbp_slim.parquet` (selected columns of nflverse `play_by_play_1999`–`2026.parquet`) and
 `pbp_deep.parquet` (2020–2026 play-by-play joined on game_id + play_id to nflverse `pbp_participation_2020`–`2025`
 and `ftn_charting_2022`–`2026`).
