@@ -1,0 +1,5 @@
+player_name,position,team,sleeper,games,last_game,missed,role_basis,snaps,attempts,carries,targets,marked_playing
+Tua Tagovailoa,QB,ATL,,1,5.0,5,last season,0.9435866572551533,27.428571428571427,1.4285714285714286,0.0,False
+Marcus Mariota,QB,WAS,,3,4.0,6,last season,0.751610660601118,22.7,5.0,0.0,False
+Devin Neal,RB,WAS,,0,,10,last season,0.4111995735610061,0.0,6.333333333333333,2.111111111111111,False
+Xavier Legette,WR,CAR,,2,2.0,8,last season,0.6367750758598523,0.0,0.06666666666666667,4.266666666666667,False
