@@ -37,6 +37,10 @@ Led by 1-16 entering the 4th,Thursday game,1.0,False
 Led by 1-16 entering the 4th,Primetime game,1.0,False
 Led by 1-16 entering the 4th,Division game,1.0,False
 Led by 1-16 entering the 4th,Blew a lead the week before,1.0,False
+Led by 1-16 entering the 4th,New defensive coordinator,1.0,False
+Led by 1-16 entering the 4th,New defensive play caller,1.0,False
+Led by 1-16 entering the 4th,DC promoted from inside,1.0,False
+Led by 1-16 entering the 4th,DC returning to a former team,1.0,False
 Led by 1-16 at halftime,Pregame spread (favored by),0.541,True
 Led by 1-16 at halftime,Size of lead,0.606,True
 Led by 1-16 at halftime,"Pressure rate, all snaps (season)",0.919,True
@@ -75,3 +79,7 @@ Led by 1-16 at halftime,Thursday game,1.0,False
 Led by 1-16 at halftime,Primetime game,1.0,False
 Led by 1-16 at halftime,Division game,1.0,False
 Led by 1-16 at halftime,Blew a lead the week before,1.0,False
+Led by 1-16 at halftime,New defensive coordinator,1.0,False
+Led by 1-16 at halftime,New defensive play caller,1.0,False
+Led by 1-16 at halftime,DC promoted from inside,1.0,False
+Led by 1-16 at halftime,DC returning to a former team,1.0,False

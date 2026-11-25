@@ -26,12 +26,19 @@ x = pd.read_csv(f'{out}/model2_features.csv')
 # Coordinators (if the research tables exist): new DC / new defensive play caller / DC hired from inside
 coord = [pd.read_csv(f'{out}/{f}') for f in ('coordinators_afc.csv', 'coordinators_nfc.csv') if os.path.exists(f'{out}/{f}')]
 if coord:
-    cd = pd.concat(coord)
-    cd = cd.sort_values(['team', 'season'])
-    cd['playcaller_new'] = (cd.defensive_play_caller.fillna('') != cd.groupby('team').defensive_play_caller.shift().fillna('')).astype(int)
-    cd['dc_internal'] = (cd.dc_hire_type.astype(str).str.lower() == 'internal').astype(int)
+    cd = pd.concat(coord).sort_values(['team', 'season'])
+    # Resolve "same as DC" to the DC's name; teams with no titled DC keep the named play caller
+    pc = cd.defensive_play_caller.fillna('').astype(str)
+    cd['caller'] = np.where(pc.str.lower().str.startswith('same') | (pc == ''), cd.defensive_coordinator.fillna(''), pc)
+    cd['caller'] = cd.caller.str.replace(r'\s*\(.*\)', '', regex=True).str.strip()
+    prev = cd.groupby('team').caller.shift()
     cd['dc_new'] = pd.to_numeric(cd.dc_new, errors='coerce')
-    x = x.merge(cd[['team', 'season', 'dc_new', 'playcaller_new', 'dc_internal']], on=['team', 'season'], how='left')
+    # 2020 has no previous row in the table, so use the researched "first season as DC" flag for it
+    cd['playcaller_new'] = np.where(prev.isna(), cd.dc_new.fillna(0), (cd.caller != prev).astype(int)).astype(int)
+    cd['dc_new'] = cd.dc_new.fillna(cd.playcaller_new)
+    cd['dc_internal'] = (cd.dc_hire_type.astype(str).str.lower() == 'internal').astype(int)
+    cd['dc_returning'] = (cd.dc_hire_type.astype(str).str.lower() == 'returning').astype(int)
+    x = x.merge(cd[['team', 'season', 'dc_new', 'playcaller_new', 'dc_internal', 'dc_returning']], on=['team', 'season'], how='left')
 # Sports psychologist groups chosen by the user: team,first_season,group (has / none / unsure)
 if os.path.exists(f'{out}/psych_groups_user.csv'):
     pg = pd.read_csv(f'{out}/psych_groups_user.csv')
@@ -46,7 +53,7 @@ CONT = ['exp_margin', 'LEAD', 'pressure_rate', 'q4_pressure_loo', 'man_rate', 'c
         'run_rate_last5_leading_loo', 'q4_three_and_out_rate_loo', 'q4_qb_turnover_rate_loo',
         'own_timeouts_q4', 'opp_timeouts_q4', 'rest_diff', 'blown_rate_prev_season', 'blown_prev10']
 BIN = ['home', 'new_hc', 'short_week', 'thursday', 'primetime', 'div_game', 'prev_game_blew'] + \
-      [c for c in ('dc_new', 'playcaller_new', 'dc_internal', 'psych_has', 'psych_none') if c in x]
+      [c for c in ('dc_new', 'playcaller_new', 'dc_internal', 'dc_returning', 'psych_has', 'psych_none') if c in x]
 LABEL = {'exp_margin': 'Pregame spread (favored by)', 'LEAD': 'Size of lead', 'pressure_rate': 'Pressure rate, all snaps (season)',
          'q4_pressure_loo': '4th-quarter pressure rate (season)', 'man_rate': 'Man coverage rate', 'cover0_rate': 'Cover 0 rate',
          'blitz_rate': 'Blitz rate (5+ rushers)', 'q4_yac_allowed_loo': '4th-qtr YAC allowed per catch (missed-tackle stand-in)',
@@ -63,7 +70,7 @@ LABEL = {'exp_margin': 'Pregame spread (favored by)', 'LEAD': 'Size of lead', 'p
          'blown_rate_prev_season': 'Blown-lead rate last season', 'blown_prev10': 'Blown leads in previous 10 games',
          'home': 'Home game', 'new_hc': 'New head coach', 'short_week': 'Short week (5 or fewer days)', 'thursday': 'Thursday game',
          'primetime': 'Primetime game', 'div_game': 'Division game', 'prev_game_blew': 'Blew a lead the week before',
-         'dc_new': 'New defensive coordinator', 'playcaller_new': 'New defensive play caller', 'dc_internal': 'DC promoted from inside',
+         'dc_new': 'New defensive coordinator', 'playcaller_new': 'New defensive play caller', 'dc_internal': 'DC promoted from inside', 'dc_returning': 'DC returning to a former team',
          'psych_has': 'Has sports psychologist', 'psych_none': 'Confirmed no psychologist', 'ravens': 'Ravens'}
 
 def run(lead_col, tag):
