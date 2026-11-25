@@ -1,0 +1,77 @@
+sample,variable,odds_ratio,kept
+Led by 1-16 entering the 4th,Pregame spread (favored by),0.638,True
+Led by 1-16 entering the 4th,Size of lead,0.528,True
+Led by 1-16 entering the 4th,"Pressure rate, all snaps (season)",0.924,True
+Led by 1-16 entering the 4th,4th-quarter pressure rate (season),1.0,False
+Led by 1-16 entering the 4th,Man coverage rate,1.0,False
+Led by 1-16 entering the 4th,Cover 0 rate,1.0,False
+Led by 1-16 entering the 4th,Blitz rate (5+ rushers),1.0,False
+Led by 1-16 entering the 4th,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.0,False
+Led by 1-16 entering the 4th,4th-qtr defensive penalties per game,1.0,False
+Led by 1-16 entering the 4th,4th-qtr pass interference per game,1.0,False
+Led by 1-16 entering the 4th,Defensive snaps before the 4th (fatigue),1.0,False
+Led by 1-16 entering the 4th,"Explosive plays allowed, 1st half (this game)",0.96,True
+Led by 1-16 entering the 4th,Opponent 4th-qtr pass rate when trailing,1.0,False
+Led by 1-16 entering the 4th,Opponent QB time to throw,1.0,False
+Led by 1-16 entering the 4th,Opponent QB quality (EPA per dropback),1.0,False
+Led by 1-16 entering the 4th,1st-half defense quality (EPA allowed),1.0,False
+Led by 1-16 entering the 4th,"Edge-rusher draft value, last 5 drafts",1.0,False
+Led by 1-16 entering the 4th,"Cornerback draft value, last 5 drafts",1.0,False
+Led by 1-16 entering the 4th,Cap share on edge rushers,1.0,False
+Led by 1-16 entering the 4th,Cap share on cornerbacks,1.056,True
+Led by 1-16 entering the 4th,Defense average age,1.0,False
+Led by 1-16 entering the 4th,Defense average experience,1.0,False
+Led by 1-16 entering the 4th,Past collapses defenders were on field for,1.0,False
+Led by 1-16 entering the 4th,"Run rate, last 5 min with lead",1.0,False
+Led by 1-16 entering the 4th,4th-qtr 3-and-out rate,1.0,False
+Led by 1-16 entering the 4th,4th-qtr QB turnover rate,1.0,False
+Led by 1-16 entering the 4th,Own timeouts left entering 4th,1.0,False
+Led by 1-16 entering the 4th,Opponent timeouts left entering 4th,1.0,False
+Led by 1-16 entering the 4th,Rest-day advantage,1.0,False
+Led by 1-16 entering the 4th,Blown-lead rate last season,0.978,True
+Led by 1-16 entering the 4th,Blown leads in previous 10 games,1.0,False
+Led by 1-16 entering the 4th,Home game,1.0,False
+Led by 1-16 entering the 4th,New head coach,1.0,False
+Led by 1-16 entering the 4th,Short week (5 or fewer days),1.0,False
+Led by 1-16 entering the 4th,Thursday game,1.0,False
+Led by 1-16 entering the 4th,Primetime game,1.0,False
+Led by 1-16 entering the 4th,Division game,1.0,False
+Led by 1-16 entering the 4th,Blew a lead the week before,1.0,False
+Led by 1-16 at halftime,Pregame spread (favored by),0.541,True
+Led by 1-16 at halftime,Size of lead,0.606,True
+Led by 1-16 at halftime,"Pressure rate, all snaps (season)",0.919,True
+Led by 1-16 at halftime,4th-quarter pressure rate (season),1.0,False
+Led by 1-16 at halftime,Man coverage rate,1.0,False
+Led by 1-16 at halftime,Cover 0 rate,1.0,False
+Led by 1-16 at halftime,Blitz rate (5+ rushers),1.0,False
+Led by 1-16 at halftime,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.0,False
+Led by 1-16 at halftime,4th-qtr defensive penalties per game,1.0,False
+Led by 1-16 at halftime,4th-qtr pass interference per game,1.021,True
+Led by 1-16 at halftime,Defensive snaps before the 4th (fatigue),1.145,True
+Led by 1-16 at halftime,"Explosive plays allowed, 1st half (this game)",1.0,False
+Led by 1-16 at halftime,Opponent 4th-qtr pass rate when trailing,1.0,False
+Led by 1-16 at halftime,Opponent QB time to throw,1.0,False
+Led by 1-16 at halftime,Opponent QB quality (EPA per dropback),1.004,True
+Led by 1-16 at halftime,1st-half defense quality (EPA allowed),1.0,False
+Led by 1-16 at halftime,"Edge-rusher draft value, last 5 drafts",1.0,False
+Led by 1-16 at halftime,"Cornerback draft value, last 5 drafts",1.0,False
+Led by 1-16 at halftime,Cap share on edge rushers,1.0,False
+Led by 1-16 at halftime,Cap share on cornerbacks,1.0,False
+Led by 1-16 at halftime,Defense average age,1.0,False
+Led by 1-16 at halftime,Defense average experience,1.0,False
+Led by 1-16 at halftime,Past collapses defenders were on field for,1.0,False
+Led by 1-16 at halftime,"Run rate, last 5 min with lead",1.0,False
+Led by 1-16 at halftime,4th-qtr 3-and-out rate,1.0,False
+Led by 1-16 at halftime,4th-qtr QB turnover rate,1.0,False
+Led by 1-16 at halftime,Own timeouts left entering 4th,1.017,True
+Led by 1-16 at halftime,Opponent timeouts left entering 4th,1.0,False
+Led by 1-16 at halftime,Rest-day advantage,1.0,False
+Led by 1-16 at halftime,Blown-lead rate last season,0.953,True
+Led by 1-16 at halftime,Blown leads in previous 10 games,1.0,False
+Led by 1-16 at halftime,Home game,1.0,False
+Led by 1-16 at halftime,New head coach,1.0,False
+Led by 1-16 at halftime,Short week (5 or fewer days),1.0,False
+Led by 1-16 at halftime,Thursday game,1.0,False
+Led by 1-16 at halftime,Primetime game,1.0,False
+Led by 1-16 at halftime,Division game,1.0,False
+Led by 1-16 at halftime,Blew a lead the week before,1.0,False

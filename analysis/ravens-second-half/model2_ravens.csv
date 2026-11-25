@@ -1,0 +1,3 @@
+sample,games,actual_losses,expected_losses,n_games,n_losses,pseudo_r2,ravens_team_effect_odds,ravens_team_effect_rank
+Led by 1-16 entering the 4th,47,14,9.589,1228,262,0.155,1.239,1
+Led by 1-16 at halftime,56,15,12.316,1320,344,0.16,1.11,6

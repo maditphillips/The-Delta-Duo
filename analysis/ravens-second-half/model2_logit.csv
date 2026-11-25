@@ -1,0 +1,155 @@
+sample,model,variable,odds_ratio,ci_low,ci_high,p_value
+Led by 1-16 entering the 4th,main,Pregame spread (favored by),0.562,0.478,0.66,0.0
+Led by 1-16 entering the 4th,main,Size of lead,0.45,0.385,0.526,0.0
+Led by 1-16 entering the 4th,main,"Pressure rate, all snaps (season)",0.881,0.656,1.183,0.4
+Led by 1-16 entering the 4th,main,4th-quarter pressure rate (season),0.913,0.713,1.169,0.469
+Led by 1-16 entering the 4th,main,Man coverage rate,1.086,0.934,1.262,0.284
+Led by 1-16 entering the 4th,main,Cover 0 rate,0.857,0.714,1.027,0.095
+Led by 1-16 entering the 4th,main,Blitz rate (5+ rushers),0.98,0.828,1.16,0.813
+Led by 1-16 entering the 4th,main,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.034,0.898,1.192,0.64
+Led by 1-16 entering the 4th,main,4th-qtr defensive penalties per game,1.046,0.867,1.261,0.638
+Led by 1-16 entering the 4th,main,4th-qtr pass interference per game,1.075,0.906,1.275,0.408
+Led by 1-16 entering the 4th,main,Defensive snaps before the 4th (fatigue),1.121,0.949,1.324,0.179
+Led by 1-16 entering the 4th,main,"Explosive plays allowed, 1st half (this game)",0.837,0.722,0.97,0.018
+Led by 1-16 entering the 4th,main,Opponent 4th-qtr pass rate when trailing,1.079,0.957,1.217,0.213
+Led by 1-16 entering the 4th,main,Opponent QB time to throw,1.033,0.882,1.208,0.689
+Led by 1-16 entering the 4th,main,Opponent QB quality (EPA per dropback),1.003,0.852,1.181,0.974
+Led by 1-16 entering the 4th,main,1st-half defense quality (EPA allowed),1.057,0.908,1.232,0.474
+Led by 1-16 entering the 4th,main,"Edge-rusher draft value, last 5 drafts",1.019,0.843,1.233,0.844
+Led by 1-16 entering the 4th,main,"Cornerback draft value, last 5 drafts",1.167,0.997,1.366,0.054
+Led by 1-16 entering the 4th,main,Cap share on edge rushers,1.023,0.842,1.242,0.821
+Led by 1-16 entering the 4th,main,Cap share on cornerbacks,1.194,0.996,1.432,0.056
+Led by 1-16 entering the 4th,main,Defense average age,0.64,0.432,0.949,0.027
+Led by 1-16 entering the 4th,main,Defense average experience,1.386,0.95,2.022,0.09
+Led by 1-16 entering the 4th,main,Past collapses defenders were on field for,0.93,0.763,1.134,0.473
+Led by 1-16 entering the 4th,main,"Run rate, last 5 min with lead",1.02,0.863,1.205,0.819
+Led by 1-16 entering the 4th,main,4th-qtr 3-and-out rate,0.985,0.824,1.177,0.866
+Led by 1-16 entering the 4th,main,4th-qtr QB turnover rate,1.074,0.897,1.286,0.437
+Led by 1-16 entering the 4th,main,Own timeouts left entering 4th,1.021,0.895,1.164,0.76
+Led by 1-16 entering the 4th,main,Opponent timeouts left entering 4th,1.01,0.842,1.212,0.914
+Led by 1-16 entering the 4th,main,Rest-day advantage,0.988,0.859,1.136,0.862
+Led by 1-16 entering the 4th,main,Blown-lead rate last season,0.853,0.736,0.989,0.035
+Led by 1-16 entering the 4th,main,Blown leads in previous 10 games,1.085,0.878,1.342,0.448
+Led by 1-16 entering the 4th,main,Home game,1.126,0.842,1.506,0.422
+Led by 1-16 entering the 4th,main,New head coach,1.066,0.765,1.486,0.705
+Led by 1-16 entering the 4th,main,Short week (5 or fewer days),1.455,0.341,6.198,0.612
+Led by 1-16 entering the 4th,main,Thursday game,0.685,0.179,2.624,0.581
+Led by 1-16 entering the 4th,main,Primetime game,1.415,0.93,2.154,0.105
+Led by 1-16 entering the 4th,main,Division game,0.877,0.641,1.199,0.411
+Led by 1-16 entering the 4th,main,Blew a lead the week before,0.776,0.483,1.248,0.295
+Led by 1-16 entering the 4th,with Ravens,Pregame spread (favored by),0.551,0.47,0.646,0.0
+Led by 1-16 entering the 4th,with Ravens,Size of lead,0.45,0.384,0.527,0.0
+Led by 1-16 entering the 4th,with Ravens,"Pressure rate, all snaps (season)",0.938,0.688,1.278,0.685
+Led by 1-16 entering the 4th,with Ravens,4th-quarter pressure rate (season),0.887,0.688,1.144,0.355
+Led by 1-16 entering the 4th,with Ravens,Man coverage rate,1.091,0.938,1.269,0.258
+Led by 1-16 entering the 4th,with Ravens,Cover 0 rate,0.819,0.677,0.992,0.041
+Led by 1-16 entering the 4th,with Ravens,Blitz rate (5+ rushers),0.982,0.827,1.165,0.834
+Led by 1-16 entering the 4th,with Ravens,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.044,0.911,1.197,0.535
+Led by 1-16 entering the 4th,with Ravens,4th-qtr defensive penalties per game,1.046,0.863,1.268,0.649
+Led by 1-16 entering the 4th,with Ravens,4th-qtr pass interference per game,1.074,0.901,1.28,0.423
+Led by 1-16 entering the 4th,with Ravens,Defensive snaps before the 4th (fatigue),1.128,0.95,1.338,0.17
+Led by 1-16 entering the 4th,with Ravens,"Explosive plays allowed, 1st half (this game)",0.836,0.722,0.97,0.018
+Led by 1-16 entering the 4th,with Ravens,Opponent 4th-qtr pass rate when trailing,1.081,0.958,1.218,0.205
+Led by 1-16 entering the 4th,with Ravens,Opponent QB time to throw,1.044,0.893,1.219,0.589
+Led by 1-16 entering the 4th,with Ravens,Opponent QB quality (EPA per dropback),0.992,0.842,1.168,0.92
+Led by 1-16 entering the 4th,with Ravens,1st-half defense quality (EPA allowed),1.077,0.929,1.249,0.325
+Led by 1-16 entering the 4th,with Ravens,"Edge-rusher draft value, last 5 drafts",1.036,0.848,1.265,0.732
+Led by 1-16 entering the 4th,with Ravens,"Cornerback draft value, last 5 drafts",1.17,0.994,1.377,0.06
+Led by 1-16 entering the 4th,with Ravens,Cap share on edge rushers,1.054,0.865,1.284,0.605
+Led by 1-16 entering the 4th,with Ravens,Cap share on cornerbacks,1.139,0.956,1.357,0.144
+Led by 1-16 entering the 4th,with Ravens,Defense average age,0.678,0.452,1.017,0.06
+Led by 1-16 entering the 4th,with Ravens,Defense average experience,1.273,0.863,1.879,0.224
+Led by 1-16 entering the 4th,with Ravens,Past collapses defenders were on field for,0.874,0.726,1.052,0.155
+Led by 1-16 entering the 4th,with Ravens,"Run rate, last 5 min with lead",0.994,0.837,1.18,0.942
+Led by 1-16 entering the 4th,with Ravens,4th-qtr 3-and-out rate,0.987,0.825,1.18,0.883
+Led by 1-16 entering the 4th,with Ravens,4th-qtr QB turnover rate,1.076,0.893,1.297,0.439
+Led by 1-16 entering the 4th,with Ravens,Own timeouts left entering 4th,1.021,0.897,1.161,0.756
+Led by 1-16 entering the 4th,with Ravens,Opponent timeouts left entering 4th,1.005,0.837,1.207,0.959
+Led by 1-16 entering the 4th,with Ravens,Rest-day advantage,0.991,0.863,1.139,0.9
+Led by 1-16 entering the 4th,with Ravens,Blown-lead rate last season,0.867,0.749,1.003,0.055
+Led by 1-16 entering the 4th,with Ravens,Blown leads in previous 10 games,1.095,0.887,1.351,0.397
+Led by 1-16 entering the 4th,with Ravens,Home game,1.148,0.852,1.546,0.364
+Led by 1-16 entering the 4th,with Ravens,New head coach,1.094,0.782,1.53,0.6
+Led by 1-16 entering the 4th,with Ravens,Short week (5 or fewer days),1.439,0.333,6.225,0.626
+Led by 1-16 entering the 4th,with Ravens,Thursday game,0.713,0.183,2.775,0.626
+Led by 1-16 entering the 4th,with Ravens,Primetime game,1.378,0.894,2.124,0.146
+Led by 1-16 entering the 4th,with Ravens,Division game,0.883,0.643,1.211,0.439
+Led by 1-16 entering the 4th,with Ravens,Blew a lead the week before,0.775,0.482,1.245,0.292
+Led by 1-16 entering the 4th,with Ravens,Ravens,2.62,1.374,4.993,0.003
+Led by 1-16 at halftime,main,Pregame spread (favored by),0.47,0.393,0.562,0.0
+Led by 1-16 at halftime,main,Size of lead,0.531,0.459,0.614,0.0
+Led by 1-16 at halftime,main,"Pressure rate, all snaps (season)",0.759,0.615,0.936,0.01
+Led by 1-16 at halftime,main,4th-quarter pressure rate (season),1.094,0.902,1.326,0.36
+Led by 1-16 at halftime,main,Man coverage rate,1.135,0.953,1.353,0.156
+Led by 1-16 at halftime,main,Cover 0 rate,0.95,0.78,1.157,0.611
+Led by 1-16 at halftime,main,Blitz rate (5+ rushers),0.891,0.747,1.064,0.203
+Led by 1-16 at halftime,main,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.015,0.877,1.174,0.844
+Led by 1-16 at halftime,main,4th-qtr defensive penalties per game,1.082,0.884,1.325,0.443
+Led by 1-16 at halftime,main,4th-qtr pass interference per game,1.062,0.896,1.259,0.486
+Led by 1-16 at halftime,main,Defensive snaps before the 4th (fatigue),1.221,1.051,1.419,0.009
+Led by 1-16 at halftime,main,"Explosive plays allowed, 1st half (this game)",0.954,0.832,1.094,0.502
+Led by 1-16 at halftime,main,Opponent 4th-qtr pass rate when trailing,1.086,0.963,1.225,0.181
+Led by 1-16 at halftime,main,Opponent QB time to throw,1.076,0.932,1.243,0.319
+Led by 1-16 at halftime,main,Opponent QB quality (EPA per dropback),1.043,0.891,1.221,0.6
+Led by 1-16 at halftime,main,1st-half defense quality (EPA allowed),0.911,0.781,1.064,0.239
+Led by 1-16 at halftime,main,"Edge-rusher draft value, last 5 drafts",1.04,0.891,1.214,0.619
+Led by 1-16 at halftime,main,"Cornerback draft value, last 5 drafts",1.101,0.954,1.271,0.189
+Led by 1-16 at halftime,main,Cap share on edge rushers,0.95,0.788,1.144,0.587
+Led by 1-16 at halftime,main,Cap share on cornerbacks,1.105,0.945,1.292,0.212
+Led by 1-16 at halftime,main,Defense average age,0.919,0.618,1.368,0.677
+Led by 1-16 at halftime,main,Defense average experience,1.056,0.703,1.588,0.792
+Led by 1-16 at halftime,main,Past collapses defenders were on field for,0.874,0.732,1.044,0.138
+Led by 1-16 at halftime,main,"Run rate, last 5 min with lead",0.991,0.843,1.165,0.91
+Led by 1-16 at halftime,main,4th-qtr 3-and-out rate,1.074,0.933,1.236,0.32
+Led by 1-16 at halftime,main,4th-qtr QB turnover rate,1.034,0.884,1.21,0.672
+Led by 1-16 at halftime,main,Own timeouts left entering 4th,1.104,0.969,1.258,0.135
+Led by 1-16 at halftime,main,Opponent timeouts left entering 4th,0.98,0.868,1.105,0.737
+Led by 1-16 at halftime,main,Rest-day advantage,1.054,0.914,1.216,0.467
+Led by 1-16 at halftime,main,Blown-lead rate last season,0.861,0.737,1.006,0.059
+Led by 1-16 at halftime,main,Blown leads in previous 10 games,1.061,0.91,1.238,0.446
+Led by 1-16 at halftime,main,Home game,1.209,0.88,1.662,0.242
+Led by 1-16 at halftime,main,New head coach,1.112,0.77,1.607,0.571
+Led by 1-16 at halftime,main,Short week (5 or fewer days),1.073,0.28,4.111,0.918
+Led by 1-16 at halftime,main,Thursday game,0.689,0.205,2.309,0.545
+Led by 1-16 at halftime,main,Primetime game,1.011,0.712,1.436,0.95
+Led by 1-16 at halftime,main,Division game,0.991,0.746,1.317,0.95
+Led by 1-16 at halftime,main,Blew a lead the week before,1.013,0.603,1.701,0.961
+Led by 1-16 at halftime,with Ravens,Pregame spread (favored by),0.465,0.385,0.562,0.0
+Led by 1-16 at halftime,with Ravens,Size of lead,0.532,0.459,0.615,0.0
+Led by 1-16 at halftime,with Ravens,"Pressure rate, all snaps (season)",0.78,0.629,0.967,0.024
+Led by 1-16 at halftime,with Ravens,4th-quarter pressure rate (season),1.086,0.894,1.32,0.405
+Led by 1-16 at halftime,with Ravens,Man coverage rate,1.136,0.951,1.356,0.159
+Led by 1-16 at halftime,with Ravens,Cover 0 rate,0.932,0.764,1.136,0.485
+Led by 1-16 at halftime,with Ravens,Blitz rate (5+ rushers),0.894,0.747,1.07,0.221
+Led by 1-16 at halftime,with Ravens,4th-qtr YAC allowed per catch (missed-tackle stand-in),1.019,0.884,1.176,0.791
+Led by 1-16 at halftime,with Ravens,4th-qtr defensive penalties per game,1.08,0.88,1.326,0.461
+Led by 1-16 at halftime,with Ravens,4th-qtr pass interference per game,1.059,0.894,1.255,0.505
+Led by 1-16 at halftime,with Ravens,Defensive snaps before the 4th (fatigue),1.221,1.05,1.419,0.009
+Led by 1-16 at halftime,with Ravens,"Explosive plays allowed, 1st half (this game)",0.955,0.833,1.094,0.504
+Led by 1-16 at halftime,with Ravens,Opponent 4th-qtr pass rate when trailing,1.087,0.964,1.227,0.174
+Led by 1-16 at halftime,with Ravens,Opponent QB time to throw,1.076,0.931,1.243,0.32
+Led by 1-16 at halftime,with Ravens,Opponent QB quality (EPA per dropback),1.038,0.885,1.217,0.648
+Led by 1-16 at halftime,with Ravens,1st-half defense quality (EPA allowed),0.919,0.787,1.073,0.283
+Led by 1-16 at halftime,with Ravens,"Edge-rusher draft value, last 5 drafts",1.049,0.896,1.229,0.553
+Led by 1-16 at halftime,with Ravens,"Cornerback draft value, last 5 drafts",1.105,0.953,1.281,0.187
+Led by 1-16 at halftime,with Ravens,Cap share on edge rushers,0.964,0.793,1.171,0.709
+Led by 1-16 at halftime,with Ravens,Cap share on cornerbacks,1.078,0.91,1.276,0.386
+Led by 1-16 at halftime,with Ravens,Defense average age,0.949,0.648,1.39,0.788
+Led by 1-16 at halftime,with Ravens,Defense average experience,1.012,0.685,1.496,0.952
+Led by 1-16 at halftime,with Ravens,Past collapses defenders were on field for,0.843,0.69,1.03,0.095
+Led by 1-16 at halftime,with Ravens,"Run rate, last 5 min with lead",0.977,0.826,1.155,0.785
+Led by 1-16 at halftime,with Ravens,4th-qtr 3-and-out rate,1.076,0.934,1.24,0.312
+Led by 1-16 at halftime,with Ravens,4th-qtr QB turnover rate,1.038,0.885,1.218,0.646
+Led by 1-16 at halftime,with Ravens,Own timeouts left entering 4th,1.104,0.97,1.257,0.134
+Led by 1-16 at halftime,with Ravens,Opponent timeouts left entering 4th,0.98,0.868,1.105,0.737
+Led by 1-16 at halftime,with Ravens,Rest-day advantage,1.055,0.915,1.217,0.46
+Led by 1-16 at halftime,with Ravens,Blown-lead rate last season,0.87,0.742,1.019,0.084
+Led by 1-16 at halftime,with Ravens,Blown leads in previous 10 games,1.068,0.917,1.243,0.398
+Led by 1-16 at halftime,with Ravens,Home game,1.222,0.884,1.689,0.224
+Led by 1-16 at halftime,with Ravens,New head coach,1.126,0.775,1.635,0.534
+Led by 1-16 at halftime,with Ravens,Short week (5 or fewer days),1.06,0.276,4.076,0.933
+Led by 1-16 at halftime,with Ravens,Thursday game,0.705,0.208,2.387,0.574
+Led by 1-16 at halftime,with Ravens,Primetime game,0.999,0.7,1.425,0.996
+Led by 1-16 at halftime,with Ravens,Division game,0.989,0.745,1.313,0.941
+Led by 1-16 at halftime,with Ravens,Blew a lead the week before,1.023,0.612,1.709,0.932
+Led by 1-16 at halftime,with Ravens,Ravens,1.643,0.914,2.954,0.097
