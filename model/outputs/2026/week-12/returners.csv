@@ -1,5 +1,11 @@
 player_name,position,team,sleeper,games,last_game,missed,role_basis,snaps,attempts,carries,targets,marked_playing
+Sam Darnold,QB,SEA,Questionable,7,8.0,2,this season,0.9638546885271694,33.175609305054664,1.8296093676630762,0.0,False
+Kyler Murray,QB,MIN,Questionable,6,8.0,3,this season,0.9508861061757616,27.510513304115303,5.1918779643582305,0.0,False
 Tua Tagovailoa,QB,ATL,,1,5.0,5,last season,0.9435866572551533,27.428571428571427,1.4285714285714286,0.0,False
 Marcus Mariota,QB,WAS,,3,4.0,6,last season,0.751610660601118,22.7,5.0,0.0,False
+Dillon Gabriel,QB,CLE,,0,,10,last season,0.6112382288379389,20.555555555555557,1.5555555555555556,0.0,False
 Devin Neal,RB,WAS,,0,,10,last season,0.4111995735610061,0.0,6.333333333333333,2.111111111111111,False
+Will Mallory,TE,IND,Questionable,2,7.0,4,this season,0.4145584412271572,0.0,0.0,4.242640687119286,False
+Marvin Harrison Jr.,WR,HOU,Questionable,7,9.0,2,last season,0.7068063407814422,0.0,0.0,6.083333333333333,False
+Omar Cooper Jr.,WR,NYJ,Questionable,4,9.0,2,this season,0.6823619535920056,0.0,0.0,7.181385292428097,False
 Xavier Legette,WR,CAR,,2,2.0,8,last season,0.6367750758598523,0.0,0.06666666666666667,4.266666666666667,False
