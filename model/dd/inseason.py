@@ -985,6 +985,34 @@ def role_overrides(te: pd.DataFrame, season: int, week: int,
     return te
 
 
+# Each team's pass catchers' target shares, added up, and each player's part
+# of that total. Every player's share is his own recent average, taken over
+# games with different teammates around him, so a team's shares can add to
+# far more or less than the 100% a real game splits (Philadelphia, week 12:
+# 119%, with DeVonta Smith's 12-of-21 return game on top of Lemon and Cooper's
+# numbers from the games he missed). Backtested 2022-2025 as model inputs,
+# counting a player only if he played his team's previous game and is not
+# out (in training and test alike): whole-list Spearman +0.0009 (better in
+# 133 position-weeks, worse in 83), average miss 2.695 -> 2.687, startable
+# pairwise +0.0006 (not significant), and the over-projection of teams over
+# 120% cut from -0.56 to -0.36.
+# Training counts the players who played that week; the live board counts
+# the players who played their team's last game or are marked back, and
+# have not been ruled out.
+TEAM_TOTAL_POS = ("RB", "WR", "TE")
+TEAM_TOTAL_FEATS = ["team_tgt_total", "tgt_share_of_total"]
+
+
+def add_team_target_total(d: pd.DataFrame, playing: pd.Series) -> pd.DataFrame:
+    d = d.copy()
+    live = playing & d.position.isin(TEAM_TOTAL_POS) & d.b_target_share.notna()
+    tot = d[live].groupby(["season", "week", "team"]).b_target_share.transform("sum")
+    d["team_tgt_total"] = np.nan
+    d.loc[live, "team_tgt_total"] = tot
+    d["tgt_share_of_total"] = d.b_target_share / d.team_tgt_total
+    return d
+
+
 def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
                  train_seasons=None) -> dict:
     """Wilson's board for one in-season week, one list per position and format."""
@@ -996,13 +1024,63 @@ def predict_week(season: int, week: int, panel: pd.DataFrame | None = None,
     panel = usable(panel) if train_seasons is None \
         else panel[panel.season.isin(list(train_seasons))]
     rows = target_rows(season, week)
-    out = {}
+    # Training: the team total over the pass catchers who played in their
+    # team's previous game and were not out - what a game day can know. The
+    # first version counted the players who played that same week, which the
+    # model read as a tell (a blank total meant he did not play) and which
+    # made the gain look five times its real size.
+    keys = ["season", "week", "player_id"]
+    wk_all = build()[keys + ["team", "snap_share"]].drop_duplicates(keys)
+    weeks = wk_all.groupby(["season", "team"]).week.apply(lambda x: sorted(set(x))).to_dict()
+    prev = {(s, t, w): ws[i - 1] for (s, t), ws in weeks.items() for i, w in enumerate(ws) if i}
+    on_field = set(map(tuple, wk_all[wk_all.snap_share.fillna(0) > 0][keys].to_numpy()))
+    panel_b = blend(panel, K_ROLE, K_EFF)
+    was_on = np.array([(s, prev.get((s, t, w)), pid) in on_field
+                       for s, t, w, pid in zip(panel_b.season, panel_b.team, panel_b.week, panel_b.player_id)])
+    panel_b = add_team_target_total(panel_b, pd.Series(was_on, index=panel_b.index) & panel_b.is_out.fillna(0).eq(0))
+    # This week: every position's rows after the role overrides (an heir's
+    # boost or a hand cut moves his share), then the team total over the pass
+    # catchers not ruled out, here or on Sleeper.
+    # "Playing" this week is what a game day can know: he played in his
+    # team's last game, or he is marked back by hand (returning.csv, or an
+    # ease-in row), and nobody has ruled him out. Everyone not ruled out put
+    # the live totals at 123% on average against training's 100%, because it
+    # counted depth players with old shares who do not get on the field.
+    from .heirs import bare, ruled_out
+    gone = ruled_out(season, week)
+    gone = set(zip(gone.key, gone.team))
+    wk = build()
+    wk = wk[(wk.season == season) & (wk.week < week)]
+    last = wk.groupby("team").week.max()
+    recent = set(wk[wk.week.eq(wk.team.map(last)) & wk.snap_share.fillna(0).gt(0)].player_id)
+    back = set().union(*[set(returning(season, week, p)) for p in TEAM_TOTAL_POS])
+    if ROLE_FILE.exists():
+        hand = pd.read_csv(ROLE_FILE)
+        back |= set(hand[(hand.season == season) & (hand.week == week)
+                         & hand.basis.astype(str).str.startswith("scale")].player)
+    tes, raws = {}, {}
     for pos in POSITIONS:
-        feats = features_final(pos)
-        tr_all = blend(rankable(panel, pos), K_ROLE, K_EFF)
         raw = blend(rankable(rows, pos), K_ROLE, K_EFF)
         everyone = blend(rankable(rows.assign(is_out=0), pos), K_ROLE, K_EFF)
-        te = role_overrides(raw, season, week, pos, sources=everyone)
+        raws[pos] = raw
+        tes[pos] = role_overrides(raw, season, week, pos, sources=everyone)
+    allte = pd.concat([tes[p].assign(_pos=p) for p in TEAM_TOTAL_POS if p in tes])
+    playing = pd.Series([(bare(n), t) not in gone and (pid in recent or n in back)
+                         for n, t, pid in zip(allte.player_name, allte.team, allte.player_id)], index=allte.index)
+    allte = add_team_target_total(allte, playing)
+    for p in TEAM_TOTAL_POS:
+        if p in tes:
+            part = allte[allte._pos == p]
+            tes[p] = tes[p].assign(team_tgt_total=part.team_tgt_total.to_numpy(),
+                                   tgt_share_of_total=part.tgt_share_of_total.to_numpy())
+            raws[p] = raws[p].assign(team_tgt_total=tes[p].team_tgt_total,
+                                     tgt_share_of_total=tes[p].tgt_share_of_total)
+    out = {}
+    for pos in POSITIONS:
+        feats = features_final(pos) + (TEAM_TOTAL_FEATS if pos in TEAM_TOTAL_POS else [])
+        tr_all = rankable(panel_b, pos)
+        raw = raws[pos]
+        te = tes[pos]
         for scoring in LISTS[pos]:
             col = f"actual_{scoring}"
             tr = tr_all[tr_all[col].notna()].copy()
