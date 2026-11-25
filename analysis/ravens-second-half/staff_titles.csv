@@ -1,0 +1,132 @@
+team,page,url,name,title
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Josh Marriner,"Director, Player Engagement"
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Dr. William Schultz,Neuro-Psychologist
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Dr. Rahsaan Lindsey,Team Psychiatrist
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Dr. Sophia Murphy,Team Clinician
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Dr. Petra Peper,Team Clinician
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,Anthony Thompson,Team Clinician
+ARI,front,https://www.azcardinals.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 6
+ARI,coaches,https://www.azcardinals.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+ATL,front,https://www.atlantafalcons.com/team/front-office-roster/,(page check),lists medical staff: False; matching titles: 0
+BAL,front,https://www.baltimoreravens.com/team/front-office-roster/,Jameel McClain,Director of Player Engagement
+BAL,front,https://www.baltimoreravens.com/team/front-office-roster/,Johnny Shelton,Team Chaplain
+BAL,front,https://www.baltimoreravens.com/team/front-office-roster/,Dr. Tricia Bent-Goodley,Team Clinician
+BAL,front,https://www.baltimoreravens.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+BAL,coaches,https://www.baltimoreravens.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+BUF,front,https://www.buffalobills.com/team/front-office-roster/,(page check),lists medical staff: False; matching titles: 0
+CAR,front,https://www.panthers.com/team/ownership_business/,Jaiquawn Jarrett,Director of Player Engagement
+CAR,front,https://www.panthers.com/team/ownership_business/,(page check),lists medical staff: True; matching titles: 1
+CAR,coaches,https://www.panthers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+CHI,front,https://www.chicagobears.com/team/front-office/,Carla Suber,Director of Wellness
+CHI,front,https://www.chicagobears.com/team/front-office/,Erika Marmolejo,Director of Player Engagement
+CHI,front,https://www.chicagobears.com/team/front-office/,Brice McAllister,Player Engagement Coordinator
+CHI,front,https://www.chicagobears.com/team/front-office/,(page check),lists medical staff: True; matching titles: 3
+CHI,coaches,https://www.chicagobears.com/team/coaches/,(page check),lists medical staff: False; matching titles: 0
+CIN,front,https://www.bengals.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 0
+CIN,coaches,https://www.bengals.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+CLE,front,https://www.clevelandbrowns.com/team/front-office-roster/,Ron Brewer,"Director, Player Engagement"
+CLE,front,https://www.clevelandbrowns.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+CLE,coaches,https://www.clevelandbrowns.com/team/coaches-roster/,Josh Christovich,Senior Director of Player Development
+CLE,coaches,https://www.clevelandbrowns.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 1
+DAL,front,https://www.dallascowboys.com/team/front-office-roster/,Bryan Wansley,Director of Player Development
+DAL,front,https://www.dallascowboys.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+DAL,coaches,https://www.dallascowboys.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+DEN,front,https://www.denverbroncos.com/team/front-office-roster/,Ray Jackson,Vice President of Player Development
+DEN,front,https://www.denverbroncos.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+DEN,coaches,https://www.denverbroncos.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+DET,front,https://www.detroitlions.com/team/front-office-roster/,Jessica Gray,Senior Director of Player Engagement
+DET,front,https://www.detroitlions.com/team/front-office-roster/,Sean Pugh,Director of Player Engagement/Team Chaplain
+DET,front,https://www.detroitlions.com/team/front-office-roster/,Dr. Michelle Garvin,Head Team Clinician
+DET,front,https://www.detroitlions.com/team/front-office-roster/,Shana Jones,Team Clinician
+DET,front,https://www.detroitlions.com/team/front-office-roster/,Brandon Harlin,Player Engagement Coordinator
+DET,front,https://www.detroitlions.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 5
+DET,coaches,https://www.detroitlions.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+GB,front,https://www.packers.com/team/front-office-roster/,Derrick Coleman,Assistant to Player Engagement
+GB,front,https://www.packers.com/team/front-office-roster/,Grey Ruegamer,Director of Player Engagement
+GB,front,https://www.packers.com/team/front-office-roster/,Dr. Chris Carr,Director of Performance Psychology and Team Behavioral Health Clinician
+GB,front,https://www.packers.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+GB,coaches,https://www.packers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,Mikado Hinson,Player Development Advisor
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,Camille Wilson,Player Care Coordinator
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,Ladd Harris,Director of Team Wellness
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,Charles Ashford,Assistant Director of Team Wellness
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,Candice Williams,Director of Mental Wellness and Performance
+HOU,front,https://www.houstontexans.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 5
+HOU,coaches,https://www.houstontexans.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+IND,front,https://www.colts.com/team/front-office-roster/,Elizabeth White,Counselor
+IND,front,https://www.colts.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+IND,coaches,https://www.colts.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+JAX,front,https://www.jaguars.com/team/front-office-roster/,Marcus Pollard,Director of Player Engagement and Youth Football
+JAX,front,https://www.jaguars.com/team/front-office-roster/,Brian Kensil,Senior Manager of Player Engagement and Compliance
+JAX,front,https://www.jaguars.com/team/front-office-roster/,Nikki Donoff,Player Engagement Manager
+JAX,front,https://www.jaguars.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+JAX,coaches,https://www.jaguars.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+KC,front,https://www.chiefs.com/team/front-office-roster/,Tyler Bradstreet,Vice President of Performance Psychology
+KC,front,https://www.chiefs.com/team/front-office-roster/,Dr. Melissa Weinsz,Director of Player Engagement
+KC,front,https://www.chiefs.com/team/front-office-roster/,Shawn Barber,Player Engagement Manager
+KC,front,https://www.chiefs.com/team/front-office-roster/,Jade Thomas,Family & Player Care Coordinator
+KC,front,https://www.chiefs.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 4
+KC,coaches,https://www.chiefs.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+LV,front,https://www.raiders.com/team/front-office-roster/,Rob Davis,"Vice President, Player Engagement"
+LV,front,https://www.raiders.com/team/front-office-roster/,Kacey Oiness,Team Clinician
+LV,front,https://www.raiders.com/team/front-office-roster/,Alex Guerrero,Wellness Coordinator
+LV,front,https://www.raiders.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+LV,coaches,https://www.raiders.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+LAC,front,https://www.chargers.com/team/front-office-roster/,Marco Zucconi,"Director of Player Health, Wellness & Performance"
+LAC,front,https://www.chargers.com/team/front-office-roster/,Arthur Hightower,Senior Director of Player Engagement
+LAC,front,https://www.chargers.com/team/front-office-roster/,George Gregory,Team Chaplain
+LAC,front,https://www.chargers.com/team/front-office-roster/,Dr. Herb Martin,Psychologist
+LAC,front,https://www.chargers.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 4
+LAC,coaches,https://www.chargers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+LA,front,https://www.therams.com/team/front-office-roster/,Dr. Carrie Hastings,Mental Health Clinician
+LA,front,https://www.therams.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+LA,coaches,https://www.therams.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+MIA,front,https://www.miamidolphins.com/team/front-office-roster/,Mell Byrd,"Director, Player Engagement"
+MIA,front,https://www.miamidolphins.com/team/front-office-roster/,James Smith-Williams,"Coordinator, Player Engagement"
+MIA,front,https://www.miamidolphins.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 2
+MIA,coaches,https://www.miamidolphins.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+MIN,front,https://www.vikings.com/team/front-office-roster/,Les Pico,"Executive Director, Player Development"
+MIN,front,https://www.vikings.com/team/front-office-roster/,Jasper Brinkley,Director of Player Engagement
+MIN,front,https://www.vikings.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 2
+MIN,coaches,https://www.vikings.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+NE,front,https://www.patriots.com/team/front-office-roster/,(page check),lists medical staff: False; matching titles: 0
+NO,front,https://www.neworleanssaints.com/team/front-office-roster/,Fred McAfee,Vice President of Player Engagement
+NO,front,https://www.neworleanssaints.com/team/front-office-roster/,Courtney Kennedy,Manager of Family & Player Engagement
+NO,front,https://www.neworleanssaints.com/team/front-office-roster/,"Lana Chambliss, PhD",Behavioral Health Clinician
+NO,front,https://www.neworleanssaints.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+NO,coaches,https://www.neworleanssaints.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+NYG,front,https://www.giants.com/team/front-office-roster/,Darien Harris,Director of Player Engagement
+NYG,front,https://www.giants.com/team/front-office-roster/,Dr. Ken Kutner,Neuropsychologist Consultant
+NYG,front,https://www.giants.com/team/front-office-roster/,"Lani Lawrence, PsyD","Senior Director of Performance Psychology, Wellness & Clinical Services"
+NYG,front,https://www.giants.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+NYG,coaches,https://www.giants.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+NYJ,front,https://www.newyorkjets.com/team/front-office-roster/,Justus Jones,Director of Player Development
+NYJ,front,https://www.newyorkjets.com/team/front-office-roster/,CJ Carter,"Manager, Player Development"
+NYJ,front,https://www.newyorkjets.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 2
+NYJ,coaches,https://www.newyorkjets.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+PHI,front,https://www.philadelphiaeagles.com/team/front-office/,Matt Leo,Director of Player Engagement
+PHI,front,https://www.philadelphiaeagles.com/team/front-office/,Kathy Mair,Player Resource Coordinator/Assistant Director of Player Engagement
+PHI,front,https://www.philadelphiaeagles.com/team/front-office/,(page check),lists medical staff: True; matching titles: 2
+PHI,coaches,https://www.philadelphiaeagles.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+PIT,front,https://www.steelers.com/team/front-office-roster/,Darrel Young,Director of Player Development
+PIT,front,https://www.steelers.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 1
+PIT,coaches,https://www.steelers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+SF,front,https://www.49ers.com/team/front-office-roster/,Shelby Soltau,"Manager, Alumni Relations & Player Engagement"
+SF,front,https://www.49ers.com/team/front-office-roster/,Austin Moss II,"Vice President, Player Development & Team Dynamics"
+SF,front,https://www.49ers.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+SF,coaches,https://www.49ers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+SEA,front,https://www.seahawks.com/team/front-office-roster/,Roy Fisher,Team Clinician
+SEA,front,https://www.seahawks.com/team/front-office-roster/,Jonathan Rainey,Team Chaplain
+SEA,front,https://www.seahawks.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 2
+SEA,coaches,https://www.seahawks.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+TB,front,https://www.buccaneers.com/team/front-office-roster/,Duke Preston,Vice President of Player Engagement
+TB,front,https://www.buccaneers.com/team/front-office-roster/,Tyler Thompson,Manager of Player Engagement
+TB,front,https://www.buccaneers.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 2
+TB,coaches,https://www.buccaneers.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+TEN,front,https://www.tennesseetitans.com/team/front-office-roster/,Daryl Nelson,"Senior Director, Player Development & Performance Integration"
+TEN,front,https://www.tennesseetitans.com/team/front-office-roster/,Chic Ejiasi,"Director, Player Engagement"
+TEN,front,https://www.tennesseetitans.com/team/front-office-roster/,Charron Sumler,"Director, Mental Wellness & Performance"
+TEN,front,https://www.tennesseetitans.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 3
+TEN,coaches,https://www.tennesseetitans.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
+WAS,front,https://www.commanders.com/team/front-office-roster/,(page check),lists medical staff: True; matching titles: 0
+WAS,coaches,https://www.commanders.com/team/coaches-roster/,(page check),lists medical staff: False; matching titles: 0
