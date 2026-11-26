@@ -13,3 +13,7 @@ season,week,team,wind_mph,precip,note
 2026,11,NYG,,yes,"Jaguars at Giants: moderate to heavy rain during the game, models agreeing; hourly wind under 15 mph, not counted. Saturday forecast."
 2026,11,ARI,15,,"Cardinals at Chiefs: 15-16 mph sustained at kickoff on both models, easing to 13 by the fourth quarter; no rain. Saturday forecast."
 2026,11,KC,15,,"Cardinals at Chiefs: 15-16 mph sustained at kickoff on both models, easing to 13 by the fourth quarter; no rain. Saturday forecast."
+2026,12,KC,19,yes,"Chiefs at Bills: rain 96% or higher every hour of the game; wind 19 mph sustained at kickoff with gusts to 32 (Weather Channel), 15-25 (AccuWeather); the National Weather Service is lower, 7-10. Thursday forecast."
+2026,12,BUF,19,yes,"Chiefs at Bills: rain 96% or higher every hour of the game; wind 19 mph sustained at kickoff with gusts to 32 (Weather Channel), 15-25 (AccuWeather); the National Weather Service is lower, 7-10. Thursday forecast."
+2026,12,DEN,,yes,"Broncos at Steelers: rain 55-90% with sleet possible; wind about 15 mph in an earlier forecast, not counted until rechecked. Thursday forecast."
+2026,12,PIT,,yes,"Broncos at Steelers: rain 55-90% with sleet possible; wind about 15 mph in an earlier forecast, not counted until rechecked. Thursday forecast."
